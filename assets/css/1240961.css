@@ -56,7 +56,7 @@
 
     /* Borders */
     --border-width: 1px;
-    
+
     --border-base: var(--border-width) solid var(--border-light);
 
     --radius-xs: 8px;
@@ -64,12 +64,41 @@
     --radius-md: 16px;
     --radius-lg: 20px;
     --radius-full: 9999px;
-
 }
 
-/* Aplicar estilos padrão */
+
+/* 
+=================
+  ESTILOS PADRÃO
+================= 
+*/
 * {
     font-family: var(--font-sans);
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--app-bg);
+    color: var(--text-primary);
+    display: flex;
+    flex-direction: column;
+}
+
+a {
+    text-decoration: none;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-2) var(--space-5);
+    border-radius: var(--radius-xs);
+    font-weight: 400;
+    cursor: pointer;
+    transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 /* 
@@ -79,15 +108,15 @@
 */
 
 /* DESKTOPS */
-h1 { font-size: 24px; line-height: 32px; font-weight: 700; } /* Display / Headings */
-h2 { font-size: 18px; line-height: 28px; font-weight: 700; } /* Títulos de Secções */
-h3 { font-size: 16px; line-height: 24px; font-weight: 700; } /* Títulos de Cards */
-p { font-size: 14px; line-height: 20px; font-weight: 500; } /* Body (Default) */
-span { font-size: 12px; line-height: 16px; font-weight: 500; } /* Textos Pequenos */
-label { font-size: 10px; line-height: 14px; font-weight: 600; text-transform: uppercase; } /* Captions / Badges */
+h1 { font-size: 24px; line-height: 32px; font-weight: 700; margin: 0;} /* Display / Headings */
+h2 { font-size: 18px; line-height: 28px; font-weight: 700; margin: 0;} /* Títulos de Secções */
+h3 { font-size: 16px; line-height: 24px; font-weight: 700; margin: 0;} /* Títulos de Cards */
+p { font-size: 14px; line-height: 20px; font-weight: 500; margin: 0;} /* Body (Default) */
+span { font-size: 12px; line-height: 16px; font-weight: 500; margin: 0;} /* Textos Pequenos */
+label { font-size: 10px; line-height: 14px; font-weight: 600; text-transform: uppercase; margin: 0;} /* Captions / Badges */
 
 /* TABLETS (apenas mudanças necessárias) */
-@media (max-width: 1024px) {
+@media (max-width: 1023px) {
     h1 { font-size: 22px; line-height: 30px; }
 }
 
@@ -95,4 +124,145 @@ label { font-size: 10px; line-height: 14px; font-weight: 600; text-transform: up
 @media (max-width: 768px) { 
     h1 { font-size: 20px; line-height: 28px; }
     h2 { line-height: 26px; }
+}
+
+/* 
+==================================
+       CLASSES DE UTILIDADE
+==================================
+*/
+
+/* Gaps */
+.gap-1 { gap: var(--space-1); }
+.gap-2 { gap: var(--space-2); }
+.gap-2-5 { gap: var(--space-2-5); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
+.gap-5 { gap: var(--space-5); }
+.gap-6 { gap: var(--space-6); }
+.gap-8 { gap: var(--space-8); }
+.gap-10 { gap: var(--space-10); }
+
+/* Paddings */
+.padding-1 { padding: var(--space-1); }
+.padding-2 { padding: var(--space-2); }
+.padding-2-5 { padding: var(--space-2-5); }
+.padding-3 { padding: var(--space-3); }
+.padding-4 { padding: var(--space-4); }
+.padding-5 { padding: var(--space-5); }
+.padding-6 { padding: var(--space-6); }
+.padding-8 { padding: var(--space-8); }
+.padding-10 { padding: var(--space-10); }
+
+/* Margins */
+.margin-1 { margin: var(--space-1); }
+.margin-2 { margin: var(--space-2); }
+.margin-2-5 { margin: var(--space-2-5); }
+.margin-3 { margin: var(--space-3); }
+.margin-4 { margin: var(--space-4); }
+.margin-5 { margin: var(--space-5); }
+.margin-6 { margin: var(--space-6); }
+.margin-8 { margin: var(--space-8); }
+.margin-10 { margin: var(--space-10); }
+
+/* Cores de Textos */
+.text-primary { color: var(--text-primary) !important; }
+.text-secondary { color: var(--text-secondary) !important; }
+.text-muted { color: var(--text-muted) !important; }
+.text-success { color: var(--success) !important; }
+.text-error { color: var(--error) !important; }
+.text-warning { color: var(--warning) !important; }
+
+/* 
+=================
+   AREA PUBLICA
+================= 
+*/
+.pa-body {
+    background-color: var(--bento-bg);
+}
+
+.pa-navbar { 
+    background-color: var(--bento-bg); 
+    width: 100%;
+}
+
+.pa-page-container { 
+    width: 100%;
+    padding: 0 var(--space-6);
+}
+
+/* Toggle do tema */
+.pa-theme-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    color: var(--text-secondary);
+}
+
+/* Ícones do tema — moon visível por defeito, sun quando dark mode */
+.icon-sun { display: none; }
+.icon-moon { display: inline-block; }
+
+/* Quando o tema for dark, mostrar o ícone do sol e esconder o da lua */
+[data-theme="dark"] .icon-sun { display: inline-block; }
+[data-theme="dark"] .icon-moon { display: none; }
+
+/* Hambúrguer */
+.pa-hamburger {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    display: inline-flex;
+    align-items: center;
+    color: var(--text-primary);
+}
+
+.pa-hamburger .icon-close { display: none; }
+.pa-hamburger.open .icon-menu { display: none; }
+.pa-hamburger.open .icon-close { display: inline-block; }
+
+/* Controlos mobile — escondidos por defeito */
+.pa-nav-mobile-controls { display: none !important; }
+
+/* Menu mobile — escondido por defeito */
+.pa-nav-mobile-menu { display: none; }
+
+/* DESKTOPS — conteúdo centrado com max-width */
+@media (min-width: 1024px) {
+    .pa-navbar { padding: var(--space-3) 0; }
+
+    .pa-page-container { 
+        max-width: 1280px; 
+        margin: 0 auto;
+    }
+}
+
+/* TABLETS */
+@media (max-width: 1023px) { 
+    .pa-navbar { padding: var(--space-3) 0; }
+}
+
+/* MOBILES — trocar links desktop por hambúrguer */
+@media (max-width: 768px) { 
+    .pa-navbar { padding: var(--space-4) 0; }
+
+    .pa-nav-desktop { display: none !important; }
+    .pa-nav-mobile-controls { display: flex !important; }
+
+    .pa-nav-mobile-menu.open {
+        display: flex;
+        flex-direction: column;
+        gap: var(--space-6);
+        padding: var(--space-6) 0;
+    }
+
+    .pa-nav-mobile-menu .btn { 
+        width: 100%; 
+        text-align: center; 
+    }
 }
