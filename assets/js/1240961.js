@@ -30,3 +30,10 @@ function toggleTheme() {
 })();
 
 themeToggles.forEach(btn => btn.addEventListener('click', toggleTheme));
+
+/* Navbar border ao fazer scroll */
+const navbar = document.querySelector('.pa-navbar');
+
+window.addEventListener('scroll', () => {
+    navbar.classList.toggle('scrolled', window.scrollY > 50);
+});
