@@ -1,0 +1,37 @@
+/* 
+    Criação de variáveis CSS para o design system criado.
+    Estas variáveis podem ser usadas em todo o projeto para garantir consistência e facilitar a manutenção do código.
+    Usamos a função light-dark() para criar variações de cor para light mode e dark mode.
+*/
+
+:root {
+
+    /* https://www.youtube.com/shorts/1-yzpfTTGIg */
+    /* Indicar que o site suporta ambos os temas de cor. */
+    color-scheme: light dark;
+
+    /* Cores primárias */
+    --primary-50: light-dark(#EFF6FF, rgba(239, 246, 255, 0.2));
+    --primary-500: light-dark(#3B82F6, #3B82F6);
+    --primary-600: light-dark(#2563EB, #2563EB);
+    --primary-700: light-dark(#1D4ED8, #1D4ED8);
+
+    /* Surfaces e Backgrounds */
+    --app-bg: light-dark(#F1F5F9, #020617);
+    --bento-bg: light-dark(#FFFFFF, #1E293B);
+    --input-field-bg: light-dark(#F8FAFC, #0F172A);
+    --border-light: light-dark(#E2E8F0, #334155);
+
+    /* Text Colors */
+    --text-primary: light-dark(#0F172A, #FFFFFF);
+    --text-secondary: light-dark(#475569, #CBD5E1);
+    --text-muted: light-dark(#94A3B8, #94A3B8);
+    
+    /* Cores Semânticas */
+    --success: light-dark(#10B981, #10B981);
+    --error: light-dark(#EF4444, #EF4444);
+    --warning: light-dark(#F59E0B, #F59E0B);
+
+    /* Modals (Cores + Blur) */
+    --modal-bg: light-dark(rgba(0, 0, 0, 0.4), rgba(255, 255, 255, 0.6));
+}
