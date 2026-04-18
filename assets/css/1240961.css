@@ -4,6 +4,10 @@
     Usamos a função light-dark() para criar variações de cor para light mode e dark mode.
 */
 
+/* Fontes */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+
 :root {
 
     /* https://www.youtube.com/shorts/1-yzpfTTGIg */
@@ -34,4 +38,32 @@
 
     /* Modals (Cores + Blur) */
     --modal-bg: light-dark(rgba(0, 0, 0, 0.4), rgba(255, 255, 255, 0.6));
+
+    /* Fontes */
+    --font-sans: 'Plus Jakarta Sans', sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* Aplicar estilos padrão */
+* {
+    font-family: var(--font-sans);
+}
+
+/* DESKTOPS */
+h1 { font-size: 24px; line-height: 32px; font-weight: 700; } /* Display / Headings */
+h2 { font-size: 18px; line-height: 28px; font-weight: 700; } /* Títulos de Secções */
+h3 { font-size: 16px; line-height: 24px; font-weight: 700; } /* Títulos de Cards */
+p { font-size: 14px; line-height: 20px; font-weight: 500; } /* Body (Default) */
+span { font-size: 12px; line-height: 16px; font-weight: 500; } /* Textos Pequenos */
+label { font-size: 10px; line-height: 14px; font-weight: 600; text-transform: uppercase; } /* Captions / Badges */
+
+/* TABLETS (apenas mudanças necessárias) */
+@media (max-width: 1024px) {
+    h1 { font-size: 22px; line-height: 30px; }
+}
+
+/* MOBILE (apenas mudanças necessárias) */
+@media (max-width: 768px) { 
+    h1 { font-size: 20px; line-height: 28px; }
+    h2 { line-height: 26px; }
 }
