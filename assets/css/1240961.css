@@ -176,6 +176,37 @@ a {
     box-shadow: 0 10px 15px rgba(255, 255, 255, 0.08);
 }
 
+.form-item {
+    gap: 2px;
+}
+
+.form-item input {
+    padding: var(--space-4);
+    border-radius: var(--radius-xs);
+    border: var(--border-base);
+    background-color: var(--input-field-bg);
+}
+
+.form-item label {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    margin: 0;
+    text-transform: none;
+    color: var(--text-primary);
+}
+
+.form-item input::placeholder {
+    color: var(--text-secondary);
+    font-size: 16px;
+}
+
+.form-item input:focus {
+    text-decoration: none;
+    background-color: var(--input-field-bg);
+    border-color: var(--primary-500);
+}
+
 /* 
 =================
     TIPOGRAFIA
@@ -804,5 +835,49 @@ label {
 @media (max-width: 768px) {
     .pa-clients .bento-grid {
         grid-template-columns: repeat(1, 1fr);
+    }
+}
+
+/* CTA */
+.pa-cta {
+    padding: calc(var(--space-8) * 3) 0;
+}
+
+.pa-cta .bento-card {
+    width: 100%;
+    padding: var(--space-16);
+    border-top: 10px solid var(--primary-500);
+}
+
+.pa-cta h3 {
+    width: 60%;
+}
+
+.pa-cta-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-6);
+}
+
+.pa-cta-form-grid .form-item:last-child {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 768px) {
+    .pa-cta .bento-card {
+        padding: var(--space-8);
+    }
+
+    .pa-cta h3 {
+        width: 90%;
+    }
+
+    .pa-cta-form-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-4);
+    }
+
+    .pa-cta .btn-large {
+        padding: var(--space-4) 0;
     }
 }

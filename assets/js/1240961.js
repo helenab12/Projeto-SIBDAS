@@ -37,3 +37,11 @@ const navbar = document.querySelector('.pa-navbar');
 window.addEventListener('scroll', () => {
     navbar.classList.toggle('scrolled', window.scrollY > 50);
 });
+
+/* Simular envio de formulário */
+const ctaForm = document.getElementById('cta-form');
+
+ctaForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    alert("Formulário enviado com sucesso!");
+});
