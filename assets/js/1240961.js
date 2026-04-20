@@ -2,10 +2,12 @@
 const menuToggle = document.getElementById('menu-toggle');
 const mobileMenu = document.getElementById('mobile-menu');
 
-menuToggle.addEventListener('click', () => {
-    menuToggle.classList.toggle('open');
-    mobileMenu.classList.toggle('open');
-});
+if (menuToggle && mobileMenu) {
+    menuToggle.addEventListener('click', () => {
+        menuToggle.classList.toggle('open');
+        mobileMenu.classList.toggle('open');
+    });
+}
 
 /* Toggle de tema (dark/light) */
 const themeToggles = document.querySelectorAll('.pa-theme-toggle');
@@ -34,14 +36,18 @@ themeToggles.forEach(btn => btn.addEventListener('click', toggleTheme));
 /* Navbar border ao fazer scroll */
 const navbar = document.querySelector('.pa-navbar');
 
-window.addEventListener('scroll', () => {
-    navbar.classList.toggle('scrolled', window.scrollY > 50);
-});
+if (navbar) {
+    window.addEventListener('scroll', () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 50);
+    });
+}
 
 /* Simular envio de formulário */
 const ctaForm = document.getElementById('cta-form');
 
-ctaForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    alert("Formulário enviado com sucesso!");
-});
+if (ctaForm) {
+    ctaForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        alert("Formulário enviado com sucesso!");
+    });
+}

@@ -181,8 +181,8 @@ a {
 }
 
 .form-item input {
-    padding: var(--space-4);
-    border-radius: var(--radius-xs);
+    padding: var(--space-3) var(--space-4);
+    border-radius: var(--radius-sm);
     border: var(--border-base);
     background-color: var(--input-field-bg);
 }
@@ -451,6 +451,30 @@ label {
 
 .text-warning {
     color: var(--warning) !important;
+}
+
+.text-white {
+    color: #FFF !important;
+}
+
+.text-primary-500 {
+    color: var(--primary-500) !important;
+}
+
+.text-primary-600 {
+    color: var(--primary-600) !important;
+}
+
+.text-primary-700 {
+    color: var(--primary-700) !important;
+}
+
+.stroke-white {
+    stroke: #FFF !important;
+}
+
+.stroke-primary-500 {
+    stroke: var(--primary-500) !important;
 }
 
 /* Font Weight */
@@ -879,5 +903,202 @@ label {
 
     .pa-cta .btn-large {
         padding: var(--space-4) 0;
+    }
+}
+
+/* Footer */
+.pa-footer {
+    border-top: var(--border-base);
+    padding: var(--space-16) 0;
+}
+
+.pa-footer svg {
+    stroke: var(--primary-500);
+}
+
+.pa-footer a {
+    text-decoration: none;
+    color: var(--text-secondary);
+}
+
+.pa-footer .footer-row {
+    flex-direction: row;
+}
+
+.pa-footer .footer-description {
+    width: 70%;
+}
+
+.pa-footer .footer-col {
+    flex: 1;
+}
+
+.pa-footer .footer-col:first-child {
+    flex: 2;
+}
+
+.pa-footer .footer-copywright {
+    border-top: var(--border-base);
+    padding-top: var(--space-8);
+}
+
+.pa-footer .footer-copywright {
+    justify-content: space-between;
+}
+
+@media (max-width: 768px) {
+    .pa-footer .footer-description {
+        width: 100%;
+    }
+
+    .pa-footer .footer-row {
+        flex-direction: column;
+    }
+
+    .pa-footer .footer-col {
+        width: 100%;
+    }
+
+    .pa-footer .footer-copywright {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+/* 
+=================
+   AREA PRIVADA
+================= 
+*/
+
+/* Login */
+.login-page-container {
+    height: 100vh;
+    background: var(--app-bg);
+    overflow: hidden;
+}
+
+.pa-informative-section {
+    display: none !important;
+    position: relative;
+}
+
+.pa-informative-section-title {
+    font-size: 30px;
+    line-height: 36px;
+}
+
+.pa-informative-section-subtitle {
+    font-size: 14px;
+    line-height: 20px;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.pa-informative-section .svg-container {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    height: 56px;
+    width: 56px;
+}
+
+.pa-informative-section-header-title {
+    font-size: 48px;
+    line-height: 56px;
+}
+
+.pa-informative-section-header-description {
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.pa-informative-section .flex-row {
+    width: 70%;
+}
+
+.pa-informative-section .badge {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: var(--space-3) var(--space-4) !important;
+}
+
+.background-decorations {
+    position: absolute;
+}
+
+.background-decoration-item {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.background-decoration-1 {
+    width: 500px;
+    height: 500px;
+    top: 225px;
+    left: -200px;
+    border-radius: var(--radius-full);
+}
+
+.background-decoration-2 {
+    width: 125px;
+    height: 125px;
+    top: 80px;
+    left: 375px;
+    border-radius: var(--radius-xl);
+    rotate: 45deg;
+}
+
+.background-decoration-3 {
+    width: 75px;
+    height: 75px;
+    bottom: 120px;
+    left: 240px;
+    rotate: 15deg;
+    border-radius: var(--radius-lg);
+}
+
+.background-decoration-4 {
+    width: 200px;
+    height: 200px;
+    bottom: 160px;
+    left: 450px;
+    border-radius: var(--radius-full);
+    overflow: visible !important;
+}
+
+.login-section-content {
+    width: 75%;
+}
+
+.login-page-container .pa-theme-toggle {
+    position: absolute;
+    top: var(--space-4);
+    right: var(--space-4);
+}
+
+@media (min-width: 1025px) {
+    .pa-informative-section {
+        display: flex !important;
+        background: linear-gradient(135deg,
+                light-dark(var(--primary-500), transparent) 0%,
+                light-dark(var(--primary-900), transparent) 100%);
+    }
+
+    .login-section .background-decorations {
+        display: none !important;
+    }
+
+}
+
+@media (max-width: 1024px) {
+    .login-section {
+        width: 100%;
+    }
+
+    .login-section-content {
+        width: 100%;
+    }
+
+    [data-theme="light"] .background-decoration-item {
+        background-color: rgba(0, 179, 255, 0.2);
     }
 }
