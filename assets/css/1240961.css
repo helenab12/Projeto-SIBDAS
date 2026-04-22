@@ -473,6 +473,10 @@ label {
     stroke: #FFF !important;
 }
 
+.stroke-secondary {
+    stroke: var(--text-secondary) !important;
+}
+
 .stroke-primary-500 {
     stroke: var(--primary-500) !important;
 }
@@ -1100,5 +1104,292 @@ label {
 
     [data-theme="light"] .background-decoration-item {
         background-color: rgba(0, 179, 255, 0.2);
+    }
+}
+
+/* Layout Base - Area Privada */
+
+/* Sidebar */
+
+.private-area aside {
+    background-color: light-dark(#FFF, #0F172A);
+}
+
+.private-area header {
+    background-color: light-dark(#FFF, #0F172A);
+    height: 76px;
+    align-items: center;
+}
+
+.nav-brand {
+    background-color: light-dark(#FFF, #0F172A);
+    height: 76px;
+    align-items: center;
+    gap: var(--space-3);
+}
+
+.private-area aside {
+    border-right: var(--border-base);
+    width: fit-content;
+    min-width: max-content;
+    height: 100vh;
+    overflow-y: auto;
+    position: sticky;
+    top: 0;
+    transition: min-width 0.3s ease-in-out, width 0.3s ease-in-out;
+}
+
+.private-area aside nav {
+    width: 100%;
+}
+
+.private-area aside nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+.private-area aside nav ul li a {
+    text-decoration: none;
+    color: var(--text-secondary);
+    display: flex;
+    align-items: center;
+    padding: var(--space-3) var(--space-4);
+    gap: var(--space-3);
+    border-radius: var(--radius-sm);
+    transition: all 0.2s ease-in-out;
+    font-weight: 500;
+}
+
+.private-area aside nav ul li a:hover {
+    background-color: light-dark(var(--app-bg), color-mix(in srgb, #FFF 10%, transparent));
+}
+
+.private-area aside nav ul li.active a {
+    background-color: light-dark(color-mix(in srgb, var(--primary-500) 10%, transparent 0%), color-mix(in srgb, var(--primary-900) 30%, transparent 0%));
+    color: light-dark(var(--primary-500), #93C5FD);
+}
+
+.sidebar-collapse-btn {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--text-secondary);
+    padding: var(--space-5) var(--space-4);
+    font-weight: 500;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+    width: 100%;
+    margin-top: auto;
+    transition: color 0.2s ease-in-out;
+}
+
+.sidebar-collapse-btn:hover {
+    color: var(--text-primary);
+}
+
+/* Sidebar Colapsada */
+.private-area aside {
+    overflow-x: hidden;
+}
+
+.private-area aside.collapsed {
+    width: 88px;
+    min-width: 88px;
+}
+
+.private-area aside.collapsed .nav-brand .d-flex.flex-column {
+    display: none;
+    opacity: 0;
+}
+
+.private-area aside.collapsed nav ul li a {
+    white-space: nowrap;
+    color: transparent;
+    transition: color 0.1s;
+}
+
+.private-area aside.collapsed nav ul li a svg {
+    color: var(--text-secondary);
+    flex-shrink: 0;
+}
+
+.private-area aside.collapsed nav ul li.active a svg {
+    color: light-dark(var(--primary-500), #93C5FD);
+}
+
+.private-area aside.collapsed .nav-chevron {
+    display: none;
+}
+
+.private-area aside.collapsed .sidebar-collapse-btn span {
+    display: none;
+}
+
+.private-area aside.collapsed .sidebar-collapse-btn svg {
+    transform: rotate(180deg);
+}
+
+.nav-brand {
+    border-bottom: var(--border-base);
+}
+
+.private-area aside.collapsed .nav-brand h2,
+.private-area aside.collapsed .nav-brand label {
+    display: none;
+}
+
+.private-area aside.collapsed .nav-brand {
+    gap: 0 !important;
+    justify-content: center !important;
+}
+
+/* Sidebar Dropdowns */
+.nav-dropdown-toggle {
+    justify-content: flex-start;
+}
+
+.nav-chevron {
+    margin-left: auto;
+    transition: transform 0.2s ease-in-out;
+    flex-shrink: 0;
+}
+
+.nav-dropdown.open>.nav-dropdown-toggle .nav-chevron {
+    transform: rotate(180deg);
+}
+
+/* Menu escondido por defeito */
+.private-area aside nav ul.nav-dropdown-menu {
+    list-style: none;
+    padding: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out;
+    margin-top: var(--space-1);
+    margin-left: var(--space-4);
+    padding-left: var(--space-1);
+    border-left: 2px solid var(--border-light);
+}
+
+.nav-dropdown.open>.nav-dropdown-menu {
+    max-height: 500px;
+}
+
+/* Toggle aberto fica com hover background */
+.nav-dropdown.open>.nav-dropdown-toggle {
+    background-color: light-dark(var(--app-bg), color-mix(in srgb, #FFF 10%, transparent));
+}
+
+/* Header */
+.private-area header {
+    border-bottom: var(--border-base);
+}
+
+.nav-search-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.nav-search-bar input {
+    width: 100%;
+    background-color: light-dark(var(--app-bg), var(--bento-bg));
+    padding-left: 36px;
+    padding-right: 48px;
+}
+
+.nav-search-bar .search-icon {
+    position: absolute;
+    left: var(--space-3);
+    color: var(--text-secondary);
+    pointer-events: none;
+}
+
+.nav-search-bar .search-shortcut {
+    position: absolute;
+    right: var(--space-3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    background-color: light-dark(#E2E8F0, #334155);
+    color: var(--text-secondary);
+    padding: 3px 6px;
+    border-radius: var(--radius-sm);
+    pointer-events: none;
+}
+
+.nav-search-bar .search-shortcut svg {
+    margin-top: 1px;
+}
+
+.navbar-user {
+    border-left: var(--border-base);
+    padding-left: var(--space-4);
+    text-align: end;
+}
+
+.navbar-user-initial p {
+    background-color: var(--primary-500);
+    border-radius: var(--radius-sm);
+    color: #FFF;
+}
+
+.mobile-sidebar,
+.mobile-header {
+    display: none !important;
+}
+
+.sidebar-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    z-index: 999;
+    display: none;
+}
+
+@media (max-width: 768px) {
+
+    .desktop-sidebar,
+    .desktop-header {
+        display: none !important;
+    }
+
+    .mobile-header {
+        display: flex !important;
+    }
+
+    /* Off-canvas mobile sidebar */
+    .mobile-sidebar {
+        display: flex !important;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        z-index: 1000;
+        background-color: light-dark(var(--app-bg), #0F172A);
+        flex-direction: column;
+        overflow-y: auto;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in;
+    }
+
+    .mobile-sidebar.open {
+        transform: translateX(0);
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.1);
+    }
+
+    .mobile-sidebar.open+.sidebar-background {
+        display: block;
+    }
+
+    .private-area aside {
+        position: absolute !important;
     }
 }
