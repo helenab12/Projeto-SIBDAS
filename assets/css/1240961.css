@@ -119,14 +119,36 @@ a {
     background-color: var(--primary-600);
 }
 
+.btn-primary-outline {
+    color: var(--primary-500);
+    border: 1px var(--primary-500) solid;
+    background-color: light-dark(var(--primary-50), color-mix(in srgb, var(--primary-900) 30%, transparent));
+    font-weight: 600;
+}
+
 .btn-ghost {
     color: var(--text-primary);
     background-color: light-dark(var(--app-bg), var(--bento-bg));
 }
 
+.btn-ghost-outline {
+    color: var(--text-primary);
+    border: 1px var(--border-light) solid;
+}
+
 .btn-large {
     padding: var(--space-4) var(--space-8);
     border-radius: var(--radius-sm);
+}
+
+.btn-small {
+    padding: var(--space-2) var(--space-3);
+    font-size: 12px;
+}
+
+.btn-small svg {
+    width: 14px;
+    height: 14px;
 }
 
 .btn-glowing {
@@ -1276,7 +1298,7 @@ label {
     max-height: 500px;
 }
 
-/* Toggle aberto fica com hover background */
+/* Dropdown aberto fica com hover background */
 .nav-dropdown.open>.nav-dropdown-toggle {
     background-color: light-dark(var(--app-bg), color-mix(in srgb, #FFF 10%, transparent));
 }
@@ -1364,7 +1386,6 @@ label {
         display: flex !important;
     }
 
-    /* Off-canvas mobile sidebar */
     .mobile-sidebar {
         display: flex !important;
         position: fixed;
@@ -1391,5 +1412,108 @@ label {
 
     .private-area aside {
         position: absolute !important;
+    }
+}
+
+/* Dashboard */
+.content-container {
+    padding: var(--space-6);
+    display: flex;
+    flex-direction: column;
+}
+
+.dashboard-title {
+    flex-direction: row;
+}
+
+.dashboard-bento-grid {
+    grid-template-columns: repeat(4, 1fr);
+}
+
+.dashboard-bento-icon {
+    padding: var(--space-2-5);
+    border-radius: var(--radius-sm);
+    box-sizing: content-box;
+    width: 20px;
+    height: 20px;
+}
+
+.dashboard-bento-icon-equipments {
+    stroke: var(--primary-500);
+    background-color: color-mix(in srgb, var(--primary-500) 10%, transparent);
+}
+
+.dashboard-bento-icon-active {
+    stroke: var(--success);
+    background-color: color-mix(in srgb, var(--success) 10%, transparent);
+}
+
+.dashboard-bento-icon-maintenance {
+    stroke: var(--warning);
+    background-color: color-mix(in srgb, var(--warning) 10%, transparent);
+}
+
+.dashboard-bento-icon-warranty-expiring {
+    stroke: var(--error);
+    background-color: color-mix(in srgb, var(--error) 10%, transparent);
+}
+
+.dashboard-bento-icon-warranty-expired {
+    stroke: var(--error);
+    background-color: color-mix(in srgb, var(--error) 10%, transparent);
+}
+
+.dashboard-bento-icon-inactive {
+    stroke: var(--text-secondary);
+    background-color: color-mix(in srgb, var(--text-secondary) 10%, transparent);
+}
+
+.dashboard-bento-icon-high-criticality {
+    stroke: #fe5e07;
+    background-color: color-mix(in srgb, #fe5e07 10%, transparent);
+}
+
+.dashboard-bento-icon-no-documents {
+    stroke: #8307fe;
+    background-color: color-mix(in srgb, #8307fe 10%, transparent);
+}
+
+.dashboard-bento-trend {
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-xs);
+    font-size: 12px;
+    box-sizing: content-box;
+}
+
+.dashboard-bento-trend svg {
+    height: 12px;
+    width: 12px;
+}
+
+.dashboard-bento-trend-up {
+    color: var(--success);
+    background-color: color-mix(in srgb, var(--success) 10%, transparent);
+}
+
+.dashboard-bento-trend-down {
+    color: var(--error);
+    background-color: color-mix(in srgb, var(--error) 10%, transparent);
+}
+
+@media (max-width: 1024px) {
+    .dashboard-bento-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .dashboard-bento-grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .dashboard-title {
+        flex-direction: column;
+        gap: var(--space-3);
+        align-items: start !important;
     }
 }

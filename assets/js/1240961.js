@@ -92,7 +92,7 @@ if (collapseBtn) {
 /* Mobile Sidebar */
 const mobileSidebar = document.querySelector('.mobile-sidebar');
 
-// Abrir menu mobile (clique no hamburger)
+// Abrir menu mobile (clique no hamburguer)
 const mobileMenuBtn = document.getElementById('mobile-menu-toggle');
 if (mobileMenuBtn && mobileSidebar) {
     mobileMenuBtn.addEventListener('click', () => {
