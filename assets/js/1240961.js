@@ -156,7 +156,7 @@ const estatisticasColors = [
     '#7fffd4'  // verde água
 ];
 
-function getCalculatedCssColor(varName) {
+function getCalculatedCssColor(varName) { // getCalculatedColor("--primary-500") -> "rgb(59, 130, 246)"
     const div = document.createElement('div');
     div.style.color = `var(${varName})`;
     div.style.display = 'none';
@@ -170,25 +170,25 @@ function updateChartColors() {
     const newTextColor = getCalculatedCssColor('--text-secondary');
     const newGridColor = getCalculatedCssColor('--border-light');
 
-    Chart.defaults.color = newTextColor;
+    if (typeof Chart !== 'undefined') {
+        Chart.defaults.color = newTextColor;
 
-    console.log("Cores atualizadas dinamicamente: Text=", newTextColor, "Grid=", newGridColor);
+        if (Chart.instances) {
+            for (let id in Chart.instances) {
+                const chart = Chart.instances[id];
 
-    if (typeof Chart !== 'undefined' && Chart.instances) {
-        for (let id in Chart.instances) {
-            const chart = Chart.instances[id];
+                chart.options.color = newTextColor;
+                if (chart.options.scales) {
+                    for (let scaleId in chart.options.scales) {
+                        if (!chart.options.scales[scaleId].ticks) chart.options.scales[scaleId].ticks = {};
+                        chart.options.scales[scaleId].ticks.color = newTextColor;
 
-            chart.options.color = newTextColor;
-            if (chart.options.scales) {
-                for (let scaleId in chart.options.scales) {
-                    if (!chart.options.scales[scaleId].ticks) chart.options.scales[scaleId].ticks = {};
-                    chart.options.scales[scaleId].ticks.color = newTextColor;
-
-                    if (!chart.options.scales[scaleId].grid) chart.options.scales[scaleId].grid = {};
-                    chart.options.scales[scaleId].grid.color = newGridColor;
+                        if (!chart.options.scales[scaleId].grid) chart.options.scales[scaleId].grid = {};
+                        chart.options.scales[scaleId].grid.color = newGridColor;
+                    }
                 }
+                chart.update();
             }
-            chart.update();
         }
     }
 }
@@ -200,30 +200,33 @@ window.addEventListener('load', updateChartColors);
 updateChartColors();
 
 // Grafico de Barras
-const ctx = document.getElementById('categoryDistributionChart').getContext('2d');
-const categoryDistributionChart = new Chart(ctx, {
-    type: 'bar',
-    data: {
-        labels: estatisticasLabels,
-        datasets: [{
-            label: 'Quantidade',
-            data: estatisticasData,
-            backgroundColor: estatisticasColors,
-            borderRadius: 4
-        }],
-    },
-    options: {
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                display: false,
-                font: {
-                    size: 7
-                }
-            },
+const canvas1 = document.getElementById('categoryDistributionChart');
+if (canvas1) {
+    const ctx = canvas1.getContext('2d');
+    const categoryDistributionChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: estatisticasLabels,
+            datasets: [{
+                label: 'Quantidade',
+                data: estatisticasData,
+                backgroundColor: estatisticasColors,
+                borderRadius: 4
+            }],
+        },
+        options: {
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false,
+                    font: {
+                        size: 7
+                    }
+                },
+            }
         }
-    }
-});
+    });
+}
 
 // Dados para Gráfico de Donut (Serviços)
 const servicosLabels = ['UCI', 'Bloco Operatório', 'Urgência', 'Imagiologia', 'Laboratório', 'Esterilização'];
@@ -231,32 +234,35 @@ const servicosData = [2, 2, 3, 1, 1, 1];
 const servicosColors = ['#3b82f6', '#22c55e', '#a855f7', '#ef4444', '#f97316', '#06b6d4'];
 
 // Grafico de Donut
-const ctx2 = document.getElementById('categoryDistributionChart2').getContext('2d');
-const categoryDistributionChart2 = new Chart(ctx2, {
-    type: 'doughnut',
-    data: {
-        labels: servicosLabels,
-        datasets: [{
-            data: servicosData,
-            backgroundColor: servicosColors,
-            borderWidth: 1
-        }],
-    },
-    options: {
-        maintainAspectRatio: false,
-        plugins: {
-            legend: {
-                position: 'right',
-                labels: {
-                    boxWidth: 12,
-                    font: {
-                        size: 11
+const canvas2 = document.getElementById('categoryDistributionChart2');
+if (canvas2) {
+    const ctx2 = canvas2.getContext('2d');
+    const categoryDistributionChart2 = new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+            labels: servicosLabels,
+            datasets: [{
+                data: servicosData,
+                backgroundColor: servicosColors,
+                borderWidth: 1
+            }],
+        },
+        options: {
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'right',
+                    labels: {
+                        boxWidth: 12,
+                        font: {
+                            size: 11
+                        }
                     }
-                }
-            },
+                },
+            }
         }
-    }
-});
+    });
+}
 
 // Dados para Gráfico de Tendência (Manutenções)
 const tendenciaLabels = ['Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez', 'Jan', 'Fev', 'Mar'];
@@ -333,3 +339,289 @@ if (privateAreaHeader) {
         });
     });
 }
+
+// Inicializar DataTables (Equipamentos)
+if (document.getElementById('equipmentsTable') && typeof simpleDatatables !== 'undefined') {
+    const table = new simpleDatatables.DataTable("#equipmentsTable", {
+        searchable: true,
+        perPage: 8,
+        perPageSelect: false,
+        labels: {
+            placeholder: "Pesquisar...",
+            perPage: "entradas por página",
+            noRows: "Nenhum registo encontrado",
+            info: "A mostrar {start}–{end} de {rows}"
+        }
+    });
+
+    // Custom search binding
+    let searchInput = document.getElementById('search');
+    if (searchInput) {
+        searchInput.addEventListener('input', function () {
+            let dtInput = document.querySelector('.datatable-input');
+            if (dtInput) {
+                dtInput.value = this.value;
+                dtInput.dispatchEvent(new Event('keyup'));
+            }
+        });
+    }
+}
+
+// Inicializar Flatpickr (Datas)
+if (typeof flatpickr !== 'undefined') {
+    flatpickr("#purchase-date", {
+        dateFormat: "d/m/Y",
+        allowInput: true,
+        maxDate: "today"
+    });
+    flatpickr("#manufacture-date", {
+        dateFormat: "d/m/Y",
+        allowInput: true,
+        maxDate: "today"
+    });
+    flatpickr("#last-maintenance-start-date", {
+        dateFormat: "d/m/Y",
+        allowInput: true,
+        maxDate: "today"
+    });
+    flatpickr("#last-maintenance-end-date", {
+        dateFormat: "d/m/Y",
+        allowInput: true,
+        maxDate: "today"
+    });
+}
+
+// Cascata para Localização (Edifício -> Piso -> Serviço -> Sala)
+const buildingSelect = document.getElementById('building');
+const floorSelect = document.getElementById('floor');
+const serviceSelect = document.getElementById('service');
+const roomSelect = document.getElementById('room');
+
+if (buildingSelect && floorSelect && serviceSelect && roomSelect) {
+    buildingSelect.addEventListener('change', () => {
+        floorSelect.removeAttribute('disabled');
+
+        // Reset dos seguintes
+        floorSelect.value = "";
+        serviceSelect.setAttribute('disabled', 'true');
+        serviceSelect.value = "";
+        roomSelect.setAttribute('disabled', 'true');
+        roomSelect.value = "";
+    });
+
+    floorSelect.addEventListener('change', () => {
+        serviceSelect.removeAttribute('disabled');
+
+        // Reset dos seguintes
+        serviceSelect.value = "";
+        roomSelect.setAttribute('disabled', 'true');
+        roomSelect.value = "";
+    });
+
+    serviceSelect.addEventListener('change', () => {
+        roomSelect.removeAttribute('disabled');
+
+        // Reset do seguinte
+        roomSelect.value = "";
+    });
+}
+
+// Lógica de Abertura, Fecho e Submissão do Modal
+const createEquipmentModal = document.getElementById('equipment-creation-modal');
+const btnOpenCreateModal = document.getElementById('btn-open-create-equipment-modal');
+const btnCloseModalX = document.querySelector('.equipment-creation-modal-close-btn');
+const btnsCancelModal = document.querySelectorAll('.equipment-creation-modal-cancel-btn');
+const btnSubmitModal = document.getElementById('btn-submit-modal');
+
+// Lógica de Paginação e Validação do Modal de Criação de Equipamento
+const btnNextPage = document.getElementById('btn-next-page');
+const btnPrevPage = document.getElementById('btn-prev-page');
+const modalPage1 = document.getElementById('modal-page-1');
+const modalPage2 = document.getElementById('modal-page-2');
+
+function closeCreateEquipmentModal() {
+    if (createEquipmentModal) {
+        createEquipmentModal.classList.add('d-none');
+        // Reset à primeira página do modal
+        if (modalPage1 && modalPage2) {
+            modalPage1.classList.remove('d-none');
+            modalPage1.classList.add('d-flex');
+            modalPage2.classList.remove('d-flex');
+            modalPage2.classList.add('d-none');
+        }
+    }
+}
+
+if (btnOpenCreateModal && createEquipmentModal) {
+    btnOpenCreateModal.addEventListener('click', () => {
+        createEquipmentModal.classList.remove('d-none');
+    });
+}
+
+if (btnCloseModalX) {
+    btnCloseModalX.addEventListener('click', closeCreateEquipmentModal);
+}
+
+btnsCancelModal.forEach(btn => {
+    btn.addEventListener('click', closeCreateEquipmentModal);
+});
+
+if (btnSubmitModal) {
+    btnSubmitModal.addEventListener('click', () => {
+        alert('Equipamento criado com sucesso!');
+        closeCreateEquipmentModal();
+    });
+}
+
+// Campos obrigatórios da Página 1
+const serialNumberInput = document.getElementById('serial-number');
+const categorySelect = document.getElementById('category');
+const equipmentNameInput = document.getElementById('equipment-name');
+const brandInput = document.getElementById('brand');
+
+if (btnNextPage && btnPrevPage && modalPage1 && modalPage2) {
+    // Validação da Página 1
+    const validatePage1 = () => {
+        if (serialNumberInput.value.trim() !== "" &&
+            categorySelect.value !== "" &&
+            equipmentNameInput.value.trim() !== "" &&
+            brandInput.value.trim() !== "") {
+            btnNextPage.removeAttribute('disabled');
+        } else {
+            btnNextPage.setAttribute('disabled', 'true');
+        }
+    };
+
+    if (serialNumberInput) {
+        serialNumberInput.addEventListener('input', validatePage1);
+    }
+
+    if (categorySelect) {
+        categorySelect.addEventListener('change', validatePage1);
+    }
+
+    if (equipmentNameInput) {
+        equipmentNameInput.addEventListener('input', validatePage1);
+    }
+
+    if (brandInput) {
+        brandInput.addEventListener('input', validatePage1);
+    }
+
+    // Navegação
+    btnNextPage.addEventListener('click', () => {
+        modalPage1.classList.add('d-none');
+        modalPage2.classList.remove('d-none');
+    });
+
+    btnPrevPage.addEventListener('click', () => {
+        modalPage2.classList.add('d-none');
+        modalPage1.classList.remove('d-none');
+    });
+}
+
+// Lógica para Checkboxes Múltiplos com Quantidade 
+const multiSelectCheckboxes = document.querySelectorAll('.multi-select-form input[type="checkbox"]');
+multiSelectCheckboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', function () {
+        // Tenta encontrar o contentor de quantidade no item do componente
+        const item = this.closest('.multi-select-item');
+        if (item) {
+            const qtyContainer = item.querySelector('.multi-select-qty-container');
+            if (qtyContainer) {
+                if (this.checked) {
+                    qtyContainer.classList.remove('d-none');
+                } else {
+                    qtyContainer.classList.add('d-none');
+                }
+            }
+        }
+    });
+});
+
+// Lógica de Upload de Documentos (Manutenção & Garantia)
+const uploadZone = document.querySelector('.file-upload-zone');
+const fileInput = document.getElementById('document-upload-input');
+const uploadContainer = document.getElementById('uploaded-files-container');
+const uploadTemplate = document.getElementById('uploaded-file-template');
+
+if (uploadZone && fileInput && uploadContainer && uploadTemplate) {
+    // Abrir o file picker ao clicar na zona
+    uploadZone.addEventListener('click', () => {
+        fileInput.click();
+    });
+
+    // Lidar com a seleção de ficheiros via input
+    fileInput.addEventListener('change', (e) => {
+        handleFiles(e.target.files);
+        fileInput.value = '';
+    });
+
+    // Drag and Drop events
+    uploadZone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        uploadZone.style.borderColor = 'var(--primary-500)';
+        uploadZone.style.backgroundColor = 'var(--primary-50)';
+    });
+
+    uploadZone.addEventListener('dragleave', (e) => {
+        e.preventDefault();
+        uploadZone.style.borderColor = '';
+        uploadZone.style.backgroundColor = '';
+    });
+
+    uploadZone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        uploadZone.style.borderColor = '';
+        uploadZone.style.backgroundColor = '';
+        handleFiles(e.dataTransfer.files);
+    });
+
+    // Função para processar os ficheiros e criar os cards
+    function handleFiles(files) {
+        const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+        const maxSize = 10 * 1024 * 1024; // 10MB
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+
+            // Validação de tipo
+            if (!allowedTypes.includes(file.type) && !file.name.match(/\.(pdf|jpe?g|png)$/i)) {
+                alert(`O ficheiro "${file.name}" tem um formato inválido. Apenas PDF, JPG e PNG são permitidos.`);
+                continue;
+            }
+
+            // Validação de tamanho (máx 10MB)
+            if (file.size > maxSize) {
+                alert(`O ficheiro "${file.name}" excede o tamanho máximo de 10MB.`);
+                continue;
+            }
+
+            // Criar o card do ficheiro a partir do template
+            const clone = uploadTemplate.content.cloneNode(true);
+            const card = clone.querySelector('.uploaded-file-card');
+            const nameDisplay = clone.querySelector('.file-name-display');
+            const closeBtn = clone.querySelector('.btn-close-file');
+
+            // Atualizar os dados
+            nameDisplay.textContent = file.name;
+            nameDisplay.title = file.name;
+
+            // Lógica de remoção
+            closeBtn.addEventListener('click', () => {
+                card.remove();
+            });
+
+            // Adicionar ao container
+            uploadContainer.appendChild(clone);
+        }
+    }
+}
+
+// Inicializar Tooltips do Bootstrap
+document.addEventListener('DOMContentLoaded', function () {
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+    });
+});
