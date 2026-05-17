@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIBDAS - Área Privada</title>
+    <title>HEBA - Área Privada</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-datatables@9.0.3/dist/style.min.css">
     <link rel="stylesheet" href="../../../assets/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="../../../assets/css/1240961.css">
@@ -15,13 +15,21 @@
     <div class="d-flex">
         <!-- Sidebar Desktop + Tablet -->
         <aside class="d-flex flex-column desktop-sidebar">
-            <div class="navbar-brand d-flex align-items-center gap-3 nav-brand padding-4">
-                <img src="../../../assets/img/logo.svg" alt="SIBDAS Logo" width="36" height="36">
-                <div class="d-flex flex-column">
-                    <h2 class="text-primary">SIBDAS</h2>
-                    <label class="text-secondary text-uppercase">Biomédica</label>
+            <a href="/private/index.html" class="navbar-brand d-flex align-items-center gap-3 nav-brand padding-4">
+                <div class="navbar-logo d-flex align-items-center justify-content-center padding-2-5 btn-glowing">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-heart-pulse-icon lucide-heart-pulse stroke-white">
+                        <path
+                            d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
+                        <path d="M3.22 13H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27" />
+                    </svg>
                 </div>
-            </div>
+                <div class="d-flex flex-column">
+                    <h2 class="text-primary">HEBA</h2>
+                    <label class="text-secondary text-uppercase">Health Base</label>
+                </div>
+            </a>
             <nav class="padding-4">
                 <ul class="d-flex flex-column gap-1">
                     <li class=""><a href="/private/index.html">
@@ -380,9 +388,8 @@
                                 <p class="fw-600 text-primary">Helena Barbosa</p>
                                 <span class="text-secondary">Administrador</span>
                             </div>
-                            <div class="navbar-user-initial">
-                                <p class="fw-600 padding-2 btn-glowing">HB</p>
-                            </div>
+                            <p class="user-icon btn-glowing d-flex align-items-center justify-content-center fw-700">HB
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -443,9 +450,8 @@
                                 d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
                         </svg>
                         <div class="d-flex flex-row align-items-center navbar-user gap-3">
-                            <div class="navbar-user-initial">
-                                <p class="fw-600 padding-2 btn-glowing">HB</p>
-                            </div>
+                            <p class="user-icon btn-glowing d-flex align-items-center justify-content-center fw-700">HB
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -476,8 +482,15 @@
                 <!-- Barra de Pesquisa -->
                 <div class="bento-card padding-4 gap-4 equipment-list-search-bar">
                     <form action="" class="flex-grow-1">
-                        <div class="form-item w-100">
-                            <input type="text" class="form-item w-100"
+                        <div class="form-item w-100 position-relative">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="lucide lucide-search-icon lucide-search search-bar-icon position-absolute text-secondary">
+                                <path d="m21 21-4.34-4.34" />
+                                <circle cx="11" cy="11" r="8" />
+                            </svg>
+                            <input type="text" class="form-item w-100 search-bar-input"
                                 placeholder="Pesquisar por nome, nº série, marca, modelo...">
                         </div>
                     </form>
@@ -1394,9 +1407,9 @@
         <aside class="mobile-sidebar">
             <div class="navbar-brand d-flex align-items-center justify-content-between nav-brand padding-4">
                 <div class="d-flex align-items-center gap-3">
-                    <img src="../../../assets/img/logo.svg" alt="SIBDAS Logo" width="36" height="36">
+                    <img src="../../../assets/img/logo.svg" alt="HEBA Logo" width="36" height="36">
                     <div class="d-flex flex-column">
-                        <h2 class="text-primary m-0">SIBDAS</h2>
+                        <h2 class="text-primary m-0">HEBA</h2>
                         <label class="text-secondary text-uppercase m-0">Biomédica</label>
                     </div>
                 </div>

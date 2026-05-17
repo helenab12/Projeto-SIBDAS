@@ -350,6 +350,10 @@ label {
 */
 
 /* Gaps */
+.gap-half {
+    gap: calc(var(--space-1) * .5) !important;
+}
+
 .gap-1 {
     gap: var(--space-1) !important;
 }
@@ -1341,6 +1345,18 @@ label {
     pointer-events: none;
 }
 
+.search-bar-icon {
+    left: var(--space-4);
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    opacity: 0.6;
+}
+
+.search-bar-input {
+    padding-left: 48px !important;
+}
+
 .nav-search-bar .search-shortcut {
     position: absolute;
     right: var(--space-3);
@@ -1359,13 +1375,38 @@ label {
     margin-top: 1px;
 }
 
+.navbar-logo {
+    background: linear-gradient(135deg, #1E3A8A, #1D4ED8);
+    background-size: 400% 400% !important;
+    animation: gradient 5s ease infinite;
+    border-radius: var(--radius-xs);
+}
+
+[data-theme="dark"] .navbar-logo {
+    background: linear-gradient(135deg, #0F172A, #1E3A8A);
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
 .navbar-user {
     border-left: var(--border-base);
     padding-left: var(--space-4);
     text-align: end;
 }
 
-.navbar-user-initial p {
+header p.user-icon {
     background-color: var(--primary-500);
     border-radius: var(--radius-sm);
     color: #FFF;
@@ -2341,4 +2382,57 @@ ul.action-dropdown-menu.show {
 .supplier-badge-consumable-supplier {
     background: color-mix(in srgb, var(--warning) 10%, transparent);
     color: var(--warning) !important;
+}
+
+/* Gestao de Pessoas */
+.people-management.bento-grid {
+    grid-template-columns: repeat(3, 1fr);
+}
+
+p.user-icon {
+    border-radius: var(--radius-sm);
+    width: 40px;
+    height: 40px;
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+.people-management.bento-grid .bento-card .additional-details {
+    padding-top: var(--space-3);
+    border-top: var(--border-base);
+}
+
+.people-management p.user-icon.pink {
+    background: linear-gradient(315deg, #F00047 0%, #FF5A76 100%);
+}
+
+.people-management p.user-icon.cyan {
+    background: linear-gradient(315deg, #0093E9 0%, #80D0C7 100%);
+}
+
+.people-management p.user-icon.blue {
+    background: linear-gradient(315deg, #1E90FF 0%, #00C6FF 100%);
+}
+
+.people-management p.user-icon.yellow {
+    background: linear-gradient(315deg, #FF8C00 0%, #F1C40F 100%);
+}
+
+.people-management p.user-icon.green {
+    background: linear-gradient(315deg, #11998e 0%, #38ef7d 100%);
+}
+
+.people-management p.user-icon.purple {
+    background: linear-gradient(315deg, #7F00FF 0%, #E100FF 100%);
+}
+
+@media (max-width: 1024px) {
+    .people-management.bento-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .people-management.bento-grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
 }

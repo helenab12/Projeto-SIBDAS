@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIBDAS - Área Privada</title>
+    <title>HEBA - Área Privada</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/simple-datatables@9.0.3/dist/style.min.css">
     <link rel="stylesheet" href="../../../assets/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="../../../assets/css/1240961.css">
@@ -15,13 +15,21 @@
     <div class="d-flex">
         <!-- Sidebar Desktop + Tablet -->
         <aside class="d-flex flex-column desktop-sidebar">
-            <div class="navbar-brand d-flex align-items-center gap-3 nav-brand padding-4">
-                <img src="../../../assets/img/logo.svg" alt="SIBDAS Logo" width="36" height="36">
-                <div class="d-flex flex-column">
-                    <h2 class="text-primary">SIBDAS</h2>
-                    <label class="text-secondary text-uppercase">Biomédica</label>
+            <a href="/private/index.html" class="navbar-brand d-flex align-items-center gap-3 nav-brand padding-4">
+                <div class="navbar-logo d-flex align-items-center justify-content-center padding-2-5 btn-glowing">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-heart-pulse-icon lucide-heart-pulse stroke-white">
+                        <path
+                            d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
+                        <path d="M3.22 13H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27" />
+                    </svg>
                 </div>
-            </div>
+                <div class="d-flex flex-column">
+                    <h2 class="text-primary">HEBA</h2>
+                    <label class="text-secondary text-uppercase">Health Base</label>
+                </div>
+            </a>
             <nav class="padding-4">
                 <ul class="d-flex flex-column gap-1">
                     <li class=""><a href="/private/index.html">
@@ -379,9 +387,8 @@
                                 <p class="fw-600 text-primary">Helena Barbosa</p>
                                 <span class="text-secondary">Administrador</span>
                             </div>
-                            <div class="navbar-user-initial">
-                                <p class="fw-600 padding-2 btn-glowing">HB</p>
-                            </div>
+                            <p class="user-icon btn-glowing d-flex align-items-center justify-content-center fw-700">HB
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -442,9 +449,8 @@
                                 d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
                         </svg>
                         <div class="d-flex flex-row align-items-center navbar-user gap-3">
-                            <div class="navbar-user-initial">
-                                <p class="fw-600 padding-2 btn-glowing">HB</p>
-                            </div>
+                            <p class="user-icon btn-glowing d-flex align-items-center justify-content-center fw-700">HB
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -475,8 +481,16 @@
                 <!-- Barra de Pesquisa -->
                 <div class="bento-card padding-4">
                     <form action="" class="flex-grow-1">
-                        <div class="form-item w-100">
-                            <input type="text" class="form-item w-100" placeholder="Pesquisar componentes...">
+                        <div class="form-item w-100 position-relative">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round"
+                                class="lucide lucide-search-icon lucide-search search-bar-icon position-absolute text-secondary">
+                                <path d="m21 21-4.34-4.34" />
+                                <circle cx="11" cy="11" r="8" />
+                            </svg>
+                            <input type="text" class="form-item w-100 search-bar-input"
+                                placeholder="Pesquisar componentes...">
                         </div>
                     </form>
                 </div>
@@ -515,7 +529,9 @@
                                     <span class="equipment-badge component-sku-badge font-mono">CMP-001</span>
                                 </td>
                                 <td>
-                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top" title="Componentes associados a ventiladores pulmonares e suporte respiratório.">Ventiladores</span>
+                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Componentes associados a ventiladores pulmonares e suporte respiratório.">Ventiladores</span>
                                 </td>
                                 <td class="fw-700">24</td>
                                 <td class="fw-700">€0.00</td>
@@ -584,7 +600,9 @@
                                     <span class="equipment-badge component-sku-badge font-mono">CMP-002</span>
                                 </td>
                                 <td>
-                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top" title="Componentes associados a ventiladores pulmonares e suporte respiratório.">Ventiladores</span>
+                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Componentes associados a ventiladores pulmonares e suporte respiratório.">Ventiladores</span>
                                 </td>
                                 <td class="fw-700">15</td>
                                 <td class="fw-700">€0.00</td>
@@ -653,7 +671,9 @@
                                     <span class="equipment-badge component-sku-badge font-mono">CMP-003</span>
                                 </td>
                                 <td>
-                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top" title="Componentes associados a ventiladores pulmonares e suporte respiratório.">Ventiladores</span>
+                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Componentes associados a ventiladores pulmonares e suporte respiratório.">Ventiladores</span>
                                 </td>
                                 <td class="fw-700">48</td>
                                 <td class="fw-700">€0.00</td>
@@ -722,7 +742,10 @@
                                     <span class="equipment-badge component-sku-badge font-mono">CMP-004</span>
                                 </td>
                                 <td>
-                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top" title="Sensores, cabos e acessórios para monitorização de parâmetros fisiológicos.">Monitores de Sinais Vitais</span>
+                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Sensores, cabos e acessórios para monitorização de parâmetros fisiológicos.">Monitores
+                                        de Sinais Vitais</span>
                                 </td>
                                 <td class="fw-700">32</td>
                                 <td class="fw-700">€0.00</td>
@@ -791,7 +814,10 @@
                                     <span class="equipment-badge component-sku-badge font-mono">CMP-005</span>
                                 </td>
                                 <td>
-                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top" title="Sensores, cabos e acessórios para monitorização de parâmetros fisiológicos.">Monitores de Sinais Vitais</span>
+                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Sensores, cabos e acessórios para monitorização de parâmetros fisiológicos.">Monitores
+                                        de Sinais Vitais</span>
                                 </td>
                                 <td class="fw-700">18</td>
                                 <td class="fw-700">€0.00</td>
@@ -860,7 +886,10 @@
                                     <span class="equipment-badge component-sku-badge font-mono">CMP-006</span>
                                 </td>
                                 <td>
-                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top" title="Sensores, cabos e acessórios para monitorização de parâmetros fisiológicos.">Monitores de Sinais Vitais</span>
+                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Sensores, cabos e acessórios para monitorização de parâmetros fisiológicos.">Monitores
+                                        de Sinais Vitais</span>
                                 </td>
                                 <td class="fw-700">40</td>
                                 <td class="fw-700">€0.00</td>
@@ -929,7 +958,10 @@
                                     <span class="equipment-badge component-sku-badge font-mono">CMP-007</span>
                                 </td>
                                 <td>
-                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top" title="Acessórios, seringas e consumíveis para bombas infusoras e perfusoras.">Bombas de Infusão</span>
+                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Acessórios, seringas e consumíveis para bombas infusoras e perfusoras.">Bombas
+                                        de Infusão</span>
                                 </td>
                                 <td class="fw-700">120</td>
                                 <td class="fw-700">€0.00</td>
@@ -998,7 +1030,10 @@
                                     <span class="equipment-badge component-sku-badge font-mono">CMP-008</span>
                                 </td>
                                 <td>
-                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top" title="Acessórios, seringas e consumíveis para bombas infusoras e perfusoras.">Bombas de Infusão</span>
+                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Acessórios, seringas e consumíveis para bombas infusoras e perfusoras.">Bombas
+                                        de Infusão</span>
                                 </td>
                                 <td class="fw-700">200</td>
                                 <td class="fw-700">€0.00</td>
@@ -1067,7 +1102,10 @@
                                     <span class="equipment-badge component-sku-badge font-mono">CMP-009</span>
                                 </td>
                                 <td>
-                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top" title="Acessórios, seringas e consumíveis para bombas infusoras e perfusoras.">Bombas de Infusão</span>
+                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Acessórios, seringas e consumíveis para bombas infusoras e perfusoras.">Bombas
+                                        de Infusão</span>
                                 </td>
                                 <td class="fw-700">6</td>
                                 <td class="fw-700">€0.00</td>
@@ -1136,7 +1174,9 @@
                                     <span class="equipment-badge component-sku-badge font-mono">CMP-010</span>
                                 </td>
                                 <td>
-                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top" title="Elétrodos, pás e baterias para equipamentos de desfibrilhação e cardioversão.">Desfibrilhadores</span>
+                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Elétrodos, pás e baterias para equipamentos de desfibrilhação e cardioversão.">Desfibrilhadores</span>
                                 </td>
                                 <td class="fw-700">30</td>
                                 <td class="fw-700">€0.00</td>
@@ -1205,7 +1245,9 @@
                                     <span class="equipment-badge component-sku-badge font-mono">CMP-011</span>
                                 </td>
                                 <td>
-                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top" title="Elétrodos, pás e baterias para equipamentos de desfibrilhação e cardioversão.">Desfibrilhadores</span>
+                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Elétrodos, pás e baterias para equipamentos de desfibrilhação e cardioversão.">Desfibrilhadores</span>
                                 </td>
                                 <td class="fw-700">50</td>
                                 <td class="fw-700">€0.00</td>
@@ -1274,7 +1316,10 @@
                                     <span class="equipment-badge component-sku-badge font-mono">CMP-012</span>
                                 </td>
                                 <td>
-                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top" title="Componentes e tubos para sistemas de diagnóstico por imagem (Raio-X, Eco, etc.).">Equipamento de Imagiologia</span>
+                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Componentes e tubos para sistemas de diagnóstico por imagem (Raio-X, Eco, etc.).">Equipamento
+                                        de Imagiologia</span>
                                 </td>
                                 <td class="fw-700">3</td>
                                 <td class="fw-700">€0.00</td>
@@ -1343,7 +1388,10 @@
                                     <span class="equipment-badge component-sku-badge font-mono">CMP-013</span>
                                 </td>
                                 <td>
-                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top" title="Acessórios e lâmpadas para blocos operatórios e procedimentos cirúrgicos.">Equipamento Cirúrgico</span>
+                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Acessórios e lâmpadas para blocos operatórios e procedimentos cirúrgicos.">Equipamento
+                                        Cirúrgico</span>
                                 </td>
                                 <td class="fw-700">12</td>
                                 <td class="fw-700">€0.00</td>
@@ -1412,7 +1460,10 @@
                                     <span class="equipment-badge component-sku-badge font-mono">CMP-014</span>
                                 </td>
                                 <td>
-                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top" title="Consumíveis e reagentes para análise laboratorial e de diagnóstico.">Equipamento Laboratorial</span>
+                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Consumíveis e reagentes para análise laboratorial e de diagnóstico.">Equipamento
+                                        Laboratorial</span>
                                 </td>
                                 <td class="fw-700">8</td>
                                 <td class="fw-700">€0.00</td>
@@ -1481,7 +1532,9 @@
                                     <span class="equipment-badge component-sku-badge font-mono">CMP-015</span>
                                 </td>
                                 <td>
-                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top" title="Indicadores biológicos, químicos e consumíveis para autoclave e esterilização.">Esterilizadores</span>
+                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip"
+                                        data-bs-placement="top"
+                                        title="Indicadores biológicos, químicos e consumíveis para autoclave e esterilização.">Esterilizadores</span>
                                 </td>
                                 <td class="fw-700">60</td>
                                 <td class="fw-700">€0.00</td>
@@ -1541,9 +1594,9 @@
         <aside class="mobile-sidebar">
             <div class="navbar-brand d-flex align-items-center justify-content-between nav-brand padding-4">
                 <div class="d-flex align-items-center gap-3">
-                    <img src="../../../assets/img/logo.svg" alt="SIBDAS Logo" width="36" height="36">
+                    <img src="../../../assets/img/logo.svg" alt="HEBA Logo" width="36" height="36">
                     <div class="d-flex flex-column">
-                        <h2 class="text-primary m-0">SIBDAS</h2>
+                        <h2 class="text-primary m-0">HEBA</h2>
                         <label class="text-secondary text-uppercase m-0">Biomédica</label>
                     </div>
                 </div>
