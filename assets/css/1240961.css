@@ -2321,3 +2321,24 @@ ul.action-dropdown-menu.show {
 .component-icon-wrapper svg {
     stroke: #a855f7 !important;
 }
+
+/* Fornecedores */
+.supplier-badge-supplier {
+    background: color-mix(in srgb, var(--primary-500) 10%, transparent);
+    color: var(--primary-500) !important;
+}
+
+.supplier-badge-distribuitor {
+    background: color-mix(in srgb, #a855f7 10%, transparent);
+    color: #a855f7 !important;
+}
+
+.supplier-badge-tech-assistance {
+    background: color-mix(in srgb, var(--success) 10%, transparent);
+    color: var(--success) !important;
+}
+
+.supplier-badge-consumable-supplier {
+    background: color-mix(in srgb, var(--warning) 10%, transparent);
+    color: var(--warning) !important;
+}

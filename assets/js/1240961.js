@@ -465,6 +465,8 @@ if (btnSubmitModal) {
             alert('Componente criado com sucesso!');
         } else if (buttonText === 'Criar Categoria') {
             alert('Categoria criada com sucesso!');
+        } else if (buttonText === 'Criar Fornecedor') {
+            alert('Fornecedor criado com sucesso!');
         } else {
             alert('Equipamento criado com sucesso!');
         }
@@ -681,3 +683,42 @@ document.addEventListener('DOMContentLoaded', function () {
         return new bootstrap.Tooltip(tooltipTriggerEl);
     });
 });
+
+// Campos obrigatórios do Fornecedor (Nome da Empresa, NIF)
+const supplierNameInput = document.getElementById('supplier-name');
+const supplierNifInput = document.getElementById('supplier-nif');
+const supplierTypeSelect = document.getElementById('supplier-type');
+const supplierEmailInput = document.getElementById('supplier-email');
+const supplierPhoneInput = document.getElementById('supplier-phone');
+const supplierWebsiteInput = document.getElementById('supplier-website');
+const supplierContactPersonSelect = document.getElementById('supplier-contact-person');
+const supplierModalEl = document.getElementById('equipment-creation-modal');
+
+if (supplierNameInput && supplierNifInput && btnSubmitModal) {
+    const validateSupplierForm = () => {
+        if (supplierNameInput.value.trim() !== "" &&
+            supplierNifInput.value.trim() !== "") {
+            btnSubmitModal.removeAttribute('disabled');
+        } else {
+            btnSubmitModal.setAttribute('disabled', 'true');
+        }
+    };
+
+    validateSupplierForm();
+
+    supplierNameInput.addEventListener('input', validateSupplierForm);
+    supplierNifInput.addEventListener('input', validateSupplierForm);
+
+    if (supplierModalEl) {
+        supplierModalEl.addEventListener('hidden.bs.modal', () => {
+            supplierNameInput.value = '';
+            supplierNifInput.value = '';
+            if (supplierTypeSelect) supplierTypeSelect.value = 'Fabricante';
+            if (supplierEmailInput) supplierEmailInput.value = '';
+            if (supplierPhoneInput) supplierPhoneInput.value = '';
+            if (supplierWebsiteInput) supplierWebsiteInput.value = '';
+            if (supplierContactPersonSelect) supplierContactPersonSelect.value = '';
+            validateSupplierForm();
+        });
+    }
+}
