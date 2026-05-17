@@ -463,11 +463,17 @@ if (btnSubmitModal) {
         const buttonText = btnSubmitModal.textContent.trim();
         if (buttonText === 'Criar Componente') {
             alert('Componente criado com sucesso!');
+        } else if (buttonText === 'Criar Categoria') {
+            alert('Categoria criada com sucesso!');
         } else {
             alert('Equipamento criado com sucesso!');
         }
-        if (bsCreateEquipmentModal) {
-            bsCreateEquipmentModal.hide();
+
+        // Fechar qualquer modal ativo na página
+        const activeModalEl = document.querySelector('.modal.show');
+        if (activeModalEl) {
+            const bsActiveModal = bootstrap.Modal.getInstance(activeModalEl) || new bootstrap.Modal(activeModalEl);
+            bsActiveModal.hide();
         }
     });
 }
@@ -489,6 +495,38 @@ if (componentNameInput && componentSkuInput && btnSubmitModal) {
 
     componentNameInput.addEventListener('input', validateComponentForm);
     componentSkuInput.addEventListener('input', validateComponentForm);
+}
+
+// Campos obrigatórios da Categoria
+const categoryNameInput = document.getElementById('category-name');
+const categoryCodeInput = document.getElementById('category-code');
+const categoryDescriptionInput = document.getElementById('category-description');
+const categoryModalEl = document.getElementById('category-creation-modal');
+
+if (categoryNameInput && categoryCodeInput && btnSubmitModal) {
+    const validateCategoryForm = () => {
+        if (categoryNameInput.value.trim() !== "" && categoryCodeInput.value.trim() !== "") {
+            btnSubmitModal.removeAttribute('disabled');
+        } else {
+            btnSubmitModal.setAttribute('disabled', 'true');
+        }
+    };
+
+    validateCategoryForm();
+
+    categoryNameInput.addEventListener('input', validateCategoryForm);
+    categoryCodeInput.addEventListener('input', validateCategoryForm);
+
+    if (categoryModalEl) {
+        categoryModalEl.addEventListener('hidden.bs.modal', () => {
+            categoryNameInput.value = '';
+            categoryCodeInput.value = '';
+            if (categoryDescriptionInput) {
+                categoryDescriptionInput.value = '';
+            }
+            validateCategoryForm();
+        });
+    }
 }
 
 // Campos obrigatórios da Página 1
