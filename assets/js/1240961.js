@@ -429,8 +429,6 @@ if (buildingSelect && floorSelect && serviceSelect && roomSelect) {
 // Lógica de Abertura, Fecho e Submissão do Modal
 const createEquipmentModal = document.getElementById('equipment-creation-modal');
 const btnOpenCreateModal = document.getElementById('btn-open-create-equipment-modal');
-const btnCloseModalX = document.querySelector('.equipment-creation-modal-close-btn');
-const btnsCancelModal = document.querySelectorAll('.equipment-creation-modal-cancel-btn');
 const btnSubmitModal = document.getElementById('btn-submit-modal');
 
 // Lógica de Paginação e Validação do Modal de Criação de Equipamento
@@ -439,38 +437,58 @@ const btnPrevPage = document.getElementById('btn-prev-page');
 const modalPage1 = document.getElementById('modal-page-1');
 const modalPage2 = document.getElementById('modal-page-2');
 
-function closeCreateEquipmentModal() {
-    if (createEquipmentModal) {
-        createEquipmentModal.classList.add('d-none');
-        // Reset à primeira página do modal
+let bsCreateEquipmentModal = null;
+if (createEquipmentModal) {
+    bsCreateEquipmentModal = new bootstrap.Modal(createEquipmentModal);
+
+    // Reset à primeira página do modal quando fechado
+    createEquipmentModal.addEventListener('hidden.bs.modal', () => {
         if (modalPage1 && modalPage2) {
             modalPage1.classList.remove('d-none');
             modalPage1.classList.add('d-flex');
             modalPage2.classList.remove('d-flex');
             modalPage2.classList.add('d-none');
         }
-    }
-}
-
-if (btnOpenCreateModal && createEquipmentModal) {
-    btnOpenCreateModal.addEventListener('click', () => {
-        createEquipmentModal.classList.remove('d-none');
     });
 }
 
-if (btnCloseModalX) {
-    btnCloseModalX.addEventListener('click', closeCreateEquipmentModal);
+if (btnOpenCreateModal && bsCreateEquipmentModal) {
+    btnOpenCreateModal.addEventListener('click', () => {
+        bsCreateEquipmentModal.show();
+    });
 }
-
-btnsCancelModal.forEach(btn => {
-    btn.addEventListener('click', closeCreateEquipmentModal);
-});
 
 if (btnSubmitModal) {
     btnSubmitModal.addEventListener('click', () => {
-        alert('Equipamento criado com sucesso!');
-        closeCreateEquipmentModal();
+        const buttonText = btnSubmitModal.textContent.trim();
+        if (buttonText === 'Criar Componente') {
+            alert('Componente criado com sucesso!');
+        } else {
+            alert('Equipamento criado com sucesso!');
+        }
+        if (bsCreateEquipmentModal) {
+            bsCreateEquipmentModal.hide();
+        }
     });
+}
+
+// Campos obrigatórios do Componente
+const componentNameInput = document.getElementById('component-name');
+const componentSkuInput = document.getElementById('component-sku');
+
+if (componentNameInput && componentSkuInput && btnSubmitModal) {
+    const validateComponentForm = () => {
+        if (componentNameInput.value.trim() !== "" && componentSkuInput.value.trim() !== "") {
+            btnSubmitModal.removeAttribute('disabled');
+        } else {
+            btnSubmitModal.setAttribute('disabled', 'true');
+        }
+    };
+
+    validateComponentForm();
+
+    componentNameInput.addEventListener('input', validateComponentForm);
+    componentSkuInput.addEventListener('input', validateComponentForm);
 }
 
 // Campos obrigatórios da Página 1
