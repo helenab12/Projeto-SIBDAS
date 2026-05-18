@@ -475,6 +475,8 @@ if (btnSubmitModal) {
             alert('Pessoa criada com sucesso!');
         } else if (buttonText === 'Guardar Alterações') {
             alert('Alterações guardadas com sucesso!');
+        } else if (document.getElementById('building-name')) {
+            alert('Edifício criado com sucesso!');
         } else {
             alert('Equipamento criado com sucesso!');
         }
@@ -765,68 +767,68 @@ if (personNameInput && personIdInput && btnSubmitModal) {
             if (personEmailInput) personEmailInput.value = '';
             if (personPhoneInput) personPhoneInput.value = '';
             if (personStartDateInput) personStartDateInput.value = '';
-            
+
             // Resetar títulos e textos do modal
             const modalTitleEl = document.getElementById('equipmentModalLabel');
             const modalSubtitleEl = modalTitleEl ? modalTitleEl.nextElementSibling : null;
             if (modalTitleEl) modalTitleEl.textContent = 'Nova Pessoa';
             if (modalSubtitleEl) modalSubtitleEl.textContent = 'Informações do colaborador';
             if (btnSubmitModal) btnSubmitModal.textContent = 'Criar Pessoa';
-            
+
             validatePersonForm();
         });
     }
 }
 
 // Lógica para Editar Pessoa a partir do Bento-Card
-document.addEventListener('click', function(e) {
+document.addEventListener('click', function (e) {
     const editBtn = e.target.closest('.dropdown-item');
     if (!editBtn || !editBtn.textContent.includes('Editar')) return;
-    
+
     // Garantir que estamos na página de gestão de pessoas
     const container = document.querySelector('.people-management');
     if (!container) return;
-    
+
     e.preventDefault();
-    
+
     const card = editBtn.closest('.bento-card');
     if (!card) return;
-    
+
     // Extrair dados do card
     const nameEl = card.querySelector('.fw-700:not(.user-icon)');
     const name = nameEl ? nameEl.textContent.trim() : '';
-    
+
     const roleEl = card.querySelector('.text-secondary');
     const role = roleEl ? roleEl.textContent.trim() : '';
-    
+
     let department = '';
     let email = '';
     let phone = '';
-    
+
     const briefcaseSvg = card.querySelector('.lucide-briefcase');
     if (briefcaseSvg) {
         const div = briefcaseSvg.closest('div');
         const span = div ? div.querySelector('span') : null;
         if (span) department = span.textContent.trim();
     }
-    
+
     const mailSvg = card.querySelector('.lucide-mail');
     if (mailSvg) {
         const div = mailSvg.closest('div');
         const span = div ? div.querySelector('span') : null;
         if (span) email = span.textContent.trim();
     }
-    
+
     const phoneSvg = card.querySelector('.lucide-phone');
     if (phoneSvg) {
         const div = phoneSvg.closest('div');
         const span = div ? div.querySelector('span') : null;
         if (span) phone = span.textContent.trim();
     }
-    
+
     const idEl = card.querySelector('.font-mono');
     const id = idEl ? idEl.textContent.trim() : '';
-    
+
     const calendarSvg = card.querySelector('.lucide-calendar');
     let startDate = '';
     if (calendarSvg) {
@@ -843,7 +845,7 @@ document.addEventListener('click', function(e) {
             }
         }
     }
-    
+
     // Preencher os inputs do Modal
     if (personNameInput) personNameInput.value = name;
     if (personIdInput) personIdInput.value = id;
@@ -852,7 +854,7 @@ document.addEventListener('click', function(e) {
     if (personEmailInput) personEmailInput.value = email;
     if (personPhoneInput) personPhoneInput.value = phone;
     if (personStartDateInput) personStartDateInput.value = startDate;
-    
+
     // Alterar os textos do Modal
     const modalTitleEl = document.getElementById('equipmentModalLabel');
     const modalSubtitleEl = modalTitleEl ? modalTitleEl.nextElementSibling : null;
@@ -862,9 +864,46 @@ document.addEventListener('click', function(e) {
         btnSubmitModal.textContent = 'Guardar Alterações';
         btnSubmitModal.removeAttribute('disabled');
     }
-    
+
     // Abrir o Modal
     if (bsCreateEquipmentModal) {
         bsCreateEquipmentModal.show();
     }
 });
+
+// Campos obrigatórios do Edifício (Nome)
+const buildingNameInput = document.getElementById('building-name');
+const buildingModalEl = document.getElementById('equipment-creation-modal');
+
+if (buildingNameInput && btnSubmitModal) {
+    const validateBuildingForm = () => {
+        if (buildingNameInput.value.trim() !== "") {
+            btnSubmitModal.removeAttribute('disabled');
+        } else {
+            btnSubmitModal.setAttribute('disabled', 'true');
+        }
+    };
+
+    validateBuildingForm();
+
+    buildingNameInput.addEventListener('input', validateBuildingForm);
+
+    if (buildingModalEl) {
+        buildingModalEl.addEventListener('hidden.bs.modal', () => {
+            buildingNameInput.value = '';
+            validateBuildingForm();
+        });
+    }
+}
+
+// Impedir que os botões de ação disparem o colapso do accordion
+const locationsContainer = document.querySelector('.locations');
+if (locationsContainer) {
+    locationsContainer.addEventListener('click', (e) => {
+        const actionBtn = e.target.closest('.action-buttons, .action-buttons svg, .action-buttons path');
+        if (actionBtn) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+    }, true);
+}

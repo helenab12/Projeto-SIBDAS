@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HEBA - Área Privada</title>
-    <link rel="stylesheet" href="../assets/bootstrap/bootstrap.min.css">
-    <link rel="stylesheet" href="../assets/css/1240961.css">
+    <link rel="stylesheet" href="/assets/bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" href="/assets/css/1240961.css">
 </head>
 
 <body class="private-area">
@@ -501,7 +501,7 @@
                 <div class="bento-grid gap-4 dashboard-bento-grid">
 
                     <!-- Total Equipamentos -->
-                    <div class="bento-card padding-4 gap-4">
+                    <div class="bento-card bento-card-move-up d-flex flex-column padding-6 gap-4">
                         <div class="d-flex align-items-center justify-content-between w-100">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -531,7 +531,7 @@
                     </div>
 
                     <!-- Equipamentos Ativos -->
-                    <div class="bento-card padding-4 gap-4">
+                    <div class="bento-card bento-card-move-up d-flex flex-column padding-6 gap-4">
                         <div class="d-flex align-items-center justify-content-between w-100">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -558,7 +558,7 @@
                     </div>
 
                     <!-- Em Manutencao -->
-                    <div class="bento-card padding-4 gap-4">
+                    <div class="bento-card bento-card-move-up d-flex flex-column padding-6 gap-4">
                         <div class="d-flex align-items-center justify-content-between w-100">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -586,7 +586,7 @@
                     </div>
 
                     <!-- Garantias A Expirar -->
-                    <div class="bento-card padding-4 gap-4">
+                    <div class="bento-card bento-card-move-up d-flex flex-column padding-6 gap-4">
                         <div class="d-flex align-items-center justify-content-between w-100">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -615,7 +615,7 @@
                     </div>
 
                     <!-- Equipamentos Inativos -->
-                    <div class="bento-card padding-4 gap-4">
+                    <div class="bento-card bento-card-move-up d-flex flex-column padding-6 gap-4">
                         <div class="d-flex align-items-center justify-content-between w-100">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -637,7 +637,7 @@
                     </div>
 
                     <!-- Garantias Expiradas -->
-                    <div class="bento-card padding-4 gap-4">
+                    <div class="bento-card bento-card-move-up d-flex flex-column padding-6 gap-4">
                         <div class="d-flex align-items-center justify-content-between w-100">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -665,7 +665,7 @@
                     </div>
 
                     <!-- Criticidade Elevada -->
-                    <div class="bento-card padding-4 gap-4">
+                    <div class="bento-card bento-card-move-up d-flex flex-column padding-6 gap-4">
                         <div class="d-flex align-items-center justify-content-between w-100">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -682,7 +682,7 @@
                     </div>
 
                     <!-- Sem Documentos -->
-                    <div class="bento-card padding-4 gap-4">
+                    <div class="bento-card bento-card-move-up d-flex flex-column padding-6 gap-4">
                         <div class="d-flex align-items-center justify-content-between w-100">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -716,7 +716,7 @@
                 <div class="d-flex flex-column gap-4">
                     <!-- Graficos de Estatísticas -->
                     <div class="d-flex flex-row gap-4 graphs-container">
-                        <div class="bento-card padding-4 gap-6">
+                        <div class="bento-card bento-card-move-up d-flex flex-column padding-6 gap-6">
                             <div class="d-flex flex-column gap-1">
                                 <h3>Distribuição por Categoria</h3>
                                 <p class="text-secondary fw-400">Quantidade de equipamentos por tipo</p>
@@ -726,7 +726,7 @@
                                 <canvas id="categoryDistributionChart"></canvas>
                             </div>
                         </div>
-                        <div class="bento-card padding-4 gap-6">
+                        <div class="bento-card bento-card-move-up d-flex flex-column padding-6 gap-6">
                             <div class="d-flex flex-column gap-1">
                                 <h3>Equipamentos por Serviço</h3>
                                 <p class="text-secondary fw-400">Distribuição por localização/serviço</p>
@@ -740,7 +740,7 @@
 
                     <!-- Graficos de Tendencias de Manutencoes + Chat AI -->
                     <div class="d-flex flex-row gap-4 graphs-container">
-                        <div class="bento-card padding-4 gap-6">
+                        <div class="bento-card bento-card-move-up d-flex flex-column padding-6 gap-6">
                             <div class="d-flex flex-column gap-1">
                                 <h3>Tendência de Manutenção</h3>
                                 <p class="text-secondary fw-400">Últimos 12 meses — preventiva vs. corretiva</p>
@@ -750,7 +750,7 @@
                                 <canvas id="maintenanceTrendChart"></canvas>
                             </div>
                         </div>
-                        <div class="bento-card padding-4 gap-6 ai-section">
+                        <div class="bento-card bento-card-move-up d-flex flex-column padding-6 gap-6 ai-section">
                             <div class="d-flex flex-row gap-3">
                                 <div class="ai-chat d-flex align-items-center justify-content-center">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
@@ -860,7 +860,7 @@
                 </div>
 
                 <!-- Atividade Recente -->
-                <div class="bento-card gap-6">
+                <div class="bento-card bento-card-move-up d-flex flex-column gap-6 padding-6">
                     <div class="d-flex flex-row align-items-center justify-content-between w-100">
                         <h2 class="text-primary m-0">Atividade Recente</h2>
                         <a href="#" class="text-primary d-flex flex-row gap-1 align-items-center text-primary-500">
@@ -951,7 +951,7 @@
         <aside class="mobile-sidebar">
             <div class="navbar-brand d-flex align-items-center justify-content-between nav-brand padding-4">
                 <div class="d-flex align-items-center gap-3">
-                    <img src="../assets/img/logo.svg" alt="HEBA Logo" width="36" height="36">
+                    <img src="/assets/img/logo.svg" alt="HEBA Logo" width="36" height="36">
                     <div class="d-flex flex-column">
                         <h2 class="text-primary m-0">HEBA</h2>
                         <label class="text-secondary text-uppercase m-0">Biomédica</label>
@@ -1262,9 +1262,9 @@
     </div>
 
 
-    <script src="../assets/bootstrap/bootstrap.bundle.min.js"></script>
+    <script src="/assets/bootstrap/bootstrap.bundle.min.js"></script>
     <script src="../node_modules/chart.js/dist/chart.umd.min.js"></script>
-    <script src="../assets/js/1240961.js"></script>
+    <script src="/assets/js/1240961.js"></script>
 
 </body>
 

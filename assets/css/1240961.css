@@ -182,9 +182,12 @@ a {
 }
 
 .bento-card:hover {
-    transform: translateY(-5px);
     box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
     border-color: var(--border-focus);
+}
+
+.bento-card-move-up:hover {
+    transform: translateY(-5px);
 }
 
 [data-theme="dark"] .bento-card:hover {
@@ -2435,4 +2438,75 @@ p.user-icon {
     .people-management.bento-grid {
         grid-template-columns: repeat(1, 1fr);
     }
+}
+
+/* Localizacoes */
+.locations .accordion-button {
+    border-radius: 0;
+    transition: background-color .3s ease;
+}
+
+.locations .accordion-button.top-level {
+    border-bottom: var(--border-base);
+}
+
+.locations .accordion-button:hover {
+    background-color: color-mix(in srgb, var(--text-secondary) 5%, transparent);
+}
+
+.locations .accordion-button[aria-expanded="true"] .lucide-chevron-right {
+    transform: rotate(90deg);
+}
+
+.locations .accordion-button .lucide-chevron-right {
+    transition: transform 0.3s ease;
+}
+
+.locations .action-buttons svg {
+    background-color: transparent;
+    border-radius: var(--radius-xs);
+    transition: background-color .3s ease, color .3s ease;
+    box-sizing: content-box;
+    cursor: pointer;
+}
+
+.locations .action-buttons svg:hover {
+    color: var(--primary-500);
+    background-color: color-mix(in srgb, var(--primary-500) 10%, transparent);
+}
+
+.locations .action-buttons svg.lucide-trash-2:hover {
+    background: color-mix(in srgb, var(--error) 10%, transparent);
+}
+
+.locations .collapse-inner-level {
+    padding-left: 0;
+}
+
+.locations .level-1 {
+    padding: var(--space-4) !important;
+}
+
+.locations .level-2 {
+    padding: var(--space-4) !important;
+    padding-left: calc(var(--space-4) * 2) !important;
+}
+
+.locations .level-3 {
+    padding: var(--space-4) !important;
+    padding-left: calc(var(--space-4) * 3) !important;
+}
+
+.locations .level-4 {
+    padding: var(--space-2) var(--space-4) !important;
+    padding-left: calc(var(--space-4) * 4) !important;
+}
+
+.locations .room-item {
+    transition: background-color .3s ease;
+    border-radius: 0;
+}
+
+.locations .room-item:hover {
+    background-color: color-mix(in srgb, var(--text-secondary) 3%, transparent);
 }
