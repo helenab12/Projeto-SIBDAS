@@ -1409,7 +1409,7 @@ label {
     text-align: end;
 }
 
-header p.user-icon {
+header .user-icon {
     background-color: var(--primary-500);
     border-radius: var(--radius-sm);
     color: #FFF;
@@ -2392,7 +2392,7 @@ ul.action-dropdown-menu.show {
     grid-template-columns: repeat(3, 1fr);
 }
 
-p.user-icon {
+.user-icon {
     border-radius: var(--radius-sm);
     width: 40px;
     height: 40px;
@@ -2404,27 +2404,27 @@ p.user-icon {
     border-top: var(--border-base);
 }
 
-.people-management p.user-icon.pink {
+.people-management .user-icon.pink {
     background: linear-gradient(315deg, #F00047 0%, #FF5A76 100%);
 }
 
-.people-management p.user-icon.cyan {
+.people-management .user-icon.cyan {
     background: linear-gradient(315deg, #0093E9 0%, #80D0C7 100%);
 }
 
-.people-management p.user-icon.blue {
+.people-management .user-icon.blue {
     background: linear-gradient(315deg, #1E90FF 0%, #00C6FF 100%);
 }
 
-.people-management p.user-icon.yellow {
+.people-management .user-icon.yellow {
     background: linear-gradient(315deg, #FF8C00 0%, #F1C40F 100%);
 }
 
-.people-management p.user-icon.green {
+.people-management .user-icon.green {
     background: linear-gradient(315deg, #11998e 0%, #38ef7d 100%);
 }
 
-.people-management p.user-icon.purple {
+.people-management .user-icon.purple {
     background: linear-gradient(315deg, #7F00FF 0%, #E100FF 100%);
 }
 
@@ -2509,4 +2509,66 @@ p.user-icon {
 
 .locations .room-item:hover {
     background-color: color-mix(in srgb, var(--text-secondary) 3%, transparent);
+}
+
+/* Security Users */
+.security-users .user-icon {
+    background: linear-gradient(315deg, color-mix(in srgb, var(--text-secondary) 30%, transparent) 0%, color-mix(in srgb, var(--text-secondary) 40%, transparent) 100%);
+}
+
+.security-users table .user-icon {
+    font-size: 14px;
+}
+
+.security-users .user-icon .online-status {
+    width: 12px;
+    height: 12px;
+    bottom: -4px;
+    right: -4px;
+    border-radius: var(--radius-full);
+    border: 2px solid var(--bento-bg);
+    z-index: 10;
+}
+
+.security-users .user-icon .online-status.active {
+    background-color: var(--success);
+}
+
+.security-users .user-icon .online-status.inactive {
+    background-color: var(--text-muted);
+}
+
+.security-users .equipment-badge.admin {
+    color: var(--error);
+    background-color: color-mix(in srgb, var(--error) 10%, transparent);
+}
+
+.security-users .equipment-badge.inv-manager {
+    color: var(--primary-500);
+    background-color: color-mix(in srgb, var(--primary-500) 10%, transparent);
+}
+
+.security-users .equipment-badge.senior-tech {
+    color: #a855f7;
+    background-color: color-mix(in srgb, #a855f7 10%, transparent);
+}
+
+.security-users .equipment-badge.tech {
+    color: var(--warning);
+    background-color: color-mix(in srgb, var(--warning) 10%, transparent);
+}
+
+.security-users .equipment-badge.consultant {
+    color: var(--text-secondary);
+    background-color: color-mix(in srgb, var(--text-secondary) 10%, transparent);
+}
+
+.security-users .equipment-badge.online {
+    color: var(--success);
+    background-color: color-mix(in srgb, var(--success) 10%, transparent);
+}
+
+.security-users .equipment-badge.offline {
+    color: var(--text-secondary);
+    background-color: color-mix(in srgb, var(--text-secondary) 10%, transparent);
 }

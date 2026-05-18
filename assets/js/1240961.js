@@ -473,6 +473,8 @@ if (btnSubmitModal) {
             alert('Fornecedor criado com sucesso!');
         } else if (buttonText === 'Criar Pessoa') {
             alert('Pessoa criada com sucesso!');
+        } else if (buttonText === 'Criar Utilizador') {
+            alert('Utilizador criado com sucesso!');
         } else if (buttonText === 'Guardar Alterações') {
             alert('Alterações guardadas com sucesso!');
         } else if (document.getElementById('building-name')) {
@@ -906,4 +908,47 @@ if (locationsContainer) {
             e.preventDefault();
         }
     }, true);
+}
+
+// Campos obrigatórios do Utilizador (Nome Completo, Username, Email, Password)
+const userFullnameInput = document.getElementById('user-fullname');
+const userUsernameInput = document.getElementById('user-username');
+const userEmailInput = document.getElementById('user-email');
+const userPasswordInput = document.getElementById('user-password');
+const userRoleSelect = document.getElementById('user-role');
+const userModalEl = document.getElementById('equipment-creation-modal');
+
+if (userFullnameInput && userUsernameInput && userEmailInput && userPasswordInput && btnSubmitModal) {
+    const validateUserForm = () => {
+        const fullnameValid = userFullnameInput.value.trim() !== "";
+        const usernameValid = userUsernameInput.value.trim() !== "";
+        const emailValue = userEmailInput.value.trim();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const emailValid = emailRegex.test(emailValue);
+        const passwordValid = userPasswordInput.value.trim() !== "";
+
+        if (fullnameValid && usernameValid && emailValid && passwordValid) {
+            btnSubmitModal.removeAttribute('disabled');
+        } else {
+            btnSubmitModal.setAttribute('disabled', 'true');
+        }
+    };
+
+    validateUserForm();
+
+    userFullnameInput.addEventListener('input', validateUserForm);
+    userUsernameInput.addEventListener('input', validateUserForm);
+    userEmailInput.addEventListener('input', validateUserForm);
+    userPasswordInput.addEventListener('input', validateUserForm);
+
+    if (userModalEl) {
+        userModalEl.addEventListener('hidden.bs.modal', () => {
+            userFullnameInput.value = '';
+            userUsernameInput.value = '';
+            userEmailInput.value = '';
+            userPasswordInput.value = '';
+            if (userRoleSelect) userRoleSelect.value = 'Consulta';
+            validateUserForm();
+        });
+    }
 }
