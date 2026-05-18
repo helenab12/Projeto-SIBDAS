@@ -952,3 +952,48 @@ if (userFullnameInput && userUsernameInput && userEmailInput && userPasswordInpu
         });
     }
 }
+
+// Campos obrigatórios da Permissão (Chave, Descrição)
+const permissionKeyInput = document.getElementById('permission-key');
+const permissionDescInput = document.getElementById('permission-description');
+const btnSubmitPermission = document.getElementById('btn-submit-permission');
+const permissionForm = document.getElementById('permission-creation-form');
+const permissionModal = document.getElementById('permission-creation-modal');
+
+if (permissionKeyInput && permissionDescInput && btnSubmitPermission) {
+    const validatePermissionForm = () => {
+        const keyValid = permissionKeyInput.value.trim() !== "";
+        const descValid = permissionDescInput.value.trim() !== "";
+
+        if (keyValid && descValid) {
+            btnSubmitPermission.removeAttribute('disabled');
+        } else {
+            btnSubmitPermission.setAttribute('disabled', 'true');
+        }
+    };
+
+    validatePermissionForm();
+
+    permissionKeyInput.addEventListener('input', validatePermissionForm);
+    permissionDescInput.addEventListener('input', validatePermissionForm);
+
+    if (permissionModal) {
+        permissionModal.addEventListener('hidden.bs.modal', () => {
+            permissionKeyInput.value = '';
+            permissionDescInput.value = '';
+            validatePermissionForm();
+        });
+    }
+
+    if (permissionForm) {
+        btnSubmitPermission.addEventListener('click', (e) => {
+            e.preventDefault();
+            alert('Permissão criada com sucesso!');
+            
+            const modalInstance = bootstrap.Modal.getInstance(permissionModal);
+            if (modalInstance) {
+                modalInstance.hide();
+            }
+        });
+    }
+}
