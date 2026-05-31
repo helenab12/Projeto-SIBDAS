@@ -520,6 +520,10 @@ label {
     color: var(--primary-700) !important;
 }
 
+.text-primary-900 {
+    color: var(--primary-900) !important;
+}
+
 .stroke-white {
     stroke: #FFF !important;
 }
@@ -2563,9 +2567,18 @@ ul.action-dropdown-menu.show {
 }
 
 /* Perfis */
+.security-profiles .check-badge {
+    background: transparent;
+    border: none;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    cursor: pointer;
+}
+
 .security-profiles .check-badge svg {
-    background-color: color-mix(in srgb, var(--text-secondary) 10%, transparent);
-    color: var(--text-secondary);
+    background-color: color-mix(in srgb, var(--text-muted) 10%, transparent);
+    color: var(--text-muted);
     box-sizing: content-box;
     border-radius: var(--radius-xs);
 }
@@ -2582,4 +2595,22 @@ ul.action-dropdown-menu.show {
 
 .security-profiles .check-badge.has-permission svg.lucide-check {
     display: inline-block;
+}
+
+.security-profiles .changes-card {
+    background-color: color-mix(in srgb, var(--primary-500) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--primary-500) 25%, transparent);
+    display: none !important;
+    justify-content: space-between;
+}
+
+.security-profiles .changes-card.has-changes {
+    display: flex !important;
+}
+
+@media (max-width: 768px) {
+    .security-profiles .changes-card {
+        justify-content: center !important;
+        flex-direction: column !important;
+    }
 }

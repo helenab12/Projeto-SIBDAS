@@ -989,11 +989,24 @@ if (permissionKeyInput && permissionDescInput && btnSubmitPermission) {
         btnSubmitPermission.addEventListener('click', (e) => {
             e.preventDefault();
             alert('Permissão criada com sucesso!');
-            
+
             const modalInstance = bootstrap.Modal.getInstance(permissionModal);
             if (modalInstance) {
                 modalInstance.hide();
             }
         });
+    }
+}
+
+// Perfis
+function togglePermission(permissionId) {
+    const permissionBadge = document.getElementById(`permission-badge-${permissionId}`);
+    if (permissionBadge) {
+        permissionBadge.classList.toggle('has-permission');
+    }
+
+    const changesCard = document.querySelector('.security-profiles .changes-card');
+    if (changesCard) {
+        changesCard.classList.add('has-changes');
     }
 }
