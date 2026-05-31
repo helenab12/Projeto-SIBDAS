@@ -71,7 +71,7 @@ dropdownToggles.forEach(toggle => {
 const collapseBtn = document.querySelector('.sidebar-collapse-btn');
 if (collapseBtn) {
     collapseBtn.addEventListener('click', () => {
-        const sidebar = collapseBtn.closest('aside');
+        const sidebar = document.querySelector('.desktop-sidebar');
         sidebar.classList.toggle('collapsed');
 
         if (sidebar.classList.contains('collapsed')) {
@@ -355,16 +355,16 @@ if (document.getElementById('equipmentsTable') && typeof simpleDatatables !== 'u
     });
 
     // Custom search binding
-    let searchInput = document.getElementById('search');
-    if (searchInput) {
-        searchInput.addEventListener('input', function () {
+    const searchInputs = document.querySelectorAll('#search, .search-bar-input');
+    searchInputs.forEach(input => {
+        input.addEventListener('input', function () {
             let dtInput = document.querySelector('.datatable-input');
             if (dtInput) {
                 dtInput.value = this.value;
                 dtInput.dispatchEvent(new Event('keyup'));
             }
         });
-    }
+    });
 }
 
 // Inicializar Flatpickr (Datas)

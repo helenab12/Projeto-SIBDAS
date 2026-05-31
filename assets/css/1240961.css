@@ -1259,14 +1259,6 @@ label {
     color: light-dark(var(--primary-500), #93C5FD);
 }
 
-.private-area aside.collapsed .nav-chevron {
-    display: none;
-}
-
-.private-area aside.collapsed .sidebar-collapse-btn span {
-    display: none;
-}
-
 .private-area aside.collapsed .sidebar-collapse-btn svg {
     transform: rotate(180deg);
 }
@@ -1275,6 +1267,8 @@ label {
     border-bottom: var(--border-base);
 }
 
+.private-area aside.collapsed .nav-chevron,
+.private-area aside.collapsed .sidebar-collapse-btn span,
 .private-area aside.collapsed .nav-brand h2,
 .private-area aside.collapsed .nav-brand label {
     display: none;
@@ -1304,16 +1298,11 @@ label {
 .private-area aside nav ul.nav-dropdown-menu {
     list-style: none;
     padding: 0;
-
-
-
     margin-top: var(--space-1);
     margin-left: var(--space-4);
     padding-left: var(--space-1);
     border-left: 2px solid var(--border-light);
 }
-
-
 
 /* Dropdown aberto fica com hover background */
 .nav-dropdown-toggle:not(.collapsed) {
@@ -2571,4 +2560,26 @@ ul.action-dropdown-menu.show {
 .security-users .equipment-badge.offline {
     color: var(--text-secondary);
     background-color: color-mix(in srgb, var(--text-secondary) 10%, transparent);
+}
+
+/* Perfis */
+.security-profiles .check-badge svg {
+    background-color: color-mix(in srgb, var(--text-secondary) 10%, transparent);
+    color: var(--text-secondary);
+    box-sizing: content-box;
+    border-radius: var(--radius-xs);
+}
+
+.security-profiles .check-badge.has-permission svg {
+    background-color: color-mix(in srgb, var(--success) 10%, transparent);
+    color: var(--success);
+}
+
+.security-profiles .check-badge.has-permission svg.lucide-x,
+.security-profiles .check-badge svg.lucide-check {
+    display: none;
+}
+
+.security-profiles .check-badge.has-permission svg.lucide-check {
+    display: inline-block;
 }

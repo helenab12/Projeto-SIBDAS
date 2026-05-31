@@ -51,7 +51,7 @@
                     </div>
                     <div class="d-flex flex-column">
                         <h1 class="text-white text-uppercase pa-informative-section-title">HEBA</h1>
-                        <p class="text-uppercase pa-informative-section-subtitle">Sistema Biomédico</p>
+                        <p class="text-uppercase pa-informative-section-subtitle">Health Base</p>
                     </div>
                 </div>
                 <div class="d-flex flex-column gap-6">
