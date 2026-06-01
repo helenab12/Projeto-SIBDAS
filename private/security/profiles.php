@@ -7,7 +7,7 @@ $permissionsList = [
     [
         'name' => 'equipment.view',
         'description' => 'Visualizar equipamentos',
-        'admin' => false,
+        'admin' => true,
         'biomed-eng' => true,
         'tech' => true,
         'prov' => true,
@@ -353,7 +353,6 @@ $permissionsList = [
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Row 1 (equipment.view) -->
                     <?php foreach ($permissionsList as $permission) : ?>
                         <tr>
                             <td>

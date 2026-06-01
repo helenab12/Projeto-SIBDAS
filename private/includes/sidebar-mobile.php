@@ -209,8 +209,8 @@ if (!function_exists('isDropdownActive')) {
 
             <!-- Segurança (dropdown) -->
             <li class="nav-dropdown">
-                <a href="#mobileCollapseSeguranca" class="nav-dropdown-toggle <?php echo !isDropdownActive(['users.php', 'profiles.php', 'permissions.php', 'recycle_bin.php', 'audit_logs.php']) ? 'collapsed' : ''; ?>"
-                    data-bs-toggle="collapse" role="button" aria-expanded="<?php echo isDropdownActive(['users.php', 'profiles.php', 'permissions.php', 'recycle_bin.php', 'audit_logs.php']) ? 'true' : 'false'; ?>"
+                <a href="#mobileCollapseSeguranca" class="nav-dropdown-toggle <?php echo !isDropdownActive(['users.php', 'profiles.php', 'permissions.php', 'recycling.php', 'audit_logs.php']) ? 'collapsed' : ''; ?>"
+                    data-bs-toggle="collapse" role="button" aria-expanded="<?php echo isDropdownActive(['users.php', 'profiles.php', 'permissions.php', 'recycling.php', 'audit_logs.php']) ? 'true' : 'false'; ?>"
                     aria-controls="mobileCollapseSeguranca">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -225,7 +225,7 @@ if (!function_exists('isDropdownActive')) {
                         <path d="m6 9 6 6 6-6" />
                     </svg>
                 </a>
-                <div class="collapse <?php echo isDropdownActive(['users.php', 'profiles.php', 'permissions.php', 'recycle_bin.php', 'audit_logs.php']) ? 'show' : ''; ?>" id="mobileCollapseSeguranca">
+                <div class="collapse <?php echo isDropdownActive(['users.php', 'profiles.php', 'permissions.php', 'recycling.php', 'audit_logs.php']) ? 'show' : ''; ?>" id="mobileCollapseSeguranca">
                     <ul class="nav-dropdown-menu d-flex flex-column gap-1">
                         <li class="<?php echo ($currentPage == 'users.php') ? 'active' : ''; ?>"><a href="<?= BASE_URL ?>private/security/users.php">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
@@ -253,7 +253,7 @@ if (!function_exists('isDropdownActive')) {
                                     <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
                                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                                 </svg>Permissões</a></li>
-                        <li class="<?php echo ($currentPage == 'recycle_bin.php') ? 'active' : ''; ?>"><a href="<?= BASE_URL ?>private/security/recycle_bin.php">
+                        <li class="<?php echo ($currentPage == 'recycling.php') ? 'active' : ''; ?>"><a href="<?= BASE_URL ?>private/security/recycling.php">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                     stroke-linecap="round" stroke-linejoin="round"
