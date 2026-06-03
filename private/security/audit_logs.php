@@ -140,7 +140,7 @@ $auditLogs = [
     <?php include_once BASE_PATH . 'private/includes/headers.php'; ?>
 
     <!-- Conteúdo -->
-    <section class="content-container gap-6 recycling">
+    <section class="content-container gap-6">
         <!-- Titulo -->
         <div class="d-flex justify-content-between align-items-center w-100 dashboard-title">
             <div class="d-flex flex-column gap-1">
