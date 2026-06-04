@@ -2724,3 +2724,70 @@ ul.action-dropdown-menu.show {
 .bento-card.unread:hover {
     opacity: 1;
 }
+
+/* Inbox */
+.equipment-badge.new {
+    color: var(--success);
+    background-color: color-mix(in srgb, var(--success) 10%, transparent);
+}
+
+.equipment-badge.in-contact {
+    color: var(--warning);
+    background-color: color-mix(in srgb, var(--warning) 10%, transparent);
+}
+
+.equipment-badge.concluded {
+    color: var(--text-secondary);
+    background-color: color-mix(in srgb, var(--text-secondary) 10%, transparent);
+}
+
+/* Inbox Modal Styles */
+.inbox-modal-user-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--radius-full);
+    background-color: var(--input-field-bg);
+}
+
+.inbox-info-card {
+    border-radius: var(--radius-sm);
+    border: 1px solid color-mix(in srgb, var(--text-muted) 25%, transparent) !important;
+    background-color: color-mix(in srgb, var(--text-muted) 10%, transparent) !important;
+    flex: 1 1 0;
+    width: 50%;
+}
+
+@media (max-width: 768px) {
+    .inbox-info-grid {
+        flex-direction: column;
+        gap: var(--space-3);
+    }
+
+    .inbox-info-grid .inbox-info-card {
+        width: 100%;
+    }
+}
+
+.inbox-info-card-value {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 14px;
+}
+
+.inbox-message-box {
+    border-radius: var(--radius-sm);
+    margin-bottom: var(--space-4);
+    background-color: color-mix(in srgb, var(--primary-500) 10%, transparent) !important;
+    border: 1px solid color-mix(in srgb, var(--primary-500) 25%, transparent) !important;
+}
+
+.inbox-modal-footer {
+    margin-top: var(--space-4);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--border-light) !important;
+}
+
+.inbox-modal-footer-badge {
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+}

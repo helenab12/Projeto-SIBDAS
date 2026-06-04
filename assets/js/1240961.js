@@ -1166,3 +1166,28 @@ if (markAllBtn) {
         markAllBtn.style.display = "none";
     });
 }
+
+// Inbox 
+function changeInboxState(requestId, stateName, stateClass) {
+    const btn = document.getElementById(`inbox-state-btn-${requestId}`);
+    if (btn) {
+        btn.className = `d-inline-flex align-items-center equipment-badge ${stateClass} gap-1 mw-0 border-0`;
+        const span = btn.querySelector("span");
+        if (span) {
+            span.textContent = stateName;
+        }
+
+        // Fechar o dropdown 
+        if (typeof bootstrap !== "undefined") {
+            const bsDropdown = bootstrap.Dropdown.getInstance(btn);
+            if (bsDropdown) {
+                bsDropdown.hide();
+            }
+        }
+    }
+    const modalBadge = document.getElementById(`inbox-modal-badge-${requestId}`);
+    if (modalBadge) {
+        modalBadge.className = `equipment-badge ${stateClass} inbox-modal-footer-badge fw-400`;
+        modalBadge.textContent = `Tratamento atual: ${stateName}`;
+    }
+}
