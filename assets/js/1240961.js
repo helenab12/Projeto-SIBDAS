@@ -426,6 +426,22 @@ if (
     });
 }
 
+// Inicializar DataTables (Documentos)
+if (
+    document.getElementById("documentsTable") &&
+    typeof simpleDatatables !== "undefined"
+) {
+    new simpleDatatables.DataTable("#documentsTable", {
+        searchable: false,
+        perPage: 10,
+        perPageSelect: false,
+        labels: {
+            noRows: "Nenhum registo encontrado",
+            info: "",
+        },
+    });
+}
+
 // Inicializar Flatpickr (Datas)
 if (typeof flatpickr !== "undefined") {
     flatpickr("#purchase-date", {
@@ -1207,3 +1223,48 @@ function changeInboxState(requestId, stateName, stateClass) {
         modalBadge.textContent = `Tratamento atual: ${stateName}`;
     }
 }
+
+// Lógica de Modais de Documentos (Equipamento Detailed View)
+document.addEventListener("DOMContentLoaded", () => {
+    // 1. Drag & Drop Upload Handlers
+    const addDropzone = document.getElementById("add-dropzone");
+    const addFileInput = document.getElementById("doc-file");
+    const addDropzoneText = document.getElementById("add-dropzone-text");
+
+    const editDropzone = document.getElementById("edit-dropzone");
+    const editFileInput = document.getElementById("edit-doc-file");
+    const editDropzoneText = document.getElementById("edit-dropzone-text");
+
+    const setupDropzone = (dropzone, fileInput, textEl) => {
+        if (!dropzone || !fileInput || !textEl) return;
+        dropzone.addEventListener("click", () => fileInput.click());
+        fileInput.addEventListener("change", (e) => {
+            if (e.target.files.length > 0) {
+                textEl.textContent = `Ficheiro selecionado: ${e.target.files[0].name}`;
+                textEl.style.color = "var(--primary-500)";
+            }
+        });
+        dropzone.addEventListener("dragover", (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = "var(--primary-500)";
+            dropzone.style.backgroundColor = "light-dark(var(--primary-50), color-mix(in srgb, var(--primary-500) 10%, transparent))";
+        });
+        dropzone.addEventListener("dragleave", () => {
+            dropzone.style.borderColor = "";
+            dropzone.style.backgroundColor = "";
+        });
+        dropzone.addEventListener("drop", (e) => {
+            e.preventDefault();
+            dropzone.style.borderColor = "";
+            dropzone.style.backgroundColor = "";
+            if (e.dataTransfer.files.length > 0) {
+                fileInput.files = e.dataTransfer.files;
+                textEl.textContent = `Ficheiro selecionado: ${e.dataTransfer.files[0].name}`;
+                textEl.style.color = "var(--primary-500)";
+            }
+        });
+    };
+
+    setupDropzone(addDropzone, addFileInput, addDropzoneText);
+    setupDropzone(editDropzone, editFileInput, editDropzoneText);
+});

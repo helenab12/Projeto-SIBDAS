@@ -589,6 +589,10 @@ label {
     font-family: var(--font-mono);
 }
 
+.hover-opacity-100:hover {
+    opacity: 1 !important;
+}
+
 /* 
 =================
    AREA PUBLICA
@@ -2912,4 +2916,62 @@ ul.action-dropdown-menu.show {
         grid-row: 2;
         margin-top: 0;
     }
+}
+
+/* Documentos */
+.equipment-detailed-view .document-grid {
+    grid-template-columns: 1fr;
+}
+
+@media (min-width: 768px) {
+    .equipment-detailed-view .document-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1025px) {
+    .equipment-detailed-view .document-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.equipment-detailed-view .missing-doc-card {
+    border-radius: var(--radius-sm);
+    background-color: color-mix(in srgb, var(--warning) 4%, var(--bento-bg));
+    border: 1px solid color-mix(in srgb, var(--warning) 15%, transparent);
+    transition: all 0.2s ease;
+}
+
+.equipment-detailed-view .missing-doc-card:hover {
+    border-color: var(--warning);
+    transform: translateY(-1px);
+}
+
+.equipment-detailed-view .missing-doc-icon-wrapper {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-xs);
+    background-color: color-mix(in srgb, var(--warning) 10%, transparent);
+}
+
+.equipment-detailed-view .table-action-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-xs);
+    transition: all 0.2s ease;
+}
+
+.equipment-detailed-view .table-action-icon:hover {
+    background-color: var(--primary-50);
+    color: var(--primary-500);
+}
+
+.equipment-detailed-view .table-action-icon[title="Eliminar"]:hover {
+    background-color: color-mix(in srgb, var(--error) 10%, transparent);
+    color: var(--error);
+}
+
+.equipment-detailed-view .datatable-bottom {
+    border: none;
+    border-top: var(--border-base);
 }
