@@ -2815,3 +2815,101 @@ ul.action-dropdown-menu.show {
 .content-management .accordion-button[aria-expanded="true"] .lucide-chevron-down {
     transform: rotate(180deg);
 }
+
+/* Lista Detalhada de Equipamentos */
+.equipment-detailed-view .equipment-icon-wrapper {
+    width: 80px;
+    height: 80px;
+    border-radius: var(--radius-md) !important;
+}
+
+.equipment-detailed-view .btn-qr-code {
+    cursor: pointer !important;
+}
+
+/* Warranty Banners */
+.equipment-detailed-view .warranty-banner {
+    border-radius: var(--radius-md);
+}
+
+.equipment-detailed-view .warranty-banner.expired {
+    background-color: color-mix(in srgb, var(--error) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--error) 20%, transparent);
+}
+
+.equipment-detailed-view .warranty-banner.active {
+    background-color: color-mix(in srgb, var(--success) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--success) 20%, transparent);
+}
+
+.equipment-detailed-view .detailed-view-divider {
+    border: 0;
+    border-top: var(--border-base);
+    margin: var(--space-2) 0;
+    padding: var(--space-5) 0;
+}
+
+/* Visão Geral Bento Layout */
+.equipment-detailed-view .visao-geral-container {
+    flex-direction: column;
+}
+
+@media (min-width: 1025px) {
+    .equipment-detailed-view .visao-geral-container {
+        flex-direction: row;
+    }
+
+    .equipment-detailed-view .details-card {
+        flex: 2;
+    }
+
+    .equipment-detailed-view .warranty-card {
+        flex: 1;
+    }
+}
+
+/* Detalhes do Equipamento Bento Layout */
+.equipment-detailed-view .detailed-main-card {
+    grid-template-columns: auto 1fr;
+}
+
+.equipment-detailed-view .detailed-main-icon {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.equipment-detailed-view .detailed-header-info {
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.equipment-detailed-view .detailed-main-metadata {
+    grid-column: 1 / span 2;
+    grid-row: 2;
+}
+
+@media (min-width: 1025px) {
+    .equipment-detailed-view .detailed-main-card {
+        grid-template-columns: auto 1fr;
+        grid-template-rows: auto auto;
+        column-gap: var(--space-6);
+        row-gap: var(--space-6);
+    }
+
+    .equipment-detailed-view .detailed-main-icon {
+        grid-column: 1;
+        grid-row: 1 / span 2;
+        align-self: center;
+    }
+
+    .equipment-detailed-view .detailed-header-info {
+        grid-column: 2;
+        grid-row: 1;
+    }
+
+    .equipment-detailed-view .detailed-main-metadata {
+        grid-column: 2;
+        grid-row: 2;
+        margin-top: 0;
+    }
+}

@@ -40,9 +40,9 @@ if (!function_exists('isDropdownActive')) {
             <!-- Inventário (dropdown) -->
             <li class="nav-dropdown">
                 <a href="#collapseInventario"
-                    class="nav-dropdown-toggle <?php echo !isDropdownActive(['equipment_list.php', 'equipment_archive.php', 'components.php', 'categories.php']) ? 'collapsed' : ''; ?>"
+                    class="nav-dropdown-toggle <?php echo !isDropdownActive(['equipment_list.php', 'equipment_archive.php', 'detailed_view.php', 'components.php', 'categories.php']) ? 'collapsed' : ''; ?>"
                     data-bs-toggle="collapse" role="button"
-                    aria-expanded="<?php echo isDropdownActive(['equipment_list.php', 'equipment_archive.php', 'components.php', 'categories.php']) ? 'true' : 'false'; ?>"
+                    aria-expanded="<?php echo isDropdownActive(['equipment_list.php', 'equipment_archive.php', 'detailed_view.php', 'components.php', 'categories.php']) ? 'true' : 'false'; ?>"
                     aria-controls="collapseInventario">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -59,15 +59,15 @@ if (!function_exists('isDropdownActive')) {
                         <path d="m6 9 6 6 6-6" />
                     </svg>
                 </a>
-                <div class="collapse <?php echo isDropdownActive(['equipment_list.php', 'equipment_archive.php', 'components.php', 'categories.php']) ? 'show' : ''; ?>"
+                <div class="collapse <?php echo isDropdownActive(['equipment_list.php', 'equipment_archive.php', 'detailed_view.php', 'components.php', 'categories.php']) ? 'show' : ''; ?>"
                     id="collapseInventario">
                     <ul class="nav-dropdown-menu d-flex flex-column gap-1">
                         <!-- Equipamentos (dropdown) -->
                         <li class="nav-dropdown">
                             <a href="#collapseEquipamentos"
-                                class="nav-dropdown-toggle <?php echo !isDropdownActive(['equipment_list.php', 'equipment_archive.php']) ? 'collapsed' : ''; ?>"
+                                class="nav-dropdown-toggle <?php echo !isDropdownActive(['equipment_list.php', 'equipment_archive.php', 'detailed_view.php']) ? 'collapsed' : ''; ?>"
                                 data-bs-toggle="collapse" role="button"
-                                aria-expanded="<?php echo isDropdownActive(['equipment_list.php', 'equipment_archive.php']) ? 'true' : 'false'; ?>"
+                                aria-expanded="<?php echo isDropdownActive(['equipment_list.php', 'equipment_archive.php', 'detailed_view.php']) ? 'true' : 'false'; ?>"
                                 aria-controls="collapseEquipamentos">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -94,11 +94,12 @@ if (!function_exists('isDropdownActive')) {
                                     <path d="m6 9 6 6 6-6" />
                                 </svg>
                             </a>
-                            <div class="collapse <?php echo isDropdownActive(['equipment_list.php', 'equipment_archive.php']) ? 'show' : ''; ?>"
+                            <div class="collapse <?php echo isDropdownActive(['equipment_list.php', 'equipment_archive.php', 'detailed_view.php']) ? 'show' : ''; ?>"
                                 id="collapseEquipamentos">
                                 <ul class="nav-dropdown-menu d-flex flex-column gap-1">
-                                    <li class="<?php echo ($currentPage == 'equipment_list.php') ? 'active' : ''; ?>"><a
-                                            href="<?= BASE_URL ?>private/inventory/equipments/equipment_list.php">
+                                    <li
+                                        class="<?php echo ($currentPage == 'equipment_list.php' || $currentPage == 'detailed_view.php') ? 'active' : ''; ?>">
+                                        <a href="<?= BASE_URL ?>private/inventory/equipments/equipment_list.php">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                 stroke-linecap="round" stroke-linejoin="round">
@@ -108,7 +109,8 @@ if (!function_exists('isDropdownActive')) {
                                                 <path d="M8 5h13" />
                                                 <path d="M8 12h13" />
                                                 <path d="M8 19h13" />
-                                            </svg>Lista Geral</a></li>
+                                            </svg>Lista Geral</a>
+                                    </li>
                                     <li
                                         class="<?php echo ($currentPage == 'equipment_archive.php') ? 'active' : ''; ?>">
                                         <a href="<?= BASE_URL ?>private/inventory/equipments/equipment_archive.php">
@@ -120,7 +122,8 @@ if (!function_exists('isDropdownActive')) {
                                                 <path d="M19 17V5a2 2 0 0 0-2-2H4" />
                                                 <path
                                                     d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3" />
-                                            </svg>Equipamentos Arquivados</a></li>
+                                            </svg>Equipamentos Arquivados</a>
+                                    </li>
                                 </ul>
                             </div>
                         </li>
