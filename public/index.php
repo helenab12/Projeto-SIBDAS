@@ -1,3 +1,4 @@
+<?php require_once dirname(__DIR__) . '/config/config.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -5,8 +6,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>HEBA - Área Pública</title>
-    <link rel="stylesheet" href="/Projeto-SIBDAS/assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="/Projeto-SIBDAS/assets/css/1240961.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/1240961.css">
 </head>
 
 <body class="pa-body">
@@ -531,8 +532,8 @@
     </footer>
 
     <!-- Bootstrap JS e custom JS -->
-    <script src="/Projeto-SIBDAS/assets/js/bootstrap.bundle.min.js"></script>
-    <script src="/Projeto-SIBDAS/assets/js/1240961.js"></script>
+    <script src="<?= BASE_URL ?>assets/js/bootstrap.bundle.min.js"></script>
+    <script src="<?= BASE_URL ?>assets/js/1240961.js"></script>
 </body>
 
 </html>

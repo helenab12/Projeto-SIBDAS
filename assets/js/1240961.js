@@ -410,6 +410,22 @@ if (
     });
 }
 
+// Inicializar DataTables (Funcionalidades)
+if (
+    document.getElementById("featuresTable") &&
+    typeof simpleDatatables !== "undefined"
+) {
+    new simpleDatatables.DataTable("#featuresTable", {
+        searchable: false,
+        perPage: 10,
+        perPageSelect: false,
+        labels: {
+            noRows: "Nenhum registo encontrado",
+            info: "",
+        },
+    });
+}
+
 // Inicializar Flatpickr (Datas)
 if (typeof flatpickr !== "undefined") {
     flatpickr("#purchase-date", {
@@ -1177,7 +1193,7 @@ function changeInboxState(requestId, stateName, stateClass) {
             span.textContent = stateName;
         }
 
-        // Fechar o dropdown 
+        // Fechar o dropdown
         if (typeof bootstrap !== "undefined") {
             const bsDropdown = bootstrap.Dropdown.getInstance(btn);
             if (bsDropdown) {

@@ -221,6 +221,7 @@ a {
     border-radius: var(--radius-sm);
     border: var(--border-base);
     background-color: var(--input-field-bg);
+    font-size: 14px !important;
 }
 
 .form-item textarea,
@@ -2454,11 +2455,11 @@ ul.action-dropdown-menu.show {
     transition: background-color .3s ease;
 }
 
-.locations .accordion-button.top-level {
+.accordion-button.top-level {
     border-bottom: var(--border-base);
 }
 
-.locations .accordion-button:hover {
+.accordion-button:hover {
     background-color: color-mix(in srgb, var(--text-secondary) 5%, transparent);
 }
 
@@ -2790,4 +2791,27 @@ ul.action-dropdown-menu.show {
 .inbox-modal-footer-badge {
     padding: var(--space-2) var(--space-3);
     border-radius: var(--radius-sm);
+}
+
+/* Gestão de Conteúdos */
+.content-management .content-icon-wrapper {
+    background-color: color-mix(in srgb, var(--text-muted) 10%, transparent) !important;
+}
+
+.content-management .switch-wrapper {
+    height: 48px;
+}
+
+.content-management .switch-input {
+    width: 40px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.content-management .accordion-button .lucide-chevron-down {
+    transition: transform 0.3s ease;
+}
+
+.content-management .accordion-button[aria-expanded="true"] .lucide-chevron-down {
+    transform: rotate(180deg);
 }
