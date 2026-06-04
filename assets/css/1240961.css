@@ -2975,3 +2975,49 @@ ul.action-dropdown-menu.show {
     border: none;
     border-top: var(--border-base);
 }
+
+/* Fornecedores Tab Styles */
+@media (min-width: 1025px) {
+    .equipment-detailed-view .supplier-card {
+        flex: 1;
+    }
+}
+
+.manufacturer-icon-wrapper {
+    background-color: color-mix(in srgb, var(--primary-500) 10%, transparent) !important;
+}
+
+.distributor-icon-wrapper {
+    background-color: color-mix(in srgb, #8B5CF6 10%, transparent) !important;
+}
+
+.distributor-icon-wrapper svg {
+    stroke: #8B5CF6 !important;
+}
+
+.support-icon-wrapper {
+    background-color: color-mix(in srgb, var(--success) 10%, transparent) !important;
+}
+
+.btn-add-badge {
+    background-color: color-mix(in srgb, var(--success) 10%, transparent);
+    border-radius: var(--radius-sm);
+    transition: background-color 0.2s, opacity 0.2s;
+}
+
+.btn-add-badge:hover {
+    background-color: color-mix(in srgb, var(--success) 20%, transparent);
+    opacity: 0.9;
+}
+
+.support-list-item {
+    background-color: var(--input-field-bg);
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    padding: var(--space-3) var(--space-4);
+    transition: border-color 0.2s;
+}
+
+.support-list-item:hover {
+    border-color: var(--border-focus);
+}
