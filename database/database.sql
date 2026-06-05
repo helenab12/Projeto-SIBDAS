@@ -1,3 +1,6 @@
+CREATE DATABASE IF NOT EXISTS `heba-db`;
+USE `heba-db`;
+
 CREATE TABLE `CategoriaEquipamento` (
   `idCategoria` integer PRIMARY KEY,
   `nome` varchar(255),
@@ -268,7 +271,7 @@ ALTER TABLE `Manutencao` ADD FOREIGN KEY (`idPessoaResponsavel`) REFERENCES `Pes
 
 ALTER TABLE `Manutencao` ADD FOREIGN KEY (`idFornecedor`) REFERENCES `Fornecedor` (`idFornecedor`);
 
-ALTER TABLE `Pessoa` ADD FOREIGN KEY (`idPessoa`) REFERENCES `Utilizador` (`idPessoa`);
+ALTER TABLE `Utilizador` ADD FOREIGN KEY (`idPessoa`) REFERENCES `Pessoa` (`idPessoa`);
 
 ALTER TABLE `Utilizador` ADD FOREIGN KEY (`idPerfil`) REFERENCES `Perfil` (`idPerfil`);
 
@@ -297,5 +300,3 @@ ALTER TABLE `HistoricoAuditoria` ADD FOREIGN KEY (`idUtilizador`) REFERENCES `Ut
 ALTER TABLE `NotificacaoUtilizador` ADD FOREIGN KEY (`idNotificacao`) REFERENCES `Notificacao` (`idNotificacao`);
 
 ALTER TABLE `NotificacaoUtilizador` ADD FOREIGN KEY (`idUtilizador`) REFERENCES `Utilizador` (`idUtilizador`);
-
-ALTER TABLE `Utilizador` ADD FOREIGN KEY (`idUtilizador`) REFERENCES `Utilizador` (`password`);

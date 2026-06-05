@@ -1,7 +1,15 @@
 <?php
-require_once(__DIR__ . "/../config/config.php");
+require_once(__DIR__ . "/../config/funcoes.php");
 include_once 'includes/head.php';
 include_once 'includes/sidebar-desktop.php';
+
+$ligacao = null;
+try {
+    $ligacao = connect_to_db();
+} catch (Exception $e) {
+    echo "Erro ao conectar à base de dados: " . $e->getMessage();
+}
+
 ?>
 
 <div class="d-flex flex-column flex-grow-1 overflow-x-hidden mw-0">
@@ -17,9 +25,9 @@ include_once 'includes/sidebar-desktop.php';
             </div>
             <div class="d-flex gap-2">
                 <button class="btn btn-ghost-outline gap-2 btn-small">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-qr-code-icon lucide-qr-code">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-qr-code-icon lucide-qr-code">
                         <rect width="5" height="5" x="3" y="3" rx="1" />
                         <rect width="5" height="5" x="16" y="3" rx="1" />
                         <rect width="5" height="5" x="3" y="16" rx="1" />
@@ -36,9 +44,9 @@ include_once 'includes/sidebar-desktop.php';
                     Gerar QR
                 </button>
                 <button class="btn btn-primary-outline gap-2 btn-small">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-scan-line-icon lucide-scan-line">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-scan-line-icon lucide-scan-line">
                         <path d="M3 7V5a2 2 0 0 1 2-2h2" />
                         <path d="M17 3h2a2 2 0 0 1 2 2v2" />
                         <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
@@ -56,9 +64,8 @@ include_once 'includes/sidebar-desktop.php';
             <!-- Total Equipamentos -->
             <div class="bento-card bento-card-move-up d-flex flex-column padding-6 gap-4">
                 <div class="d-flex align-items-center justify-content-between w-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round"
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-package-icon lucide-package dashboard-bento-icon dashboard-bento-icon-equipments">
                         <path
                             d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z" />
@@ -68,9 +75,9 @@ include_once 'includes/sidebar-desktop.php';
                     </svg>
                     <div
                         class="d-flex flex-row dashboard-bento-trend dashboard-bento-trend-up gap-1 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-trending-up-icon lucide-trending-up ">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-trending-up-icon lucide-trending-up ">
                             <path d="M16 7h6v6" />
                             <path d="m22 7-8.5 8.5-5-5L2 17" />
                         </svg>
@@ -86,18 +93,17 @@ include_once 'includes/sidebar-desktop.php';
             <!-- Equipamentos Ativos -->
             <div class="bento-card bento-card-move-up d-flex flex-column padding-6 gap-4">
                 <div class="d-flex align-items-center justify-content-between w-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round"
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-activity-icon lucide-activity dashboard-bento-icon dashboard-bento-icon-active">
                         <path
                             d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2" />
                     </svg>
                     <div
                         class="d-flex flex-row dashboard-bento-trend dashboard-bento-trend-up gap-1 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-trending-up-icon lucide-trending-up ">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-trending-up-icon lucide-trending-up ">
                             <path d="M16 7h6v6" />
                             <path d="m22 7-8.5 8.5-5-5L2 17" />
                         </svg>
@@ -113,18 +119,16 @@ include_once 'includes/sidebar-desktop.php';
             <!-- Em Manutencao -->
             <div class="bento-card bento-card-move-up d-flex flex-column padding-6 gap-4">
                 <div class="d-flex align-items-center justify-content-between w-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round"
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-wrench-icon lucide-wrench dashboard-bento-icon dashboard-bento-icon-maintenance">
                         <path
                             d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z" />
                     </svg>
                     <div
                         class="d-flex flex-row dashboard-bento-trend dashboard-bento-trend-down gap-1 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round"
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="lucide lucide-trending-down-icon lucide-trending-down">
                             <path d="M16 17h6v-6" />
                             <path d="m22 17-8.5-8.5-5 5L2 7" />
@@ -141,9 +145,8 @@ include_once 'includes/sidebar-desktop.php';
             <!-- Garantias A Expirar -->
             <div class="bento-card bento-card-move-up d-flex flex-column padding-6 gap-4">
                 <div class="d-flex align-items-center justify-content-between w-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round"
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-shield-alert-icon lucide-shield-alert dashboard-bento-icon dashboard-bento-icon-warranty-expiring">
                         <path
                             d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
@@ -152,9 +155,9 @@ include_once 'includes/sidebar-desktop.php';
                     </svg>
                     <div
                         class="d-flex flex-row dashboard-bento-trend dashboard-bento-trend-up gap-1 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-trending-up-icon lucide-trending-up ">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-trending-up-icon lucide-trending-up ">
                             <path d="M16 7h6v6" />
                             <path d="m22 7-8.5 8.5-5-5L2 17" />
                         </svg>
@@ -170,9 +173,8 @@ include_once 'includes/sidebar-desktop.php';
             <!-- Equipamentos Inativos -->
             <div class="bento-card bento-card-move-up d-flex flex-column padding-6 gap-4">
                 <div class="d-flex align-items-center justify-content-between w-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round"
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-package-x-icon lucide-package-x dashboard-bento-icon dashboard-bento-icon-inactive">
                         <path d="M12 22V12" />
                         <path d="m16.5 14.5 5 5" />
@@ -192,9 +194,8 @@ include_once 'includes/sidebar-desktop.php';
             <!-- Garantias Expiradas -->
             <div class="bento-card bento-card-move-up d-flex flex-column padding-6 gap-4">
                 <div class="d-flex align-items-center justify-content-between w-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round"
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-triangle-alert-icon lucide-triangle-alert dashboard-bento-icon dashboard-bento-icon-warranty-expired">
                         <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
                         <path d="M12 9v4" />
@@ -202,9 +203,9 @@ include_once 'includes/sidebar-desktop.php';
                     </svg>
                     <div
                         class="d-flex flex-row dashboard-bento-trend dashboard-bento-trend-up gap-1 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-trending-up-icon lucide-trending-up ">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-trending-up-icon lucide-trending-up ">
                             <path d="M16 7h6v6" />
                             <path d="m22 7-8.5 8.5-5-5L2 17" />
                         </svg>
@@ -220,9 +221,8 @@ include_once 'includes/sidebar-desktop.php';
             <!-- Criticidade Elevada -->
             <div class="bento-card bento-card-move-up d-flex flex-column padding-6 gap-4">
                 <div class="d-flex align-items-center justify-content-between w-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round"
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-zap-icon lucide-zap dashboard-bento-icon dashboard-bento-icon-high-criticality">
                         <path
                             d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" />
@@ -237,9 +237,8 @@ include_once 'includes/sidebar-desktop.php';
             <!-- Sem Documentos -->
             <div class="bento-card bento-card-move-up d-flex flex-column padding-6 gap-4">
                 <div class="d-flex align-items-center justify-content-between w-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round"
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-file-x-icon lucide-file-x dashboard-bento-icon dashboard-bento-icon-no-documents">
                         <path
                             d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
@@ -249,9 +248,8 @@ include_once 'includes/sidebar-desktop.php';
                     </svg>
                     <div
                         class="d-flex flex-row dashboard-bento-trend dashboard-bento-trend-down gap-1 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round"
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="lucide lucide-trending-down-icon lucide-trending-down">
                             <path d="M16 17h6v-6" />
                             <path d="m22 17-8.5-8.5-5 5L2 7" />
@@ -328,10 +326,8 @@ include_once 'includes/sidebar-desktop.php';
                             class="ai-card ai-card-warning d-flex flex-row gap-2 align-items-start justify-items-start padding-3 w-100">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="lucide lucide-triangle-alert-icon lucide-triangle-alert">
-                                <path
-                                    d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+                                stroke-linejoin="round" class="lucide lucide-triangle-alert-icon lucide-triangle-alert">
+                                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
                                 <path d="M12 9v4" />
                                 <path d="M12 17h.01" />
                             </svg>
@@ -346,8 +342,7 @@ include_once 'includes/sidebar-desktop.php';
                             class="ai-card ai-card-success d-flex flex-row gap-2 align-items-start justify-items-start padding-3 w-100">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="lucide lucide-circle-check-icon lucide-circle-check">
+                                stroke-linejoin="round" class="lucide lucide-circle-check-icon lucide-circle-check">
                                 <circle cx="12" cy="12" r="10" />
                                 <path d="m9 12 2 2 4-4" />
                             </svg>
@@ -395,8 +390,8 @@ include_once 'includes/sidebar-desktop.php';
                     </div>
                     <form action="" class="d-flex flex-row w-100">
                         <div class="form-item w-100 flex-row d-flex align-items-center gap-2">
-                            <input type="search" id="search" name="search"
-                                placeholder="Perguntar ao assistente..." required class="w-100 input-small">
+                            <input type="search" id="search" name="search" placeholder="Perguntar ao assistente..."
+                                required class="w-100 input-small">
 
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -418,9 +413,9 @@ include_once 'includes/sidebar-desktop.php';
                 <h2 class="text-primary m-0">Atividade Recente</h2>
                 <a href="#" class="text-primary d-flex flex-row gap-1 align-items-center text-primary-500">
                     <p class="fw-400">Ver tudo</p>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-arrow-up-right-icon lucide-arrow-up-right">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-arrow-up-right-icon lucide-arrow-up-right">
                         <path d="M7 7h10v10" />
                         <path d="M7 17 17 7" />
                     </svg>
@@ -430,9 +425,9 @@ include_once 'includes/sidebar-desktop.php';
             <!-- Lista de Atividades -->
             <div class="d-flex flex-column gap-2 w-100">
                 <div class="d-flex flex-row align-items-center gap-3 activity-item w-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-clock-icon lucide-clock">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-clock-icon lucide-clock">
                         <circle cx="12" cy="12" r="10" />
                         <path d="M12 6v6l4 2" />
                     </svg>
@@ -443,9 +438,9 @@ include_once 'includes/sidebar-desktop.php';
                 </div>
 
                 <div class="d-flex flex-row align-items-center gap-3 activity-item w-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-clock-icon lucide-clock">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-clock-icon lucide-clock">
                         <circle cx="12" cy="12" r="10" />
                         <path d="M12 6v6l4 2" />
                     </svg>
@@ -456,9 +451,9 @@ include_once 'includes/sidebar-desktop.php';
                 </div>
 
                 <div class="d-flex flex-row align-items-center gap-3 activity-item w-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-clock-icon lucide-clock">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-clock-icon lucide-clock">
                         <circle cx="12" cy="12" r="10" />
                         <path d="M12 6v6l4 2" />
                     </svg>
@@ -470,9 +465,9 @@ include_once 'includes/sidebar-desktop.php';
                 </div>
 
                 <div class="d-flex flex-row align-items-center gap-3 activity-item w-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-clock-icon lucide-clock">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-clock-icon lucide-clock">
                         <circle cx="12" cy="12" r="10" />
                         <path d="M12 6v6l4 2" />
                     </svg>
@@ -483,9 +478,9 @@ include_once 'includes/sidebar-desktop.php';
                 </div>
 
                 <div class="d-flex flex-row align-items-center gap-3 activity-item w-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-clock-icon lucide-clock">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-clock-icon lucide-clock">
                         <circle cx="12" cy="12" r="10" />
                         <path d="M12 6v6l4 2" />
                     </svg>
