@@ -232,9 +232,9 @@ if (!$isExpired) {
                     </svg>
                     <p class="d-none d-md-inline m-0">Documentos</p>
                 </button>
-                <button class="filter-bar-badge d-flex align-items-center gap-2 border-0"
-                    id="nav-fornecedores-tab" data-bs-toggle="tab" data-bs-target="#nav-fornecedores" type="button"
-                    role="tab" aria-controls="nav-fornecedores" aria-selected="false">
+                <button class="filter-bar-badge d-flex align-items-center gap-2 border-0" id="nav-fornecedores-tab"
+                    data-bs-toggle="tab" data-bs-target="#nav-fornecedores" type="button" role="tab"
+                    aria-controls="nav-fornecedores" aria-selected="false">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-building-2">
@@ -259,9 +259,9 @@ if (!$isExpired) {
                     </svg>
                     <p class="d-none d-md-inline m-0">Garantias & Contratos</p>
                 </button>
-                <button class="filter-bar-badge active d-flex align-items-center gap-2 border-0" id="nav-componentes-tab"
-                    data-bs-toggle="tab" data-bs-target="#nav-componentes" type="button" role="tab"
-                    aria-controls="nav-componentes" aria-selected="true">
+                <button class="filter-bar-badge active d-flex align-items-center gap-2 border-0"
+                    id="nav-componentes-tab" data-bs-toggle="tab" data-bs-target="#nav-componentes" type="button"
+                    role="tab" aria-controls="nav-componentes" aria-selected="true">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-puzzle-icon lucide-puzzle">

@@ -458,6 +458,22 @@ if (
     });
 }
 
+// Inicializar DataTables (Componentes)
+if (
+    document.getElementById("componentsTable") &&
+    typeof simpleDatatables !== "undefined"
+) {
+    new simpleDatatables.DataTable("#componentsTable", {
+        searchable: false,
+        perPage: 10,
+        perPageSelect: false,
+        labels: {
+            noRows: "Nenhum registo encontrado",
+            info: "",
+        },
+    });
+}
+
 // Inicializar Flatpickr (Datas)
 if (typeof flatpickr !== "undefined") {
     flatpickr("#purchase-date", {
