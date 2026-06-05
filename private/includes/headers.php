@@ -48,13 +48,36 @@
             <path
                 d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
         </svg>
-        <div class="d-flex flex-row align-items-center navbar-user gap-3">
-            <div class="d-flex flex-column gap-1">
-                <p class="fw-600 text-primary">Helena Barbosa</p>
-                <span class="text-secondary">Administrador</span>
+        <div class="dropdown">
+            <div class="d-flex flex-row align-items-center navbar-user gap-3 dropdown-toggle" data-bs-toggle="dropdown"
+                aria-expanded="false" style="cursor: pointer;">
+                <div class="d-flex flex-column gap-1 text-end">
+                    <p class="fw-600 text-primary mb-0">
+                        <?= htmlspecialchars(isset($_SESSION['pessoaAtual']) ? $_SESSION['pessoaAtual']->getNome() : 'Utilizador Desconhecido') ?>
+                    </p>
+                    <span class="text-secondary">
+                        <?= htmlspecialchars(isset($_SESSION['userAtual']) ? $_SESSION['userAtual']->getPerfil()->getNome() : 'Sem Perfil') ?>
+                    </span>
+                </div>
+                <p class="user-icon btn-glowing d-flex align-items-center justify-content-center fw-700 mb-0">
+                    <?= get_user_initials(isset($_SESSION['pessoaAtual']) ? $_SESSION['pessoaAtual']->getNome() : 'Utilizador') ?>
+                </p>
             </div>
-            <p class="user-icon btn-glowing d-flex align-items-center justify-content-center fw-700">HB
-            </p>
+            <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
+                <li>
+                    <a class="dropdown-item action-dropdown-item text-error"
+                        href="<?= BASE_URL ?>private/login/logout.php">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-log-out-icon lucide-log-out">
+                            <path d="m16 17 5-5-5-5" />
+                            <path d="M21 12H9" />
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        </svg>
+                        Terminar Sessão
+                    </a>
+                </li>
+            </ul>
         </div>
     </div>
 </header>
@@ -113,9 +136,28 @@
                 <path
                     d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
             </svg>
-            <div class="d-flex flex-row align-items-center navbar-user gap-3">
-                <p class="user-icon btn-glowing d-flex align-items-center justify-content-center fw-700">HB
-                </p>
+            <div class="dropdown">
+                <div class="d-flex flex-row align-items-center navbar-user gap-3 dropdown-toggle"
+                    data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
+                    <p class="user-icon btn-glowing d-flex align-items-center justify-content-center fw-700 mb-0">
+                        <?= get_user_initials(isset($_SESSION['pessoaAtual']) ? $_SESSION['pessoaAtual']->getNome() : 'Utilizador') ?>
+                    </p>
+                </div>
+                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
+                    <li>
+                        <a class="dropdown-item action-dropdown-item text-error"
+                            href="<?= BASE_URL ?>private/login/logout.php">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="lucide lucide-log-out-icon lucide-log-out">
+                                <path d="m16 17 5-5-5-5" />
+                                <path d="M21 12H9" />
+                                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                            </svg>
+                            Terminar Sessão
+                        </a>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>

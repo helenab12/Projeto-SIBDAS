@@ -1393,3 +1393,10 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+// Inicializar toasts na pagina de login
+document.addEventListener("DOMContentLoaded", function () {
+    const toastElList = document.querySelectorAll('.toast.toast-error');
+    const toastList = [...toastElList].map(toastEl => new bootstrap.Toast(toastEl));
+    toastList.forEach(toast => toast.show());
+});

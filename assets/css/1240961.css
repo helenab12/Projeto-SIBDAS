@@ -1091,6 +1091,10 @@ label {
 
 .background-decorations {
     position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 0;
 }
 
 .background-decoration-item {
@@ -1133,14 +1137,21 @@ label {
     overflow: visible !important;
 }
 
+.login-section {
+    position: relative;
+}
+
 .login-section-content {
     width: 75%;
+    position: relative;
+    z-index: 1;
 }
 
 .login-page-container .pa-theme-toggle {
     position: absolute;
     top: var(--space-4);
     right: var(--space-4);
+    z-index: 100;
 }
 
 @media (min-width: 1025px) {
@@ -1164,6 +1175,8 @@ label {
 
     .login-section-content {
         width: 100%;
+        position: relative;
+        z-index: 1;
     }
 
     [data-theme="light"] .background-decoration-item {
@@ -3087,4 +3100,18 @@ ul.action-dropdown-menu.show {
 
 .global-search-modal .search-item:hover .search-item-icon {
     color: var(--primary-500);
+}
+
+.toast {
+    border-radius: var(--radius-sm);
+}
+
+.toast.toast-error {
+    background-color: color-mix(in srgb, var(--error) 10%, var(--bento-bg));
+    border: 1px solid var(--error) !important;
+    color: var(--error);
+}
+
+.navbar-user.dropdown-toggle::after {
+    display: none !important;
 }

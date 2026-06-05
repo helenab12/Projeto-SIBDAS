@@ -1,13 +1,80 @@
 <?php
 require_once(__DIR__ . "/../config/funcoes.php");
+redirect_if_not_logged();
+
 include_once 'includes/head.php';
 include_once 'includes/sidebar-desktop.php';
+
+$validation_errors = [];
+if (!empty($_SESSION['validation_errors'])) {
+    $validation_errors = $_SESSION['validation_errors'];
+    unset($_SESSION['validation_errors']);
+}
+
+$server_error = null;
+if (!empty($_SESSION['server_error'])) {
+    $server_error = $_SESSION['server_error'];
+    unset($_SESSION['server_error']);
+}
 
 $ligacao = null;
 try {
     $ligacao = connect_to_db();
 } catch (Exception $e) {
-    echo "Erro ao conectar à base de dados: " . $e->getMessage();
+    $server_error = "Erro ao conectar à base de dados: " . $e->getMessage();
+}
+
+// Carregar as instâncias de Pessoa e Utilizador para a sessão, caso ainda não existam
+if ($ligacao && (!isset($_SESSION['pessoaAtual']) || !isset($_SESSION['userAtual'])) && isset($_SESSION['id_utilizador'])) {
+    try {
+
+        // Temos que fazer a query assim invés de u.* e p.* porque Utilizador e Pessoa têm colunas com nome igual
+        // por isso elas iriam sobrepor-se se usássemos u.* e p.* ao fazer o PDO::FETCH_OBJ.
+        $stmt = execute_query(
+            "SELECT u.idUtilizador, u.idPessoa, u.password, u.idPerfil, u.estado, u.ativo as utilizador_ativo, u.dataCriacao as utilizador_dataCriacao, u.dataAtualizacao as utilizador_dataAtualizacao,
+                    p.nome as pessoa_nome, p.email as pessoa_email, p.contactoTelefonico as pessoa_contacto, p.nif as pessoa_nif, p.ativo as pessoa_ativo, p.dataCriacao as pessoa_dataCriacao, p.dataAtualizacao as pessoa_dataAtualizacao,
+                    pf.idPerfil as perfil_id, pf.nome as perfil_nome, pf.dataCriacao as perfil_dataCriacao, pf.dataAtualizacao as perfil_dataAtualizacao
+            FROM Utilizador u
+            INNER JOIN Pessoa p ON u.idPessoa = p.idPessoa
+            LEFT JOIN Perfil pf ON u.idPerfil = pf.idPerfil
+            WHERE u.idUtilizador = :id",
+            ['id' => $_SESSION['id_utilizador']],
+            $ligacao
+        );
+        $dados = $stmt->fetch(PDO::FETCH_OBJ);
+
+        if ($dados) {
+            $_SESSION['pessoaAtual'] = new Pessoa(
+                (string) $dados->idPessoa,
+                (string) $dados->pessoa_nome,
+                (string) $dados->pessoa_email,
+                (string) $dados->pessoa_contacto,
+                (string) $dados->pessoa_nif,
+                (bool) $dados->pessoa_ativo,
+                new DateTime($dados->pessoa_dataCriacao),
+                $dados->pessoa_dataAtualizacao ? new DateTime($dados->pessoa_dataAtualizacao) : new DateTime()
+            );
+
+            $_SESSION['userAtual'] = new Utilizador(
+                (string) $dados->idUtilizador,
+                (string) $dados->idPessoa,
+                (string) $dados->password,
+                (string) $dados->idPerfil,
+                (string) $dados->estado,
+                (bool) $dados->utilizador_ativo,
+                new DateTime($dados->utilizador_dataCriacao),
+                $dados->utilizador_dataAtualizacao ? new DateTime($dados->utilizador_dataAtualizacao) : new DateTime(),
+                new Perfil(
+                    (string) $dados->perfil_id,
+                    (string) $dados->perfil_nome,
+                    new DateTime($dados->perfil_dataCriacao),
+                    $dados->perfil_dataAtualizacao ? new DateTime($dados->perfil_dataAtualizacao) : new DateTime()
+                )
+            );
+        }
+    } catch (Exception $e) {
+        $server_error = "Erro ao carregar dados do utilizador: " . $e->getMessage();
+    }
 }
 
 ?>
@@ -497,5 +564,44 @@ try {
 
 <?php
 include_once 'includes/sidebar-mobile.php';
+?>
+
+<!-- Toast Container -->
+<div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3 mt-4 error-toast"
+    style="z-index: 100;">
+    <?php if (!empty($validation_errors) || !empty($server_error)): ?>
+
+        <?php
+        $all_errors = [];
+        if (!empty($validation_errors)) {
+            $all_errors = array_merge($all_errors, $validation_errors);
+        }
+        if (!empty($server_error)) {
+            $all_errors[] = $server_error;
+        }
+        ?>
+        <?php foreach ($all_errors as $error): ?>
+            <div class="toast align-items-center border-0 shadow-sm toast-error w-auto padding-4" role="alert"
+                aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="toast-body fw-500 p-0">
+                        <?= htmlspecialchars($error) ?>
+                    </div>
+                    <button type="button" class="text-error border-0 p-0 bg-transparent ms-auto" data-bs-dismiss="toast"
+                        aria-label="Close">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-x-icon lucide-x">
+                            <path d="M18 6 6 18" />
+                            <path d="m6 6 12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        <?php endforeach; ?>
+    <?php endif; ?>
+</div>
+
+<?php
 include_once 'includes/footer.php';
 ?>

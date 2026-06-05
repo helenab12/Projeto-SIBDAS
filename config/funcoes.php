@@ -1,6 +1,7 @@
 <?php
 
 require_once __DIR__ . '/config.php';
+require_once __DIR__ . '/classes.php';
 
 // ============================================================
 // Gestão de Sessão
@@ -18,7 +19,7 @@ function check_session()
     return isset($_SESSION['utilizador']);
 }
 
-function redirect_if_not_logged($redirect_to = '/private/login/login.php')
+function redirect_if_not_logged($redirect_to = 'private/login/login.php')
 {
     start_session();
     if (!check_session()) {
@@ -27,7 +28,7 @@ function redirect_if_not_logged($redirect_to = '/private/login/login.php')
     }
 }
 
-function logout_and_redirect($redirect_to = '/private/login/login.php')
+function logout_and_redirect($redirect_to = 'private/login/login.php')
 {
     start_session();
     session_unset();
@@ -92,4 +93,18 @@ function execute_query(string $sql, array $params = [], ?PDO $ligacao = null): P
     return $stmt;
 }
 
-?>
+// ============================================================
+// Funções de Utilidade
+// ============================================================
+
+function get_user_initials(string $name): string
+{
+    $words = explode(' ', $name);
+    $initials = '';
+    foreach ($words as $word) {
+        if (strlen($word) > 0) {
+            $initials .= strtoupper($word[0]);
+        }
+    }
+    return $initials;
+}

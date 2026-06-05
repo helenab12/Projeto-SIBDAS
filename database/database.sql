@@ -132,7 +132,7 @@ CREATE TABLE `Pessoa` (
 CREATE TABLE `Utilizador` (
   `idUtilizador` integer PRIMARY KEY,
   `idPessoa` integer,
-  `password` varchar(255),
+  `password` varbinary(255),
   `idPerfil` integer,
   `estado` ENUM ('Ativo', 'Inativo'),
   `ativo` boolean DEFAULT true,

@@ -1,3 +1,28 @@
+<?php
+
+require_once(__DIR__ . "/../../config/funcoes.php");
+
+start_session();
+
+if (check_session()) {
+    header('Location: ' . BASE_URL . 'private/index.php');
+    exit;
+}
+
+$validation_errors = [];
+if (!empty($_SESSION['validation_errors'])) {
+    $validation_errors = $_SESSION['validation_errors'];
+    unset($_SESSION['validation_errors']);
+}
+
+$server_error = null;
+if (!empty($_SESSION['server_error'])) {
+    $server_error = $_SESSION['server_error'];
+    unset($_SESSION['server_error']);
+}
+
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -93,7 +118,7 @@
                         <h1>Bem-vindo de volta</h1>
                         <p class="text-secondary fw-400">Introduza as suas credenciais para aceder ao sistema.</p>
                     </div>
-                    <form action="" class="d-flex flex-column gap-6">
+                    <form action="process_login.php" class="d-flex flex-column gap-6" method="POST" novalidate>
                         <div class="d-flex flex-column gap-4">
                             <div class="d-flex flex-column form-item">
                                 <label for="email">Email</label>
@@ -104,6 +129,39 @@
                                 <input type="password" id="password" name="password" placeholder="********" required>
                             </div>
                         </div>
+
+                        <?php if (SHOW_DEBUG_BUTTONS): ?>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
+                                    onclick="prefillLogin('admin@hospital.pt', 'admin123')">
+                                    Admin
+                                </button>
+                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
+                                    onclick="prefillLogin('bioeng@hospital.pt', 'bioeng123')">
+                                    Eng. Biomédico
+                                </button>
+                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
+                                    onclick="prefillLogin('tech@hospital.pt', 'tech123')">
+                                    Técnico
+                                </button>
+                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
+                                    onclick="prefillLogin('medico@hospital.pt', 'medico123')">
+                                    Médico
+                                </button>
+                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
+                                    onclick="prefillLogin('enfermeiro@hospital.pt', 'enfermeiro123')">
+                                    Enfermeiro
+                                </button>
+                            </div>
+                            <script>
+                                function prefillLogin(email, password) {
+                                    document.getElementById('email').value = email;
+                                    document.getElementById('password').value = password;
+                                }
+                            </script>
+                        <?php endif; ?>
+
+
                         <button type="submit" class="btn btn-primary btn-large btn-glowing fw-700 gap-1">
                             Entrar
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -118,6 +176,41 @@
             </div>
         </div>
     </main>
+
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3 mt-4 error-toast"
+        style="z-index: 100;">
+        <?php if (!empty($validation_errors) || !empty($server_error)): ?>
+            <?php
+            $all_errors = [];
+            if (!empty($validation_errors)) {
+                $all_errors = array_merge($all_errors, $validation_errors);
+            }
+            if (!empty($server_error)) {
+                $all_errors[] = $server_error;
+            }
+            ?>
+            <?php foreach ($all_errors as $error): ?>
+                <div class="toast align-items-center border-0 shadow-sm toast-error w-auto padding-4" role="alert"
+                    aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="toast-body fw-500 p-0">
+                            <?= htmlspecialchars($error) ?>
+                        </div>
+                        <button type="button" class="text-error border-0 p-0 bg-transparent ms-auto" data-bs-dismiss="toast"
+                            aria-label="Close">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-x-icon lucide-x">
+                                <path d="M18 6 6 18" />
+                                <path d="m6 6 12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
 
     <!-- Bootstrap JS e custom JS -->
     <script src="<?= BASE_URL ?>assets/js/bootstrap.bundle.min.js"></script>
