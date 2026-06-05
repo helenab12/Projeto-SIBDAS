@@ -3027,3 +3027,10 @@ ul.action-dropdown-menu.show {
 .support-list-item:hover {
     border-color: var(--border-focus);
 }
+
+.date-input svg.lucide-calendar {
+    right: var(--space-4);
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}

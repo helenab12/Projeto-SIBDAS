@@ -474,6 +474,22 @@ if (
     });
 }
 
+// Inicializar DataTables (Manutenções)
+if (
+    document.getElementById("maintenancesTable") &&
+    typeof simpleDatatables !== "undefined"
+) {
+    new simpleDatatables.DataTable("#maintenancesTable", {
+        searchable: false,
+        perPage: 10,
+        perPageSelect: false,
+        labels: {
+            noRows: "Nenhum registo encontrado",
+            info: "",
+        },
+    });
+}
+
 // Inicializar Flatpickr (Datas)
 if (typeof flatpickr !== "undefined") {
     flatpickr("#purchase-date", {
@@ -505,6 +521,22 @@ if (typeof flatpickr !== "undefined") {
         allowInput: true,
     });
     flatpickr("#edit-warranty-date", {
+        dateFormat: "d/m/Y",
+        allowInput: true,
+    });
+    flatpickr("#maintenance-start-date", {
+        dateFormat: "d/m/Y",
+        allowInput: true,
+    });
+    flatpickr("#maintenance-end-date", {
+        dateFormat: "d/m/Y",
+        allowInput: true,
+    });
+    flatpickr("#edit-maintenance-start-date", {
+        dateFormat: "d/m/Y",
+        allowInput: true,
+    });
+    flatpickr("#edit-maintenance-end-date", {
         dateFormat: "d/m/Y",
         allowInput: true,
     });

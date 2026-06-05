@@ -158,14 +158,13 @@
                         <!-- Data -->
                         <div class="d-flex flex-column form-item w-100 w-md-50">
                             <label for="warranty-date">Data</label>
-                            <div class="position-relative w-100">
+                            <div class="position-relative w-100 date-input">
                                 <input type="text" id="warranty-date" name="warranty-date" class="w-100"
                                     placeholder="dd/mm/yyyy" required>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round"
-                                    class="lucide lucide-calendar text-secondary position-absolute"
-                                    style="right: var(--space-4); top: 50%; transform: translateY(-50%); pointer-events: none;">
+                                    class="lucide lucide-calendar text-secondary position-absolute">
                                     <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
                                     <line x1="16" x2="16" y1="2" y2="6" />
                                     <line x1="8" x2="8" y1="2" y2="6" />
@@ -256,14 +255,13 @@
                         <!-- Data -->
                         <div class="d-flex flex-column form-item w-100 w-md-50">
                             <label for="edit-warranty-date">Data</label>
-                            <div class="position-relative w-100">
+                            <div class="position-relative w-100 date-input">
                                 <input type="text" id="edit-warranty-date" name="warranty-date" class="w-100"
                                     placeholder="dd/mm/yyyy" value="08/02/2024" required>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round"
-                                    class="lucide lucide-calendar text-secondary position-absolute"
-                                    style="right: var(--space-4); top: 50%; transform: translateY(-50%); pointer-events: none;">
+                                    class="lucide lucide-calendar text-secondary position-absolute">
                                     <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
                                     <line x1="16" x2="16" y1="2" y2="6" />
                                     <line x1="8" x2="8" y1="2" y2="6" />

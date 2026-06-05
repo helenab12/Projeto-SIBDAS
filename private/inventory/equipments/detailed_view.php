@@ -68,7 +68,7 @@ if (!$isExpired) {
             </div>
 
             <!-- Title & Badges Wrapper -->
-            <div class="detailed-header-info d-flex flex-column justify-content-center gap-2">
+            <div class="detailed-header-info d-flex flex-column flex-md-row justify-content-start gap-2">
                 <h2 class="fw-700 text-primary mb-0">Ventilador Mecânico V500</h2>
                 <div class="d-flex align-items-center gap-2 flex-wrap">
                     <span class="equipment-badge equipment-badge-status-active equipment-badge-tooltip"
@@ -259,9 +259,9 @@ if (!$isExpired) {
                     </svg>
                     <p class="d-none d-md-inline m-0">Garantias & Contratos</p>
                 </button>
-                <button class="filter-bar-badge active d-flex align-items-center gap-2 border-0"
+                <button class="filter-bar-badge d-flex align-items-center gap-2 border-0"
                     id="nav-componentes-tab" data-bs-toggle="tab" data-bs-target="#nav-componentes" type="button"
-                    role="tab" aria-controls="nav-componentes" aria-selected="true">
+                    role="tab" aria-controls="nav-componentes" aria-selected="false">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-puzzle-icon lucide-puzzle">
@@ -270,9 +270,9 @@ if (!$isExpired) {
                     </svg>
                     <p class="d-none d-md-inline m-0">Componentes</p>
                 </button>
-                <button class="filter-bar-badge d-flex align-items-center gap-2 border-0" id="nav-manutencoes-tab"
+                <button class="filter-bar-badge active d-flex align-items-center gap-2 border-0" id="nav-manutencoes-tab"
                     data-bs-toggle="tab" data-bs-target="#nav-manutencoes" type="button" role="tab"
-                    aria-controls="nav-manutencoes" aria-selected="false">
+                    aria-controls="nav-manutencoes" aria-selected="true">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-wrench">
@@ -298,13 +298,13 @@ if (!$isExpired) {
 
         <!-- Tab Content Panes -->
         <div class="tab-content w-100" id="nav-tabContent">
-            <?php include 'includes/tab_visao_geral.php'; ?>
-            <?php include 'includes/tab_documentos.php'; ?>
-            <?php include 'includes/tab_fornecedores.php'; ?>
-            <?php include 'includes/tab_garantias.php'; ?>
-            <?php include 'includes/tab_componentes.php'; ?>
-            <?php include 'includes/tab_manutencoes.php'; ?>
-            <?php include 'includes/tab_auditoria.php'; ?>
+            <?php include 'includes/tab_overview.php'; ?>
+            <?php include 'includes/tab_documents.php'; ?>
+            <?php include 'includes/tab_suppliers.php'; ?>
+            <?php include 'includes/tab_warranties.php'; ?>
+            <?php include 'includes/tab_components.php'; ?>
+            <?php include 'includes/tab_maintenances.php'; ?>
+            <?php include 'includes/tab_audit.php'; ?>
         </div>
 
     </section>
