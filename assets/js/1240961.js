@@ -442,6 +442,22 @@ if (
     });
 }
 
+// Inicializar DataTables (Garantias & Contratos)
+if (
+    document.getElementById("warrantiesTable") &&
+    typeof simpleDatatables !== "undefined"
+) {
+    new simpleDatatables.DataTable("#warrantiesTable", {
+        searchable: false,
+        perPage: 10,
+        perPageSelect: false,
+        labels: {
+            noRows: "Nenhum registo encontrado",
+            info: "",
+        },
+    });
+}
+
 // Inicializar Flatpickr (Datas)
 if (typeof flatpickr !== "undefined") {
     flatpickr("#purchase-date", {
@@ -465,6 +481,14 @@ if (typeof flatpickr !== "undefined") {
         maxDate: "today",
     });
     flatpickr("#person-start-date", {
+        dateFormat: "d/m/Y",
+        allowInput: true,
+    });
+    flatpickr("#warranty-date", {
+        dateFormat: "d/m/Y",
+        allowInput: true,
+    });
+    flatpickr("#edit-warranty-date", {
         dateFormat: "d/m/Y",
         allowInput: true,
     });
