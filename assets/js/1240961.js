@@ -490,6 +490,19 @@ if (
     });
 }
 
+// Inicializar DataTables (Auditoria)
+if (document.getElementById("auditTable") && typeof simpleDatatables !== "undefined") {
+    new simpleDatatables.DataTable("#auditTable", {
+        searchable: false,
+        perPage: 10,
+        perPageSelect: false,
+        labels: {
+            noRows: "Nenhum registo encontrado",
+            info: "",
+        },
+    });
+}
+
 // Inicializar Flatpickr (Datas)
 if (typeof flatpickr !== "undefined") {
     flatpickr("#purchase-date", {

@@ -204,9 +204,9 @@ if (!$isExpired) {
         <!-- Menu de Navegação por Separadores (Tabs) -->
         <nav>
             <div class="bento-card d-flex gap-2 padding-1 flex-wrap" id="nav-tab" role="tablist">
-                <button class="filter-bar-badge d-flex align-items-center gap-2 border-0" id="nav-visao-geral-tab"
-                    data-bs-toggle="tab" data-bs-target="#nav-visao-geral" type="button" role="tab"
-                    aria-controls="nav-visao-geral" aria-selected="false">
+                <button class="filter-bar-badge active d-flex align-items-center gap-2 border-0"
+                    id="nav-visao-geral-tab" data-bs-toggle="tab" data-bs-target="#nav-visao-geral" type="button"
+                    role="tab" aria-controls="nav-visao-geral" aria-selected="true">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-box">
@@ -259,9 +259,9 @@ if (!$isExpired) {
                     </svg>
                     <p class="d-none d-md-inline m-0">Garantias & Contratos</p>
                 </button>
-                <button class="filter-bar-badge d-flex align-items-center gap-2 border-0"
-                    id="nav-componentes-tab" data-bs-toggle="tab" data-bs-target="#nav-componentes" type="button"
-                    role="tab" aria-controls="nav-componentes" aria-selected="false">
+                <button class="filter-bar-badge d-flex align-items-center gap-2 border-0" id="nav-componentes-tab"
+                    data-bs-toggle="tab" data-bs-target="#nav-componentes" type="button" role="tab"
+                    aria-controls="nav-componentes" aria-selected="false">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-puzzle-icon lucide-puzzle">
@@ -270,9 +270,9 @@ if (!$isExpired) {
                     </svg>
                     <p class="d-none d-md-inline m-0">Componentes</p>
                 </button>
-                <button class="filter-bar-badge active d-flex align-items-center gap-2 border-0" id="nav-manutencoes-tab"
+                <button class="filter-bar-badge d-flex align-items-center gap-2 border-0" id="nav-manutencoes-tab"
                     data-bs-toggle="tab" data-bs-target="#nav-manutencoes" type="button" role="tab"
-                    aria-controls="nav-manutencoes" aria-selected="true">
+                    aria-controls="nav-manutencoes" aria-selected="false">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-wrench">

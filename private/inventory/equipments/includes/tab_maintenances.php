@@ -16,15 +16,15 @@ $manutencoes = [
     ]
 ];
 ?>
-<div class="tab-pane fade show active" id="nav-manutencoes" role="tabpanel" aria-labelledby="nav-manutencoes-tab">
+<div class="tab-pane fade" id="nav-manutencoes" role="tabpanel" aria-labelledby="nav-manutencoes-tab">
     <div class="card bento-card padding-6 d-flex flex-column gap-4">
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="fw-700 m-0 text-primary">Manutenções</h2>
-            <button class="btn btn-primary-outline d-flex align-items-center gap-2"
-                data-bs-toggle="modal" data-bs-target="#add-maintenance-modal">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                    stroke-linejoin="round" class="lucide lucide-plus">
+            <button class="btn btn-primary-outline d-flex align-items-center gap-2" data-bs-toggle="modal"
+                data-bs-target="#add-maintenance-modal">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-plus">
                     <line x1="12" y1="5" x2="12" y2="19" />
                     <line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
@@ -37,7 +37,8 @@ $manutencoes = [
                 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
                     class="lucide lucide-wrench text-muted opacity-50">
-                    <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+                    <path
+                        d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
                 </svg>
                 <span class="text-secondary fw-500">Sem registos de manutenção</span>
             </div>
@@ -113,7 +114,8 @@ $manutencoes = [
             <!-- Header -->
             <div
                 class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
-                <h2 class="equipment-creation-modal-title modal-title fw-700 text-primary" id="addMaintenanceModalLabel">
+                <h2 class="equipment-creation-modal-title modal-title fw-700 text-primary"
+                    id="addMaintenanceModalLabel">
                     Nova Manutenção</h2>
                 <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
                     data-bs-dismiss="modal" aria-label="Close">
@@ -236,7 +238,8 @@ $manutencoes = [
             <!-- Header -->
             <div
                 class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
-                <h2 class="equipment-creation-modal-title modal-title fw-700 text-primary" id="editMaintenanceModalLabel">
+                <h2 class="equipment-creation-modal-title modal-title fw-700 text-primary"
+                    id="editMaintenanceModalLabel">
                     Editar Manutenção</h2>
                 <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
                     data-bs-dismiss="modal" aria-label="Close">
@@ -316,7 +319,8 @@ $manutencoes = [
                         <select id="edit-maintenance-responsible" name="responsavel" class="form-select w-100" required>
                             <option value="" disabled>Selecionar...</option>
                             <option value="Dr. Manuel Costa">Dr. Manuel Costa — Médico</option>
-                            <option value="Eng.ª Ana Ferreira" selected>Eng.ª Ana Ferreira — Engenheira Biomédica</option>
+                            <option value="Eng.ª Ana Ferreira" selected>Eng.ª Ana Ferreira — Engenheira Biomédica
+                            </option>
                             <option value="Eng. Carlos Mendes">Eng. Carlos Mendes — Técnico de Manutenção</option>
                             <option value="Dr.ª Helena Barbosa">Dr.ª Helena Barbosa — Diretora Clínica</option>
                             <option value="Sofia Oliveira">Sofia Oliveira — Administrativa</option>
@@ -393,10 +397,12 @@ $manutencoes = [
                         </div>
                         <div class="d-flex flex-column align-items-center justify-content-center gap-3">
                             <div class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
-                                <p class="text-secondary m-0">Tem a certeza que deseja apagar permanentemente o registo de manutenção?</p>
+                                <p class="text-secondary m-0">Tem a certeza que deseja apagar permanentemente o registo
+                                    de manutenção?</p>
                             </div>
                             <div class="danger-banner text-error text-center padding-3">
-                                <span>⚠️ Este registo será eliminado permanentemente. Todos os dados associados serão perdidos.</span>
+                                <span>⚠️ Este registo será eliminado permanentemente. Todos os dados associados serão
+                                    perdidos.</span>
                             </div>
                         </div>
                     </div>
