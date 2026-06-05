@@ -1353,3 +1353,43 @@ document.addEventListener("DOMContentLoaded", () => {
     setupDropzone(addDropzone, addFileInput, addDropzoneText);
     setupDropzone(editDropzone, editFileInput, editDropzoneText);
 });
+
+// Lógica do Modal de Pesquisa Global (Foco automático e alternância de estado)
+document.addEventListener("DOMContentLoaded", () => {
+    const searchModal = document.getElementById("search-modal");
+    if (searchModal) {
+        const searchInput = document.getElementById("global-search-input");
+        const quickAccess = document.getElementById("search-quick-access");
+        const searchResults = document.getElementById("search-results");
+
+        searchModal.addEventListener("shown.bs.modal", () => {
+            if (searchInput) {
+                searchInput.focus();
+            }
+        });
+
+        // Alternar estados ao escrever no input
+        if (searchInput && quickAccess && searchResults) {
+            searchInput.addEventListener("input", () => {
+                if (searchInput.value.trim().length > 0) {
+                    quickAccess.classList.add("d-none");
+                    searchResults.classList.remove("d-none");
+                } else {
+                    quickAccess.classList.remove("d-none");
+                    searchResults.classList.add("d-none");
+                }
+            });
+        }
+
+        // Limpar pesquisa e restaurar estado inicial ao fechar o modal
+        searchModal.addEventListener("hidden.bs.modal", () => {
+            if (searchInput) {
+                searchInput.value = "";
+            }
+            if (quickAccess && searchResults) {
+                quickAccess.classList.remove("d-none");
+                searchResults.classList.add("d-none");
+            }
+        });
+    }
+});
