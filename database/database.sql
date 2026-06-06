@@ -1,3 +1,4 @@
+DROP DATABASE IF EXISTS `heba-db`;
 CREATE DATABASE IF NOT EXISTS `heba-db`;
 USE `heba-db`;
 
@@ -217,7 +218,6 @@ CREATE TABLE `ConteudoFrontOffice` (
   `idConteudo` integer PRIMARY KEY,
   `chaveSecao` varchar(100) UNIQUE,
   `valor` text,
-  `ativo` boolean DEFAULT true,
   `dataCriacao` timestamp DEFAULT (CURRENT_TIMESTAMP),
   `dataAtualizacao` timestamp
 );
@@ -226,7 +226,7 @@ CREATE TABLE `CartaoFuncionalidade` (
   `idCartao` integer PRIMARY KEY,
   `titulo` varchar(255),
   `descricao` text,
-  `icone` varchar(50),
+  `icone` text,
   `ordem` integer,
   `ativo` boolean DEFAULT true,
   `dataCriacao` timestamp DEFAULT (CURRENT_TIMESTAMP),

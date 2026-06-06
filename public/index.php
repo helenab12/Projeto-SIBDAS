@@ -1,11 +1,35 @@
-<?php require_once dirname(__DIR__) . '/config/config.php'; ?>
+<?php
+require_once dirname(__DIR__) . '/config/funcoes.php';
+
+$server_error = null;
+if (!empty($_SESSION['server_error'])) {
+    $server_error = $_SESSION['server_error'];
+    unset($_SESSION['server_error']);
+}
+
+$ligacao = null;
+try {
+    $ligacao = connect_to_db();
+} catch (Exception $e) {
+    $server_error = "Erro ao conectar à base de dados: " . $e->getMessage();
+}
+
+// 1. Buscar dados do conteúdo do Front-Office à base de dados
+$conteudoPagina = null;
+try {
+    $conteudoPagina = ConteudoPagina::carregarDaBaseDeDados($ligacao);
+} catch (Exception $e) {
+    $server_error = "Erro ao carregar dados do servidor: " . $e->getMessage();
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HEBA - Área Pública</title>
+    <title><?= $conteudoPagina['navbar.brand_name'] ?> - Área Pública</title>
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/1240961.css">
 </head>
@@ -27,17 +51,19 @@
                         </svg>
                     </div>
                     <div class="d-flex flex-column">
-                        <h1>HEBA</h1>
+                        <h1><?= $conteudoPagina['navbar.brand_name'] ?></h1>
                     </div>
                 </div>
 
                 <!-- Desktop: links + toggle + CTA -->
                 <div class="pa-nav-desktop d-flex align-items-center gap-8">
                     <a href="#pa-features">
-                        <p class="text-secondary">Funcionalidades</p>
+                        <p class="text-secondary">
+                            <?= $conteudoPagina['navbar.link_funcionalidades'] ?>
+                        </p>
                     </a>
                     <a href="#pa-advantages">
-                        <p class="text-secondary">Vantagens</p>
+                        <p class="text-secondary"><?= $conteudoPagina['navbar.link_vantagens'] ?></p>
                     </a>
                     <button class="pa-theme-toggle" aria-label="Alternar tema">
                         <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
@@ -61,7 +87,7 @@
                         </svg>
                     </button>
                     <a href="#pa-cta" class="btn btn-primary">
-                        Agendar Demonstração
+                        <?= $conteudoPagina['navbar.btn_agendar_demo'] ?>
                     </a>
                 </div>
 
@@ -109,13 +135,17 @@
             <!-- Menu mobile (colapsável) -->
             <div class="pa-nav-mobile-menu" id="mobile-menu">
                 <a href="#pa-features">
-                    <p class="text-secondary">Funcionalidades</p>
+                    <p class="text-secondary">
+                        <?= $conteudoPagina['navbar.link_funcionalidades'] ?>
+                    </p>
                 </a>
                 <a href="#pa-advantages">
-                    <p class="text-secondary">Vantagens</p>
+                    <p class="text-secondary">
+                        <?= $conteudoPagina['navbar.link_vantagens'] ?>
+                    </p>
                 </a>
                 <a href="#pa-cta" class="btn btn-primary">
-                    Agendar Demonstração
+                    <?= $conteudoPagina['navbar.btn_agendar_demo'] ?>
                 </a>
             </div>
         </div>
@@ -131,22 +161,20 @@
                         fill="currentColor" stroke="none">
                         <circle cx="12" cy="12" r="4" />
                     </svg>
-                    A solução de liderança em Health Tech
+                    <?= $conteudoPagina['hero.badge'] ?>
                 </p>
                 <h1 class="main-section">
-                    Gestão inteligente de <span class="main-section text-primary-600">equipamentos
-                        hospitalares</span>
+                    <?= $conteudoPagina['hero.title'] ?>
                 </h1>
                 <h2 class="text-secondary fw-400">
-                    Criado para a eficiência clínica, o HEBA unifica o seu inventário, manutenções e documentação num
-                    único painel inovador. Devolva o foco ao que importa: o cuidado com os doentes.
+                    <?= $conteudoPagina['hero.subtitle'] ?>
                 </h2>
                 <div class="d-flex main-section-buttons">
                     <a href="#pa-cta" class="btn btn-primary btn-large btn-glowing fw-600 ">
-                        Agendar Demonstração
+                        <?= $conteudoPagina['hero.btn_agendar'] ?>
                     </a>
                     <a href="#pa-features" class="btn btn-ghost btn-large fw-600">
-                        Explorar Funcionalidades
+                        <?= $conteudoPagina['hero.btn_explorar'] ?>
                     </a>
                 </div>
             </div>
@@ -157,110 +185,37 @@
             <div class="pa-page-container d-flex flex-column align-items-center gap-16">
                 <div class="gap-4 d-flex flex-column align-items-center text-center">
                     <h1 class="section-title">
-                        Tudo o que o seu hospital precisa
+                        <?= $conteudoPagina['features.title'] ?>
                     </h1>
                     <h2 class="text-secondary fw-400">
-                        Uma plataforma desenhada exclusivamente para simplificar a logística, mitigar o risco clínico e
-                        garantir a mantenabilidade dos equipamentos.
+                        <?= $conteudoPagina['features.subtitle'] ?>
                     </h2>
                 </div>
                 <div class="bento-grid">
-                    <div class="bento-card padding-8 d-flex flex-column gap-3 align-items-start text-start">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-package-icon lucide-package stroke-primary-600 padding-3">
-                            <path
-                                d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z" />
-                            <path d="M12 22V12" />
-                            <polyline points="3.29 7 12 12 20.71 7" />
-                            <path d="m7.5 4.27 9 5.15" />
-                        </svg>
-                        <h2>Inventário Centralizado</h2>
-                        <h3 class="text-secondary fw-400">
-                            Registo exaustivo e rastreio completo de
-                            toda a gama de equipamentos médicos
-                            da unidade.
-                        </h3>
-                    </div>
-                    <div class="bento-card padding-8 d-flex flex-column gap-3 align-items-start text-start">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-wrench-icon lucide-wrench">
-                            <path
-                                d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z" />
-                        </svg>
-                        <h2>Gestão de Manutenção (CMMS)</h2>
-                        <h3 class="text-secondary fw-400">
-                            Planeamento de manutenções preventivas
-                            e ordens de trabalho automatizadas para a
-                            equipa.
-                        </h3>
-                    </div>
-                    <div class="bento-card padding-8 d-flex flex-column gap-3 align-items-start text-start">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-users-icon lucide-users">
-                            <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
-                            <path d="M16 3.128a4 4 0 0 1 0 7.744" />
-                            <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
-                            <circle cx="9" cy="7" r="4" />
-                        </svg>
-                        <h2>Controlo de Fornecedores</h2>
-                        <h3 class="text-secondary fw-400">
-                            Gestão integrada de contratos, garantias e
-                            acompanhamento de técnicos externos.
-                        </h3>
-                    </div>
-                    <div class="bento-card padding-8 d-flex flex-column gap-3 align-items-start text-start">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-file-text-icon lucide-file-text">
-                            <path
-                                d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
-                            <path d="M14 2v5a1 1 0 0 0 1 1h5" />
-                            <path d="M10 9H8" />
-                            <path d="M16 13H8" />
-                            <path d="M16 17H8" />
-                        </svg>
-                        <h2>Gestão Documental</h2>
-                        <h3 class="text-secondary fw-400">
-                            Armazene centralmente os certificados,
-                            relatórios de calibração e manuais
-                            técnicos.
-                        </h3>
-                    </div>
-                    <div class="bento-card padding-8 d-flex flex-column gap-3 align-items-start text-start">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-layout-dashboard-icon lucide-layout-dashboard">
-                            <rect width="7" height="9" x="3" y="3" rx="1" />
-                            <rect width="7" height="5" x="14" y="3" rx="1" />
-                            <rect width="7" height="9" x="14" y="12" rx="1" />
-                            <rect width="7" height="5" x="3" y="16" rx="1" />
-                        </svg>
-                        <h2>Dashboard Analítico</h2>
-                        <h3 class="text-secondary fw-400">
-                            Métricas vitais, relatórios customizados e estado do equipamento num ecrã central.
-                        </h3>
-                    </div>
-                    <div
-                        class="bento-card bento-ai-card padding-8 d-flex flex-column gap-3 align-items-start text-start">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-sparkles-icon lucide-sparkles">
-                            <path
-                                d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z" />
-                            <path d="M20 2v4" />
-                            <path d="M22 4h-4" />
-                            <circle cx="4" cy="20" r="2" />
-                        </svg>
-                        <h2>Assistente IA</h2>
-                        <h3 class="text-secondary fw-400">
-                            Recomendações preditivas e extração de
-                            dados através de Inteligência Artificial
-                            generativa.
-                        </h3>
-                    </div>
+                    <?php
+
+                    $cartoes = $conteudoPagina->getCartoes();
+
+                    foreach ($cartoes as $cartao):
+                        if ($cartao->getAtivo()):
+                            ?>
+                            <div
+                                class="bento-card <?= $cartao->getTitulo() == 'Assistente IA' ? 'bento-ai-card' : '' ?> padding-8 d-flex flex-column gap-3 align-items-start text-start">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="lucide padding-3">
+                                    <?= $cartao->getIcone() ?>
+                                </svg>
+                                <h2>
+                                    <?= $cartao->getTitulo() ?>
+                                </h2>
+                                <h3 class="text-secondary fw-400">
+                                    <?= $cartao->getDescricao() ?>
+                                </h3>
+                            </div>
+                            <?php
+                        endif;
+                    endforeach; ?>
                 </div>
             </div>
         </section>
@@ -274,13 +229,13 @@
                             fill="currentColor" stroke="none">
                             <circle cx="12" cy="12" r="4" />
                         </svg>
-                        Vantagens do Sistema
+                        <?= $conteudoPagina['advantages.badge'] ?>
                     </p>
-                    <h1 class="section-title text-start">Porquê escolher o HEBA?</h1>
+                    <h1 class="section-title text-start">
+                        <?= $conteudoPagina['advantages.title'] ?>
+                    </h1>
                     <h2 class="text-secondary fw-400 text-start">
-                        Em vez de adaptar softwares genéricos de armazém, desenhámos a
-                        nossa ferramenta com base nas complexidades reais enfrentadas
-                        por engenheiros clínicos e gestores operacionais.
+                        <?= $conteudoPagina['advantages.subtitle'] ?>
                     </h2>
                     <div class="d-flex flex-column gap-8">
                         <div class="d-flex align-items-start gap-4">
@@ -295,11 +250,9 @@
                                 </svg>
                             </div>
                             <div class="d-flex flex-column gap-2 align-items-start">
-                                <h2 class="text-start">Segurança de Dados e Fiabilidade</h2>
+                                <h2 class="text-start"><?= $conteudoPagina['advantages.item1_title'] ?></h2>
                                 <h3 class="text-secondary fw-400 text-start">
-                                    A infraestrutura HEBA garante encriptação contínua e total
-                                    conformidade com protocolos GDPR para plataformas de setor
-                                    clínico.
+                                    <?= $conteudoPagina['advantages.item1_desc'] ?>
                                 </h3>
                             </div>
                         </div>
@@ -314,10 +267,11 @@
                                 </svg>
                             </div>
                             <div class="d-flex flex-column gap-2 align-items-start">
-                                <h2 class="text-start">Conformidade Regulatória</h2>
+                                <h2 class="text-start">
+                                    <?= $conteudoPagina['advantages.item2_title'] ?>
+                                </h2>
                                 <h3 class="text-secondary fw-400 text-start">
-                                    Auditorias facilitadas através do histórico inalterável e das
-                                    notificações sobre prazos e certificações vencíveis.
+                                    <?= $conteudoPagina['advantages.item2_desc'] ?>
                                 </h3>
                             </div>
                         </div>
@@ -331,17 +285,18 @@
                                 </svg>
                             </div>
                             <div class="d-flex flex-column gap-2 align-items-start">
-                                <h2 class="text-start">Otimização Extrema de Tempo</h2>
+                                <h2 class="text-start">
+                                    <?= $conteudoPagina['advantages.item3_title'] ?>
+                                </h2>
                                 <h3 class="text-secondary fw-400 text-start">
-                                    Reduza a sobrecarga operacional da equipa técnica através da
-                                    automação de processos de submissão de avarias.
+                                    <?= $conteudoPagina['advantages.item3_desc'] ?>
                                 </h3>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="d-flex align-items-center justify-content-center pa-advantages-image-background padding-8">
-                    <img src="https://placehold.co/550x550" alt="Imagem de vantagens">
+                    <img src="<?= BASE_URL . '/assets/img/dashboard.png' ?>" alt="Imagem de vantagens">
                 </div>
             </div>
         </section>
@@ -349,7 +304,7 @@
         <!-- Clientes -->
         <section class="pa-clients" id="pa-clients">
             <div class="pa-page-container d-flex flex-column align-items-center gap-16">
-                <h1 class="section-title text-center">A pensar em todo o tipo de prestadores</h1>
+                <h1 class="section-title text-center"><?= $conteudoPagina['clients.title'] ?></h1>
                 <div class="bento-grid">
                     <div class="bento-card padding-8 d-flex flex-column gap-3 align-items-center text-start">
                         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
@@ -361,11 +316,9 @@
                             <polyline points="3.29 7 12 12 20.71 7" />
                             <path d="m7.5 4.27 9 5.15" />
                         </svg>
-                        <h2 class="text-center">Inventário Centralizado</h2>
+                        <h2 class="text-center"><?= $conteudoPagina['clients.card1_title'] ?></h2>
                         <h3 class="fw-400 text-center text-muted">
-                            Registo exaustivo e rastreio completo de
-                            toda a gama de equipamentos médicos
-                            da unidade.
+                            <?= $conteudoPagina['clients.card1_desc'] ?>
                         </h3>
                     </div>
                     <div class="bento-card padding-8 d-flex flex-column gap-3 align-items-center text-start">
@@ -375,11 +328,9 @@
                             <path
                                 d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z" />
                         </svg>
-                        <h2 class="text-center">Gestão de Manutenção (CMMS)</h2>
+                        <h2 class="text-center"><?= $conteudoPagina['clients.card2_title'] ?></h2>
                         <h3 class="fw-400 text-center text-muted">
-                            Planeamento de manutenções preventivas
-                            e ordens de trabalho automatizadas para a
-                            equipa.
+                            <?= $conteudoPagina['clients.card2_desc'] ?>
                         </h3>
                     </div>
                     <div class="bento-card padding-8 d-flex flex-column gap-3 align-items-center text-start">
@@ -391,10 +342,9 @@
                             <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
                             <circle cx="9" cy="7" r="4" />
                         </svg>
-                        <h2 class="text-center">Controlo de Fornecedores</h2>
+                        <h2 class="text-center"><?= $conteudoPagina['clients.card3_title'] ?></h2>
                         <h3 class="fw-400 text-center text-muted">
-                            Gestão integrada de contratos, garantias e
-                            acompanhamento de técnicos externos.
+                            <?= $conteudoPagina['clients.card3_desc'] ?>
                         </h3>
                     </div>
                 </div>
@@ -406,33 +356,32 @@
             <div class="pa-page-container d-flex">
                 <div class="bento-card d-flex flex-column gap-8 padding-16">
                     <div class="d-flex flex-column gap-4 align-items-center w-100">
-                        <h1 class="section-title text-center">Pronto para digitalizar?</h1>
+                        <h1 class="section-title text-center"><?= $conteudoPagina['cta.title'] ?></h1>
                         <h3 class="fw-400 text-center text-secondary">
-                            Preencha os dados e a nossa equipa agendará uma demonstração de produto de 30
-                            minutos sem qualquer compromisso.
+                            <?= $conteudoPagina['cta.subtitle'] ?>
                         </h3>
                     </div>
                     <div class="d-flex flex-column gap-6 w-100">
                         <form action="" class="d-flex flex-column gap-6 align-items-stretch w-100" id="cta-form">
                             <div class="pa-cta-form-grid gap-6">
                                 <div class="d-flex flex-column align-items-start form-item">
-                                    <label for="name">Nome Completo</label>
+                                    <label for="name"><?= $conteudoPagina['cta.label_nome'] ?></label>
                                     <input type="text" id="name" name="name" class="form-control"
-                                        placeholder="Introduza o seu nome" required>
+                                        placeholder="<?= $conteudoPagina['cta.placeholder_nome'] ?>" required>
                                 </div>
                                 <div class="d-flex flex-column align-items-start form-item">
-                                    <label for="email">Email Profissional</label>
+                                    <label for="email"><?= $conteudoPagina['cta.label_email'] ?></label>
                                     <input type="email" id="email" name="email" class="form-control"
-                                        placeholder="email@hospital.pt" required>
+                                        placeholder="<?= $conteudoPagina['cta.placeholder_email'] ?>" required>
                                 </div>
                                 <div class="d-flex flex-column align-items-start form-item">
-                                    <label for="organization">Organização / Unidade de Saúde</label>
+                                    <label for="organization"><?= $conteudoPagina['cta.label_organizacao'] ?></label>
                                     <input type="text" id="organization" name="organization" class="form-control"
-                                        placeholder="Nome do Hospital ou Clínica" required>
+                                        placeholder="<?= $conteudoPagina['cta.placeholder_organizacao'] ?>" required>
                                 </div>
                             </div>
                             <button type="submit" class="btn btn-primary btn-large btn-glowing w-100 fw-700 gap-1">
-                                Pedir Demonstração Gratuita
+                                <?= $conteudoPagina['cta.btn_submit'] ?>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
                                     stroke-linejoin="round" class="lucide lucide-arrow-right-icon lucide-arrow-right">
@@ -460,12 +409,11 @@
                             <path
                                 d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2" />
                         </svg>
-                        <h1>HEBA</h1>
+                        <h1><?= $conteudoPagina['footer.brand_name'] ?></h1>
                     </div>
-                    <h3 class="fw-400 text-secondary footer-description">A nova norma em Sistemas de Informação para a
-                        Gestão de Equipamentos Clínicos. Otimize e
-                        assegure o futuro do seu parque tecnológico
-                        hospitalar.</h3>
+                    <h3 class="fw-400 text-secondary footer-description">
+                        <?= $conteudoPagina['footer.description'] ?>
+                    </h3>
                     <div class="d-flex flex-column gap-3">
                         <div class="d-flex gap-3">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -475,7 +423,7 @@
                                     d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
                                 <circle cx="12" cy="10" r="3" />
                             </svg>
-                            <h3 class="fw-400 text-secondary">Porto, Portugal</h3>
+                            <h3 class="fw-400 text-secondary"><?= $conteudoPagina['footer.location'] ?></h3>
                         </div>
                         <div class="d-flex gap-3">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -484,7 +432,7 @@
                                 <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
                                 <rect x="2" y="4" width="20" height="16" rx="2" />
                             </svg>
-                            <h3 class="fw-400 text-secondary">helena.b1210@gmail.com</h3>
+                            <h3 class="fw-400 text-secondary"><?= $conteudoPagina['footer.email'] ?></h3>
                         </div>
                         <div class="d-flex gap-3">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -493,24 +441,24 @@
                                 <path
                                     d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" />
                             </svg>
-                            <h3 class="fw-400 text-secondary">+351 912 951 772</h3>
+                            <h3 class="fw-400 text-secondary"><?= $conteudoPagina['footer.phone'] ?></h3>
                         </div>
                     </div>
                 </div>
                 <div class="d-flex flex-column gap-4 footer-col">
-                    <span class="fw-700 text-uppercase">Acesso Rápido</span>
+                    <span class="fw-700 text-uppercase"><?= $conteudoPagina['footer.section_acesso_rapido'] ?></span>
                     <div class="d-flex flex-column gap-3">
-                        <a href="#pa-features" class="fw-400">Ver Funcionalidades</a>
-                        <a href="#pa-advantages" class="fw-400">Vantagens do Sistema</a>
-                        <a href="#pa-cta" class="fw-400">Pedir Demonstração</a>
+                        <a href="#pa-features" class="fw-400"><?= $conteudoPagina['footer.link_funcionalidades'] ?></a>
+                        <a href="#pa-advantages" class="fw-400"><?= $conteudoPagina['footer.link_vantagens'] ?></a>
+                        <a href="#pa-cta" class="fw-400"><?= $conteudoPagina['footer.link_demo'] ?></a>
                     </div>
                 </div>
                 <div class="d-flex flex-column gap-4 footer-col">
-                    <span class="fw-700 text-uppercase">Plataforma</span>
+                    <span class="fw-700 text-uppercase"><?= $conteudoPagina['footer.section_plataforma'] ?></span>
                     <div class="d-flex flex-column gap-3">
                         <a href="../private/login/login.html"
-                            class="fw-400 d-flex align-items-center gap-2 text-primary-500">Aceder ao Backoffice <svg
-                                xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                            class="fw-400 d-flex align-items-center gap-2 text-primary-500"><?= $conteudoPagina['footer.link_backoffice'] ?>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round"
                                 class="lucide lucide-square-arrow-out-up-right-icon lucide-square-arrow-out-up-right">
@@ -519,17 +467,50 @@
                                 <path d="M15 3h6v6" />
                             </svg>
                         </a>
-                        <a href="#" class="fw-400">Termos de Utilização</a>
-                        <a href="#" class="fw-400">Privacidade (RGPD)</a>
+                        <a href="#" class="fw-400"><?= $conteudoPagina['footer.link_termos'] ?></a>
+                        <a href="#" class="fw-400"><?= $conteudoPagina['footer.link_privacidade'] ?></a>
                     </div>
                 </div>
             </div>
             <div class="d-flex footer-copywright justify-content-between">
-                <p class="fw-400 text-secondary">© 2026 HEBA. Todos os direitos reservados.</p>
-                <p class="fw-400 text-secondary">Desenvolvido por Helena Barbosa.</p>
+                <p class="fw-400 text-secondary"><?= $conteudoPagina['footer.copyright'] ?></p>
+                <p class="fw-400 text-secondary"><?= $conteudoPagina['footer.developer'] ?></p>
             </div>
         </div>
     </footer>
+
+    <!-- Toast Container -->
+    <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3 mt-4 error-toast"
+        style="z-index: 100;">
+        <?php if (!empty($validation_errors) || !empty($server_error)): ?>
+
+            <?php
+            $all_errors = [];
+            if (!empty($server_error)) {
+                $all_errors[] = $server_error;
+            }
+            ?>
+            <?php foreach ($all_errors as $error): ?>
+                <div class="toast align-items-center border-0 shadow-sm toast-error w-auto padding-4" role="alert"
+                    aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+                    <div class="d-flex align-items-center gap-2">
+                        <div class="toast-body fw-500 p-0">
+                            <?= htmlspecialchars($error) ?>
+                        </div>
+                        <button type="button" class="text-error border-0 p-0 bg-transparent ms-auto" data-bs-dismiss="toast"
+                            aria-label="Close">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-x-icon lucide-x">
+                                <path d="M18 6 6 18" />
+                                <path d="m6 6 12 12" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php endif; ?>
+    </div>
 
     <!-- Bootstrap JS e custom JS -->
     <script src="<?= BASE_URL ?>assets/js/bootstrap.bundle.min.js"></script>

@@ -5,6 +5,8 @@ interface Validavel
     public function validarDados(array $dados): array;
 }
 
+// Pessoas, Autenticação, Autorização, Gestão de Utilizadores e Perfis
+
 class Pessoa implements Validavel
 {
     private string $id;
@@ -366,5 +368,258 @@ class Perfil implements Validavel
         }
 
         return $erros;
+    }
+}
+
+// Conteúdo do Site
+
+class ConteudoTexto implements Validavel
+{
+    private int $idConteudo;
+    private string $chaveSecao;
+    private string $valor;
+
+    public function __construct(int $idConteudo, string $chaveSecao, string $valor)
+    {
+        $erros = $this->validarDados([
+            'idConteudo' => $idConteudo,
+            'chaveSecao' => $chaveSecao,
+            'valor' => $valor,
+        ]);
+
+        if (!empty($erros)) {
+            throw new Exception("Erro ao criar conteúdo de texto: " . implode(", ", $erros));
+        }
+
+        $this->idConteudo = $idConteudo;
+        $this->chaveSecao = $chaveSecao;
+        $this->valor = $valor;
+    }
+
+    public function getIdConteudo(): int
+    {
+        return $this->idConteudo;
+    }
+    public function getChaveSecao(): string
+    {
+        return $this->chaveSecao;
+    }
+    public function getValor(): string
+    {
+        return $this->valor;
+    }
+
+    // Permite usar o objeto diretamente como string: echo $texto;
+    public function __toString(): string
+    {
+        return $this->valor;
+    }
+
+    public function validarDados(array $dados): array
+    {
+        $erros = [];
+
+        if (empty($dados['idConteudo'])) {
+            $erros[] = "O ID do conteúdo é obrigatório.";
+        }
+
+        if (empty(trim($dados['chaveSecao'] ?? ''))) {
+            $erros[] = "A chave de secção é obrigatória.";
+        }
+
+        if (!isset($dados['valor'])) {
+            $erros[] = "O valor do conteúdo é obrigatório.";
+        }
+
+        return $erros;
+    }
+}
+
+class CartaoFuncionalidade implements Validavel
+{
+    private int $idCartao;
+    private string $titulo;
+    private string $descricao;
+    private string $icone;
+    private int $ordem;
+    private bool $ativo;
+
+    public function __construct(int $idCartao, string $titulo, string $descricao, string $icone, int $ordem, bool $ativo = true)
+    {
+        $erros = $this->validarDados([
+            'idCartao' => $idCartao,
+            'titulo' => $titulo,
+            'descricao' => $descricao,
+            'icone' => $icone,
+            'ordem' => $ordem,
+        ]);
+
+        if (!empty($erros)) {
+            throw new Exception("Erro ao criar cartão de funcionalidade: " . implode(", ", $erros));
+        }
+
+        $this->idCartao = $idCartao;
+        $this->titulo = $titulo;
+        $this->descricao = $descricao;
+        $this->icone = $icone;
+        $this->ordem = $ordem;
+        $this->ativo = $ativo;
+    }
+
+    public function getIdCartao(): int
+    {
+        return $this->idCartao;
+    }
+    public function getTitulo(): string
+    {
+        return $this->titulo;
+    }
+    public function getDescricao(): string
+    {
+        return $this->descricao;
+    }
+    public function getIcone(): string
+    {
+        return $this->icone;
+    }
+    public function getOrdem(): int
+    {
+        return $this->ordem;
+    }
+    public function getAtivo(): bool
+    {
+        return $this->ativo;
+    }
+
+    public function validarDados(array $dados): array
+    {
+        $erros = [];
+
+        if (empty($dados['idCartao'])) {
+            $erros[] = "O ID do cartão é obrigatório.";
+        }
+
+        if (empty(trim($dados['titulo'] ?? ''))) {
+            $erros[] = "O título do cartão é obrigatório.";
+        }
+
+        if (empty(trim($dados['descricao'] ?? ''))) {
+            $erros[] = "A descrição do cartão é obrigatória.";
+        }
+
+        if (!isset($dados['icone']) || trim($dados['icone']) === '') {
+            $erros[] = "O ícone do cartão é obrigatório.";
+        }
+
+        if (!isset($dados['ordem']) || $dados['ordem'] < 0) {
+            $erros[] = "A ordem do cartão é obrigatória e deve ser positiva.";
+        }
+
+        return $erros;
+    }
+}
+
+class ConteudoPagina implements ArrayAccess
+{
+    private array $textos = [];
+
+    private array $cartoes = [];
+
+    // Textos
+    public function adicionarTexto(ConteudoTexto $texto): void
+    {
+        $this->textos[$texto->getChaveSecao()] = $texto;
+    }
+
+    public function getTexto(string $chave): ?ConteudoTexto
+    {
+        return $this->textos[$chave] ?? null;
+    }
+
+    public function getTextos(): array
+    {
+        return $this->textos;
+    }
+
+    // Cartões
+    public function adicionarCartao(CartaoFuncionalidade $cartao): void
+    {
+        $this->cartoes[] = $cartao;
+    }
+
+    public function getCartoes(): array
+    {
+        return $this->cartoes;
+    }
+
+    // ArrayAccess — acesso por chave [$chave]
+    public function offsetExists(mixed $offset): bool
+    {
+        return isset($this->textos[$offset]);
+    }
+
+    public function offsetGet(mixed $offset): ?string
+    {
+        return isset($this->textos[$offset])
+            ? htmlspecialchars($this->textos[$offset]->getValor())
+            : null;
+    }
+
+    public function offsetSet(mixed $offset, mixed $value): void
+    {
+        throw new BadMethodCallException('ConteudoPagina é apenas de leitura. Usar adicionarTexto() ou adicionarCartao().');
+    }
+
+    public function offsetUnset(mixed $offset): void
+    {
+        throw new BadMethodCallException('ConteudoPagina é apenas de leitura.');
+    }
+
+    // Função estática para carregar todos os dados da base de dados
+    public static function carregarDaBaseDeDados(PDO $ligacao): self
+    {
+        $pagina = new self();
+
+        // 1. Carregar textos (ConteudoFrontOffice)
+        $stmt = execute_query(
+            "SELECT idConteudo, chaveSecao, valor
+             FROM ConteudoFrontOffice
+             ORDER BY idConteudo ASC",
+            [],
+            $ligacao
+        );
+        $textos = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+        foreach ($textos as $row) {
+            $pagina->adicionarTexto(new ConteudoTexto(
+                (int) $row->idConteudo,
+                $row->chaveSecao,
+                $row->valor
+            ));
+        }
+
+        // 2. Carregar cartões (CartaoFuncionalidade)
+        $stmt = execute_query(
+            "SELECT idCartao, titulo, descricao, icone, ordem, ativo
+             FROM CartaoFuncionalidade
+             WHERE ativo = 1
+             ORDER BY ordem ASC",
+            [],
+            $ligacao
+        );
+        $cartoes = $stmt->fetchAll(PDO::FETCH_OBJ);
+
+        foreach ($cartoes as $row) {
+            $pagina->adicionarCartao(new CartaoFuncionalidade(
+                (int) $row->idCartao,
+                $row->titulo,
+                $row->descricao,
+                $row->icone,
+                (int) $row->ordem,
+                (bool) $row->ativo
+            ));
+        }
+
+        return $pagina;
     }
 }
