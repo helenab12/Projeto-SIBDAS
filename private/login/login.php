@@ -133,24 +133,24 @@ if (!empty($_SESSION['server_error'])) {
                         <?php if (SHOW_DEBUG_BUTTONS): ?>
                             <div class="d-flex flex-wrap gap-2">
                                 <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
-                                    onclick="prefillLogin('admin@hospital.pt', 'admin123')">
+                                    onclick="prefillLogin('admin@hospital.pt', 'password01')">
                                     Admin
                                 </button>
                                 <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
-                                    onclick="prefillLogin('bioeng@hospital.pt', 'bioeng123')">
+                                    onclick="prefillLogin('eng.bio@hospital.pt', 'password02')">
                                     Eng. Biomédico
                                 </button>
                                 <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
-                                    onclick="prefillLogin('tech@hospital.pt', 'tech123')">
+                                    onclick="prefillLogin('tecnico@hospital.pt', 'password03')">
                                     Técnico
                                 </button>
                                 <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
-                                    onclick="prefillLogin('medico@hospital.pt', 'medico123')">
-                                    Médico
+                                    onclick="prefillLogin('aprovisionamento@hospital.pt', 'password04')">
+                                    Aprovisionamento
                                 </button>
                                 <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
-                                    onclick="prefillLogin('enfermeiro@hospital.pt', 'enfermeiro123')">
-                                    Enfermeiro
+                                    onclick="prefillLogin('consulta@hospital.pt', 'password05')">
+                                    Consulta
                                 </button>
                             </div>
                             <script>
