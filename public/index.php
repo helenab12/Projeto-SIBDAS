@@ -1,10 +1,73 @@
 <?php
 require_once dirname(__DIR__) . '/config/funcoes.php';
+start_session();
 
+$validation_errors = [];
 $server_error = null;
+$success_message = null;
+
+// Load flash messages from session
+if (!empty($_SESSION['validation_errors'])) {
+    $validation_errors = $_SESSION['validation_errors'];
+    unset($_SESSION['validation_errors']);
+}
 if (!empty($_SESSION['server_error'])) {
     $server_error = $_SESSION['server_error'];
     unset($_SESSION['server_error']);
+}
+if (!empty($_SESSION['success_message'])) {
+    $success_message = $_SESSION['success_message'];
+    unset($_SESSION['success_message']);
+}
+
+// 1. Verificar se o formulário foi submetido
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Recolher dados
+    $name = $_POST['name'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $organization = $_POST['organization'] ?? '';
+    $message = $_POST['message'] ?? '';
+
+    // Sanitizar usando as funções necessárias
+    $name_sanitized = capitalize_name($name);
+    $organization_sanitized = capitalize_name($organization);
+    $email_sanitized = trim(strtolower($email));
+    $message_sanitized = trim($message);
+
+    try {
+        // Validar os dados usando InboxRequest::validarDados
+        $validation_errors = InboxRequest::validarDados([
+            'id' => 1,
+            'name' => $name,
+            'email' => $email,
+            'institution' => $organization,
+            'message' => $message,
+        ]);
+
+        if (empty($validation_errors)) {
+            // Guardar na base de dados
+            $ligacao = connect_to_db();
+            execute_query(
+                "INSERT INTO PedidoDemonstracao (nomeContacto, emailContacto, organizacao, mensagem, estado, ativo, dataCriacao) 
+                 VALUES (:nome, :email, :organizacao, :mensagem, 'Novo', 1, NOW())",
+                [
+                    'nome' => $name_sanitized,
+                    'email' => $email_sanitized,
+                    'organizacao' => $organization_sanitized,
+                    'mensagem' => $message_sanitized
+                ],
+                $ligacao
+            );
+
+            $_SESSION['success_message'] = "Pedido de demonstração enviado com sucesso! Entraremos em contacto brevemente.";
+
+            // Para limpar o POST data e evitar resubmissão, fazemos redirect
+            header("Location: index.php?success=1#pa-cta");
+            exit;
+        }
+    } catch (Exception $e) {
+        $server_error = "Erro ao guardar o seu pedido: " . $e->getMessage();
+    }
 }
 
 $ligacao = null;
@@ -14,7 +77,6 @@ try {
     $server_error = "Erro ao conectar à base de dados: " . $e->getMessage();
 }
 
-// 1. Buscar dados do conteúdo do Front-Office à base de dados
 $conteudoPagina = null;
 try {
     $conteudoPagina = ConteudoPagina::carregarDaBaseDeDados($ligacao);
@@ -362,25 +424,46 @@ try {
                         </h3>
                     </div>
                     <div class="d-flex flex-column gap-6 w-100">
-                        <form action="" class="d-flex flex-column gap-6 align-items-stretch w-100" id="cta-form">
+                        <form action="index.php#pa-cta" method="POST"
+                            class="d-flex flex-column gap-6 align-items-stretch w-100" id="cta-form" novalidate>
                             <div class="pa-cta-form-grid gap-6">
-                                <div class="d-flex flex-column align-items-start form-item">
-                                    <label for="name"><?= $conteudoPagina['cta.label_nome'] ?></label>
+                                <div class="d-flex flex-column align-items-start form-item justify-items-start">
+                                    <label for="name"><?= $conteudoPagina['cta.label_nome'] ?>
+                                        <span class="text-error">*</span>
+                                    </label>
                                     <input type="text" id="name" name="name" class="form-control"
-                                        placeholder="<?= $conteudoPagina['cta.placeholder_nome'] ?>" required>
+                                        placeholder="<?= $conteudoPagina['cta.placeholder_nome'] ?>"
+                                        value="<?= htmlspecialchars($_POST['name'] ?? '') ?>" required>
                                 </div>
-                                <div class="d-flex flex-column align-items-start form-item">
-                                    <label for="email"><?= $conteudoPagina['cta.label_email'] ?></label>
+                                <div class="d-flex flex-column align-items-start form-item justify-items-start">
+                                    <label for="email"><?= $conteudoPagina['cta.label_email'] ?>
+                                        <span class="text-error">*</span>
+                                    </label>
                                     <input type="email" id="email" name="email" class="form-control"
-                                        placeholder="<?= $conteudoPagina['cta.placeholder_email'] ?>" required>
+                                        placeholder="<?= $conteudoPagina['cta.placeholder_email'] ?>"
+                                        value="<?= htmlspecialchars($_POST['email'] ?? '') ?>" required>
                                 </div>
-                                <div class="d-flex flex-column align-items-start form-item">
-                                    <label for="organization"><?= $conteudoPagina['cta.label_organizacao'] ?></label>
+                                <div class="d-flex flex-column align-items-start form-item justify-items-start">
+                                    <label for="organization"><?= $conteudoPagina['cta.label_organizacao'] ?>
+                                        <span class="text-error">*</span>
+                                    </label>
                                     <input type="text" id="organization" name="organization" class="form-control"
-                                        placeholder="<?= $conteudoPagina['cta.placeholder_organizacao'] ?>" required>
+                                        placeholder="<?= $conteudoPagina['cta.placeholder_organizacao'] ?>"
+                                        value="<?= htmlspecialchars($_POST['organization'] ?? '') ?>" required>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-large btn-glowing w-100 fw-700 gap-1">
+                            <div class="d-flex flex-column align-items-start form-item">
+                                <label for="message"><?= $conteudoPagina['cta.label_mensagem'] ?? 'Mensagem' ?></label>
+                                <textarea id="message" name="message" class="form-control" rows="4"
+                                    placeholder="<?= $conteudoPagina['cta.placeholder_mensagem'] ?? 'Escreva aqui a sua mensagem (máx. 400 caracteres)...' ?>"
+                                    maxlength="400"><?= htmlspecialchars($_POST['message'] ?? '') ?></textarea>
+                                <div class="w-100 d-flex justify-content-end mt-1">
+                                    <small class="text-secondary"
+                                        id="message-char-count"><?= mb_strlen($_POST['message'] ?? '', 'UTF-8') ?> /
+                                        400</small>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-large btn-glowing w-100 fw-700 gap-1" id="cta-submit-btn" disabled>
                                 <?= $conteudoPagina['cta.btn_submit'] ?>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
@@ -480,35 +563,58 @@ try {
     </footer>
 
     <!-- Toast Container -->
-    <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3 mt-4 error-toast"
-        style="z-index: 100;">
-        <?php if (!empty($validation_errors) || !empty($server_error)): ?>
+    <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3 mt-4" style="z-index: 100;">
+        <?php if (!empty($success_message)): ?>
+            <div class="toast align-items-center border-0 shadow-sm toast-success w-auto padding-4" role="alert"
+                aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="toast-body fw-500 p-0">
+                        <?= htmlspecialchars($success_message) ?>
+                    </div>
+                    <button type="button" class="text-success border-0 p-0 bg-transparent ms-auto" data-bs-dismiss="toast"
+                        aria-label="Close">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-x-icon lucide-x">
+                            <path d="M18 6 6 18" />
+                            <path d="m6 6 12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        <?php endif; ?>
 
+        <?php if (!empty($validation_errors) || !empty($server_error)): ?>
             <?php
             $all_errors = [];
+            if (!empty($validation_errors)) {
+                $all_errors = array_merge($all_errors, $validation_errors);
+            }
             if (!empty($server_error)) {
                 $all_errors[] = $server_error;
             }
             ?>
-            <?php foreach ($all_errors as $error): ?>
-                <div class="toast align-items-center border-0 shadow-sm toast-error w-auto padding-4" role="alert"
-                    aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
-                    <div class="d-flex align-items-center gap-2">
-                        <div class="toast-body fw-500 p-0">
-                            <?= htmlspecialchars($error) ?>
-                        </div>
-                        <button type="button" class="text-error border-0 p-0 bg-transparent ms-auto" data-bs-dismiss="toast"
-                            aria-label="Close">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                class="lucide lucide-x-icon lucide-x">
-                                <path d="M18 6 6 18" />
-                                <path d="m6 6 12 12" />
-                            </svg>
-                        </button>
+            <div class="toast align-items-center border-0 shadow-sm toast-error w-auto padding-4" role="alert"
+                aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="toast-body fw-500 p-0 gap-2 d-flex flex-column">
+                        <?php foreach ($all_errors as $error): ?>
+                            <p>
+                                <?= htmlspecialchars($error) ?>
+                            </p>
+                        <?php endforeach; ?>
                     </div>
+                    <button type="button" class="text-error border-0 p-0 bg-transparent ms-auto" data-bs-dismiss="toast"
+                        aria-label="Close">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-x-icon lucide-x">
+                            <path d="M18 6 6 18" />
+                            <path d="m6 6 12 12" />
+                        </svg>
+                    </button>
                 </div>
-            <?php endforeach; ?>
+            </div>
         <?php endif; ?>
     </div>
 

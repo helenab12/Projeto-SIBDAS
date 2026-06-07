@@ -3,7 +3,7 @@ CREATE DATABASE IF NOT EXISTS `heba-db`;
 USE `heba-db`;
 
 CREATE TABLE `CategoriaEquipamento` (
-  `idCategoria` integer PRIMARY KEY,
+  `idCategoria` integer PRIMARY KEY AUTO_INCREMENT,
   `nome` varchar(255),
   `descricao` text,
   `codigoPrefix` varchar(5),
@@ -12,14 +12,14 @@ CREATE TABLE `CategoriaEquipamento` (
 );
 
 CREATE TABLE `Marca` (
-  `idMarca` integer PRIMARY KEY,
+  `idMarca` integer PRIMARY KEY AUTO_INCREMENT,
   `nome` varchar(255),
   `dataCriacao` timestamp DEFAULT (CURRENT_TIMESTAMP),
   `dataAtualizacao` timestamp
 );
 
 CREATE TABLE `Localizacao` (
-  `idLocalizacao` integer PRIMARY KEY,
+  `idLocalizacao` integer PRIMARY KEY AUTO_INCREMENT,
   `edificio` varchar(50),
   `piso` varchar(20),
   `servico` varchar(50),
@@ -30,7 +30,7 @@ CREATE TABLE `Localizacao` (
 );
 
 CREATE TABLE `Equipamento` (
-  `idEquipamento` integer PRIMARY KEY,
+  `idEquipamento` integer PRIMARY KEY AUTO_INCREMENT,
   `idCategoria` integer,
   `codigoInterno` varchar(20),
   `designacao` text,
@@ -60,7 +60,7 @@ CREATE TABLE `FornecedorEquipamento` (
 );
 
 CREATE TABLE `Manutencao` (
-  `idManutencao` integer PRIMARY KEY,
+  `idManutencao` integer PRIMARY KEY AUTO_INCREMENT,
   `idEquipamento` integer,
   `tipoManutencao` ENUM ('Preventiva', 'Corretiva', 'Calibração'),
   `dataInicio` date,
@@ -75,7 +75,7 @@ CREATE TABLE `Manutencao` (
 );
 
 CREATE TABLE `Componente` (
-  `idComponente` integer PRIMARY KEY,
+  `idComponente` integer PRIMARY KEY AUTO_INCREMENT,
   `codigoInterno` varchar(20),
   `descricao` text,
   `stock` integer,
@@ -100,13 +100,13 @@ CREATE TABLE `ComponenteCategoria` (
 );
 
 CREATE TABLE `Permissao` (
-  `idPermissao` integer PRIMARY KEY,
+  `idPermissao` integer PRIMARY KEY AUTO_INCREMENT,
   `chave` varchar(100) UNIQUE,
   `descricao` text
 );
 
 CREATE TABLE `Perfil` (
-  `idPerfil` integer PRIMARY KEY,
+  `idPerfil` integer PRIMARY KEY AUTO_INCREMENT,
   `nome` varchar(255),
   `dataCriacao` timestamp DEFAULT (CURRENT_TIMESTAMP),
   `dataAtualizacao` timestamp
@@ -120,7 +120,7 @@ CREATE TABLE `PerfilPermissao` (
 );
 
 CREATE TABLE `Pessoa` (
-  `idPessoa` integer PRIMARY KEY,
+  `idPessoa` integer PRIMARY KEY AUTO_INCREMENT,
   `nome` varchar(255),
   `email` varchar(100) UNIQUE,
   `contactoTelefonico` varchar(15),
@@ -131,7 +131,7 @@ CREATE TABLE `Pessoa` (
 );
 
 CREATE TABLE `Utilizador` (
-  `idUtilizador` integer PRIMARY KEY,
+  `idUtilizador` integer PRIMARY KEY AUTO_INCREMENT,
   `idPessoa` integer,
   `password` varbinary(255),
   `idPerfil` integer,
@@ -142,7 +142,7 @@ CREATE TABLE `Utilizador` (
 );
 
 CREATE TABLE `Fornecedor` (
-  `idFornecedor` integer PRIMARY KEY,
+  `idFornecedor` integer PRIMARY KEY AUTO_INCREMENT,
   `nome` varchar(255),
   `nifFornecedor` varchar(9),
   `contactoTelefonico` varchar(15),
@@ -158,7 +158,7 @@ CREATE TABLE `Fornecedor` (
 );
 
 CREATE TABLE `Documento` (
-  `idDocumento` integer PRIMARY KEY,
+  `idDocumento` integer PRIMARY KEY AUTO_INCREMENT,
   `tipo` ENUM ('Manual de Utilizador', 'Manual de Serviço', 'Certificado de Calibração', 'Contrato de Manutenção', 'Fatura/Guia', 'Declaração de Conformidade', 'Relatório Técnico', 'Garantia'),
   `nome` varchar(255),
   `caminhoFicheiro` varchar(255),
@@ -172,7 +172,7 @@ CREATE TABLE `Documento` (
 );
 
 CREATE TABLE `GarantiaContrato` (
-  `idGarantiaContrato` integer PRIMARY KEY,
+  `idGarantiaContrato` integer PRIMARY KEY AUTO_INCREMENT,
   `idEquipamento` integer,
   `idFornecedor` integer,
   `idDocumento` integer,
@@ -187,7 +187,7 @@ CREATE TABLE `GarantiaContrato` (
 );
 
 CREATE TABLE `HistoricoAuditoria` (
-  `idAuditoria` integer PRIMARY KEY,
+  `idAuditoria` integer PRIMARY KEY AUTO_INCREMENT,
   `idUtilizador` integer,
   `tabelaAfetada` varchar(50),
   `idRegistoAfetado` integer,
@@ -197,7 +197,7 @@ CREATE TABLE `HistoricoAuditoria` (
 );
 
 CREATE TABLE `Notificacao` (
-  `idNotificacao` integer PRIMARY KEY,
+  `idNotificacao` integer PRIMARY KEY AUTO_INCREMENT,
   `tipo` ENUM ('Garantia', 'Manutenção', 'Stock', 'Calibração', 'Sistema'),
   `titulo` varchar(255),
   `mensagem` text,
@@ -215,7 +215,7 @@ CREATE TABLE `NotificacaoUtilizador` (
 );
 
 CREATE TABLE `ConteudoFrontOffice` (
-  `idConteudo` integer PRIMARY KEY,
+  `idConteudo` integer PRIMARY KEY AUTO_INCREMENT,
   `chaveSecao` varchar(100) UNIQUE,
   `valor` text,
   `dataCriacao` timestamp DEFAULT (CURRENT_TIMESTAMP),
@@ -223,7 +223,7 @@ CREATE TABLE `ConteudoFrontOffice` (
 );
 
 CREATE TABLE `CartaoFuncionalidade` (
-  `idCartao` integer PRIMARY KEY,
+  `idCartao` integer PRIMARY KEY AUTO_INCREMENT,
   `titulo` varchar(255),
   `descricao` text,
   `icone` text,
@@ -234,7 +234,7 @@ CREATE TABLE `CartaoFuncionalidade` (
 );
 
 CREATE TABLE `PedidoDemonstracao` (
-  `idPedido` integer PRIMARY KEY,
+  `idPedido` integer PRIMARY KEY AUTO_INCREMENT,
   `nomeContacto` varchar(255),
   `emailContacto` varchar(100),
   `organizacao` varchar(255),

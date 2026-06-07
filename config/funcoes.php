@@ -159,3 +159,11 @@ function get_user_initials(string $name): string
     }
     return $initials;
 }
+
+function capitalize_name(string $str): string
+{
+    $str = trim($str);
+    if ($str === '')
+        return '';
+    return ucwords(strtolower($str));
+}

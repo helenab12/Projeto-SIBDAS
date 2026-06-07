@@ -48,16 +48,6 @@ if (navbar) {
     });
 }
 
-/* Simular envio de formulário */
-const ctaForm = document.getElementById("cta-form");
-
-if (ctaForm) {
-    ctaForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        alert("Formulário enviado com sucesso!");
-    });
-}
-
 /* Sidebar Dropdowns */
 const dropdownToggles = document.querySelectorAll(".nav-dropdown-toggle");
 
@@ -393,19 +383,16 @@ if (
             placeholder: "Pesquisar...",
             perPage: "entradas por página",
             noRows: "Nenhum registo encontrado",
+            noResults: "Nenhum resultado corresponde à sua pesquisa",
             info: "A mostrar {start}–{end} de {rows}",
         },
     });
 
     // Custom search binding
-    const searchInputs = document.querySelectorAll("#search, .search-bar-input");
+    const searchInputs = document.querySelectorAll(".search-bar-input");
     searchInputs.forEach((input) => {
         input.addEventListener("input", function () {
-            let dtInput = document.querySelector(".datatable-input");
-            if (dtInput) {
-                dtInput.value = this.value;
-                dtInput.dispatchEvent(new Event("keyup"));
-            }
+            table.search(this.value);
         });
     });
 }
@@ -1307,10 +1294,32 @@ function changeInboxState(requestId, stateName, stateClass) {
         modalBadge.className = `equipment-badge ${stateClass} inbox-modal-footer-badge fw-400`;
         modalBadge.textContent = `Tratamento atual: ${stateName}`;
     }
+
+    // Atualizar o input hidden do form
+    const input = document.getElementById(`inbox-state-input-${requestId}`);
+    if (input) {
+        input.value = stateName;
+    }
+
+    // Mostrar a barra de alterações pendentes
+    const bar = document.querySelector(".inbox-changes-container");
+    if (bar) {
+        bar.style.setProperty("display", "flex", "important");
+    }
 }
 
 // Lógica de Modais de Documentos (Equipamento Detailed View)
 document.addEventListener("DOMContentLoaded", () => {
+    // Character count for public page message textarea
+    const msgInput = document.getElementById("message");
+    const charCount = document.getElementById("message-char-count");
+    if (msgInput && charCount) {
+        msgInput.addEventListener("input", () => {
+            const currentLength = msgInput.value.length;
+            charCount.textContent = `${currentLength} / 400`;
+        });
+    }
+
     // 1. Drag & Drop Upload Handlers
     const addDropzone = document.getElementById("add-dropzone");
     const addFileInput = document.getElementById("doc-file");
@@ -1396,7 +1405,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Inicializar toasts na pagina de login
 document.addEventListener("DOMContentLoaded", function () {
-    const toastElList = document.querySelectorAll('.toast.toast-error');
+    const toastElList = document.querySelectorAll('.toast-container .toast');
     const toastList = [...toastElList].map(toastEl => new bootstrap.Toast(toastEl));
     toastList.forEach(toast => toast.show());
+});
+
+// Validação no frontend para o contact form
+document.addEventListener("DOMContentLoaded", function () {
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+    const organizationInput = document.getElementById("organization");
+    const msgInput = document.getElementById("message");
+    const submitBtn = document.getElementById("cta-submit-btn");
+
+    if (nameInput && emailInput && organizationInput && msgInput && submitBtn) {
+        const validateForm = () => {
+            const isNameValid = nameInput.value.trim().length > 0 && !/\d/.test(nameInput.value);
+            const isEmailValid = emailInput.value.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value);
+            const isOrgValid = organizationInput.value.trim().length > 0;
+            const isMsgValid = msgInput.value.length <= 400;
+
+            if (isNameValid && isEmailValid && isOrgValid && isMsgValid) {
+                submitBtn.removeAttribute("disabled");
+            } else {
+                submitBtn.setAttribute("disabled", "true");
+            }
+        };
+
+        [nameInput, emailInput, organizationInput, msgInput].forEach(input => {
+            input.addEventListener("input", validateForm);
+            input.addEventListener("change", validateForm);
+        });
+
+        // Executa a validação ao carregar a página para habilitar o botão se estiver preenchido corretamente
+        // No caso de terem havidos erros de validação 
+        validateForm();
+    }
 });

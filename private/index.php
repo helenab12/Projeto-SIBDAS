@@ -17,15 +17,6 @@ if (!empty($_SESSION['server_error'])) {
     unset($_SESSION['server_error']);
 }
 
-$ligacao = null;
-try {
-    $ligacao = connect_to_db();
-} catch (Exception $e) {
-    $server_error = "Erro ao conectar à base de dados: " . $e->getMessage();
-}
-
-
-
 ?>
 
 <div class="d-flex flex-column flex-grow-1 overflow-x-hidden mw-0">

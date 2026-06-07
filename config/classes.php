@@ -2,7 +2,7 @@
 
 interface Validavel
 {
-    public function validarDados(array $dados): array;
+    public static function validarDados(array $dados): array;
 }
 
 // Pessoas, Autenticação, Autorização, Gestão de Utilizadores e Perfis
@@ -21,7 +21,7 @@ class Pessoa implements Validavel
     public function __construct(string $id, string $nome, string $email, string $contactoTelefonico, string $nif, bool $ativo, DateTime $dataCriacao, DateTime $dataAtualizacao)
     {
 
-        $erros = $this->validarDados([
+        $erros = self::validarDados([
             "id" => $id,
             "nome" => $nome,
             "email" => $email,
@@ -86,7 +86,7 @@ class Pessoa implements Validavel
         return $this->dataAtualizacao;
     }
 
-    public function validarDados(array $dados): array
+    public static function validarDados(array $dados): array
     {
         $erros = [];
         if (empty($dados["id"])) {
@@ -163,7 +163,7 @@ class Utilizador implements Validavel
         Perfil $perfil
     ) {
 
-        $erros = $this->validarDados([
+        $erros = self::validarDados([
             "idUtilizador" => $idUtilizador,
             "idPessoa" => $idPessoa,
             "password" => $password,
@@ -235,7 +235,7 @@ class Utilizador implements Validavel
         return $this->perfil;
     }
 
-    public function validarDados(array $dados): array
+    public static function validarDados(array $dados): array
     {
         $erros = [];
 
@@ -300,7 +300,7 @@ class Perfil implements Validavel
 
     public function __construct(string $idPerfil, string $nome, DateTime $dataCriacao, DateTime $dataAtualizacao)
     {
-        $erros = $this->validarDados([
+        $erros = self::validarDados([
             "idPerfil" => $idPerfil,
             "nome" => $nome,
             "dataCriacao" => $dataCriacao,
@@ -337,7 +337,7 @@ class Perfil implements Validavel
         return $this->dataAtualizacao;
     }
 
-    public function validarDados(array $dados): array
+    public static function validarDados(array $dados): array
     {
         $erros = [];
 
@@ -381,7 +381,7 @@ class ConteudoTexto implements Validavel
 
     public function __construct(int $idConteudo, string $chaveSecao, string $valor)
     {
-        $erros = $this->validarDados([
+        $erros = self::validarDados([
             'idConteudo' => $idConteudo,
             'chaveSecao' => $chaveSecao,
             'valor' => $valor,
@@ -415,7 +415,7 @@ class ConteudoTexto implements Validavel
         return $this->valor;
     }
 
-    public function validarDados(array $dados): array
+    public static function validarDados(array $dados): array
     {
         $erros = [];
 
@@ -446,7 +446,7 @@ class CartaoFuncionalidade implements Validavel
 
     public function __construct(int $idCartao, string $titulo, string $descricao, string $icone, int $ordem, bool $ativo = true)
     {
-        $erros = $this->validarDados([
+        $erros = self::validarDados([
             'idCartao' => $idCartao,
             'titulo' => $titulo,
             'descricao' => $descricao,
@@ -491,7 +491,7 @@ class CartaoFuncionalidade implements Validavel
         return $this->ativo;
     }
 
-    public function validarDados(array $dados): array
+    public static function validarDados(array $dados): array
     {
         $erros = [];
 
@@ -621,5 +621,140 @@ class ConteudoPagina implements ArrayAccess
         }
 
         return $pagina;
+    }
+}
+
+// Inbox
+
+class InboxState
+{
+    private string $name;
+    private string $class;
+
+    public function __construct(string $name, string $class)
+    {
+        $this->name = $name;
+        $this->class = $class;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+    public function getClass(): string
+    {
+        return $this->class;
+    }
+
+    public function __get(string $name)
+    {
+        if (property_exists($this, $name)) {
+            return $this->$name;
+        }
+        return null;
+    }
+}
+
+class InboxRequest implements Validavel
+{
+    private int $id;
+    private InboxState $state;
+    private string $date;
+    private string $name;
+    private string $institution;
+    private string $email;
+    private string $message;
+
+    public function __construct(int $id, InboxState $state, string $date, string $name, string $institution, string $email, string $message)
+    {
+        $erros = self::validarDados([
+            'id' => $id,
+            'date' => $date,
+            'name' => $name,
+            'institution' => $institution,
+            'email' => $email,
+            'message' => $message,
+        ]);
+
+        if (!empty($erros)) {
+            throw new Exception("Erro ao criar pedido de demonstração: " . implode(", ", $erros));
+        }
+
+        $this->id = $id;
+        $this->state = $state;
+        $this->date = $date;
+        $this->name = $name;
+        $this->institution = $institution;
+        $this->email = $email;
+        $this->message = $message;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
+    }
+    public function getState(): InboxState
+    {
+        return $this->state;
+    }
+    public function getDate(): string
+    {
+        return $this->date;
+    }
+    public function getName(): string
+    {
+        return $this->name;
+    }
+    public function getInstitution(): string
+    {
+        return $this->institution;
+    }
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+    public function getMessage(): string
+    {
+        return $this->message;
+    }
+
+    public function __get(string $name)
+    {
+        if (property_exists($this, $name)) {
+            return $this->$name;
+        }
+        return null;
+    }
+
+    public static function validarDados(array $dados): array
+    {
+        $erros = [];
+
+        if (empty($dados['id'])) {
+            $erros[] = "O ID do pedido é obrigatório.";
+        }
+
+        if (empty(trim($dados['name'] ?? ''))) {
+            $erros[] = "O nome é obrigatório.";
+        } elseif (preg_match('/\d/', $dados['name'])) {
+            $erros[] = "O nome não pode conter números.";
+        }
+
+        if (empty(trim($dados['email'] ?? ''))) {
+            $erros[] = "O email é obrigatório.";
+        } elseif (!filter_var($dados['email'], FILTER_VALIDATE_EMAIL)) {
+            $erros[] = "O email deve ser um endereço de email válido.";
+        }
+
+        if (empty(trim($dados['institution'] ?? ''))) {
+            $erros[] = "A organização é obrigatória.";
+        }
+
+        if (mb_strlen($dados['message']) > 400) {
+            $erros[] = "A mensagem não pode exceder os 400 caracteres.";
+        }
+
+        return $erros;
     }
 }

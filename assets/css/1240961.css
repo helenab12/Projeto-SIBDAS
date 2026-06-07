@@ -248,9 +248,11 @@ a {
     background-color: transparent !important;
 }
 
-.form-item input::placeholder {
-    color: var(--text-secondary);
-    font-size: 16px;
+.form-item input::placeholder,
+.form-item textarea::placeholder,
+.form-item textarea {
+    color: var(--text-secondary) !important;
+    font-size: 16px !important;
 }
 
 .form-select:focus,
@@ -3114,4 +3116,27 @@ ul.action-dropdown-menu.show {
 
 .navbar-user.dropdown-toggle::after {
     display: none !important;
+}
+
+section.inbox {
+    padding: 0 !important;
+    flex-grow: 1;
+}
+
+.inbox-changes-container {
+    background-color: var(--bento-bg);
+    position: sticky;
+    bottom: 0;
+    width: 100%;
+    z-index: 10;
+}
+
+.toast.toast-success {
+    background-color: color-mix(in srgb, var(--success) 10%, var(--bento-bg));
+    border: 1px solid var(--success) !important;
+    color: var(--success);
+}
+
+.datatable-empty {
+    color: var(--text-secondary) !important;
 }
