@@ -1,5 +1,6 @@
 <?php
-require_once(__DIR__ . "/../../config/config.php");
+require_once(__DIR__ . "/../../config/funcoes.php");
+redirect_if_not_logged();
 include_once BASE_PATH . 'private/includes/head.php';
 include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 
@@ -251,9 +252,8 @@ $permissionsList = [
         <div class="bento-card padding-4 gap-4 equipment-list-search-bar">
             <form action="" class="flex-grow-1">
                 <div class="form-item w-100 position-relative">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round"
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-search-icon lucide-search search-bar-icon position-absolute text-secondary">
                         <path d="m21 21-4.34-4.34" />
                         <circle cx="11" cy="11" r="8" />
@@ -268,8 +268,11 @@ $permissionsList = [
         <div class="bento-card changes-card padding-4 gap-4 d-flex flex-row align-items-center">
             <div class="d-flex gap-4">
                 <div class="table-icon-wrapper equipment-icon-wrapper">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-icon lucide-shield">
-                        <path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-shield-icon lucide-shield">
+                        <path
+                            d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
                     </svg>
                 </div>
                 <div class="d-flex flex-column gap-1">
@@ -280,18 +283,23 @@ $permissionsList = [
                 </div>
             </div>
             <div class="d-flex gap-4">
-                <button class="btn gap-2 btn-small fw-500"
-                    data-bs-toggle="modal" data-bs-target="#equipment-creation-modal">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-rotate-ccw-icon lucide-rotate-ccw">
+                <button class="btn gap-2 btn-small fw-500" data-bs-toggle="modal"
+                    data-bs-target="#equipment-creation-modal">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-rotate-ccw-icon lucide-rotate-ccw">
                         <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
                         <path d="M3 3v5h5" />
                     </svg>
                     Desfazer
                 </button>
-                <button class="btn btn-primary btn-glowing gap-2 btn-small fw-500"
-                    data-bs-toggle="modal" data-bs-target="#equipment-creation-modal">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-save-icon lucide-save">
-                        <path d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
+                <button class="btn btn-primary btn-glowing gap-2 btn-small fw-500" data-bs-toggle="modal"
+                    data-bs-target="#equipment-creation-modal">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-save-icon lucide-save">
+                        <path
+                            d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
                         <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" />
                         <path d="M7 3v4a1 1 0 0 0 1 1h7" />
                     </svg>
@@ -353,71 +361,99 @@ $permissionsList = [
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($permissionsList as $permission) : ?>
+                    <?php foreach ($permissionsList as $permission): ?>
                         <tr>
                             <td>
                                 <div class="d-flex flex-column align-items-start gap-1">
-                                    <p
-                                        class="font-mono fw-700">
+                                    <p class="font-mono fw-700">
                                         <?= $permission['name'] ?>
                                     </p>
-                                    <span
-                                        class="text-muted">
+                                    <span class="text-muted">
                                         <?= $permission['description'] ?>
                                     </span>
                                 </div>
 
                             </td>
                             <td class="text-center align-middle">
-                                <button class="check-badge <?= $permission['admin'] ? 'has-permission' : '' ?>" id="permission-badge-admin-<?= array_search($permission, $permissionsList) ?>" onclick="togglePermission('admin-<?= array_search($permission, $permissionsList) ?>')">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check padding-2">
+                                <button class="check-badge <?= $permission['admin'] ? 'has-permission' : '' ?>"
+                                    id="permission-badge-admin-<?= array_search($permission, $permissionsList) ?>"
+                                    onclick="togglePermission('admin-<?= array_search($permission, $permissionsList) ?>')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-check-icon lucide-check padding-2">
                                         <path d="M20 6 9 17l-5-5" />
                                     </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x padding-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-x-icon lucide-x padding-2">
                                         <path d="M18 6 6 18" />
                                         <path d="m6 6 12 12" />
                                     </svg>
                                 </button>
                             </td>
                             <td class="text-center align-middle">
-                                <button class="check-badge <?= $permission['biomed-eng'] ? 'has-permission' : '' ?>" id="permission-badge-biomed-<?= array_search($permission, $permissionsList) ?>" onclick="togglePermission('biomed-<?= array_search($permission, $permissionsList) ?>')">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check padding-2">
+                                <button class="check-badge <?= $permission['biomed-eng'] ? 'has-permission' : '' ?>"
+                                    id="permission-badge-biomed-<?= array_search($permission, $permissionsList) ?>"
+                                    onclick="togglePermission('biomed-<?= array_search($permission, $permissionsList) ?>')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-check-icon lucide-check padding-2">
                                         <path d="M20 6 9 17l-5-5" />
                                     </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x padding-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-x-icon lucide-x padding-2">
                                         <path d="M18 6 6 18" />
                                         <path d="m6 6 12 12" />
                                     </svg>
                                 </button>
                             </td>
                             <td class="text-center align-middle">
-                                <button class="check-badge <?= $permission['tech'] ? 'has-permission' : '' ?>" id="permission-badge-tech-<?= array_search($permission, $permissionsList) ?>" onclick="togglePermission('tech-<?= array_search($permission, $permissionsList) ?>')">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check padding-2">
+                                <button class="check-badge <?= $permission['tech'] ? 'has-permission' : '' ?>"
+                                    id="permission-badge-tech-<?= array_search($permission, $permissionsList) ?>"
+                                    onclick="togglePermission('tech-<?= array_search($permission, $permissionsList) ?>')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-check-icon lucide-check padding-2">
                                         <path d="M20 6 9 17l-5-5" />
                                     </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x padding-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-x-icon lucide-x padding-2">
                                         <path d="M18 6 6 18" />
                                         <path d="m6 6 12 12" />
                                     </svg>
                                 </button>
                             </td>
                             <td class="text-center align-middle">
-                                <button class="check-badge <?= $permission['prov'] ? 'has-permission' : '' ?>" id="permission-badge-prov-<?= array_search($permission, $permissionsList) ?>" onclick="togglePermission('prov-<?= array_search($permission, $permissionsList) ?>')">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check padding-2">
+                                <button class="check-badge <?= $permission['prov'] ? 'has-permission' : '' ?>"
+                                    id="permission-badge-prov-<?= array_search($permission, $permissionsList) ?>"
+                                    onclick="togglePermission('prov-<?= array_search($permission, $permissionsList) ?>')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-check-icon lucide-check padding-2">
                                         <path d="M20 6 9 17l-5-5" />
                                     </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x padding-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-x-icon lucide-x padding-2">
                                         <path d="M18 6 6 18" />
                                         <path d="m6 6 12 12" />
                                     </svg>
                                 </button>
                             </td>
                             <td class="text-center align-middle">
-                                <button class="check-badge <?= $permission['consult'] ? 'has-permission' : '' ?>" id="permission-badge-consult-<?= array_search($permission, $permissionsList) ?>" onclick="togglePermission('consult-<?= array_search($permission, $permissionsList) ?>')">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check padding-2">
+                                <button class="check-badge <?= $permission['consult'] ? 'has-permission' : '' ?>"
+                                    id="permission-badge-consult-<?= array_search($permission, $permissionsList) ?>"
+                                    onclick="togglePermission('consult-<?= array_search($permission, $permissionsList) ?>')">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-check-icon lucide-check padding-2">
                                         <path d="M20 6 9 17l-5-5" />
                                     </svg>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x-icon lucide-x padding-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-x-icon lucide-x padding-2">
                                         <path d="M18 6 6 18" />
                                         <path d="m6 6 12 12" />
                                     </svg>

@@ -1,5 +1,6 @@
 <?php
-require_once(__DIR__ . "/../../../config/config.php");
+require_once(__DIR__ . "/../../../config/funcoes.php");
+redirect_if_not_logged();
 include_once BASE_PATH . 'private/includes/head.php';
 include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 

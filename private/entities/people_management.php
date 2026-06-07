@@ -1,5 +1,6 @@
 <?php
-require_once(__DIR__ . "/../../config/config.php");
+require_once(__DIR__ . "/../../config/funcoes.php");
+redirect_if_not_logged();
 include_once BASE_PATH . 'private/includes/head.php';
 include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 ?>
@@ -19,9 +20,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
             <div class="d-flex gap-2">
                 <button id="btn-open-create-equipment-modal" class="btn btn-primary btn-glowing gap-2"
                     data-bs-toggle="modal" data-bs-target="#equipment-creation-modal">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-plus-icon lucide-plus">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-plus-icon lucide-plus">
                         <path d="M5 12h14" />
                         <path d="M12 5v14" />
                     </svg>
@@ -34,9 +35,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
         <div class="bento-card padding-4 gap-4 equipment-list-search-bar">
             <form action="" class="flex-grow-1">
                 <div class="form-item w-100 position-relative">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round"
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-search-icon lucide-search search-bar-icon position-absolute text-secondary">
                         <path d="m21 21-4.34-4.34" />
                         <circle cx="11" cy="11" r="8" />
@@ -65,8 +65,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <!-- Row 1: Nome -->
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="d-flex gap-3 align-items-center">
-                        <p
-                            class="user-icon d-flex align-items-center justify-content-center fw-700 text-white pink">
+                        <p class="user-icon d-flex align-items-center justify-content-center fw-700 text-white pink">
                             DM
                         </p>
                         <div class="d-flex flex-column gap-half">
@@ -89,10 +88,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
                             <li>
                                 <a class="dropdown-item action-dropdown-item text-primary" href="#">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-pencil">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-pencil">
                                         <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
                                         <path d="m15 5 4 4" />
                                     </svg>
@@ -101,10 +99,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                             </li>
                             <li>
                                 <a class="dropdown-item action-dropdown-item text-error" href="#">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-archive">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-archive">
                                         <rect width="20" height="5" x="2" y="3" rx="1" />
                                         <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
                                         <path d="M10 12h4" />
@@ -119,27 +116,27 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <!-- Row 2: Contacto -->
                 <div class="d-flex flex-column gap-3 text-secondary">
                     <div class="d-flex gap-2 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-briefcase-icon lucide-briefcase">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-briefcase-icon lucide-briefcase">
                             <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
                             <rect width="20" height="14" x="2" y="6" rx="2" />
                         </svg>
                         <span class="fw-400">Medicina Interna</span>
                     </div>
                     <div class="d-flex gap-2 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-mail-icon lucide-mail">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-mail-icon lucide-mail">
                             <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
                             <rect x="2" y="4" width="20" height="16" rx="2" />
                         </svg>
                         <span class="fw-400">manuel.costa@hospital.pt</span>
                     </div>
                     <div class="d-flex gap-2 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-phone-icon lucide-phone">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-phone-icon lucide-phone">
                             <path
                                 d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" />
                         </svg>
@@ -151,9 +148,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <div class="d-flex justify-content-between align-items-center text-muted additional-details">
                     <span class="text-uppercase font-mono">MED-001</span>
                     <div class="d-flex gap-1 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-calendar-icon lucide-calendar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-calendar-icon lucide-calendar">
                             <path d="M8 2v4" />
                             <path d="M16 2v4" />
                             <rect width="18" height="18" x="3" y="4" rx="2" />
@@ -169,8 +166,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <!-- Row 1: Nome -->
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="d-flex gap-3 align-items-center">
-                        <p
-                            class="user-icon d-flex align-items-center justify-content-center fw-700 text-white cyan">
+                        <p class="user-icon d-flex align-items-center justify-content-center fw-700 text-white cyan">
                             EA
                         </p>
                         <div class="d-flex flex-column gap-half">
@@ -193,10 +189,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
                             <li>
                                 <a class="dropdown-item action-dropdown-item text-primary" href="#">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-pencil">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-pencil">
                                         <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
                                         <path d="m15 5 4 4" />
                                     </svg>
@@ -205,10 +200,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                             </li>
                             <li>
                                 <a class="dropdown-item action-dropdown-item text-error" href="#">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-archive">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-archive">
                                         <rect width="20" height="5" x="2" y="3" rx="1" />
                                         <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
                                         <path d="M10 12h4" />
@@ -223,27 +217,27 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <!-- Row 2: Contacto -->
                 <div class="d-flex flex-column gap-3 text-secondary">
                     <div class="d-flex gap-2 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-briefcase-icon lucide-briefcase">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-briefcase-icon lucide-briefcase">
                             <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
                             <rect width="20" height="14" x="2" y="6" rx="2" />
                         </svg>
                         <span class="fw-400">Serviço de Eng. Biomédica</span>
                     </div>
                     <div class="d-flex gap-2 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-mail-icon lucide-mail">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-mail-icon lucide-mail">
                             <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
                             <rect x="2" y="4" width="20" height="16" rx="2" />
                         </svg>
                         <span class="fw-400">ana.ferreira@hospital.pt</span>
                     </div>
                     <div class="d-flex gap-2 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-phone-icon lucide-phone">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-phone-icon lucide-phone">
                             <path
                                 d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" />
                         </svg>
@@ -255,9 +249,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <div class="d-flex justify-content-between align-items-center text-muted additional-details">
                     <span class="text-uppercase font-mono">ENG-001</span>
                     <div class="d-flex gap-1 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-calendar-icon lucide-calendar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-calendar-icon lucide-calendar">
                             <path d="M8 2v4" />
                             <path d="M16 2v4" />
                             <rect width="18" height="18" x="3" y="4" rx="2" />
@@ -273,8 +267,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <!-- Row 1: Nome -->
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="d-flex gap-3 align-items-center">
-                        <p
-                            class="user-icon d-flex align-items-center justify-content-center fw-700 text-white blue">
+                        <p class="user-icon d-flex align-items-center justify-content-center fw-700 text-white blue">
                             EC
                         </p>
                         <div class="d-flex flex-column gap-half">
@@ -297,10 +290,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
                             <li>
                                 <a class="dropdown-item action-dropdown-item text-primary" href="#">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-pencil">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-pencil">
                                         <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
                                         <path d="m15 5 4 4" />
                                     </svg>
@@ -309,10 +301,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                             </li>
                             <li>
                                 <a class="dropdown-item action-dropdown-item text-error" href="#">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-archive">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-archive">
                                         <rect width="20" height="5" x="2" y="3" rx="1" />
                                         <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
                                         <path d="M10 12h4" />
@@ -327,27 +318,27 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <!-- Row 2: Contacto -->
                 <div class="d-flex flex-column gap-3 text-secondary">
                     <div class="d-flex gap-2 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-briefcase-icon lucide-briefcase">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-briefcase-icon lucide-briefcase">
                             <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
                             <rect width="20" height="14" x="2" y="6" rx="2" />
                         </svg>
                         <span class="fw-400">Serviço de Eng. Biomédica</span>
                     </div>
                     <div class="d-flex gap-2 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-mail-icon lucide-mail">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-mail-icon lucide-mail">
                             <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
                             <rect x="2" y="4" width="20" height="16" rx="2" />
                         </svg>
                         <span class="fw-400">carlos.mendes@hospital.pt</span>
                     </div>
                     <div class="d-flex gap-2 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-phone-icon lucide-phone">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-phone-icon lucide-phone">
                             <path
                                 d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" />
                         </svg>
@@ -359,9 +350,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <div class="d-flex justify-content-between align-items-center text-muted additional-details">
                     <span class="text-uppercase font-mono">TEC-001</span>
                     <div class="d-flex gap-1 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-calendar-icon lucide-calendar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-calendar-icon lucide-calendar">
                             <path d="M8 2v4" />
                             <path d="M16 2v4" />
                             <rect width="18" height="18" x="3" y="4" rx="2" />
@@ -377,8 +368,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <!-- Row 1: Nome -->
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="d-flex gap-3 align-items-center">
-                        <p
-                            class="user-icon d-flex align-items-center justify-content-center fw-700 text-white yellow">
+                        <p class="user-icon d-flex align-items-center justify-content-center fw-700 text-white yellow">
                             ER
                         </p>
                         <div class="d-flex flex-column gap-half">
@@ -401,10 +391,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
                             <li>
                                 <a class="dropdown-item action-dropdown-item text-primary" href="#">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-pencil">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-pencil">
                                         <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
                                         <path d="m15 5 4 4" />
                                     </svg>
@@ -413,10 +402,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                             </li>
                             <li>
                                 <a class="dropdown-item action-dropdown-item text-error" href="#">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-archive">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-archive">
                                         <rect width="20" height="5" x="2" y="3" rx="1" />
                                         <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
                                         <path d="M10 12h4" />
@@ -431,27 +419,27 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <!-- Row 2: Contacto -->
                 <div class="d-flex flex-column gap-3 text-secondary">
                     <div class="d-flex gap-2 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-briefcase-icon lucide-briefcase">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-briefcase-icon lucide-briefcase">
                             <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
                             <rect width="20" height="14" x="2" y="6" rx="2" />
                         </svg>
                         <span class="fw-400">Serviço de Eng. Biomédica</span>
                     </div>
                     <div class="d-flex gap-2 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-mail-icon lucide-mail">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-mail-icon lucide-mail">
                             <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
                             <rect x="2" y="4" width="20" height="16" rx="2" />
                         </svg>
                         <span class="fw-400">rui.santos@hospital.pt</span>
                     </div>
                     <div class="d-flex gap-2 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-phone-icon lucide-phone">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-phone-icon lucide-phone">
                             <path
                                 d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" />
                         </svg>
@@ -463,9 +451,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <div class="d-flex justify-content-between align-items-center text-muted additional-details">
                     <span class="text-uppercase font-mono">TEC-002</span>
                     <div class="d-flex gap-1 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-calendar-icon lucide-calendar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-calendar-icon lucide-calendar">
                             <path d="M8 2v4" />
                             <path d="M16 2v4" />
                             <rect width="18" height="18" x="3" y="4" rx="2" />
@@ -481,8 +469,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <!-- Row 1: Nome -->
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="d-flex gap-3 align-items-center">
-                        <p
-                            class="user-icon d-flex align-items-center justify-content-center fw-700 text-white green">
+                        <p class="user-icon d-flex align-items-center justify-content-center fw-700 text-white green">
                             DH
                         </p>
                         <div class="d-flex flex-column gap-half">
@@ -505,10 +492,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
                             <li>
                                 <a class="dropdown-item action-dropdown-item text-primary" href="#">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-pencil">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-pencil">
                                         <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
                                         <path d="m15 5 4 4" />
                                     </svg>
@@ -517,10 +503,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                             </li>
                             <li>
                                 <a class="dropdown-item action-dropdown-item text-error" href="#">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-archive">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-archive">
                                         <rect width="20" height="5" x="2" y="3" rx="1" />
                                         <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
                                         <path d="M10 12h4" />
@@ -535,27 +520,27 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <!-- Row 2: Contacto -->
                 <div class="d-flex flex-column gap-3 text-secondary">
                     <div class="d-flex gap-2 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-briefcase-icon lucide-briefcase">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-briefcase-icon lucide-briefcase">
                             <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
                             <rect width="20" height="14" x="2" y="6" rx="2" />
                         </svg>
                         <span class="fw-400">Administração</span>
                     </div>
                     <div class="d-flex gap-2 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-mail-icon lucide-mail">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-mail-icon lucide-mail">
                             <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
                             <rect x="2" y="4" width="20" height="16" rx="2" />
                         </svg>
                         <span class="fw-400">helena.barbosa@hospital.pt</span>
                     </div>
                     <div class="d-flex gap-2 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-phone-icon lucide-phone">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-phone-icon lucide-phone">
                             <path
                                 d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" />
                         </svg>
@@ -567,9 +552,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <div class="d-flex justify-content-between align-items-center text-muted additional-details">
                     <span class="text-uppercase font-mono">ADM-001</span>
                     <div class="d-flex gap-1 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-calendar-icon lucide-calendar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-calendar-icon lucide-calendar">
                             <path d="M8 2v4" />
                             <path d="M16 2v4" />
                             <rect width="18" height="18" x="3" y="4" rx="2" />
@@ -585,8 +570,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <!-- Row 1: Nome -->
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="d-flex gap-3 align-items-center">
-                        <p
-                            class="user-icon d-flex align-items-center justify-content-center fw-700 text-white purple">
+                        <p class="user-icon d-flex align-items-center justify-content-center fw-700 text-white purple">
                             SO
                         </p>
                         <div class="d-flex flex-column gap-half">
@@ -609,10 +593,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
                             <li>
                                 <a class="dropdown-item action-dropdown-item text-primary" href="#">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-pencil">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-pencil">
                                         <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
                                         <path d="m15 5 4 4" />
                                     </svg>
@@ -621,10 +604,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                             </li>
                             <li>
                                 <a class="dropdown-item action-dropdown-item text-error" href="#">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-archive">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-archive">
                                         <rect width="20" height="5" x="2" y="3" rx="1" />
                                         <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
                                         <path d="M10 12h4" />
@@ -639,27 +621,27 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <!-- Row 2: Contacto -->
                 <div class="d-flex flex-column gap-3 text-secondary">
                     <div class="d-flex gap-2 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-briefcase-icon lucide-briefcase">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-briefcase-icon lucide-briefcase">
                             <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
                             <rect width="20" height="14" x="2" y="6" rx="2" />
                         </svg>
                         <span class="fw-400">Gestão de Inventário</span>
                     </div>
                     <div class="d-flex gap-2 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-mail-icon lucide-mail">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-mail-icon lucide-mail">
                             <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
                             <rect x="2" y="4" width="20" height="16" rx="2" />
                         </svg>
                         <span class="fw-400">sofia.oliveira@hospital.pt</span>
                     </div>
                     <div class="d-flex gap-2 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-phone-icon lucide-phone">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-phone-icon lucide-phone">
                             <path
                                 d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" />
                         </svg>
@@ -671,9 +653,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <div class="d-flex justify-content-between align-items-center text-muted additional-details">
                     <span class="text-uppercase font-mono">ADM-002</span>
                     <div class="d-flex gap-1 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-calendar-icon lucide-calendar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-calendar-icon lucide-calendar">
                             <path d="M8 2v4" />
                             <path d="M16 2v4" />
                             <rect width="18" height="18" x="3" y="4" rx="2" />
@@ -689,8 +671,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <!-- Row 1: Nome -->
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="d-flex gap-3 align-items-center">
-                        <p
-                            class="user-icon d-flex align-items-center justify-content-center fw-700 text-white purple">
+                        <p class="user-icon d-flex align-items-center justify-content-center fw-700 text-white purple">
                             DJ
                         </p>
                         <div class="d-flex flex-column gap-half">
@@ -713,10 +694,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
                             <li>
                                 <a class="dropdown-item action-dropdown-item text-primary" href="#">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-pencil">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-pencil">
                                         <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
                                         <path d="m15 5 4 4" />
                                     </svg>
@@ -725,10 +705,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                             </li>
                             <li>
                                 <a class="dropdown-item action-dropdown-item text-error" href="#">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-archive">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-archive">
                                         <rect width="20" height="5" x="2" y="3" rx="1" />
                                         <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
                                         <path d="M10 12h4" />
@@ -743,27 +722,27 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <!-- Row 2: Contacto -->
                 <div class="d-flex flex-column gap-3 text-secondary">
                     <div class="d-flex gap-2 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-briefcase-icon lucide-briefcase">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-briefcase-icon lucide-briefcase">
                             <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
                             <rect width="20" height="14" x="2" y="6" rx="2" />
                         </svg>
                         <span class="fw-400">UCI</span>
                     </div>
                     <div class="d-flex gap-2 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-mail-icon lucide-mail">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-mail-icon lucide-mail">
                             <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
                             <rect x="2" y="4" width="20" height="16" rx="2" />
                         </svg>
                         <span class="fw-400">joao.silva@hospital.pt</span>
                     </div>
                     <div class="d-flex gap-2 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-phone-icon lucide-phone">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-phone-icon lucide-phone">
                             <path
                                 d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" />
                         </svg>
@@ -775,9 +754,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <div class="d-flex justify-content-between align-items-center text-muted additional-details">
                     <span class="text-uppercase font-mono">MED-002</span>
                     <div class="d-flex gap-1 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-calendar-icon lucide-calendar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-calendar-icon lucide-calendar">
                             <path d="M8 2v4" />
                             <path d="M16 2v4" />
                             <rect width="18" height="18" x="3" y="4" rx="2" />
@@ -793,8 +772,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <!-- Row 1: Nome -->
                 <div class="d-flex justify-content-between align-items-center">
                     <div class="d-flex gap-3 align-items-center">
-                        <p
-                            class="user-icon d-flex align-items-center justify-content-center fw-700 text-white cyan">
+                        <p class="user-icon d-flex align-items-center justify-content-center fw-700 text-white cyan">
                             EM
                         </p>
                         <div class="d-flex flex-column gap-half">
@@ -817,10 +795,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
                             <li>
                                 <a class="dropdown-item action-dropdown-item text-primary" href="#">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-pencil">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-pencil">
                                         <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
                                         <path d="m15 5 4 4" />
                                     </svg>
@@ -829,10 +806,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                             </li>
                             <li>
                                 <a class="dropdown-item action-dropdown-item text-error" href="#">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                        stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-archive">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-archive">
                                         <rect width="20" height="5" x="2" y="3" rx="1" />
                                         <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
                                         <path d="M10 12h4" />
@@ -847,27 +823,27 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <!-- Row 2: Contacto -->
                 <div class="d-flex flex-column gap-3 text-secondary">
                     <div class="d-flex gap-2 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-briefcase-icon lucide-briefcase">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-briefcase-icon lucide-briefcase">
                             <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
                             <rect width="20" height="14" x="2" y="6" rx="2" />
                         </svg>
                         <span class="fw-400">Bloco Operatório</span>
                     </div>
                     <div class="d-flex gap-2 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-mail-icon lucide-mail">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-mail-icon lucide-mail">
                             <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
                             <rect x="2" y="4" width="20" height="16" rx="2" />
                         </svg>
                         <span class="fw-400">marta.lopes@hospital.pt</span>
                     </div>
                     <div class="d-flex gap-2 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-phone-icon lucide-phone">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-phone-icon lucide-phone">
                             <path
                                 d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" />
                         </svg>
@@ -879,9 +855,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <div class="d-flex justify-content-between align-items-center text-muted additional-details">
                     <span class="text-uppercase font-mono">ENF-001</span>
                     <div class="d-flex gap-1 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round" class="lucide lucide-calendar-icon lucide-calendar">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-calendar-icon lucide-calendar">
                             <path d="M8 2v4" />
                             <path d="M16 2v4" />
                             <rect width="18" height="18" x="3" y="4" rx="2" />
@@ -916,9 +892,9 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 
                 <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
                     data-bs-dismiss="modal" aria-label="Close">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-x-icon lucide-x stroke-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-x-icon lucide-x stroke-secondary">
                         <path d="M18 6 6 18" />
                         <path d="m6 6 12 12" />
                     </svg>
@@ -934,14 +910,13 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                     <div class="d-flex gap-4 w-100">
                         <div class="d-flex flex-column form-item w-100 mw-0">
                             <label for="person-name">Nome Completo *</label>
-                            <input type="text" id="person-name" name="person-name"
-                                placeholder="Ex: Dr. Manuel Costa" required>
+                            <input type="text" id="person-name" name="person-name" placeholder="Ex: Dr. Manuel Costa"
+                                required>
                         </div>
 
                         <div class="d-flex flex-column form-item w-100 mw-0">
                             <label for="person-id">Nº Funcionário *</label>
-                            <input type="text" id="person-id" name="person-id" placeholder="Ex: MED-001"
-                                required>
+                            <input type="text" id="person-id" name="person-id" placeholder="Ex: MED-001" required>
                         </div>
                     </div>
 
@@ -964,14 +939,12 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                     <div class="d-flex gap-4 w-100">
                         <div class="d-flex flex-column form-item w-100 mw-0">
                             <label for="person-email">Email</label>
-                            <input type="email" id="person-email" name="person-email"
-                                placeholder="email@hospital.pt">
+                            <input type="email" id="person-email" name="person-email" placeholder="email@hospital.pt">
                         </div>
 
                         <div class="d-flex flex-column form-item w-100 mw-0">
                             <label for="person-phone">Telefone</label>
-                            <input type="text" id="person-phone" name="person-phone"
-                                placeholder="+351 9XX XXX XXX">
+                            <input type="text" id="person-phone" name="person-phone" placeholder="+351 9XX XXX XXX">
                         </div>
                     </div>
 
@@ -988,8 +961,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                     <div class="d-flex w-100 justify-content-end gap-4 button-row mt-4">
                         <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                             data-bs-dismiss="modal">Cancelar</button>
-                        <button type="button" id="btn-submit-modal" class="btn btn-primary btn-glowing"
-                            disabled>
+                        <button type="button" id="btn-submit-modal" class="btn btn-primary btn-glowing" disabled>
                             Criar Pessoa
                         </button>
                     </div>

@@ -1,5 +1,6 @@
 <?php
-require_once(__DIR__ . "/../../config/config.php");
+require_once(__DIR__ . "/../../config/funcoes.php");
+redirect_if_not_logged();
 include_once BASE_PATH . 'private/includes/head.php';
 include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 
@@ -126,8 +127,7 @@ $inboxRequests = [
                             </div>
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="lucide lucide-chevron-down text-muted">
+                                stroke-linejoin="round" class="lucide lucide-chevron-down text-muted">
                                 <path d="m6 9 6 6 6-6" />
                             </svg>
                         </div>
@@ -180,8 +180,7 @@ $inboxRequests = [
                             </div>
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="lucide lucide-chevron-down text-muted">
+                                stroke-linejoin="round" class="lucide lucide-chevron-down text-muted">
                                 <path d="m6 9 6 6 6-6" />
                             </svg>
                         </div>
@@ -257,8 +256,7 @@ $inboxRequests = [
                             </div>
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="lucide lucide-chevron-down text-muted">
+                                stroke-linejoin="round" class="lucide lucide-chevron-down text-muted">
                                 <path d="m6 9 6 6 6-6" />
                             </svg>
                         </div>
@@ -330,7 +328,8 @@ $inboxRequests = [
                                                 <div class="d-flex justify-content-end gap-3 align-items-center">
                                                     <button
                                                         class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
-                                                        type="button" data-bs-toggle="modal" data-bs-target="#card-edit-modal">
+                                                        type="button" data-bs-toggle="modal"
+                                                        data-bs-target="#card-edit-modal">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                             stroke-width="2" stroke-linecap="round"
@@ -342,7 +341,8 @@ $inboxRequests = [
                                                     </button>
                                                     <button
                                                         class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
-                                                        type="button" data-bs-toggle="modal" data-bs-target="#delete-confirm-modal">
+                                                        type="button" data-bs-toggle="modal"
+                                                        data-bs-target="#delete-confirm-modal">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                             stroke-width="2" stroke-linecap="round"
@@ -389,7 +389,8 @@ $inboxRequests = [
                                                 <div class="d-flex justify-content-end gap-3 align-items-center">
                                                     <button
                                                         class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
-                                                        type="button" data-bs-toggle="modal" data-bs-target="#card-edit-modal">
+                                                        type="button" data-bs-toggle="modal"
+                                                        data-bs-target="#card-edit-modal">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                             stroke-width="2" stroke-linecap="round"
@@ -401,7 +402,8 @@ $inboxRequests = [
                                                     </button>
                                                     <button
                                                         class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
-                                                        type="button" data-bs-toggle="modal" data-bs-target="#delete-confirm-modal">
+                                                        type="button" data-bs-toggle="modal"
+                                                        data-bs-target="#delete-confirm-modal">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                             stroke-width="2" stroke-linecap="round"
@@ -451,7 +453,8 @@ $inboxRequests = [
                                                 <div class="d-flex justify-content-end gap-3 align-items-center">
                                                     <button
                                                         class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
-                                                        type="button" data-bs-toggle="modal" data-bs-target="#card-edit-modal">
+                                                        type="button" data-bs-toggle="modal"
+                                                        data-bs-target="#card-edit-modal">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                             stroke-width="2" stroke-linecap="round"
@@ -463,7 +466,8 @@ $inboxRequests = [
                                                     </button>
                                                     <button
                                                         class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
-                                                        type="button" data-bs-toggle="modal" data-bs-target="#delete-confirm-modal">
+                                                        type="button" data-bs-toggle="modal"
+                                                        data-bs-target="#delete-confirm-modal">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                             viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                             stroke-width="2" stroke-linecap="round"
@@ -510,8 +514,7 @@ $inboxRequests = [
                             </div>
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="lucide lucide-chevron-down text-muted">
+                                stroke-linejoin="round" class="lucide lucide-chevron-down text-muted">
                                 <path d="m6 9 6 6 6-6" />
                             </svg>
                         </div>
@@ -660,19 +663,20 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 
             <!-- Body do Modal -->
             <div class="modal-body p-0">
-                <form id="card-edit-form"
-                    class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
+                <form id="card-edit-form" class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
 
                     <!-- Row 1: Título do Funcionalidade -->
                     <div class="d-flex flex-column form-item w-100 mw-0">
                         <label for="edit-card-title">Título do Funcionalidade</label>
-                        <input type="text" id="edit-card-title" name="card-title" value="Inventário Centralizado" required>
+                        <input type="text" id="edit-card-title" name="card-title" value="Inventário Centralizado"
+                            required>
                     </div>
 
                     <!-- Row 2: Descrição Curta -->
                     <div class="d-flex flex-column form-item w-100 mw-0">
                         <label for="edit-card-desc">Descrição Curta</label>
-                        <textarea id="edit-card-desc" name="card-desc" rows="3" class="form-control" required>Registo exaustivo e rastreio...</textarea>
+                        <textarea id="edit-card-desc" name="card-desc" rows="3" class="form-control"
+                            required>Registo exaustivo e rastreio...</textarea>
                     </div>
 
                     <div class="d-flex flex-column flex-md-row gap-4 w-100">
@@ -690,8 +694,8 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                             <label>Estado na Página</label>
                             <div class="d-flex align-items-center gap-2 switch-wrapper">
                                 <div class="form-check form-switch p-0 m-0 d-flex align-items-center gap-3">
-                                    <input class="form-check-input m-0 switch-input" type="checkbox" id="edit-card-status"
-                                        name="card-status" checked>
+                                    <input class="form-check-input m-0 switch-input" type="checkbox"
+                                        id="edit-card-status" name="card-status" checked>
                                     <label class="form-check-label m-0 fw-500 text-secondary"
                                         for="edit-card-status">Visível</label>
                                 </div>
@@ -714,23 +718,23 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 </div>
 
 <!-- Modal de Confirmação de Remoção -->
-<div class="modal fade" id="delete-confirm-modal" tabindex="-1" aria-labelledby="deleteModalLabel"
-    aria-hidden="true">
+<div class="modal fade" id="delete-confirm-modal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
         <div class="modal-content custom-modal-content d-flex flex-column">
             <!-- Titulo -->
             <div
                 class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
                 <div class="d-flex flex-column">
-                    <h2 class="equipment-creation-modal-title modal-title" id="deleteModalLabel">Apagar Definitivamente</h2>
+                    <h2 class="equipment-creation-modal-title modal-title" id="deleteModalLabel">Apagar Definitivamente
+                    </h2>
                     <span class="text-secondary fw-400">Esta ação não pode ser revertida.</span>
                 </div>
 
                 <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
                     data-bs-dismiss="modal" aria-label="Close">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round" class="lucide lucide-x-icon lucide-x stroke-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-x-icon lucide-x stroke-secondary">
                         <path d="M18 6 6 18" />
                         <path d="m6 6 12 12" />
                     </svg>
@@ -739,11 +743,18 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 
             <!-- Body do Modal -->
             <div class="modal-body p-0">
-                <div class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
+                <div
+                    class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
 
                     <div class="d-flex flex-column align-items-center gap-4">
                         <div class="d-flex padding-3 danger-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-triangle-alert"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="lucide lucide-triangle-alert">
+                                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+                                <path d="M12 9v4" />
+                                <path d="M12 17h.01" />
+                            </svg>
                         </div>
                         <div class="d-flex flex-column align-items-center justify-content-center gap-3">
                             <div class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
@@ -754,7 +765,8 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                 <span class="text-muted">Tipo: Cartão de Funcionalidade</span>
                             </div>
                             <div class="danger-banner text-error text-center padding-3">
-                                <span>⚠️ Este registo será eliminado permanentemente da base de dados. Todos os dados associados serão perdidos.</span>
+                                <span>⚠️ Este registo será eliminado permanentemente da base de dados. Todos os dados
+                                    associados serão perdidos.</span>
                             </div>
                         </div>
                     </div>

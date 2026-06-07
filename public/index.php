@@ -456,7 +456,7 @@ try {
                 <div class="d-flex flex-column gap-4 footer-col">
                     <span class="fw-700 text-uppercase"><?= $conteudoPagina['footer.section_plataforma'] ?></span>
                     <div class="d-flex flex-column gap-3">
-                        <a href="../private/login/login.html"
+                        <a href="../private/login/login.php"
                             class="fw-400 d-flex align-items-center gap-2 text-primary-500"><?= $conteudoPagina['footer.link_backoffice'] ?>
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"

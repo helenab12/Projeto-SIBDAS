@@ -1,5 +1,6 @@
 <?php
-require_once(__DIR__ . "/../config/config.php");
+require_once(__DIR__ . "/../config/funcoes.php");
+redirect_if_not_logged();
 include_once BASE_PATH . 'private/includes/head.php';
 include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 
@@ -74,7 +75,8 @@ $notifications = [
     ),
 ];
 
-$unreadCount = count(array_filter($notifications, function($n) { return !$n->isRead; }));
+$unreadCount = count(array_filter($notifications, function ($n) {
+    return !$n->isRead; }));
 ?>
 
 <div class="d-flex flex-column flex-grow-1 overflow-x-hidden mw-0">
@@ -87,11 +89,16 @@ $unreadCount = count(array_filter($notifications, function($n) { return !$n->isR
         <div class="d-flex justify-content-between align-items-center w-100 dashboard-title">
             <div class="d-flex flex-column gap-1">
                 <h1>Notificações</h1>
-                <p class="text-secondary fw-400"><span id="unread-count"><?php echo $unreadCount; ?></span> notificações por ler</p>
+                <p class="text-secondary fw-400"><span id="unread-count"><?php echo $unreadCount; ?></span> notificações
+                    por ler</p>
             </div>
             <div class="d-flex gap-2">
                 <button id="mark-all-read-btn" class="btn btn-primary-outline btn-small gap-2" <?php echo $unreadCount === 0 ? 'style="display: none;"' : ''; ?>>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-icon lucide-check"><path d="M20 6 9 17l-5-5"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-check-icon lucide-check">
+                        <path d="M20 6 9 17l-5-5" />
+                    </svg>
                     Marcar Tudo como Lido
                 </button>
             </div>
@@ -99,12 +106,17 @@ $unreadCount = count(array_filter($notifications, function($n) { return !$n->isR
 
         <!-- Lista de Notificações -->
         <div class="d-flex flex-column gap-3">
-            <?php foreach ($notifications as $index => $notification) : ?>
-                <div id="notification-<?= $index ?>" class="bento-card <?php echo !$notification->isRead ? '' : 'unread'; ?> d-flex flex-row align-items-center justify-content-between gap-4 padding-4 recycle-card" onclick="markAsRead(<?= $index ?>)" style="cursor: pointer;">
+            <?php foreach ($notifications as $index => $notification): ?>
+                <div id="notification-<?= $index ?>"
+                    class="bento-card <?php echo !$notification->isRead ? '' : 'unread'; ?> d-flex flex-row align-items-center justify-content-between gap-4 padding-4 recycle-card"
+                    onclick="markAsRead(<?= $index ?>)" style="cursor: pointer;">
                     <div class="d-flex flex-wrap gap-4 justify-content-between w-100 align-items-start">
                         <div class="d-flex flex-row align-items-start gap-4">
-                            <div class="recycle-type-icon d-flex align-items-center justify-content-center padding-2" style="background-color: color-mix(in srgb, <?php echo $notification->type->color; ?> 10%, transparent); color: <?php echo $notification->type->color; ?>;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide">
+                            <div class="recycle-type-icon d-flex align-items-center justify-content-center padding-2"
+                                style="background-color: color-mix(in srgb, <?php echo $notification->type->color; ?> 10%, transparent); color: <?php echo $notification->type->color; ?>;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide">
                                     <?php echo $notification->type->svgPath; ?>
                                 </svg>
                             </div>
@@ -112,7 +124,7 @@ $unreadCount = count(array_filter($notifications, function($n) { return !$n->isR
                                 <div class="d-flex gap-1 align-items-center align-middle">
                                     <p class="fw-700">
                                         <?php echo $notification->title; ?>
-                                        <?php if (!$notification->isRead) : ?>
+                                        <?php if (!$notification->isRead): ?>
                                             <span class="padding-1 text-primary-500 font-bold">&bull;</span>
                                         <?php endif; ?>
                                     </p>
@@ -120,17 +132,21 @@ $unreadCount = count(array_filter($notifications, function($n) { return !$n->isR
                                 <span class="text-secondary"><?php echo $notification->description; ?></span>
                                 <div class="d-flex flex-row gap-2">
                                     <div class="d-flex gap-1 text-muted align-items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-icon lucide-clock">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" class="lucide lucide-clock-icon lucide-clock">
                                             <circle cx="12" cy="12" r="10" />
                                             <path d="M12 6v6l4 2" />
                                         </svg>
-                                        <span class="fst-normal"><?php echo $notification->timestamp->format('d/m/Y, H:i'); ?></span>
+                                        <span
+                                            class="fst-normal"><?php echo $notification->timestamp->format('d/m/Y, H:i'); ?></span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="d-flex align-items-start">
-                            <label class="text-capitalize d-flex align-middle" style="background-color: color-mix(in srgb, <?php echo $notification->type->color; ?> 10%, transparent); color: <?php echo $notification->type->color; ?>;">
+                            <label class="text-capitalize d-flex align-middle"
+                                style="background-color: color-mix(in srgb, <?php echo $notification->type->color; ?> 10%, transparent); color: <?php echo $notification->type->color; ?>;">
                                 <?php echo $notification->type->name; ?>
                             </label>
                         </div>

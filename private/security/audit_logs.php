@@ -1,5 +1,6 @@
 <?php
-require_once(__DIR__ . "/../../config/config.php");
+require_once(__DIR__ . "/../../config/funcoes.php");
+redirect_if_not_logged();
 include_once BASE_PATH . 'private/includes/head.php';
 include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 
@@ -149,7 +150,13 @@ $auditLogs = [
             </div>
             <div class="d-flex gap-2">
                 <button class="btn btn-primary-outline gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-download-icon lucide-download"><path d="M12 15V3"/><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-download-icon lucide-download">
+                        <path d="M12 15V3" />
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <path d="m7 10 5 5 5-5" />
+                    </svg>
                     Exportar Logs
                 </button>
             </div>
@@ -159,9 +166,8 @@ $auditLogs = [
         <div class="bento-card padding-4 gap-4 equipment-list-search-bar">
             <form action="" class="flex-grow-1">
                 <div class="form-item w-100 position-relative">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                        stroke-linejoin="round"
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-search-icon lucide-search search-bar-icon position-absolute text-secondary">
                         <path d="m21 21-4.34-4.34" />
                         <circle cx="11" cy="11" r="8" />
@@ -186,39 +192,51 @@ $auditLogs = [
 
         <!-- Lista de Logs de Auditoria -->
         <div class="d-flex flex-column gap-3">
-            <?php foreach ($auditLogs as $log) : ?>
-                <div class="bento-card d-flex flex-row align-items-center justify-content-between gap-4 padding-4 recycle-card">
+            <?php foreach ($auditLogs as $log): ?>
+                <div
+                    class="bento-card d-flex flex-row align-items-center justify-content-between gap-4 padding-4 recycle-card">
                     <div class="d-flex flex-wrap gap-4 justify-content-between w-100 align-items-start">
                         <div class="d-flex flex-row align-items-start gap-4">
-                            <div class="recycle-type-icon d-flex align-items-center justify-content-center padding-2" style="background-color: color-mix(in srgb, <?php echo $log->type->color; ?> 10%, transparent); color: <?php echo $log->type->color; ?>;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide">
+                            <div class="recycle-type-icon d-flex align-items-center justify-content-center padding-2"
+                                style="background-color: color-mix(in srgb, <?php echo $log->type->color; ?> 10%, transparent); color: <?php echo $log->type->color; ?>;">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide">
                                     <?php echo $log->type->svgPath; ?>
                                 </svg>
                             </div>
                             <div class="d-flex flex-column gap-1">
                                 <div class="d-flex gap-1 align-items-center align-middle">
                                     <p class="fw-700"><?php echo $log->type->name; ?></p>
-                                    <p class="d-flex flex">&bull;</p> 
+                                    <p class="d-flex flex">&bull;</p>
                                     <p><?php echo $log->entityText; ?></p>
                                 </div>
                                 <span class="text-secondary"><?php echo $log->description; ?></span>
                                 <div class="d-flex flex-row gap-2">
                                     <div class="d-flex gap-1 text-muted align-items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-clock-icon lucide-clock">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" class="lucide lucide-clock-icon lucide-clock">
                                             <circle cx="12" cy="12" r="10" />
                                             <path d="M12 6v6l4 2" />
                                         </svg>
                                         <span class="fst-normal"><?php echo $log->timestamp->format('d/m/Y, H:i'); ?></span>
                                     </div>
                                     <div class="d-flex gap-1 text-muted align-items-center">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-icon lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" class="lucide lucide-user-icon lucide-user">
+                                            <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                                            <circle cx="12" cy="7" r="4" />
+                                        </svg>
                                         <span class="fst-normal"><?php echo $log->responsible; ?></span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                         <div class="d-flex align-items-start">
-                            <label class="text-capitalize d-flex align-middle" style="background-color: color-mix(in srgb, <?php echo $log->type->color; ?> 10%, transparent); color: <?php echo $log->type->color; ?>;">
+                            <label class="text-capitalize d-flex align-middle"
+                                style="background-color: color-mix(in srgb, <?php echo $log->type->color; ?> 10%, transparent); color: <?php echo $log->type->color; ?>;">
                                 <?php echo $log->entityType; ?>
                             </label>
                         </div>

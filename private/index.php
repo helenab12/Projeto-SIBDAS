@@ -24,58 +24,7 @@ try {
     $server_error = "Erro ao conectar à base de dados: " . $e->getMessage();
 }
 
-// Carregar as instâncias de Pessoa e Utilizador para a sessão, caso ainda não existam
-if ($ligacao && (!isset($_SESSION['pessoaAtual']) || !isset($_SESSION['userAtual'])) && isset($_SESSION['id_utilizador'])) {
-    try {
 
-        // Temos que fazer a query assim invés de u.* e p.* porque Utilizador e Pessoa têm colunas com nome igual
-        // por isso elas iriam sobrepor-se se usássemos u.* e p.* ao fazer o PDO::FETCH_OBJ.
-        $stmt = execute_query(
-            "SELECT u.idUtilizador, u.idPessoa, u.password, u.idPerfil, u.estado, u.ativo as utilizador_ativo, u.dataCriacao as utilizador_dataCriacao, u.dataAtualizacao as utilizador_dataAtualizacao,
-                    p.nome as pessoa_nome, p.email as pessoa_email, p.contactoTelefonico as pessoa_contacto, p.nif as pessoa_nif, p.ativo as pessoa_ativo, p.dataCriacao as pessoa_dataCriacao, p.dataAtualizacao as pessoa_dataAtualizacao,
-                    pf.idPerfil as perfil_id, pf.nome as perfil_nome, pf.dataCriacao as perfil_dataCriacao, pf.dataAtualizacao as perfil_dataAtualizacao
-            FROM Utilizador u
-            INNER JOIN Pessoa p ON u.idPessoa = p.idPessoa
-            LEFT JOIN Perfil pf ON u.idPerfil = pf.idPerfil
-            WHERE u.idUtilizador = :id",
-            ['id' => $_SESSION['id_utilizador']],
-            $ligacao
-        );
-        $dados = $stmt->fetch(PDO::FETCH_OBJ);
-
-        if ($dados) {
-            $_SESSION['pessoaAtual'] = new Pessoa(
-                (string) $dados->idPessoa,
-                (string) $dados->pessoa_nome,
-                (string) $dados->pessoa_email,
-                (string) $dados->pessoa_contacto,
-                (string) $dados->pessoa_nif,
-                (bool) $dados->pessoa_ativo,
-                new DateTime($dados->pessoa_dataCriacao),
-                $dados->pessoa_dataAtualizacao ? new DateTime($dados->pessoa_dataAtualizacao) : new DateTime()
-            );
-
-            $_SESSION['userAtual'] = new Utilizador(
-                (string) $dados->idUtilizador,
-                (string) $dados->idPessoa,
-                (string) $dados->password,
-                (string) $dados->idPerfil,
-                (string) $dados->estado,
-                (bool) $dados->utilizador_ativo,
-                new DateTime($dados->utilizador_dataCriacao),
-                $dados->utilizador_dataAtualizacao ? new DateTime($dados->utilizador_dataAtualizacao) : new DateTime(),
-                new Perfil(
-                    (string) $dados->perfil_id,
-                    (string) $dados->perfil_nome,
-                    new DateTime($dados->perfil_dataCriacao),
-                    $dados->perfil_dataAtualizacao ? new DateTime($dados->perfil_dataAtualizacao) : new DateTime()
-                )
-            );
-        }
-    } catch (Exception $e) {
-        $server_error = "Erro ao carregar dados do utilizador: " . $e->getMessage();
-    }
-}
 
 ?>
 
