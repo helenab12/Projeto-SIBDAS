@@ -1227,11 +1227,16 @@ function togglePermission(permissionId) {
         permissionBadge.classList.toggle("has-permission");
     }
 
-    const changesCard = document.querySelector(
-        ".security-profiles .changes-card",
+    const permissionInput = document.getElementById(
+        `permission-input-${permissionId}`,
     );
-    if (changesCard) {
-        changesCard.classList.add("has-changes");
+    if (permissionInput) {
+        permissionInput.value = permissionInput.value === "1" ? "0" : "1";
+    }
+
+    const bar = document.querySelector(".inbox-changes-container");
+    if (bar) {
+        bar.style.setProperty("display", "flex", "important");
     }
 }
 
