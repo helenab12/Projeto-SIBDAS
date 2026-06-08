@@ -378,13 +378,15 @@ class ConteudoTexto implements Validavel
     private int $idConteudo;
     private string $chaveSecao;
     private string $valor;
+    private string $descricao;
 
-    public function __construct(int $idConteudo, string $chaveSecao, string $valor)
+    public function __construct(int $idConteudo, string $chaveSecao, string $valor, string $descricao = '')
     {
         $erros = self::validarDados([
             'idConteudo' => $idConteudo,
             'chaveSecao' => $chaveSecao,
             'valor' => $valor,
+            'descricao' => $descricao,
         ]);
 
         if (!empty($erros)) {
@@ -394,6 +396,7 @@ class ConteudoTexto implements Validavel
         $this->idConteudo = $idConteudo;
         $this->chaveSecao = $chaveSecao;
         $this->valor = $valor;
+        $this->descricao = $descricao;
     }
 
     public function getIdConteudo(): int
@@ -407,6 +410,10 @@ class ConteudoTexto implements Validavel
     public function getValor(): string
     {
         return $this->valor;
+    }
+    public function getDescricao(): string
+    {
+        return $this->descricao;
     }
 
     // Permite usar o objeto diretamente como string: echo $texto;
@@ -443,6 +450,44 @@ class CartaoFuncionalidade implements Validavel
     private string $icone;
     private int $ordem;
     private bool $ativo;
+
+    public static array $icon_map = [
+        'document' => [
+            'label' => '📄 Documento',
+            'svg' => '<path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" /><path d="M14 2v5a1 1 0 0 0 1 1h5" /><path d="M10 9H8" /><path d="M16 13H8" /><path d="M16 17H8" />'
+        ],
+        'wrench' => [
+            'label' => '🔧 Chave Inglesa',
+            'svg' => '<path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z" />'
+        ],
+        'package' => [
+            'label' => '📦 Caixa / Pacote',
+            'svg' => '<path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z" /><path d="M12 22V12" /><polyline points="3.29 7 12 12 20.71 7" /><path d="m7.5 4.27 9 5.15" />'
+        ],
+        'sparkles' => [
+            'label' => '✨ Estrelas (IA)',
+            'svg' => '<path d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z" /><path d="M20 2v4" /><path d="M22 4h-4" /><circle cx="4" cy="20" r="2" />'
+        ],
+        'users' => [
+            'label' => '👥 Utilizadores',
+            'svg' => '<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><path d="M16 3.128a4 4 0 0 1 0 7.744" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><circle cx="9" cy="7" r="4" />'
+        ],
+        'grid' => [
+            'label' => '📊 Bento Grelha',
+            'svg' => '<rect width="7" height="9" x="3" y="3" rx="1" /><rect width="7" height="5" x="14" y="3" rx="1" /><rect width="7" height="9" x="14" y="12" rx="1" /><rect width="7" height="5" x="3" y="16" rx="1" />'
+        ]
+    ];
+
+    public static function resolverIcone(string $icon_type, string $custom_icon): string
+    {
+        if ($icon_type === 'other') {
+            return $custom_icon;
+        }
+        if (!isset(self::$icon_map[$icon_type])) {
+            throw new Exception("Ícone predefinido selecionado é inválido.");
+        }
+        return self::$icon_map[$icon_type]['svg'];
+    }
 
     public function __construct(int $idCartao, string $titulo, string $descricao, string $icone, int $ordem, bool $ativo = true)
     {
@@ -582,7 +627,7 @@ class ConteudoPagina implements ArrayAccess
 
         // 1. Carregar textos (ConteudoFrontOffice)
         $stmt = execute_query(
-            "SELECT idConteudo, chaveSecao, valor
+            "SELECT idConteudo, chaveSecao, valor, descricao
              FROM ConteudoFrontOffice
              ORDER BY idConteudo ASC",
             [],
@@ -594,7 +639,8 @@ class ConteudoPagina implements ArrayAccess
             $pagina->adicionarTexto(new ConteudoTexto(
                 (int) $row->idConteudo,
                 $row->chaveSecao,
-                $row->valor
+                $row->valor,
+                $row->descricao ?? ''
             ));
         }
 

@@ -1442,3 +1442,69 @@ document.addEventListener("DOMContentLoaded", function () {
         validateForm();
     }
 });
+
+// Customização de Ícones SVG dos Cartões
+document.addEventListener("DOMContentLoaded", () => {
+    // Função para atualizar a visualização do ícone SVG
+    function updateIconPreview(inputValue, previewElement) {
+        if (!previewElement) return;
+        previewElement.innerHTML = inputValue.trim();
+    }
+
+    // Escutar alterações nos dropdowns de seleção de ícone
+    document.addEventListener("change", (event) => {
+        if (event.target.classList.contains("card-icon-select")) {
+            const select = event.target;
+            const form = select.closest("form");
+            if (!form) return;
+
+            const textContainer = form.querySelector(".custom-textarea-container");
+            const textarea = form.querySelector(".card-custom-icon-textarea");
+            const preview = form.querySelector(".icon-preview-svg");
+
+            if (select.value === "other") {
+                if (textContainer) textContainer.classList.remove("d-none");
+                if (textarea) {
+                    textarea.required = true;
+                    updateIconPreview(textarea.value, preview);
+                }
+            } else {
+                if (textContainer) textContainer.classList.add("d-none");
+                if (textarea) {
+                    textarea.required = false;
+                }
+                const selectedOption = select.options[select.selectedIndex];
+                const predefinedSvg = selectedOption ? selectedOption.getAttribute("data-svg") : "";
+                updateIconPreview(predefinedSvg || "", preview);
+            }
+        }
+    });
+
+    // Escutar input de caminho SVG personalizado
+    document.addEventListener("input", (event) => {
+        if (event.target.classList.contains("card-custom-icon-textarea")) {
+            const textarea = event.target;
+            const form = textarea.closest("form");
+            if (!form) return;
+
+            const select = form.querySelector(".card-icon-select");
+            if (select && select.value !== "other") return; // Apenas atualiza se for "other"
+
+            const preview = form.querySelector(".icon-preview-svg");
+            updateIconPreview(textarea.value, preview);
+        }
+    });
+
+    // Lógica para mostrar a barra de alterações pendentes na gestão de conteúdos
+    const contentForm = document.querySelector(".content-management form");
+    const contentChangesBar = document.querySelector(".content-management .inbox-changes-container");
+    if (contentForm && contentChangesBar) {
+        contentForm.addEventListener("input", () => {
+            contentChangesBar.style.setProperty("display", "flex", "important");
+        });
+        contentForm.addEventListener("change", () => {
+            contentChangesBar.style.setProperty("display", "flex", "important");
+        });
+    }
+});
+

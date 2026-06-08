@@ -218,6 +218,7 @@ CREATE TABLE `ConteudoFrontOffice` (
   `idConteudo` integer PRIMARY KEY AUTO_INCREMENT,
   `chaveSecao` varchar(100) UNIQUE,
   `valor` text,
+  `descricao` text,
   `dataCriacao` timestamp DEFAULT (CURRENT_TIMESTAMP),
   `dataAtualizacao` timestamp
 );
