@@ -659,8 +659,6 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
     <?php endif; ?>
 </div>
 
-
-
 <!-- Modais individuais para cada cartão (Edit e Delete) -->
 <?php foreach ($cartoes as $cartao):
     $encryptedCardId = aes_encrypt($cartao->idCartao);

@@ -297,14 +297,16 @@ class Perfil implements Validavel
     private string $nome;
     private DateTime $dataCriacao;
     private DateTime $dataAtualizacao;
+    private array $permissoes;
 
-    public function __construct(string $idPerfil, string $nome, DateTime $dataCriacao, DateTime $dataAtualizacao)
+    public function __construct(string $idPerfil, string $nome, DateTime $dataCriacao, DateTime $dataAtualizacao, array $permissoes = [])
     {
         $erros = self::validarDados([
             "idPerfil" => $idPerfil,
             "nome" => $nome,
             "dataCriacao" => $dataCriacao,
-            "dataAtualizacao" => $dataAtualizacao
+            "dataAtualizacao" => $dataAtualizacao,
+            "permissoes" => $permissoes
         ]);
 
         if (!empty($erros)) {
@@ -315,6 +317,7 @@ class Perfil implements Validavel
         $this->nome = $nome;
         $this->dataCriacao = $dataCriacao;
         $this->dataAtualizacao = $dataAtualizacao;
+        $this->permissoes = $permissoes;
     }
 
     public function getIdPerfil(): string
@@ -335,6 +338,11 @@ class Perfil implements Validavel
     public function getDataAtualizacao(): DateTime
     {
         return $this->dataAtualizacao;
+    }
+
+    public function getPermissoes(): array
+    {
+        return $this->permissoes;
     }
 
     public static function validarDados(array $dados): array
@@ -365,6 +373,77 @@ class Perfil implements Validavel
             if (!$d || $d->format('Y-m-d') !== $dados["dataAtualizacao"]) {
                 $erros[] = "O campo Data de Atualização tem de ser uma data válida no formato AAAA-MM-DD.";
             }
+        }
+
+        if (isset($dados["permissoes"])) {
+            if (!is_array($dados["permissoes"])) {
+                $erros[] = "O campo permissões tem de ser um array.";
+            } else {
+                foreach ($dados["permissoes"] as $perm) {
+                    if (!($perm instanceof Permissao)) {
+                        $erros[] = "Todas as permissões têm de ser instâncias da classe Permissao.";
+                        break;
+                    }
+                }
+            }
+        }
+
+        return $erros;
+    }
+}
+
+class Permissao implements Validavel
+{
+    private int $idPermissao;
+    private string $chave;
+    private string $descricao;
+
+    public function __construct(int $idPermissao, string $chave, string $descricao)
+    {
+        $erros = self::validarDados([
+            "idPermissao" => $idPermissao,
+            "chave" => $chave,
+            "descricao" => $descricao
+        ]);
+
+        if (!empty($erros)) {
+            throw new Exception("Erro ao criar permissão: " . implode(", ", $erros));
+        }
+
+        $this->idPermissao = $idPermissao;
+        $this->chave = $chave;
+        $this->descricao = $descricao;
+    }
+
+    public function getIdPermissao(): int
+    {
+        return $this->idPermissao;
+    }
+
+    public function getChave(): string
+    {
+        return $this->chave;
+    }
+
+    public function getDescricao(): string
+    {
+        return $this->descricao;
+    }
+
+    public static function validarDados(array $dados): array
+    {
+        $erros = [];
+
+        if (!isset($dados["idPermissao"]) || !is_int($dados["idPermissao"])) {
+            $erros[] = "O ID da permissão tem de ser um número inteiro válido.";
+        }
+
+        if (empty(trim($dados["chave"]))) {
+            $erros[] = "A chave da permissão é obrigatória.";
+        }
+
+        if (empty(trim($dados["descricao"]))) {
+            $erros[] = "A descrição da permissão é obrigatória.";
         }
 
         return $erros;

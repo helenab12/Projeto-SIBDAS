@@ -1181,15 +1181,41 @@ if (permissionKeyInput && permissionDescInput && btnSubmitPermission) {
 
     if (permissionForm) {
         btnSubmitPermission.addEventListener("click", (e) => {
-            e.preventDefault();
-            alert("Permissão criada com sucesso!");
-
             const modalInstance = bootstrap.Modal.getInstance(permissionModal);
             if (modalInstance) {
                 modalInstance.hide();
             }
         });
     }
+}
+
+// Validação dos formulários de Edição de Permissão
+const editPermissionForms = document.querySelectorAll(".permission-edit-form");
+if (editPermissionForms.length > 0) {
+    editPermissionForms.forEach(form => {
+        const keyInput = form.querySelector(".permission-edit-key");
+        const descInput = form.querySelector(".permission-edit-description");
+        const submitBtn = form.querySelector(".btn-edit-submit");
+
+        if (keyInput && descInput && submitBtn) {
+            const validateEditForm = () => {
+                const keyValid = keyInput.value.trim() !== "";
+                const descValid = descInput.value.trim() !== "";
+                if (keyValid && descValid) {
+                    submitBtn.removeAttribute("disabled");
+                } else {
+                    submitBtn.setAttribute("disabled", "true");
+                }
+            };
+
+            // Executar inicialmente
+            validateEditForm();
+
+            // Escutar inputs
+            keyInput.addEventListener("input", validateEditForm);
+            descInput.addEventListener("input", validateEditForm);
+        }
+    });
 }
 
 // Perfis
