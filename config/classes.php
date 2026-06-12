@@ -7,6 +7,19 @@ interface Validavel
 
 // Pessoas, Autenticação, Autorização, Gestão de Utilizadores e Perfis
 
+enum Funcao: string
+{
+    case ADMINISTRADOR = 'Administrador';
+    case ENGENHEIRO = 'Engenheiro';
+    case MEDICO = 'Médico';
+    case ASSISTENTE = 'Assistente';
+    case ENFERMEIRO = 'Enfermeiro';
+    case TECNICO = 'Técnico';
+    case FORNECEDOR = 'Fornecedor';
+    case DIRETOR = 'Diretor';
+    case OUTRO = 'Outro';
+}
+
 class Pessoa implements Validavel
 {
     private string $id;
@@ -14,19 +27,22 @@ class Pessoa implements Validavel
     private string $email;
     private string $contactoTelefonico;
     private string $nif;
+    private Funcao $funcao;
+    private string $departamento;
     private bool $ativo;
     private DateTime $dataCriacao;
     private DateTime $dataAtualizacao;
 
-    public function __construct(string $id, string $nome, string $email, string $contactoTelefonico, string $nif, bool $ativo, DateTime $dataCriacao, DateTime $dataAtualizacao)
+    public function __construct(string $id, string $nome, string $email, string $contactoTelefonico, string $nif, Funcao $funcao, string $departamento, bool $ativo, DateTime $dataCriacao, DateTime $dataAtualizacao)
     {
-
         $erros = self::validarDados([
             "id" => $id,
             "nome" => $nome,
             "email" => $email,
             "contactoTelefonico" => $contactoTelefonico,
             "nif" => $nif,
+            "funcao" => $funcao,
+            "departamento" => $departamento,
             "ativo" => $ativo,
             "dataCriacao" => $dataCriacao,
             "dataAtualizacao" => $dataAtualizacao
@@ -41,6 +57,8 @@ class Pessoa implements Validavel
         $this->email = $email;
         $this->contactoTelefonico = $contactoTelefonico;
         $this->nif = $nif;
+        $this->funcao = $funcao;
+        $this->departamento = $departamento;
         $this->ativo = $ativo;
         $this->dataCriacao = $dataCriacao;
         $this->dataAtualizacao = $dataAtualizacao;
@@ -69,6 +87,16 @@ class Pessoa implements Validavel
     public function getNif(): string
     {
         return $this->nif;
+    }
+
+    public function getFuncao(): Funcao
+    {
+        return $this->funcao;
+    }
+
+    public function getDepartamento(): string
+    {
+        return $this->departamento;
     }
 
     public function getAtivo(): bool
@@ -102,7 +130,7 @@ class Pessoa implements Validavel
         if (empty(trim($dados["email"]))) {
             $erros[] = "O campo Email é obrigatório.";
         } elseif (!filter_var($dados["email"], FILTER_VALIDATE_EMAIL)) {
-            $erros[] = "O campo Email tem de ser um email válido.";
+            $erros[] = "O formato do e-mail é inválido.";
         }
 
         if (empty(trim($dados["contactoTelefonico"]))) {
@@ -133,6 +161,15 @@ class Pessoa implements Validavel
             if (!$d || $d->format('Y-m-d') !== $dados["dataAtualizacao"]) {
                 $erros[] = "O campo Data de Atualização tem de ser uma data válida no formato AAAA-MM-DD.";
             }
+        }
+
+        $funcao = $dados["funcao"] ?? null;
+        if (empty($funcao) || (is_string($funcao) && empty(trim($funcao)))) {
+            $erros[] = "A função é obrigatória.";
+        }
+
+        if (empty(trim($dados["departamento"] ?? ''))) {
+            $erros[] = "O departamento é obrigatório.";
         }
 
         return $erros;

@@ -129,6 +129,8 @@ CREATE TABLE `Pessoa` (
   `email` varchar(100) UNIQUE,
   `contactoTelefonico` varchar(15),
   `nif` varchar(9),
+  `funcao` ENUM('Administrador', 'Engenheiro', 'Médico', 'Assistente', 'Enfermeiro', 'Técnico', 'Fornecedor', 'Diretor', 'Outro'),
+  `departamento` varchar(100),
   `ativo` boolean DEFAULT true,
   `dataCriacao` timestamp DEFAULT (CURRENT_TIMESTAMP),
   `dataAtualizacao` timestamp

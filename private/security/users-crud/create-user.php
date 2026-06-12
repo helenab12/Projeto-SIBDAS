@@ -5,17 +5,28 @@ redirect_if_not_logged();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        $emailPessoa = $_POST['user-email'] ?? '';
-        $emailAutenticacao = $_POST['user-auth-email'] ?? '';
+        $emailPessoa = strtolower(trim($_POST['user-email'] ?? ''));
+        $emailAutenticacao = strtolower(trim($_POST['user-auth-email'] ?? ''));
         $password = $_POST['user-password'] ?? '';
         $idPerfil = $_POST['user-role'] ?? '';
 
-        if (empty(trim($emailPessoa)) || empty(trim($emailAutenticacao)) || empty(trim($password)) || empty(trim($idPerfil))) {
-            throw new Exception("Por favor, preencha todos os campos obrigatórios.");
+        if (empty(trim($emailPessoa))) {
+            throw new Exception("O email do funcionário é obrigatório.");
         }
 
-        if (strlen($password) < 8) {
-            throw new Exception("A password deve ter pelo menos 8 caracteres.");
+        // Validação básica
+        $erros = Utilizador::validarDados([
+            'idUtilizador' => '-1', // ID fictício
+            'idPessoa' => '-1', // ID fictício
+            'emailAutenticacao' => $emailAutenticacao,
+            'password' => $password,
+            'idPerfil' => $idPerfil,
+            'dataCriacao' => new DateTime(),
+            'dataAtualizacao' => new DateTime()
+        ]);
+
+        if (!empty($erros)) {
+            throw new Exception(implode(", ", $erros));
         }
 
         $ligacao = connect_to_db();

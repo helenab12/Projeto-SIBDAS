@@ -33,7 +33,7 @@ function redirect_if_not_logged($redirect_to = 'private/login/login.php')
             $ligacao = connect_to_db();
             $stmt = execute_query(
                 "SELECT u.idUtilizador, u.idPessoa, u.emailAutenticacao, u.password, u.idPerfil, u.ativo as utilizador_ativo, u.dataCriacao as utilizador_dataCriacao, u.dataAtualizacao as utilizador_dataAtualizacao,
-                        p.nome as pessoa_nome, p.email as pessoa_email, p.contactoTelefonico as pessoa_contacto, p.nif as pessoa_nif, p.ativo as pessoa_ativo, p.dataCriacao as pessoa_dataCriacao, p.dataAtualizacao as pessoa_dataAtualizacao,
+                        p.nome as pessoa_nome, p.email as pessoa_email, p.contactoTelefonico as pessoa_contacto, p.nif as pessoa_nif, p.funcao as pessoa_funcao, p.departamento as pessoa_departamento, p.ativo as pessoa_ativo, p.dataCriacao as pessoa_dataCriacao, p.dataAtualizacao as pessoa_dataAtualizacao,
                         pf.idPerfil as perfil_id, pf.nome as perfil_nome, pf.dataCriacao as perfil_dataCriacao, pf.dataAtualizacao as perfil_dataAtualizacao
                 FROM Utilizador u
                 INNER JOIN Pessoa p ON u.idPessoa = p.idPessoa
@@ -51,6 +51,8 @@ function redirect_if_not_logged($redirect_to = 'private/login/login.php')
                     (string) $dados->pessoa_email,
                     (string) $dados->pessoa_contacto,
                     (string) $dados->pessoa_nif,
+                    $dados->pessoa_funcao ? Funcao::tryFrom((string) $dados->pessoa_funcao) : null,
+                    $dados->pessoa_departamento ? (string) $dados->pessoa_departamento : null,
                     (bool) $dados->pessoa_ativo,
                     new DateTime($dados->pessoa_dataCriacao),
                     $dados->pessoa_dataAtualizacao ? new DateTime($dados->pessoa_dataAtualizacao) : new DateTime()

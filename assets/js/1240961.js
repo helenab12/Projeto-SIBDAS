@@ -639,36 +639,6 @@ if (btnOpenCreateModal && bsCreateEquipmentModal) {
     });
 }
 
-if (btnSubmitModal) {
-    btnSubmitModal.addEventListener("click", () => {
-        const buttonText = btnSubmitModal.textContent.trim();
-        if (buttonText === "Criar Componente") {
-            alert("Componente criado com sucesso!");
-        } else if (buttonText === "Criar Categoria") {
-            alert("Categoria criada com sucesso!");
-        } else if (buttonText === "Criar Fornecedor") {
-            alert("Fornecedor criado com sucesso!");
-        } else if (buttonText === "Criar Pessoa") {
-            alert("Pessoa criada com sucesso!");
-        } else if (buttonText === "Guardar Alterações") {
-            alert("Alterações guardadas com sucesso!");
-        } else if (document.getElementById("building-name")) {
-            alert("Edifício criado com sucesso!");
-        } else {
-            alert("Equipamento criado com sucesso!");
-        }
-
-        // Fechar qualquer modal ativo na página
-        const activeModalEl = document.querySelector(".modal.show");
-        if (activeModalEl) {
-            const bsActiveModal =
-                bootstrap.Modal.getInstance(activeModalEl) ||
-                new bootstrap.Modal(activeModalEl);
-            bsActiveModal.hide();
-        }
-    });
-}
-
 // Campos obrigatórios do Componente
 const componentNameInput = document.getElementById("component-name");
 const componentSkuInput = document.getElementById("component-sku");
@@ -987,97 +957,7 @@ if (personNameInput && personIdInput && btnSubmitModal) {
     }
 }
 
-// Lógica para Editar Pessoa a partir do Bento-Card
-document.addEventListener("click", function (e) {
-    const editBtn = e.target.closest(".dropdown-item");
-    if (!editBtn || !editBtn.textContent.includes("Editar")) return;
 
-    // Garantir que estamos na página de gestão de pessoas
-    const container = document.querySelector(".people-management");
-    if (!container) return;
-
-    e.preventDefault();
-
-    const card = editBtn.closest(".bento-card");
-    if (!card) return;
-
-    // Extrair dados do card
-    const nameEl = card.querySelector(".fw-700:not(.user-icon)");
-    const name = nameEl ? nameEl.textContent.trim() : "";
-
-    const roleEl = card.querySelector(".text-secondary");
-    const role = roleEl ? roleEl.textContent.trim() : "";
-
-    let department = "";
-    let email = "";
-    let phone = "";
-
-    const briefcaseSvg = card.querySelector(".lucide-briefcase");
-    if (briefcaseSvg) {
-        const div = briefcaseSvg.closest("div");
-        const span = div ? div.querySelector("span") : null;
-        if (span) department = span.textContent.trim();
-    }
-
-    const mailSvg = card.querySelector(".lucide-mail");
-    if (mailSvg) {
-        const div = mailSvg.closest("div");
-        const span = div ? div.querySelector("span") : null;
-        if (span) email = span.textContent.trim();
-    }
-
-    const phoneSvg = card.querySelector(".lucide-phone");
-    if (phoneSvg) {
-        const div = phoneSvg.closest("div");
-        const span = div ? div.querySelector("span") : null;
-        if (span) phone = span.textContent.trim();
-    }
-
-    const idEl = card.querySelector(".font-mono");
-    const id = idEl ? idEl.textContent.trim() : "";
-
-    const calendarSvg = card.querySelector(".lucide-calendar");
-    let startDate = "";
-    if (calendarSvg) {
-        const div = calendarSvg.closest("div");
-        const span = div ? div.querySelector("span") : null;
-        if (span) {
-            const rawDate = span.textContent.replace("Desde", "").trim();
-            // Formatar de MM/YYYY para DD/MM/YYYY
-            if (rawDate.includes("/")) {
-                const parts = rawDate.split("/");
-                startDate = `15/${parts[0]}/${parts[1]}`;
-            } else {
-                startDate = rawDate;
-            }
-        }
-    }
-
-    // Preencher os inputs do Modal
-    if (personNameInput) personNameInput.value = name;
-    if (personIdInput) personIdInput.value = id;
-    if (personRoleInput) personRoleInput.value = role;
-    if (personDepartmentInput) personDepartmentInput.value = department;
-    if (personEmailInput) personEmailInput.value = email;
-    if (personPhoneInput) personPhoneInput.value = phone;
-    if (personStartDateInput) personStartDateInput.value = startDate;
-
-    // Alterar os textos do Modal
-    const modalTitleEl = document.getElementById("equipmentModalLabel");
-    const modalSubtitleEl = modalTitleEl ? modalTitleEl.nextElementSibling : null;
-    if (modalTitleEl) modalTitleEl.textContent = "Editar Pessoa";
-    if (modalSubtitleEl)
-        modalSubtitleEl.textContent = "Informações do colaborador";
-    if (btnSubmitModal) {
-        btnSubmitModal.textContent = "Guardar Alterações";
-        btnSubmitModal.removeAttribute("disabled");
-    }
-
-    // Abrir o Modal
-    if (bsCreateEquipmentModal) {
-        bsCreateEquipmentModal.show();
-    }
-});
 
 // Campos obrigatórios do Edifício (Nome)
 const buildingNameInput = document.getElementById("building-name");
@@ -1607,4 +1487,110 @@ document.addEventListener("DOMContentLoaded", () => {
             roleInput.addEventListener('change', validateEditForm);
         }
     });
+
+    // Validação Modal Criação de Pessoa
+    const personNameInput = document.getElementById('person-name');
+    const personNifInput = document.getElementById('person-nif');
+    const personRoleInput = document.getElementById('person-role');
+    const personDeptInput = document.getElementById('person-department');
+    const personEmailInput = document.getElementById('person-email');
+    const personPhoneInput = document.getElementById('person-phone');
+    const personBtnSubmit = document.getElementById('btn-submit-modal');
+
+    if (personNameInput && personNifInput && personRoleInput && personDeptInput && personEmailInput && personPhoneInput && personBtnSubmit) {
+        function validatePersonCreationForm() {
+            const isNameValid = personNameInput.value.trim() !== '';
+            const isNifValid = /^\d{9}$/.test(personNifInput.value.trim());
+            const isRoleValid = personRoleInput.value !== '';
+            const isDeptValid = personDeptInput.value.trim() !== '';
+            const isEmailValid = personEmailInput.value.trim() !== '' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(personEmailInput.value.trim());
+            const isPhoneValid = personPhoneInput.value.trim() !== '';
+
+            if (isNameValid && isNifValid && isRoleValid && isDeptValid && isEmailValid && isPhoneValid) {
+                personBtnSubmit.removeAttribute('disabled');
+            } else {
+                personBtnSubmit.setAttribute('disabled', 'true');
+            }
+        }
+
+        personNameInput.addEventListener('input', validatePersonCreationForm);
+        personNifInput.addEventListener('input', validatePersonCreationForm);
+        personRoleInput.addEventListener('change', validatePersonCreationForm);
+        personDeptInput.addEventListener('input', validatePersonCreationForm);
+        personEmailInput.addEventListener('input', validatePersonCreationForm);
+        personPhoneInput.addEventListener('input', validatePersonCreationForm);
+    }
+
+    // Filtro e Pesquisa na Gestão de Pessoas
+    const personSearchInput = document.querySelector(".person-search-input");
+    const personRoleFilter = document.getElementById("filter-role");
+    const personCards = document.querySelectorAll(".people-management .bento-card");
+
+    if (personSearchInput || personRoleFilter) {
+        function applyPersonFilters() {
+            const searchTerm = personSearchInput ? personSearchInput.value.toLowerCase().trim() : "";
+            const roleTerm = personRoleFilter ? personRoleFilter.value.toLowerCase().trim() : "";
+
+            personCards.forEach(card => {
+                const nameEl = card.querySelector(".person-name");
+                const emailEl = card.querySelector(".person-email");
+                const roleEl = card.querySelector(".person-role");
+
+                const name = nameEl ? nameEl.textContent.toLowerCase() : "";
+                const email = emailEl ? emailEl.textContent.toLowerCase() : "";
+                const role = roleEl ? roleEl.textContent.toLowerCase() : "";
+
+                const matchesSearch = searchTerm === "" || name.includes(searchTerm) || email.includes(searchTerm);
+                const matchesRole = roleTerm === "" || role === roleTerm;
+
+                if (matchesSearch && matchesRole) {
+                    card.classList.remove("d-none");
+                } else {
+                    card.classList.add("d-none");
+                }
+            });
+        }
+
+        if (personSearchInput) personSearchInput.addEventListener("input", applyPersonFilters);
+        if (personRoleFilter) personRoleFilter.addEventListener("change", applyPersonFilters);
+    }
 });
+
+    // Validação Modais de Edição de Pessoa
+    const personEditForms = document.querySelectorAll('.person-edit-form');
+    personEditForms.forEach(form => {
+        const nameInput = form.querySelector('[name="person-name"]');
+        const nifInput = form.querySelector('[name="person-nif"]');
+        const roleInput = form.querySelector('[name="person-role"]');
+        const deptInput = form.querySelector('[name="person-department"]');
+        const emailInput = form.querySelector('[name="person-email"]');
+        const phoneInput = form.querySelector('[name="person-phone"]');
+        const submitBtn = form.querySelector('.btn-edit-submit');
+
+        if (nameInput && nifInput && roleInput && deptInput && emailInput && phoneInput && submitBtn) {
+            function validateEditForm() {
+                const isNameValid = nameInput.value.trim() !== '';
+                const isNifValid = /^\d{9}$/.test(nifInput.value.trim());
+                const isRoleValid = roleInput.value !== '';
+                const isDeptValid = deptInput.value.trim() !== '';
+                const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim());
+                const isPhoneValid = phoneInput.value.trim() !== '';
+
+                if (isNameValid && isNifValid && isRoleValid && isDeptValid && isEmailValid && isPhoneValid) {
+                    submitBtn.removeAttribute('disabled');
+                } else {
+                    submitBtn.setAttribute('disabled', 'true');
+                }
+            }
+
+            // Validar no início
+            validateEditForm();
+
+            nameInput.addEventListener('input', validateEditForm);
+            nifInput.addEventListener('input', validateEditForm);
+            roleInput.addEventListener('change', validateEditForm);
+            deptInput.addEventListener('input', validateEditForm);
+            emailInput.addEventListener('input', validateEditForm);
+            phoneInput.addEventListener('input', validateEditForm);
+        }
+    });

@@ -188,18 +188,18 @@ INSERT INTO `CartaoFuncionalidade` (`titulo`, `descricao`, `icone`, `ordem`, `at
 -- ============================================================
 
 -- 8. Pessoa (11)
-INSERT INTO `Pessoa` (`nome`, `email`, `contactoTelefonico`, `nif`, `ativo`, `dataCriacao`, `dataAtualizacao`) VALUES
-('João Silva',              'admin@hospital.pt',              '+351912000001', '123456789', true, '2024-03-01 09:00:00', '2024-03-01 09:00:00'),
-('Ana Costa',               'eng.bio@hospital.pt',            '+351912000002', '234567891', true, '2024-03-01 09:05:00', '2024-03-01 09:05:00'),
-('Miguel Santos',           'tecnico@hospital.pt',            '+351912000003', '345678912', true, '2024-03-01 09:10:00', '2024-03-01 09:10:00'),
-('Maria Ferreira',          'aprovisionamento@hospital.pt',   '+351912000004', '456789123', true, '2024-03-01 09:15:00', '2024-03-01 09:15:00'),
-('Pedro Oliveira',          'consulta@hospital.pt',           '+351912000005', '567891234', true, '2024-03-01 09:20:00', '2024-03-01 09:20:00'),
-('Sofia Martins',           'sofia.martins@hospital.pt',      '+351912000006', '678912345', true, '2024-03-01 09:25:00', '2024-03-01 09:25:00'),
-('Ricardo Pereira',         'ricardo.pereira@hospital.pt',    '+351912000007', '789123456', true, '2024-03-01 09:30:00', '2024-03-01 09:30:00'),
-('Teresa Rodrigues',        'teresa.rodrigues@hospital.pt',   '+351912000008', '891234567', true, '2024-03-01 09:35:00', '2024-03-01 09:35:00'),
-('Carlos Almeida',          'carlos.almeida@hospital.pt',     '+351912000009', '912345678', true, '2024-03-01 09:40:00', '2024-03-01 09:40:00'),
-('Beatriz Lopes',           'beatriz.lopes@hospital.pt',      '+351912000010', '198765432', true, '2024-03-01 09:45:00', '2024-03-01 09:45:00'),
-('Helena Teste',            'helena.teste@hospital.pt',       '+351912000011', '123123123', true, '2024-03-01 09:50:00', '2024-03-01 09:50:00');
+INSERT INTO `Pessoa` (`nome`, `email`, `contactoTelefonico`, `nif`, `funcao`, `departamento`, `ativo`, `dataCriacao`, `dataAtualizacao`) VALUES
+('João Silva',              'admin@hospital.pt',              '+351912000001', '123456789', 'Diretor',        'Direção',            true, '2024-03-01 09:00:00', '2024-03-01 09:00:00'),
+('Ana Costa',               'eng.bio@hospital.pt',            '+351912000002', '234567891', 'Engenheiro',     'Eng. Biomédica',     true, '2024-03-01 09:05:00', '2024-03-01 09:05:00'),
+('Miguel Santos',           'tecnico@hospital.pt',            '+351912000003', '345678912', 'Técnico',        'Manutenção',         true, '2024-03-01 09:10:00', '2024-03-01 09:10:00'),
+('Maria Ferreira',          'aprovisionamento@hospital.pt',   '+351912000004', '456789123', 'Assistente',     'Aprovisionamento',   true, '2024-03-01 09:15:00', '2024-03-01 09:15:00'),
+('Pedro Oliveira',          'consulta@hospital.pt',           '+351912000005', '567891234', 'Médico',         'Consultas',          true, '2024-03-01 09:20:00', '2024-03-01 09:20:00'),
+('Sofia Martins',           'sofia.martins@hospital.pt',      '+351912000006', '678912345', 'Enfermeiro',     'Urgências',          true, '2024-03-01 09:25:00', '2024-03-01 09:25:00'),
+('Ricardo Pereira',         'ricardo.pereira@hospital.pt',    '+351912000007', '789123456', 'Técnico',        'Manutenção',         true, '2024-03-01 09:30:00', '2024-03-01 09:30:00'),
+('Teresa Rodrigues',        'teresa.rodrigues@hospital.pt',   '+351912000008', '891234567', 'Engenheiro',     'Eng. Biomédica',     true, '2024-03-01 09:35:00', '2024-03-01 09:35:00'),
+('Carlos Almeida',          'carlos.almeida@hospital.pt',     '+351912000009', '912345678', 'Assistente',     'Aprovisionamento',   true, '2024-03-01 09:40:00', '2024-03-01 09:40:00'),
+('Beatriz Lopes',           'beatriz.lopes@hospital.pt',      '+351912000010', '198765432', 'Médico',         'Consultas',          true, '2024-03-01 09:45:00', '2024-03-01 09:45:00'),
+('Helena Teste',            'helena.teste@hospital.pt',       '+351912000011', '123123123', 'Administrador',  'Sistemas',           true, '2024-03-01 09:50:00', '2024-03-01 09:50:00');
 
 -- 9. PerfilPermissao (5 perfis × 25 permissões = 125 registos)
 -- Mapeamento exato da matriz booleana de profiles.php

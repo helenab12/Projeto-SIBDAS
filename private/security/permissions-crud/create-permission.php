@@ -5,8 +5,8 @@ redirect_if_not_logged();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        $chave = $_POST['permission-key'] ?? '';
-        $descricao = $_POST['permission-description'] ?? '';
+        $chave = strtolower(trim($_POST['permission-key'] ?? ''));
+        $descricao = ucfirst(trim($_POST['permission-description'] ?? ''));
 
         // Validação básica
         $erros = Permissao::validarDados([

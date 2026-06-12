@@ -20,7 +20,7 @@ try {
     $ligacao = connect_to_db();
     $stmt = execute_query(
         "SELECT u.idUtilizador, u.idPessoa, u.emailAutenticacao, u.password, u.idPerfil, u.ativo as utilizador_ativo, u.dataCriacao as utilizador_dataCriacao, u.dataAtualizacao as utilizador_dataAtualizacao,
-                p.nome as pessoa_nome, p.email as pessoa_email, p.contactoTelefonico as pessoa_contacto, p.nif as pessoa_nif, p.ativo as pessoa_ativo, p.dataCriacao as pessoa_dataCriacao, p.dataAtualizacao as pessoa_dataAtualizacao,
+                p.nome as pessoa_nome, p.email as pessoa_email, p.contactoTelefonico as pessoa_contacto, p.nif as pessoa_nif, p.funcao as pessoa_funcao, p.departamento as pessoa_departamento, p.ativo as pessoa_ativo, p.dataCriacao as pessoa_dataCriacao, p.dataAtualizacao as pessoa_dataAtualizacao,
                 pf.idPerfil as perfil_id, pf.nome as perfil_nome, pf.dataCriacao as perfil_dataCriacao, pf.dataAtualizacao as perfil_dataAtualizacao
         FROM Utilizador u
         INNER JOIN Pessoa p ON u.idPessoa = p.idPessoa
@@ -38,6 +38,8 @@ try {
             (string) $row['pessoa_email'],
             (string) $row['pessoa_contacto'],
             (string) $row['pessoa_nif'],
+            $row['pessoa_funcao'] ? Funcao::tryFrom((string) $row['pessoa_funcao']) : null,
+            $row['pessoa_departamento'] ? (string) $row['pessoa_departamento'] : null,
             (bool) $row['pessoa_ativo'],
             new DateTime($row['pessoa_dataCriacao']),
             $row['pessoa_dataAtualizacao'] ? new DateTime($row['pessoa_dataAtualizacao']) : new DateTime()
@@ -376,10 +378,10 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 </div>
 
 <?php foreach ($listaUtilizadores as $item): ?>
-    <?php 
-        $utilizador = $item['utilizador'];
-        $pessoa = $item['pessoa'];
-        $encryptedUserId = aes_encrypt($utilizador->getIdUtilizador()); 
+    <?php
+    $utilizador = $item['utilizador'];
+    $pessoa = $item['pessoa'];
+    $encryptedUserId = aes_encrypt($utilizador->getIdUtilizador());
     ?>
 
     <!-- Modal de Edição de Utilizador para <?= htmlspecialchars($pessoa->getNome()) ?> -->
@@ -434,16 +436,19 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                 <label for="edit-password-<?= htmlspecialchars($encryptedUserId) ?>">Nova Password</label>
                             </div>
                             <input type="password" id="edit-password-<?= htmlspecialchars($encryptedUserId) ?>"
-                                name="user-password" placeholder="Deixe em branco para não alterar" class="user-edit-password-input">
+                                name="user-password" placeholder="Deixe em branco para não alterar"
+                                class="user-edit-password-input">
                         </div>
 
                         <!-- Row 3: Perfil de Acesso -->
                         <div class="d-flex flex-column form-item w-100 mw-0">
                             <label for="edit-role-<?= htmlspecialchars($encryptedUserId) ?>">Perfil de Acesso
                                 <span class="text-error">*</span></label>
-                            <select id="edit-role-<?= htmlspecialchars($encryptedUserId) ?>" name="user-role" class="form-select w-100 user-edit-role-input" required>
+                            <select id="edit-role-<?= htmlspecialchars($encryptedUserId) ?>" name="user-role"
+                                class="form-select w-100 user-edit-role-input" required>
                                 <?php foreach ($perfisDisponiveis ?? [] as $perfilOption): ?>
-                                    <option value="<?= htmlspecialchars($perfilOption['idPerfil']) ?>" <?= ($perfilOption['idPerfil'] === $utilizador->getIdPerfil()) ? 'selected' : '' ?>>
+                                    <option value="<?= htmlspecialchars($perfilOption['idPerfil']) ?>"
+                                        <?= ($perfilOption['idPerfil'] === $utilizador->getIdPerfil()) ? 'selected' : '' ?>>
                                         <?= htmlspecialchars($perfilOption['nome']) ?>
                                     </option>
                                 <?php endforeach; ?>
@@ -518,7 +523,8 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                         <h2 class="fw-700">
                                             <?= htmlspecialchars($pessoa->getNome()) ?>
                                         </h2>
-                                        <span class="text-muted">Email: <?= htmlspecialchars($utilizador->getEmailAutenticacao()) ?></span>
+                                        <span class="text-muted">Email:
+                                            <?= htmlspecialchars($utilizador->getEmailAutenticacao()) ?></span>
                                     </div>
                                 </div>
                             </div>
@@ -527,7 +533,8 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                             <div class="d-flex w-100 justify-content-end gap-4 button-row">
                                 <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                                     data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" name="apagar_utilizador" class="btn btn-danger btn-glowing text-white">
+                                <button type="submit" name="apagar_utilizador"
+                                    class="btn btn-danger btn-glowing text-white">
                                     Sim, Desativar.
                                 </button>
                             </div>
@@ -538,7 +545,6 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
         </div>
     </div>
 <?php endforeach; ?>
-
 
 <!-- Toast Container -->
 <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3 mt-4" style="z-index: 100;">
