@@ -14,12 +14,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($id === false) {
             throw new Exception("ID inválido.");
         }
-        
-        $ligacao = connect_to_db();
+
         execute_query(
-            "UPDATE PedidoDemonstracao SET ativo = 0, dataAtualizacao = NOW() WHERE idPedido = :id",
-            ['id' => $id],
-            $ligacao
+            "UPDATE PedidoDemonstracao SET ativo = 0 WHERE idPedido = :id",
+            ['id' => $id]
         );
 
         $_SESSION['success_message'] = "Pedido de demonstração apagado com sucesso!";

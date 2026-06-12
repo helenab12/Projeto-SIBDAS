@@ -397,12 +397,8 @@ $manutencoes = [
                         </div>
                         <div class="d-flex flex-column align-items-center justify-content-center gap-3">
                             <div class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
-                                <p class="text-secondary m-0">Tem a certeza que deseja apagar permanentemente o registo
+                                <p class="text-secondary m-0">Tem a certeza que deseja apagar o registo
                                     de manutenção?</p>
-                            </div>
-                            <div class="danger-banner text-error text-center padding-3">
-                                <span>⚠️ Este registo será eliminado permanentemente. Todos os dados associados serão
-                                    perdidos.</span>
                             </div>
                         </div>
                     </div>

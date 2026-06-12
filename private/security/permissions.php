@@ -18,8 +18,7 @@ if (!empty($_SESSION['server_error'])) {
 // Obter todas as permissões da base de dados
 $permissoes = [];
 try {
-    $ligacao = connect_to_db();
-    $stmt = execute_query("SELECT idPermissao, chave, descricao FROM Permissao", [], $ligacao);
+    $stmt = execute_query("SELECT idPermissao, chave, descricao FROM Permissao WHERE ativo = 1");
     $permissoesDb = $stmt->fetchAll(PDO::FETCH_ASSOC);
     foreach ($permissoesDb as $row) {
         $permissoes[] = new Permissao((int) $row['idPermissao'], $row['chave'], $row['descricao']);
@@ -112,7 +111,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                     <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
                                         <li>
                                             <a class="dropdown-item action-dropdown-item text-primary" href="#"
-                                                data-bs-toggle="modal" data-bs-target="#permission-edit-modal-<?= htmlspecialchars($encryptedPermId) ?>">
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#permission-edit-modal-<?= htmlspecialchars($encryptedPermId) ?>">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                     stroke-linecap="round" stroke-linejoin="round"
@@ -125,7 +125,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                         </li>
                                         <li>
                                             <a class="dropdown-item action-dropdown-item text-error" href="#"
-                                                data-bs-toggle="modal" data-bs-target="#delete-confirm-modal-<?= htmlspecialchars($encryptedPermId) ?>">
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#delete-confirm-modal-<?= htmlspecialchars($encryptedPermId) ?>">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                     stroke-linecap="round" stroke-linejoin="round"
@@ -204,7 +205,8 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                     <div class="d-flex w-100 justify-content-end gap-4 button-row mt-4">
                         <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                             data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" id="btn-submit-permission" name="criar_permissao" class="btn btn-primary btn-glowing" disabled>
+                        <button type="submit" id="btn-submit-permission" name="criar_permissao"
+                            class="btn btn-primary btn-glowing" disabled>
                             Guardar Permissão
                         </button>
                     </div>
@@ -216,7 +218,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 
 <?php foreach ($permissoes as $permissao): ?>
     <?php $encryptedPermId = aes_encrypt($permissao->getIdPermissao()); ?>
-    
+
     <!-- Modal de Edição de Permissão para <?= htmlspecialchars($permissao->getChave()) ?> -->
     <div class="modal fade" id="permission-edit-modal-<?= htmlspecialchars($encryptedPermId) ?>" tabindex="-1"
         aria-labelledby="permissionEditModalLabel-<?= htmlspecialchars($encryptedPermId) ?>" aria-hidden="true">
@@ -226,7 +228,8 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                 <div
                     class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
                     <div class="d-flex flex-column">
-                        <h2 class="equipment-creation-modal-title modal-title" id="permissionEditModalLabel-<?= htmlspecialchars($encryptedPermId) ?>">
+                        <h2 class="equipment-creation-modal-title modal-title"
+                            id="permissionEditModalLabel-<?= htmlspecialchars($encryptedPermId) ?>">
                             Editar Permissão
                         </h2>
                     </div>
@@ -244,34 +247,41 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 
                 <!-- Body do Modal com scroll automático -->
                 <div class="modal-body p-0">
-                    <form id="permission-edit-form-<?= htmlspecialchars($encryptedPermId) ?>" method="POST" action="permissions-crud/edit-permission.php"
+                    <form id="permission-edit-form-<?= htmlspecialchars($encryptedPermId) ?>" method="POST"
+                        action="permissions-crud/edit-permission.php"
                         class="permission-edit-form equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
-                        
+
                         <input type="hidden" name="permission-id" value="<?= htmlspecialchars($encryptedPermId) ?>">
 
                         <!-- Row 1: Chave da Permissão -->
                         <div class="d-flex flex-column form-item w-100 mw-0">
                             <div class="d-flex gap-1">
-                                <label for="permission-key-<?= htmlspecialchars($encryptedPermId) ?>">Chave da Permissão <span class="text-error">*</span></label>
+                                <label for="permission-key-<?= htmlspecialchars($encryptedPermId) ?>">Chave da Permissão
+                                    <span class="text-error">*</span></label>
                             </div>
-                            <input type="text" id="permission-key-<?= htmlspecialchars($encryptedPermId) ?>" name="permission-key" placeholder="ex: equipment.create"
-                                class="permission-edit-key" value="<?= htmlspecialchars($permissao->getChave()) ?>" required>
+                            <input type="text" id="permission-key-<?= htmlspecialchars($encryptedPermId) ?>"
+                                name="permission-key" placeholder="ex: equipment.create" class="permission-edit-key"
+                                value="<?= htmlspecialchars($permissao->getChave()) ?>" required>
                         </div>
 
                         <!-- Row 2: Descrição -->
                         <div class="d-flex flex-column form-item w-100 mw-0">
                             <div class="d-flex gap-1">
-                                <label for="permission-description-<?= htmlspecialchars($encryptedPermId) ?>">Descrição <span class="text-error">*</span></label>
+                                <label for="permission-description-<?= htmlspecialchars($encryptedPermId) ?>">Descrição
+                                    <span class="text-error">*</span></label>
                             </div>
-                            <textarea id="permission-description-<?= htmlspecialchars($encryptedPermId) ?>" name="permission-description" rows="4"
-                                class="permission-edit-description" placeholder="Permite criar novos equipamentos no sistema." required><?= htmlspecialchars($permissao->getDescricao()) ?></textarea>
+                            <textarea id="permission-description-<?= htmlspecialchars($encryptedPermId) ?>"
+                                name="permission-description" rows="4" class="permission-edit-description"
+                                placeholder="Permite criar novos equipamentos no sistema."
+                                required><?= htmlspecialchars($permissao->getDescricao()) ?></textarea>
                         </div>
 
                         <!-- Footer do Formulario -->
                         <div class="d-flex w-100 justify-content-end gap-4 button-row mt-4">
                             <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                                 data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" name="editar_permissao" class="btn-edit-submit btn btn-primary btn-glowing">
+                            <button type="submit" name="editar_permissao"
+                                class="btn-edit-submit btn btn-primary btn-glowing">
                                 Guardar Alterações
                             </button>
                         </div>
@@ -338,9 +348,6 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                         </h2>
                                         <span class="text-muted">Tipo: Permissão</span>
                                     </div>
-                                    <div class="danger-banner text-error text-center padding-3">
-                                        <span>⚠️ Este registo será removido permanentemente e todas as associações a perfis serão excluídas.</span>
-                                    </div>
                                 </div>
                             </div>
 
@@ -349,7 +356,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                 <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                                     data-bs-dismiss="modal">Cancelar</button>
                                 <button type="submit" name="apagar_permissao" class="btn btn-danger btn-glowing text-white">
-                                    Sim, Apagar Definitivamente.
+                                    Sim, Apagar.
                                 </button>
                             </div>
                         </div>

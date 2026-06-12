@@ -16,28 +16,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $id = (int)$id;
 
         $ligacao = connect_to_db();
-        $ligacao->beginTransaction();
-
-        // 1. Eliminar associações na tabela intermédia PerfilPermissao
         execute_query(
-            "DELETE FROM PerfilPermissao WHERE idPermissao = :id",
+            "UPDATE Permissao SET ativo = 0 WHERE idPermissao = :id",
             ['id' => $id],
             $ligacao
         );
 
-        // 2. Eliminar a permissão da tabela Permissao
-        execute_query(
-            "DELETE FROM Permissao WHERE idPermissao = :id",
-            ['id' => $id],
-            $ligacao
-        );
-
-        $ligacao->commit();
         $_SESSION['success_message'] = "Permissão eliminada com sucesso!";
     } catch (Exception $e) {
-        if (isset($ligacao) && $ligacao->inTransaction()) {
-            $ligacao->rollBack();
-        }
         $_SESSION['server_error'] = "Erro ao eliminar permissão: " . $e->getMessage();
     }
 }

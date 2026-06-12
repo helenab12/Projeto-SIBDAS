@@ -7,6 +7,7 @@ CREATE TABLE `CategoriaEquipamento` (
   `nome` varchar(255),
   `descricao` text,
   `codigoPrefix` varchar(5),
+  `ativo` boolean DEFAULT true,
   `dataCriacao` timestamp DEFAULT (CURRENT_TIMESTAMP),
   `dataAtualizacao` timestamp
 );
@@ -14,6 +15,7 @@ CREATE TABLE `CategoriaEquipamento` (
 CREATE TABLE `Marca` (
   `idMarca` integer PRIMARY KEY AUTO_INCREMENT,
   `nome` varchar(255),
+  `ativo` boolean DEFAULT true,
   `dataCriacao` timestamp DEFAULT (CURRENT_TIMESTAMP),
   `dataAtualizacao` timestamp
 );
@@ -74,7 +76,7 @@ CREATE TABLE `Manutencao` (
   `dataAtualizacao` timestamp
 );
 
-CREATE TABLE `Componente` (
+CREATE TABLE `Componente` ( 
   `idComponente` integer PRIMARY KEY AUTO_INCREMENT,
   `codigoInterno` varchar(20),
   `descricao` text,
@@ -102,12 +104,14 @@ CREATE TABLE `ComponenteCategoria` (
 CREATE TABLE `Permissao` (
   `idPermissao` integer PRIMARY KEY AUTO_INCREMENT,
   `chave` varchar(100) UNIQUE,
-  `descricao` text
+  `descricao` text,
+  `ativo` boolean DEFAULT true
 );
 
 CREATE TABLE `Perfil` (
   `idPerfil` integer PRIMARY KEY AUTO_INCREMENT,
   `nome` varchar(255),
+  `ativo` boolean DEFAULT true,
   `dataCriacao` timestamp DEFAULT (CURRENT_TIMESTAMP),
   `dataAtualizacao` timestamp
 );
@@ -159,7 +163,8 @@ CREATE TABLE `Fornecedor` (
 
 CREATE TABLE `Documento` (
   `idDocumento` integer PRIMARY KEY AUTO_INCREMENT,
-  `tipo` ENUM ('Manual de Utilizador', 'Manual de Serviço', 'Certificado de Calibração', 'Contrato de Manutenção', 'Fatura/Guia', 'Declaração de Conformidade', 'Relatório Técnico', 'Garantia'),
+  `tipo` ENUM ('Manual de Utilizador', 'Manual de Serviço', 'Certificado de Calibração', 'Contrato de Manutenção',
+   'Fatura/Guia', 'Declaração de Conformidade', 'Relatório Técnico', 'Garantia'),
   `nome` varchar(255),
   `caminhoFicheiro` varchar(255),
   `dataDocumento` date,

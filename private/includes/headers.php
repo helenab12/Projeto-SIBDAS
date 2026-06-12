@@ -242,6 +242,7 @@ $searchResults = [
     ]
 ];
 ?>
+
 <div class="modal fade global-search-modal" id="search-modal" tabindex="-1" aria-labelledby="searchModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg overflow-hidden">

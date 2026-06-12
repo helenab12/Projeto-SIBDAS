@@ -21,11 +21,11 @@ try {
     $ligacao = connect_to_db();
 
     // Obter perfis
-    $stmt = execute_query("SELECT idPerfil, nome FROM Perfil ORDER BY idPerfil ASC", [], $ligacao);
+    $stmt = execute_query("SELECT idPerfil, nome FROM Perfil WHERE ativo = 1 ORDER BY idPerfil ASC", [], $ligacao);
     $perfis = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Obter permissões
-    $stmt = execute_query("SELECT idPermissao, chave, descricao FROM Permissao ORDER BY idPermissao ASC", [], $ligacao);
+    $stmt = execute_query("SELECT idPermissao, chave, descricao FROM Permissao WHERE ativo = 1 ORDER BY idPermissao ASC", [], $ligacao);
     $permissoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Obter relações de PerfilPermissao

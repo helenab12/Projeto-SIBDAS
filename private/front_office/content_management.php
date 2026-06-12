@@ -854,10 +854,6 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                         <span class="text-muted">Tipo: Cartão de
                                             Funcionalidade</span>
                                     </div>
-                                    <div class="danger-banner text-error text-center padding-3">
-                                        <span>⚠️ Este registo será desativado e não
-                                            aparecerá na página pública.</span>
-                                    </div>
                                 </div>
                             </div>
 
@@ -866,7 +862,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                 <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                                     data-bs-dismiss="modal">Cancelar</button>
                                 <button type="submit" name="apagar_cartao" class="btn btn-danger btn-glowing text-white">
-                                    Sim, Apagar Definitivamente.
+                                    Sim, Apagar.
                                 </button>
                             </div>
                         </div>

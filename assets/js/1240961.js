@@ -1178,15 +1178,6 @@ if (permissionKeyInput && permissionDescInput && btnSubmitPermission) {
             validatePermissionForm();
         });
     }
-
-    if (permissionForm) {
-        btnSubmitPermission.addEventListener("click", (e) => {
-            const modalInstance = bootstrap.Modal.getInstance(permissionModal);
-            if (modalInstance) {
-                modalInstance.hide();
-            }
-        });
-    }
 }
 
 // Validação dos formulários de Edição de Permissão
@@ -1538,4 +1529,3 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
-

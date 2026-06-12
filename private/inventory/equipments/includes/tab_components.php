@@ -306,7 +306,7 @@ $componentes_associados = [
                         </div>
                         <div class="d-flex flex-column align-items-center justify-content-center gap-3">
                             <div class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
-                                <p class="text-secondary m-0">Tem a certeza que deseja apagar permanentemente o
+                                <p class="text-secondary m-0">Tem a certeza que deseja apagar o
                                     componente</p>
                                 <h2 class="fw-700 text-primary m-0" id="delete-comp-display-name">"Sensor de Fluxo"</h2>
                             </div>

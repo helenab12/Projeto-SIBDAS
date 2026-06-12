@@ -232,211 +232,6 @@ try {
                     </table>
                 </div>
 
-                <!-- Modais de Detalhes dos Pedidos de Demonstração -->
-                <?php foreach ($inboxRequests as $request):
-                    $encryptedId = aes_encrypt($request->id);
-                    ?>
-                    <div class="modal fade" id="inbox-detail-modal-<?php echo $encryptedId; ?>" tabindex="-1"
-                        aria-labelledby="inboxDetailModalLabel-<?php echo $encryptedId; ?>" aria-hidden="true">
-                        <div
-                            class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
-                            <div class="modal-content custom-modal-content d-flex flex-column">
-                                <!-- Titulo -->
-                                <div
-                                    class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
-                                    <div class="d-flex flex-column">
-                                        <h2 class="equipment-creation-modal-title modal-title"
-                                            id="inboxDetailModalLabel-<?php echo $encryptedId; ?>">Detalhes do Pedido de
-                                            Demonstração</h2>
-                                    </div>
-                                    <button type="button"
-                                        class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
-                                        data-bs-dismiss="modal" aria-label="Close">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round" class="lucide lucide-x-icon lucide-x stroke-secondary">
-                                            <path d="M18 6 6 18" />
-                                            <path d="m6 6 12 12" />
-                                        </svg>
-                                    </button>
-                                </div>
-
-                                <!-- Body do Modal -->
-                                <div class="modal-body padding-6 d-flex flex-column gap-4">
-                                    <!-- Contact info row -->
-                                    <div class="d-flex align-items-center gap-3">
-                                        <div
-                                            class="d-flex justify-content-center align-items-center text-secondary fw-700 position-relative inbox-modal-user-icon ">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-user text-secondary">
-                                                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
-                                                <circle cx="12" cy="7" r="4" />
-                                            </svg>
-                                        </div>
-                                        <div class="d-flex flex-column gap-1">
-                                            <h3 class="fw-700 mb-0 text-secondary"><?php echo $request->name; ?></h3>
-                                            <p class="text-primary d-flex align-items-center gap-1 text-primary-500">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                    stroke-linecap="round" stroke-linejoin="round"
-                                                    class="lucide lucide-building-2">
-                                                    <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18" />
-                                                    <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
-                                                    <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2" />
-                                                    <path d="M10 6h4" />
-                                                    <path d="M10 10h4" />
-                                                    <path d="M10 14h4" />
-                                                    <path d="M10 18h4" />
-                                                </svg>
-                                                <?php echo $request->institution; ?>
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    <!-- Info Grid -->
-                                    <div class="inbox-info-grid d-flex gap-4 w-100">
-                                        <div class="inbox-info-card d-flex flex-column padding-3 gap-2">
-                                            <span
-                                                class="text-secondary d-flex align-items-center gap-1 fw-500 text-uppercase">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                    stroke-linecap="round" stroke-linejoin="round"
-                                                    class="lucide lucide-mail">
-                                                    <rect width="20" height="16" x="2" y="4" rx="2" />
-                                                    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
-                                                </svg>
-                                                Email Profissional
-                                            </span>
-                                            <span class="inbox-info-card-value"><?php echo $request->email; ?></span>
-                                        </div>
-                                        <div class="inbox-info-card d-flex flex-column padding-3 gap-2">
-                                            <span
-                                                class="text-secondary d-flex align-items-center gap-1 fw-500 text-uppercase">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                    stroke-linecap="round" stroke-linejoin="round"
-                                                    class="lucide lucide-calendar">
-                                                    <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
-                                                    <line x1="16" x2="16" y1="2" y2="6" />
-                                                    <line x1="8" x2="8" y1="2" y2="6" />
-                                                    <line x1="3" x2="21" y1="10" y2="10" />
-                                                </svg>
-                                                Data Submissão
-                                            </span>
-                                            <span class="inbox-info-card-value"><?php echo $request->date; ?></span>
-                                        </div>
-                                    </div>
-
-                                    <!-- Message Box -->
-                                    <div class="inbox-message-box padding-3 d-flex flex-column gap-2">
-                                        <span
-                                            class="text-primary-500 d-flex align-items-center gap-1 fw-700 text-uppercase">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-message-square">
-                                                <path
-                                                    d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z" />
-                                            </svg>
-                                            Mensagem Original
-                                        </span>
-                                        <p class="mb-0 fst-italic text-primary">
-                                            "<?php echo $request->message; ?>"
-                                        </p>
-                                    </div>
-
-                                    <!-- Footer Actions -->
-                                    <div class="inbox-modal-footer d-flex w-100 justify-content-between align-items-center">
-                                        <span id="inbox-modal-badge-<?php echo $encryptedId; ?>"
-                                            class="equipment-badge <?php echo $request->state->class; ?> inbox-modal-footer-badge fw-400">
-                                            Tratamento atual: <?php echo $request->state->name; ?>
-                                        </span>
-                                        <button type="button" class="btn btn-ghost" data-bs-dismiss="modal">
-                                            Fechar
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Modal de Confirmação de Remoção -->
-                    <div class="modal fade" id="delete-confirm-modal-<?php echo $encryptedId; ?>" tabindex="-1"
-                        aria-labelledby="deleteModalLabel-<?php echo $encryptedId; ?>" aria-hidden="true">
-                        <div
-                            class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
-                            <div class="modal-content custom-modal-content d-flex flex-column">
-                                <!-- Titulo -->
-                                <div
-                                    class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
-                                    <div class="d-flex flex-column">
-                                        <h2 class="equipment-creation-modal-title modal-title"
-                                            id="deleteModalLabel-<?php echo $encryptedId; ?>">Apagar Definitivamente</h2>
-                                        <span class="text-secondary fw-400">Esta ação não pode ser revertida.</span>
-                                    </div>
-                                    <button type="button"
-                                        class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
-                                        data-bs-dismiss="modal" aria-label="Close">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round" class="lucide lucide-x-icon lucide-x stroke-secondary">
-                                            <path d="M18 6 6 18" />
-                                            <path d="m6 6 12 12" />
-                                        </svg>
-                                    </button>
-                                </div>
-
-                                <!-- Body do Modal -->
-                                <div class="modal-body p-0">
-                                    <div
-                                        class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
-                                        <div class="d-flex flex-column align-items-center gap-4">
-                                            <div class="d-flex padding-3 danger-icon">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                    stroke-linecap="round" stroke-linejoin="round"
-                                                    class="lucide lucide-triangle-alert-icon lucide-triangle-alert">
-                                                    <path
-                                                        d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
-                                                    <path d="M12 9v4" />
-                                                    <path d="M12 17h.01" />
-                                                </svg>
-                                            </div>
-                                            <div class="d-flex flex-column align-items-center justify-content-center gap-3">
-                                                <div
-                                                    class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
-                                                    <p class="text-secondary">Tem a certeza que deseja apagar
-                                                        permanentemente</p>
-                                                    <h2 class="fw-700">"<?php echo htmlspecialchars($request->name); ?>"?
-                                                    </h2>
-                                                    <span class="text-muted">Tipo: Pedido de Demonstração</span>
-                                                </div>
-                                                <div class="danger-banner text-error text-center padding-3">
-                                                    <span>⚠️ Este registo será eliminado permanentemente da base de dados.
-                                                        Todos os dados associados serão perdidos.</span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Botoes -->
-                                        <div class="d-flex w-100 justify-content-end gap-4 button-row">
-                                            <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
-                                                data-bs-dismiss="modal">Cancelar</button>
-                                            <form action="inbox-crud/delete-inbox.php" method="POST" class="m-0 p-0">
-                                                <input type="hidden" name="id" value="<?php echo $encryptedId; ?>">
-                                                <button type="submit" class="btn btn-danger btn-glowing text-white">
-                                                    Sim, Apagar Definitivamente.
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
 
             </div>
 
@@ -458,6 +253,197 @@ try {
             </div>
         </section>
     </form>
+
+    <!-- Modais de Detalhes dos Pedidos de Demonstração -->
+    <?php foreach ($inboxRequests as $request):
+        $encryptedId = aes_encrypt($request->id);
+        ?>
+        <div class="modal fade" id="inbox-detail-modal-<?php echo $encryptedId; ?>" tabindex="-1"
+            aria-labelledby="inboxDetailModalLabel-<?php echo $encryptedId; ?>" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
+                <div class="modal-content custom-modal-content d-flex flex-column">
+                    <!-- Titulo -->
+                    <div
+                        class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
+                        <div class="d-flex flex-column">
+                            <h2 class="equipment-creation-modal-title modal-title"
+                                id="inboxDetailModalLabel-<?php echo $encryptedId; ?>">Detalhes do Pedido de
+                                Demonstração</h2>
+                        </div>
+                        <button type="button" class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
+                            data-bs-dismiss="modal" aria-label="Close">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-x-icon lucide-x stroke-secondary">
+                                <path d="M18 6 6 18" />
+                                <path d="m6 6 12 12" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Body do Modal -->
+                    <div class="modal-body padding-6 d-flex flex-column gap-4">
+                        <!-- Contact info row -->
+                        <div class="d-flex align-items-center gap-3">
+                            <div
+                                class="d-flex justify-content-center align-items-center text-secondary fw-700 position-relative inbox-modal-user-icon ">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-user text-secondary">
+                                    <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                                    <circle cx="12" cy="7" r="4" />
+                                </svg>
+                            </div>
+                            <div class="d-flex flex-column gap-1">
+                                <h3 class="fw-700 mb-0 text-secondary"><?php echo $request->name; ?></h3>
+                                <p class="text-primary d-flex align-items-center gap-1 text-primary-500">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-building-2">
+                                        <path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18" />
+                                        <path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2" />
+                                        <path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2" />
+                                        <path d="M10 6h4" />
+                                        <path d="M10 10h4" />
+                                        <path d="M10 14h4" />
+                                        <path d="M10 18h4" />
+                                    </svg>
+                                    <?php echo $request->institution; ?>
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Info Grid -->
+                        <div class="inbox-info-grid d-flex gap-4 w-100">
+                            <div class="inbox-info-card d-flex flex-column padding-3 gap-2">
+                                <span class="text-secondary d-flex align-items-center gap-1 fw-500 text-uppercase">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-mail">
+                                        <rect width="20" height="16" x="2" y="4" rx="2" />
+                                        <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+                                    </svg>
+                                    Email Profissional
+                                </span>
+                                <span class="inbox-info-card-value"><?php echo $request->email; ?></span>
+                            </div>
+                            <div class="inbox-info-card d-flex flex-column padding-3 gap-2">
+                                <span class="text-secondary d-flex align-items-center gap-1 fw-500 text-uppercase">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-calendar">
+                                        <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
+                                        <line x1="16" x2="16" y1="2" y2="6" />
+                                        <line x1="8" x2="8" y1="2" y2="6" />
+                                        <line x1="3" x2="21" y1="10" y2="10" />
+                                    </svg>
+                                    Data Submissão
+                                </span>
+                                <span class="inbox-info-card-value"><?php echo $request->date; ?></span>
+                            </div>
+                        </div>
+
+                        <!-- Message Box -->
+                        <div class="inbox-message-box padding-3 d-flex flex-column gap-2">
+                            <span class="text-primary-500 d-flex align-items-center gap-1 fw-700 text-uppercase">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-message-square">
+                                    <path
+                                        d="M22 17a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 21.286V5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2z" />
+                                </svg>
+                                Mensagem Original
+                            </span>
+                            <p class="mb-0 fst-italic text-primary">
+                                "<?php echo $request->message; ?>"
+                            </p>
+                        </div>
+
+                        <!-- Footer Actions -->
+                        <div class="inbox-modal-footer d-flex w-100 justify-content-between align-items-center">
+                            <span id="inbox-modal-badge-<?php echo $encryptedId; ?>"
+                                class="equipment-badge <?php echo $request->state->class; ?> inbox-modal-footer-badge fw-400">
+                                Tratamento atual: <?php echo $request->state->name; ?>
+                            </span>
+                            <button type="button" class="btn btn-ghost" data-bs-dismiss="modal">
+                                Fechar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Modal de Confirmação de Remoção -->
+        <div class="modal fade" id="delete-confirm-modal-<?php echo $encryptedId; ?>" tabindex="-1"
+            aria-labelledby="deleteModalLabel-<?php echo $encryptedId; ?>" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
+                <div class="modal-content custom-modal-content d-flex flex-column">
+                    <!-- Titulo -->
+                    <div
+                        class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
+                        <div class="d-flex flex-column">
+                            <h2 class="equipment-creation-modal-title modal-title"
+                                id="deleteModalLabel-<?php echo $encryptedId; ?>">Apagar Definitivamente</h2>
+                            <span class="text-secondary fw-400">Esta ação não pode ser revertida.</span>
+                        </div>
+                        <button type="button" class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
+                            data-bs-dismiss="modal" aria-label="Close">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-x-icon lucide-x stroke-secondary">
+                                <path d="M18 6 6 18" />
+                                <path d="m6 6 12 12" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Body do Modal -->
+                    <div class="modal-body p-0">
+                        <div
+                            class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
+                            <div class="d-flex flex-column align-items-center gap-4">
+                                <div class="d-flex padding-3 danger-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-triangle-alert-icon lucide-triangle-alert">
+                                        <path
+                                            d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+                                        <path d="M12 9v4" />
+                                        <path d="M12 17h.01" />
+                                    </svg>
+                                </div>
+                                <div class="d-flex flex-column align-items-center justify-content-center gap-3">
+                                    <div
+                                        class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
+                                        <p class="text-secondary">Tem a certeza que deseja apagar
+                                            permanentemente</p>
+                                        <h2 class="fw-700">"<?php echo htmlspecialchars($request->name); ?>"?
+                                        </h2>
+                                        <span class="text-muted">Tipo: Pedido de Demonstração</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Botoes -->
+                            <div class="d-flex w-100 justify-content-end gap-4 button-row">
+                                <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
+                                    data-bs-dismiss="modal">Cancelar</button>
+                                <form action="inbox-crud/delete-inbox.php" method="POST" class="m-0 p-0">
+                                    <input type="hidden" name="id" value="<?php echo $encryptedId; ?>">
+                                    <button type="submit" class="btn btn-danger btn-glowing text-white">
+                                        Sim, Apagar.
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endforeach; ?>
+
 </div>
 
 <!-- Toast Container -->

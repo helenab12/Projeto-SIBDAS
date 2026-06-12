@@ -36,9 +36,9 @@
             <h2 class="fw-700 m-0 text-primary">Garantias & Contratos</h2>
             <button class="btn btn-primary-outline d-flex align-items-center gap-2" data-bs-toggle="modal"
                 data-bs-target="#add-warranty-modal">
-                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                    fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
-                    stroke-linejoin="round" class="lucide lucide-plus">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-plus">
                     <line x1="12" y1="5" x2="12" y2="19" />
                     <line x1="5" y1="12" x2="19" y2="12" />
                 </svg>
@@ -97,10 +97,9 @@
                                         class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
                                         type="button" title="Editar" data-bs-toggle="modal"
                                         data-bs-target="#edit-warranty-modal">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round"
-                                            class="lucide lucide-pencil">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" class="lucide lucide-pencil">
                                             <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
                                             <path d="m15 5 4 4" />
                                         </svg>
@@ -109,10 +108,9 @@
                                         class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
                                         type="button" title="Eliminar" data-bs-toggle="modal"
                                         data-bs-target="#delete-warranty-modal">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round"
-                                            class="lucide lucide-trash-2 text-secondary">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" class="lucide lucide-trash-2 text-secondary">
                                             <path d="M3 6h18" />
                                             <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
                                             <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
@@ -365,7 +363,7 @@
                         </div>
                         <div class="d-flex flex-column align-items-center justify-content-center gap-3">
                             <div class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
-                                <p class="text-secondary m-0">Tem a certeza que deseja apagar permanentemente a
+                                <p class="text-secondary m-0">Tem a certeza que deseja apagar a
                                     garantia/contrato</p>
                                 <h2 class="fw-700 text-primary m-0" id="delete-warranty-display-name">"Atualização de
                                     firmware v3.2.1"</h2>

@@ -38,30 +38,30 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- ============================================================
 
 -- 1. CategoriaEquipamento (10)
-INSERT INTO `CategoriaEquipamento` (`nome`, `descricao`, `codigoPrefix`, `dataCriacao`, `dataAtualizacao`) VALUES
-('Imagiologia',             'Equipamentos de diagnóstico por imagem (raio-X, ecografia, TAC, RM)',      'IMG',   '2024-01-15 09:00:00', '2024-01-15 09:00:00'),
-('Laboratório',             'Equipamentos de análises clínicas e laboratoriais',                         'LAB',   '2024-01-15 09:05:00', '2024-01-15 09:05:00'),
-('Monitorização',           'Monitores de sinais vitais e telemetria',                                   'MON',   '2024-01-15 09:10:00', '2024-01-15 09:10:00'),
-('Suporte de Vida',         'Ventiladores, desfibrilhadores e bombas de infusão',                        'SVD',   '2024-01-15 09:15:00', '2024-01-15 09:15:00'),
-('Cirurgia',                'Instrumentação e equipamento de bloco operatório',                          'CIR',   '2024-01-15 09:20:00', '2024-01-15 09:20:00'),
-('Esterilização',           'Autoclaves e equipamentos de descontaminação',                              'EST',   '2024-01-15 09:25:00', '2024-01-15 09:25:00'),
-('Fisioterapia',            'Equipamentos de reabilitação e fisioterapia',                               'FIS',   '2024-01-15 09:30:00', '2024-01-15 09:30:00'),
-('Oftalmologia',            'Equipamentos de diagnóstico e tratamento oftalmológico',                    'OFT',   '2024-01-15 09:35:00', '2024-01-15 09:35:00'),
-('Neonatologia',            'Incubadoras e equipamentos de cuidados neonatais',                          'NEO',   '2024-01-15 09:40:00', '2024-01-15 09:40:00'),
-('Infraestrutura Clínica',  'Camas articuladas, macas e mobiliário clínico especializado',               'INF',   '2024-01-15 09:45:00', '2024-01-15 09:45:00');
+INSERT INTO `CategoriaEquipamento` (`nome`, `descricao`, `codigoPrefix`, `ativo`, `dataCriacao`, `dataAtualizacao`) VALUES
+('Imagiologia',             'Equipamentos de diagnóstico por imagem (raio-X, ecografia, TAC, RM)',      'IMG',   true, '2024-01-15 09:00:00', '2024-01-15 09:00:00'),
+('Laboratório',             'Equipamentos de análises clínicas e laboratoriais',                         'LAB',   true, '2024-01-15 09:05:00', '2024-01-15 09:05:00'),
+('Monitorização',           'Monitores de sinais vitais e telemetria',                                   'MON',   true, '2024-01-15 09:10:00', '2024-01-15 09:10:00'),
+('Suporte de Vida',         'Ventiladores, desfibrilhadores e bombas de infusão',                        'SVD',   true, '2024-01-15 09:15:00', '2024-01-15 09:15:00'),
+('Cirurgia',                'Instrumentação e equipamento de bloco operatório',                          'CIR',   true, '2024-01-15 09:20:00', '2024-01-15 09:20:00'),
+('Esterilização',           'Autoclaves e equipamentos de descontaminação',                              'EST',   true, '2024-01-15 09:25:00', '2024-01-15 09:25:00'),
+('Fisioterapia',            'Equipamentos de reabilitação e fisioterapia',                               'FIS',   true, '2024-01-15 09:30:00', '2024-01-15 09:30:00'),
+('Oftalmologia',            'Equipamentos de diagnóstico e tratamento oftalmológico',                    'OFT',   true, '2024-01-15 09:35:00', '2024-01-15 09:35:00'),
+('Neonatologia',            'Incubadoras e equipamentos de cuidados neonatais',                          'NEO',   true, '2024-01-15 09:40:00', '2024-01-15 09:40:00'),
+('Infraestrutura Clínica',  'Camas articuladas, macas e mobiliário clínico especializado',               'INF',   false, '2024-01-15 09:45:00', '2024-01-15 09:45:00');
 
 -- 2. Marca (10)
-INSERT INTO `Marca` (`nome`, `dataCriacao`, `dataAtualizacao`) VALUES
-('Siemens Healthineers',  '2024-01-15 10:00:00', '2024-01-15 10:00:00'),
-('GE Healthcare',         '2024-01-15 10:05:00', '2024-01-15 10:05:00'),
-('Philips Healthcare',    '2024-01-15 10:10:00', '2024-01-15 10:10:00'),
-('Dräger',                '2024-01-15 10:15:00', '2024-01-15 10:15:00'),
-('Mindray',               '2024-01-15 10:20:00', '2024-01-15 10:20:00'),
-('Medtronic',             '2024-01-15 10:25:00', '2024-01-15 10:25:00'),
-('Olympus Medical',       '2024-01-15 10:30:00', '2024-01-15 10:30:00'),
-('Fujifilm Healthcare',   '2024-01-15 10:35:00', '2024-01-15 10:35:00'),
-('B. Braun',              '2024-01-15 10:40:00', '2024-01-15 10:40:00'),
-('Getinge',               '2024-01-15 10:45:00', '2024-01-15 10:45:00');
+INSERT INTO `Marca` (`nome`, `ativo`, `dataCriacao`, `dataAtualizacao`) VALUES
+('Siemens Healthineers',  true, '2024-01-15 10:00:00', '2024-01-15 10:00:00'),
+('GE Healthcare',         true, '2024-01-15 10:05:00', '2024-01-15 10:05:00'),
+('Philips Healthcare',    true, '2024-01-15 10:10:00', '2024-01-15 10:10:00'),
+('Dräger',                true, '2024-01-15 10:15:00', '2024-01-15 10:15:00'),
+('Mindray',               true, '2024-01-15 10:20:00', '2024-01-15 10:20:00'),
+('Medtronic',             true, '2024-01-15 10:25:00', '2024-01-15 10:25:00'),
+('Olympus Medical',       true, '2024-01-15 10:30:00', '2024-01-15 10:30:00'),
+('Fujifilm Healthcare',   true, '2024-01-15 10:35:00', '2024-01-15 10:35:00'),
+('B. Braun',              true, '2024-01-15 10:40:00', '2024-01-15 10:40:00'),
+('Getinge',               false, '2024-01-15 10:45:00', '2024-01-15 10:45:00');
 
 -- 3. Localizacao (10)
 INSERT INTO `Localizacao` (`edificio`, `piso`, `servico`, `sala`, `ativo`, `dataCriacao`, `dataAtualizacao`) VALUES
@@ -77,40 +77,40 @@ INSERT INTO `Localizacao` (`edificio`, `piso`, `servico`, `sala`, `ativo`, `data
 ('Edifício Sul',        'Piso 2',   'Oftalmologia',         'Sala 201',  false,'2024-02-01 08:45:00', '2024-02-01 08:45:00');
 
 -- 4. Permissao (25 — todas as chaves de profiles.php)
-INSERT INTO `Permissao` (`chave`, `descricao`) VALUES
-('equipment.view',       'Visualizar equipamentos'),
-('equipment.create',     'Criar equipamentos'),
-('equipment.edit',       'Editar equipamentos'),
-('equipment.delete',     'Apagar equipamentos'),
-('equipment.archive',    'Arquivar/restaurar equipamentos'),
-('maintenance.view',     'Visualizar manutenções'),
-('maintenance.create',   'Registar manutenções'),
-('maintenance.edit',     'Editar manutenções'),
-('maintenance.finalize', 'Finalizar manutenções'),
-('documents.view',       'Visualizar documentos'),
-('documents.upload',     'Carregar documentos'),
-('documents.delete',     'Apagar documentos'),
-('suppliers.view',       'Visualizar fornecedores'),
-('suppliers.manage',     'Gerir fornecedores (CRUD)'),
-('people.view',          'Visualizar pessoas'),
-('people.manage',        'Gerir pessoas (CRUD)'),
-('components.view',      'Visualizar componentes/stock'),
-('components.manage',    'Gerir componentes (CRUD)'),
-('users.view',           'Visualizar utilizadores'),
-('users.manage',         'Gerir utilizadores (CRUD)'),
-('audit.view',           'Visualizar logs de auditoria'),
-('locations.view',       'Visualizar localizações'),
-('locations.manage',     'Gerir localizações (CRUD)'),
-('permissions.manage',   'Gerir permissões e perfis'),
-('reports.generate',     'Gerar relatórios e exportar dados');
+INSERT INTO `Permissao` (`chave`, `descricao`, `ativo`) VALUES
+('equipment.view',       'Visualizar equipamentos', true),
+('equipment.create',     'Criar equipamentos', true),
+('equipment.edit',       'Editar equipamentos', true),
+('equipment.delete',     'Apagar equipamentos', true),
+('equipment.archive',    'Arquivar/restaurar equipamentos', true),
+('maintenance.view',     'Visualizar manutenções', true),
+('maintenance.create',   'Registar manutenções', true),
+('maintenance.edit',     'Editar manutenções', true),
+('maintenance.finalize', 'Finalizar manutenções', true),
+('documents.view',       'Visualizar documentos', true),
+('documents.upload',     'Carregar documentos', true),
+('documents.delete',     'Apagar documentos', true),
+('suppliers.view',       'Visualizar fornecedores', true),
+('suppliers.manage',     'Gerir fornecedores (CRUD)', true),
+('people.view',          'Visualizar pessoas', true),
+('people.manage',        'Gerir pessoas (CRUD)', true),
+('components.view',      'Visualizar componentes/stock', true),
+('components.manage',    'Gerir componentes (CRUD)', true),
+('users.view',           'Visualizar utilizadores', true),
+('users.manage',         'Gerir utilizadores (CRUD)', true),
+('audit.view',           'Visualizar logs de auditoria', true),
+('locations.view',       'Visualizar localizações', true),
+('locations.manage',     'Gerir localizações (CRUD)', true),
+('permissions.manage',   'Gerir permissões e perfis', true),
+('reports.generate',     'Gerar relatórios e exportar dados', false);
 
 -- 5. Perfil (5 — conforme profiles.php)
-INSERT INTO `Perfil` (`nome`, `dataCriacao`, `dataAtualizacao`) VALUES
-('Administrador',            '2024-01-10 08:00:00', '2024-01-10 08:00:00'),
-('Engenheiro Biomédico',     '2024-01-10 08:05:00', '2024-01-10 08:05:00'),
-('Técnico de Manutenção',    '2024-01-10 08:10:00', '2024-01-10 08:10:00'),
-('Aprovisionamento',         '2024-01-10 08:15:00', '2024-01-10 08:15:00'),
-('Consulta',                 '2024-01-10 08:20:00', '2024-01-10 08:20:00');
+INSERT INTO `Perfil` (`nome`, `ativo`, `dataCriacao`, `dataAtualizacao`) VALUES
+('Administrador',            true, '2024-01-10 08:00:00', '2024-01-10 08:00:00'),
+('Engenheiro Biomédico',     true, '2024-01-10 08:05:00', '2024-01-10 08:05:00'),
+('Técnico de Manutenção',    true, '2024-01-10 08:10:00', '2024-01-10 08:10:00'),
+('Aprovisionamento',         true, '2024-01-10 08:15:00', '2024-01-10 08:15:00'),
+('Consulta',                 false, '2024-01-10 08:20:00', '2024-01-10 08:20:00');
 
 -- 6. ConteudoFrontOffice (~40 registos — TODO o texto de index.php)
 INSERT INTO `ConteudoFrontOffice` (`chaveSecao`, `valor`, `descricao`, `dataCriacao`, `dataAtualizacao`) VALUES

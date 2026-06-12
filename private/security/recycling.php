@@ -316,14 +316,10 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                         <div class="d-flex flex-column align-items-center justify-content-center gap-3">
                             <div class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
                                 <p class="text-secondary">
-                                    Tem a certeza que deseja apagar permanentemente
+                                    Tem a certeza que deseja apagar
                                 </p>
                                 <h2 class="fw-700">"Autoclave ELV 3870"?</p>
                                     <span class="text-muted">Tipo: Equipamento</span>
-                            </div>
-                            <div class="danger-banner text-error text-center padding-3">
-                                <span>⚠️ Este registo será eliminado permanentemente da base de dados. Todos os dados
-                                    associados serão perdidos.</span>
                             </div>
                         </div>
                     </div>
@@ -333,7 +329,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                         <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                             data-bs-dismiss="modal">Cancelar</button>
                         <button type="button" class="btn btn-danger btn-glowing text-white">
-                            Sim, Apagar Definitivamente.
+                            Sim, Apagar.
                         </button>
                     </div>
                 </div>

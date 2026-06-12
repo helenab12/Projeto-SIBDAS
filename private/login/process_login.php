@@ -50,7 +50,6 @@ try {
     $_SESSION['utilizador'] = $utilizador->email;
     $_SESSION['id_utilizador'] = $utilizador->idUtilizador;
 
-
     header('Location: ' . BASE_URL . 'private/index.php');
     exit;
 } catch (PDOException $err) {

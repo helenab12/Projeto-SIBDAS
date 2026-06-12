@@ -561,7 +561,7 @@ try {
             </div>
         </div>
     </footer>
-
+    
     <!-- Toast Container -->
     <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3 mt-4" style="z-index: 100;">
         <?php if (!empty($success_message)): ?>

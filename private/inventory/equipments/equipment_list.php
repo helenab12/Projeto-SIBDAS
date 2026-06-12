@@ -90,6 +90,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <tbody>
                     <!-- Row 1 -->
                     <tr>
+                        <a href="detailed_view.php?"> 
                         <td>
                             <div class="d-flex align-items-center gap-3">
                                 <div class="table-icon-wrapper equipment-icon-wrapper">
@@ -104,7 +105,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                     </svg>
                                 </div>
                                 <div class="d-flex flex-column">
-                                    <p class="equipment-title fw-700 mb-0">Ventilador Mecânico V500</p>
+                                    <a href="detailed_view.php" class="text-primary"> 
+                                        <p class="equipment-title fw-700 mb-0">Ventilador Mecânico V500</p>
+                                    </a>
                                     <span class="equipment-subtitle text-secondary fw-400">Dräger Evita V500
                                         &bull; DRG-V500-78234</span>
                                 </div>
@@ -161,7 +164,6 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                 <path d="M10 12h4" />
                                             </svg>
                                             Arquivar
-                                        </a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item action-dropdown-item text-error" href="#">
@@ -181,6 +183,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                 </ul>
                             </div>
                         </td>
+                        </a>
                     </tr>
                     <!-- Row 2 -->
                     <tr>
