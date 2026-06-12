@@ -187,7 +187,7 @@ INSERT INTO `CartaoFuncionalidade` (`titulo`, `descricao`, `icone`, `ordem`, `at
 -- FASE 2 — Tabelas com FK de nível único
 -- ============================================================
 
--- 8. Pessoa (10)
+-- 8. Pessoa (11)
 INSERT INTO `Pessoa` (`nome`, `email`, `contactoTelefonico`, `nif`, `ativo`, `dataCriacao`, `dataAtualizacao`) VALUES
 ('João Silva',              'admin@hospital.pt',              '+351912000001', '123456789', true, '2024-03-01 09:00:00', '2024-03-01 09:00:00'),
 ('Ana Costa',               'eng.bio@hospital.pt',            '+351912000002', '234567891', true, '2024-03-01 09:05:00', '2024-03-01 09:05:00'),
@@ -198,7 +198,8 @@ INSERT INTO `Pessoa` (`nome`, `email`, `contactoTelefonico`, `nif`, `ativo`, `da
 ('Ricardo Pereira',         'ricardo.pereira@hospital.pt',    '+351912000007', '789123456', true, '2024-03-01 09:30:00', '2024-03-01 09:30:00'),
 ('Teresa Rodrigues',        'teresa.rodrigues@hospital.pt',   '+351912000008', '891234567', true, '2024-03-01 09:35:00', '2024-03-01 09:35:00'),
 ('Carlos Almeida',          'carlos.almeida@hospital.pt',     '+351912000009', '912345678', true, '2024-03-01 09:40:00', '2024-03-01 09:40:00'),
-('Beatriz Lopes',           'beatriz.lopes@hospital.pt',      '+351912000010', '198765432', true, '2024-03-01 09:45:00', '2024-03-01 09:45:00');
+('Beatriz Lopes',           'beatriz.lopes@hospital.pt',      '+351912000010', '198765432', true, '2024-03-01 09:45:00', '2024-03-01 09:45:00'),
+('Helena Teste',            'helena.teste@hospital.pt',       '+351912000011', '123123123', true, '2024-03-01 09:50:00', '2024-03-01 09:50:00');
 
 -- 9. PerfilPermissao (5 perfis × 25 permissões = 125 registos)
 -- Mapeamento exato da matriz booleana de profiles.php
@@ -249,17 +250,17 @@ INSERT INTO `Fornecedor` (`nome`, `nifFornecedor`, `contactoTelefonico`, `email`
 
 -- 11. Utilizador (10 — passwords encriptadas com AES_ENCRYPT)
 -- Passwords em texto: password01..password10
-INSERT INTO `Utilizador` (`idPessoa`, `password`, `idPerfil`, `estado`, `ativo`, `dataCriacao`, `dataAtualizacao`) VALUES
-(1,  AES_ENCRYPT('password01', 'Vduu47qL51hLn6bkYkY6NlO1nivsmdfD'), 1, 'Ativo',   true, '2024-03-01 09:00:00', '2024-03-01 09:00:00'),
-(2,  AES_ENCRYPT('password02', 'Vduu47qL51hLn6bkYkY6NlO1nivsmdfD'), 2, 'Ativo',   true, '2024-03-01 09:05:00', '2024-03-01 09:05:00'),
-(3,  AES_ENCRYPT('password03', 'Vduu47qL51hLn6bkYkY6NlO1nivsmdfD'), 3, 'Ativo',   true, '2024-03-01 09:10:00', '2024-03-01 09:10:00'),
-(4,  AES_ENCRYPT('password04', 'Vduu47qL51hLn6bkYkY6NlO1nivsmdfD'), 4, 'Ativo',   true, '2024-03-01 09:15:00', '2024-03-01 09:15:00'),
-(5,  AES_ENCRYPT('password05', 'Vduu47qL51hLn6bkYkY6NlO1nivsmdfD'), 5, 'Ativo',   true, '2024-03-01 09:20:00', '2024-03-01 09:20:00'),
-(6,  AES_ENCRYPT('password06', 'Vduu47qL51hLn6bkYkY6NlO1nivsmdfD'), 1, 'Ativo',   true, '2024-03-01 09:25:00', '2024-03-01 09:25:00'),
-(7,  AES_ENCRYPT('password07', 'Vduu47qL51hLn6bkYkY6NlO1nivsmdfD'), 2, 'Ativo',   true, '2024-03-01 09:30:00', '2024-03-01 09:30:00'),
-(8,  AES_ENCRYPT('password08', 'Vduu47qL51hLn6bkYkY6NlO1nivsmdfD'), 3, 'Inativo', true, '2024-03-01 09:35:00', '2024-03-01 09:35:00'),
-(9,  AES_ENCRYPT('password09', 'Vduu47qL51hLn6bkYkY6NlO1nivsmdfD'), 4, 'Ativo',   true, '2024-03-01 09:40:00', '2024-03-01 09:40:00'),
-(10, AES_ENCRYPT('password10', 'Vduu47qL51hLn6bkYkY6NlO1nivsmdfD'), 5, 'Inativo', true, '2024-03-01 09:45:00', '2024-03-01 09:45:00');
+INSERT INTO `Utilizador` (`idPessoa`, `emailAutenticacao`, `password`, `idPerfil`, `ativo`, `dataCriacao`, `dataAtualizacao`) VALUES
+(1,  'admin@hospital.pt',              AES_ENCRYPT('password01', 'Vduu47qL51hLn6bkYkY6NlO1nivsmdfD'), 1, true,  '2024-03-01 09:00:00', '2024-03-01 09:00:00'),
+(2,  'eng.bio@hospital.pt',            AES_ENCRYPT('password02', 'Vduu47qL51hLn6bkYkY6NlO1nivsmdfD'), 2, true,  '2024-03-01 09:05:00', '2024-03-01 09:05:00'),
+(3,  'tecnico@hospital.pt',            AES_ENCRYPT('password03', 'Vduu47qL51hLn6bkYkY6NlO1nivsmdfD'), 3, true,  '2024-03-01 09:10:00', '2024-03-01 09:10:00'),
+(4,  'aprovisionamento@hospital.pt',   AES_ENCRYPT('password04', 'Vduu47qL51hLn6bkYkY6NlO1nivsmdfD'), 4, true,  '2024-03-01 09:15:00', '2024-03-01 09:15:00'),
+(5,  'consulta@hospital.pt',           AES_ENCRYPT('password05', 'Vduu47qL51hLn6bkYkY6NlO1nivsmdfD'), 5, true,  '2024-03-01 09:20:00', '2024-03-01 09:20:00'),
+(6,  'sofia.martins@hospital.pt',      AES_ENCRYPT('password06', 'Vduu47qL51hLn6bkYkY6NlO1nivsmdfD'), 1, true,  '2024-03-01 09:25:00', '2024-03-01 09:25:00'),
+(7,  'ricardo.pereira@hospital.pt',    AES_ENCRYPT('password07', 'Vduu47qL51hLn6bkYkY6NlO1nivsmdfD'), 2, true,  '2024-03-01 09:30:00', '2024-03-01 09:30:00'),
+(8,  'teresa.rodrigues@hospital.pt',   AES_ENCRYPT('password08', 'Vduu47qL51hLn6bkYkY6NlO1nivsmdfD'), 3, false, '2024-03-01 09:35:00', '2024-03-01 09:35:00'),
+(9,  'carlos.almeida@hospital.pt',     AES_ENCRYPT('password09', 'Vduu47qL51hLn6bkYkY6NlO1nivsmdfD'), 4, true,  '2024-03-01 09:40:00', '2024-03-01 09:40:00'),
+(10, 'beatriz.lopes@hospital.pt',      AES_ENCRYPT('password10', 'Vduu47qL51hLn6bkYkY6NlO1nivsmdfD'), 5, false, '2024-03-01 09:45:00', '2024-03-01 09:45:00');
 
 
 -- ============================================================

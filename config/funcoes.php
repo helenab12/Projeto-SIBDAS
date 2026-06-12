@@ -32,7 +32,7 @@ function redirect_if_not_logged($redirect_to = 'private/login/login.php')
         try {
             $ligacao = connect_to_db();
             $stmt = execute_query(
-                "SELECT u.idUtilizador, u.idPessoa, u.password, u.idPerfil, u.estado, u.ativo as utilizador_ativo, u.dataCriacao as utilizador_dataCriacao, u.dataAtualizacao as utilizador_dataAtualizacao,
+                "SELECT u.idUtilizador, u.idPessoa, u.emailAutenticacao, u.password, u.idPerfil, u.ativo as utilizador_ativo, u.dataCriacao as utilizador_dataCriacao, u.dataAtualizacao as utilizador_dataAtualizacao,
                         p.nome as pessoa_nome, p.email as pessoa_email, p.contactoTelefonico as pessoa_contacto, p.nif as pessoa_nif, p.ativo as pessoa_ativo, p.dataCriacao as pessoa_dataCriacao, p.dataAtualizacao as pessoa_dataAtualizacao,
                         pf.idPerfil as perfil_id, pf.nome as perfil_nome, pf.dataCriacao as perfil_dataCriacao, pf.dataAtualizacao as perfil_dataAtualizacao
                 FROM Utilizador u
@@ -59,9 +59,9 @@ function redirect_if_not_logged($redirect_to = 'private/login/login.php')
                 $_SESSION['userAtual'] = new Utilizador(
                     (string) $dados->idUtilizador,
                     (string) $dados->idPessoa,
+                    (string) $dados->emailAutenticacao,
                     (string) $dados->password,
                     (string) $dados->idPerfil,
-                    (string) $dados->estado,
                     (bool) $dados->utilizador_ativo,
                     new DateTime($dados->utilizador_dataCriacao),
                     $dados->utilizador_dataAtualizacao ? new DateTime($dados->utilizador_dataAtualizacao) : new DateTime(),

@@ -143,9 +143,9 @@ class Utilizador implements Validavel
 {
     private string $idUtilizador;
     private string $idPessoa;
+    private string $emailAutenticacao;
     private string $password;
     private string $idPerfil;
-    private string $estado;
     private bool $ativo;
     private DateTime $dataCriacao;
     private DateTime $dataAtualizacao;
@@ -154,9 +154,9 @@ class Utilizador implements Validavel
     public function __construct(
         string $idUtilizador,
         string $idPessoa,
+        string $emailAutenticacao,
         string $password,
         string $idPerfil,
-        string $estado,
         bool $ativo,
         DateTime $dataCriacao,
         DateTime $dataAtualizacao,
@@ -166,9 +166,9 @@ class Utilizador implements Validavel
         $erros = self::validarDados([
             "idUtilizador" => $idUtilizador,
             "idPessoa" => $idPessoa,
+            "emailAutenticacao" => $emailAutenticacao,
             "password" => $password,
             "idPerfil" => $idPerfil,
-            "estado" => $estado,
             "ativo" => $ativo,
             "dataCriacao" => $dataCriacao,
             "dataAtualizacao" => $dataAtualizacao,
@@ -181,9 +181,9 @@ class Utilizador implements Validavel
 
         $this->idUtilizador = $idUtilizador;
         $this->idPessoa = $idPessoa;
+        $this->emailAutenticacao = $emailAutenticacao;
         $this->password = $password;
         $this->idPerfil = $idPerfil;
-        $this->estado = $estado;
         $this->ativo = $ativo;
         $this->dataCriacao = $dataCriacao;
         $this->dataAtualizacao = $dataAtualizacao;
@@ -200,6 +200,11 @@ class Utilizador implements Validavel
         return $this->idPessoa;
     }
 
+    public function getEmailAutenticacao(): string
+    {
+        return $this->emailAutenticacao;
+    }
+
     public function getPassword(): string
     {
         return $this->password;
@@ -208,11 +213,6 @@ class Utilizador implements Validavel
     public function getIdPerfil(): string
     {
         return $this->idPerfil;
-    }
-
-    public function getEstado(): string
-    {
-        return $this->estado;
     }
 
     public function getAtivo(): bool
@@ -247,6 +247,12 @@ class Utilizador implements Validavel
             $erros[] = "A pessoa associada é obrigatória.";
         }
 
+        if (empty(trim($dados["emailAutenticacao"]))) {
+            $erros[] = "O email de autenticação é obrigatório.";
+        } elseif (!filter_var($dados["emailAutenticacao"], FILTER_VALIDATE_EMAIL)) {
+            $erros[] = "O email de autenticação tem de ser um email válido.";
+        }
+
         if (empty(trim($dados["password"]))) {
             $erros[] = "A password é obrigatória.";
         } elseif (strlen($dados["password"]) < 8) {
@@ -255,12 +261,6 @@ class Utilizador implements Validavel
 
         if (empty(trim($dados["idPerfil"]))) {
             $erros[] = "O perfil é obrigatório.";
-        }
-
-        if (empty(trim($dados["estado"]))) {
-            $erros[] = "O estado é obrigatório.";
-        } elseif (!in_array($dados["estado"], ['Ativo', 'Inativo'])) {
-            $erros[] = "O estado deve ser 'Ativo' ou 'Inativo'.";
         }
 
         if (empty($dados["dataCriacao"])) {

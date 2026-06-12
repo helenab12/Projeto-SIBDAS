@@ -390,11 +390,37 @@ if (
 
     // Custom search binding
     const searchInputs = document.querySelectorAll(".search-bar-input");
+    const filterSelect = document.getElementById("filter-type");
+
+    function applyFilters() {
+        const searchVal = searchInputs.length > 0 ? searchInputs[0].value.trim() : "";
+        const filterVal = filterSelect ? filterSelect.value : "";
+
+        if (typeof table.multiSearch === 'function') {
+            let queries = [];
+            if (searchVal) queries.push({ terms: [searchVal] });
+            if (filterVal) queries.push({ terms: [filterVal], columns: [1] });
+
+            if (queries.length > 0) {
+                table.multiSearch(queries);
+            } else {
+                table.search("");
+            }
+        } else {
+            let terms = [];
+            if (searchVal) terms.push(searchVal);
+            if (filterVal) terms.push(filterVal);
+            table.search(terms.join(" "));
+        }
+    }
+
     searchInputs.forEach((input) => {
-        input.addEventListener("input", function () {
-            table.search(this.value);
-        });
+        input.addEventListener("input", applyFilters);
     });
+
+    if (filterSelect) {
+        filterSelect.addEventListener("change", applyFilters);
+    }
 }
 
 // Inicializar DataTables (Funcionalidades)
@@ -624,8 +650,6 @@ if (btnSubmitModal) {
             alert("Fornecedor criado com sucesso!");
         } else if (buttonText === "Criar Pessoa") {
             alert("Pessoa criada com sucesso!");
-        } else if (buttonText === "Criar Utilizador") {
-            alert("Utilizador criado com sucesso!");
         } else if (buttonText === "Guardar Alterações") {
             alert("Alterações guardadas com sucesso!");
         } else if (document.getElementById("building-name")) {
@@ -1528,4 +1552,59 @@ document.addEventListener("DOMContentLoaded", () => {
             contentChangesBar.style.setProperty("display", "flex", "important");
         });
     }
+
+    // Validação Modal Criação de Utilizador
+    const userEmailInput = document.getElementById('user-email');
+    const userAuthEmailInput = document.getElementById('user-auth-email');
+    const userPasswordInput = document.getElementById('user-password');
+    const userRoleInput = document.getElementById('user-role');
+    const userBtnSubmit = document.getElementById('btn-submit-user-modal');
+
+    if (userEmailInput && userAuthEmailInput && userPasswordInput && userRoleInput && userBtnSubmit) {
+        function validateUserForm() {
+            const isEmailValid = userEmailInput.value.trim() !== '' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userEmailInput.value);
+            const isAuthEmailValid = userAuthEmailInput.value.trim() !== '' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userAuthEmailInput.value);
+            const isPasswordValid = userPasswordInput.value.length >= 8;
+            const isRoleValid = userRoleInput.value !== '';
+
+            if (isEmailValid && isAuthEmailValid && isPasswordValid && isRoleValid) {
+                userBtnSubmit.removeAttribute('disabled');
+            } else {
+                userBtnSubmit.setAttribute('disabled', 'true');
+            }
+        }
+
+        userEmailInput.addEventListener('input', validateUserForm);
+        userAuthEmailInput.addEventListener('input', validateUserForm);
+        userPasswordInput.addEventListener('input', validateUserForm);
+        userRoleInput.addEventListener('change', validateUserForm);
+    }
+
+    // Validação Modais de Edição de Utilizador
+    const editUserForms = document.querySelectorAll('.user-edit-form');
+    editUserForms.forEach(form => {
+        const authEmailInput = form.querySelector('.user-edit-email-input');
+        const passwordInput = form.querySelector('.user-edit-password-input');
+        const roleInput = form.querySelector('.user-edit-role-input');
+        const submitBtn = form.querySelector('.user-edit-submit-btn');
+
+        if (authEmailInput && passwordInput && roleInput && submitBtn) {
+            function validateEditForm() {
+                const isAuthEmailValid = authEmailInput.value.trim() !== '' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(authEmailInput.value);
+                // Password can be empty (meaning no change) or >= 8 chars
+                const isPasswordValid = passwordInput.value === '' || passwordInput.value.length >= 8;
+                const isRoleValid = roleInput.value !== '';
+
+                if (isAuthEmailValid && isPasswordValid && isRoleValid) {
+                    submitBtn.removeAttribute('disabled');
+                } else {
+                    submitBtn.setAttribute('disabled', 'true');
+                }
+            }
+
+            authEmailInput.addEventListener('input', validateEditForm);
+            passwordInput.addEventListener('input', validateEditForm);
+            roleInput.addEventListener('change', validateEditForm);
+        }
+    });
 });

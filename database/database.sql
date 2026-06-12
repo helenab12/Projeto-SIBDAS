@@ -137,9 +137,9 @@ CREATE TABLE `Pessoa` (
 CREATE TABLE `Utilizador` (
   `idUtilizador` integer PRIMARY KEY AUTO_INCREMENT,
   `idPessoa` integer,
+  `emailAutenticacao` varchar(255) UNIQUE NOT NULL,
   `password` varbinary(255),
   `idPerfil` integer,
-  `estado` ENUM ('Ativo', 'Inativo'),
   `ativo` boolean DEFAULT true,
   `dataCriacao` timestamp DEFAULT (CURRENT_TIMESTAMP),
   `dataAtualizacao` timestamp
