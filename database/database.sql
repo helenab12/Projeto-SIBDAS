@@ -20,12 +20,36 @@ CREATE TABLE `Marca` (
   `dataAtualizacao` timestamp
 );
 
+CREATE TABLE `Edificio` (
+  `idEdificio` integer PRIMARY KEY AUTO_INCREMENT,
+  `nome` varchar(100) UNIQUE,
+  `ativo` boolean DEFAULT true,
+  `dataCriacao` timestamp DEFAULT (CURRENT_TIMESTAMP),
+  `dataAtualizacao` timestamp
+);
+
+CREATE TABLE `Piso` (
+  `idPiso` integer PRIMARY KEY AUTO_INCREMENT,
+  `idEdificio` integer,
+  `nome` varchar(50),
+  `ativo` boolean DEFAULT true,
+  `dataCriacao` timestamp DEFAULT (CURRENT_TIMESTAMP),
+  `dataAtualizacao` timestamp
+);
+
+CREATE TABLE `Servico` (
+  `idServico` integer PRIMARY KEY AUTO_INCREMENT,
+  `idPiso` integer,
+  `nome` varchar(100),
+  `ativo` boolean DEFAULT true,
+  `dataCriacao` timestamp DEFAULT (CURRENT_TIMESTAMP),
+  `dataAtualizacao` timestamp
+);
+
 CREATE TABLE `Localizacao` (
   `idLocalizacao` integer PRIMARY KEY AUTO_INCREMENT,
-  `edificio` varchar(50),
-  `piso` varchar(20),
-  `servico` varchar(50),
-  `sala` varchar(20),
+  `idServico` integer,
+  `nomeSala` varchar(50),
   `ativo` boolean DEFAULT true,
   `dataCriacao` timestamp DEFAULT (CURRENT_TIMESTAMP),
   `dataAtualizacao` timestamp
@@ -253,7 +277,17 @@ CREATE TABLE `PedidoDemonstracao` (
   `dataAtualizacao` timestamp
 );
 
-CREATE UNIQUE INDEX `Localizacao_index_0` ON `Localizacao` (`edificio`, `piso`, `servico`, `sala`);
+CREATE UNIQUE INDEX `Piso_index_0` ON `Piso` (`idEdificio`, `nome`);
+
+CREATE UNIQUE INDEX `Servico_index_0` ON `Servico` (`idPiso`, `nome`);
+
+CREATE UNIQUE INDEX `Localizacao_index_0` ON `Localizacao` (`idServico`, `nomeSala`);
+
+ALTER TABLE `Piso` ADD FOREIGN KEY (`idEdificio`) REFERENCES `Edificio` (`idEdificio`);
+
+ALTER TABLE `Servico` ADD FOREIGN KEY (`idPiso`) REFERENCES `Piso` (`idPiso`);
+
+ALTER TABLE `Localizacao` ADD FOREIGN KEY (`idServico`) REFERENCES `Servico` (`idServico`);
 
 CREATE UNIQUE INDEX `Equipamento_index_1` ON `Equipamento` (`numeroSerie`, `idMarca`, `modelo`, `designacao`);
 

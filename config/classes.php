@@ -788,7 +788,7 @@ class ConteudoPagina implements ArrayAccess
 
 // Inbox
 
-class InboxState
+class EstadoPedidoDemonstracao
 {
     private string $name;
     private string $class;
@@ -818,17 +818,17 @@ class InboxState
     }
 }
 
-class InboxRequest implements Validavel
+class PedidoDemonstracao implements Validavel
 {
     private int $id;
-    private InboxState $state;
+    private EstadoPedidoDemonstracao $state;
     private string $date;
     private string $name;
     private string $institution;
     private string $email;
     private string $message;
 
-    public function __construct(int $id, InboxState $state, string $date, string $name, string $institution, string $email, string $message)
+    public function __construct(int $id, EstadoPedidoDemonstracao $state, string $date, string $name, string $institution, string $email, string $message)
     {
         $erros = self::validarDados([
             'id' => $id,
@@ -856,7 +856,7 @@ class InboxRequest implements Validavel
     {
         return $this->id;
     }
-    public function getState(): InboxState
+    public function getState(): EstadoPedidoDemonstracao
     {
         return $this->state;
     }
@@ -918,5 +918,233 @@ class InboxRequest implements Validavel
         }
 
         return $erros;
+    }
+}
+
+// Hierarquia de Localizações
+
+class Edificio implements Validavel
+{
+    private int $idEdificio;
+    private string $nome;
+    private array $pisos = [];
+
+    public function __construct(int $idEdificio, string $nome)
+    {
+        $erros = self::validarDados([
+            'idEdificio' => (string) $idEdificio,
+            'nome' => $nome
+        ]);
+
+        if (!empty($erros)) {
+            throw new Exception("Erro ao criar edifício: " . implode(", ", $erros));
+        }
+
+        $this->idEdificio = $idEdificio;
+        $this->nome = $nome;
+    }
+
+    public static function validarDados(array $dados): array
+    {
+        $erros = [];
+        if (empty(trim($dados['nome'] ?? ''))) {
+            $erros[] = "O nome do edifício é obrigatório.";
+        }
+        return $erros;
+    }
+
+    public function getIdEdificio(): int
+    {
+        return $this->idEdificio;
+    }
+
+    public function getNome(): string
+    {
+        return $this->nome;
+    }
+
+    public function addPiso(Piso $piso): void
+    {
+        $this->pisos[] = $piso;
+    }
+
+    public function getPisos(): array
+    {
+        return $this->pisos;
+    }
+}
+
+class Piso implements Validavel
+{
+    private int $idPiso;
+    private int $idEdificio;
+    private string $nome;
+    private array $servicos = [];
+
+    public function __construct(int $idPiso, int $idEdificio, string $nome)
+    {
+        $erros = self::validarDados([
+            'idPiso' => (string) $idPiso,
+            'idEdificio' => (string) $idEdificio,
+            'nome' => $nome
+        ]);
+
+        if (!empty($erros)) {
+            throw new Exception("Erro ao criar piso: " . implode(", ", $erros));
+        }
+
+        $this->idPiso = $idPiso;
+        $this->idEdificio = $idEdificio;
+        $this->nome = $nome;
+    }
+
+    public static function validarDados(array $dados): array
+    {
+        $erros = [];
+        if (empty(trim($dados['idEdificio'] ?? ''))) {
+            $erros[] = "O ID do edifício é obrigatório.";
+        }
+        if (empty(trim($dados['nome'] ?? ''))) {
+            $erros[] = "O nome do piso é obrigatório.";
+        }
+        return $erros;
+    }
+
+    public function getIdPiso(): int
+    {
+        return $this->idPiso;
+    }
+
+    public function getIdEdificio(): int
+    {
+        return $this->idEdificio;
+    }
+
+    public function getNome(): string
+    {
+        return $this->nome;
+    }
+
+    public function addServico(Servico $servico): void
+    {
+        $this->servicos[] = $servico;
+    }
+
+    public function getServicos(): array
+    {
+        return $this->servicos;
+    }
+}
+
+class Servico implements Validavel
+{
+    private int $idServico;
+    private int $idPiso;
+    private string $nome;
+    private array $salas = [];
+
+    public function __construct(int $idServico, int $idPiso, string $nome)
+    {
+        $erros = self::validarDados([
+            'idServico' => (string) $idServico,
+            'idPiso' => (string) $idPiso,
+            'nome' => $nome
+        ]);
+
+        if (!empty($erros)) {
+            throw new Exception("Erro ao criar serviço: " . implode(", ", $erros));
+        }
+
+        $this->idServico = $idServico;
+        $this->idPiso = $idPiso;
+        $this->nome = $nome;
+    }
+
+    public static function validarDados(array $dados): array
+    {
+        $erros = [];
+        if (empty(trim($dados['idPiso'] ?? ''))) {
+            $erros[] = "O ID do piso é obrigatório.";
+        }
+        if (empty(trim($dados['nome'] ?? ''))) {
+            $erros[] = "O nome do serviço é obrigatório.";
+        }
+        return $erros;
+    }
+
+    public function getIdServico(): int
+    {
+        return $this->idServico;
+    }
+
+    public function getIdPiso(): int
+    {
+        return $this->idPiso;
+    }
+
+    public function getNome(): string
+    {
+        return $this->nome;
+    }
+
+    public function addSala(Localizacao $sala): void
+    {
+        $this->salas[] = $sala;
+    }
+
+    public function getSalas(): array
+    {
+        return $this->salas;
+    }
+}
+
+class Localizacao implements Validavel
+{
+    private int $idLocalizacao;
+    private int $idServico;
+    private string $nomeSala;
+
+    public function __construct(int $idLocalizacao, int $idServico, string $nomeSala)
+    {
+        $erros = self::validarDados([
+            'idLocalizacao' => (string) $idLocalizacao,
+            'idServico' => (string) $idServico,
+            'nomeSala' => $nomeSala
+        ]);
+
+        if (!empty($erros)) {
+            throw new Exception("Erro ao criar localização: " . implode(", ", $erros));
+        }
+
+        $this->idLocalizacao = $idLocalizacao;
+        $this->idServico = $idServico;
+        $this->nomeSala = $nomeSala;
+    }
+
+    public static function validarDados(array $dados): array
+    {
+        $erros = [];
+        if (empty(trim($dados['idServico'] ?? ''))) {
+            $erros[] = "O ID do serviço é obrigatório.";
+        }
+        if (empty(trim($dados['nomeSala'] ?? ''))) {
+            $erros[] = "O nome da sala é obrigatório.";
+        }
+        return $erros;
+    }
+
+    public function getIdLocalizacao(): int
+    {
+        return $this->idLocalizacao;
+    }
+
+    public function getIdServico(): int
+    {
+        return $this->idServico;
+    }
+
+    public function getNomeSala(): string
+    {
+        return $this->nomeSala;
     }
 }

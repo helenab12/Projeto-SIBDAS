@@ -134,7 +134,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                             <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
                                 <li>
                                     <a class="dropdown-item action-dropdown-item text-primary" href="#"
-                                        data-bs-toggle="modal" data-bs-target="#person-edit-modal-<?= htmlspecialchars(aes_encrypt($pessoa->getId())) ?>">
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#person-edit-modal-<?= htmlspecialchars(aes_encrypt($pessoa->getId())) ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                             stroke-linejoin="round" class="lucide lucide-pencil">
@@ -145,8 +146,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item action-dropdown-item text-error" href="#"
-                                        data-bs-toggle="modal" data-bs-target="#delete-confirm-modal-<?= htmlspecialchars(aes_encrypt($pessoa->getId())) ?>">
+                                    <a class="dropdown-item action-dropdown-item text-error" href="#" data-bs-toggle="modal"
+                                        data-bs-target="#delete-confirm-modal-<?= htmlspecialchars(aes_encrypt($pessoa->getId())) ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                             stroke-linejoin="round" class="lucide lucide-archive">
@@ -210,6 +211,11 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                     </div>
                 </div>
             <?php endforeach; ?>
+
+            <div id="people-empty-state" class="bento-card padding-4 text-center text-muted w-100 d-none"
+                style="grid-column: 1 / -1;">
+                Não foram encontrados resultados consoante a pesquisa.
+            </div>
 
         </div>
 
@@ -414,10 +420,12 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                         <div class="d-flex w-100 gap-4">
                             <div class="d-flex flex-column form-item w-100 mw-0">
                                 <div class="d-flex gap-1">
-                                    <label for="edit-person-name-<?= htmlspecialchars($encryptedPersonId) ?>">Nome Completo</label>
+                                    <label for="edit-person-name-<?= htmlspecialchars($encryptedPersonId) ?>">Nome
+                                        Completo</label>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-asterisk-icon lucide-asterisk text-error">
                                         <path d="M12 6v12" />
                                         <path d="M17.196 9 6.804 15" />
                                         <path d="m6.804 9 10.392 6" />
@@ -432,7 +440,8 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                     <label for="edit-person-nif-<?= htmlspecialchars($encryptedPersonId) ?>">NIF</label>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-asterisk-icon lucide-asterisk text-error">
                                         <path d="M12 6v12" />
                                         <path d="M17.196 9 6.804 15" />
                                         <path d="m6.804 9 10.392 6" />
@@ -450,13 +459,16 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                     <label for="edit-person-role-<?= htmlspecialchars($encryptedPersonId) ?>">Função</label>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-asterisk-icon lucide-asterisk text-error">
                                         <path d="M12 6v12" />
                                         <path d="M17.196 9 6.804 15" />
                                         <path d="m6.804 9 10.392 6" />
                                     </svg>
                                 </div>
-                                <select class="form-select" id="edit-person-role-<?= htmlspecialchars($encryptedPersonId) ?>" name="person-role" required>
+                                <select class="form-select"
+                                    id="edit-person-role-<?= htmlspecialchars($encryptedPersonId) ?>" name="person-role"
+                                    required>
                                     <option value="" disabled>Selecione uma Função</option>
                                     <?php foreach (Funcao::cases() as $funcao): ?>
                                         <option value="<?= $funcao->value ?>" <?= $pessoa->getFuncao() === $funcao ? 'selected' : '' ?>><?= $funcao->value ?></option>
@@ -466,17 +478,20 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 
                             <div class="d-flex flex-column form-item w-100 mw-0">
                                 <div class="d-flex gap-1">
-                                    <label for="edit-person-department-<?= htmlspecialchars($encryptedPersonId) ?>">Departamento</label>
+                                    <label
+                                        for="edit-person-department-<?= htmlspecialchars($encryptedPersonId) ?>">Departamento</label>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-asterisk-icon lucide-asterisk text-error">
                                         <path d="M12 6v12" />
                                         <path d="M17.196 9 6.804 15" />
                                         <path d="m6.804 9 10.392 6" />
                                     </svg>
                                 </div>
                                 <input type="text" id="edit-person-department-<?= htmlspecialchars($encryptedPersonId) ?>"
-                                    name="person-department" value="<?= htmlspecialchars($pessoa->getDepartamento()) ?>" required>
+                                    name="person-department" value="<?= htmlspecialchars($pessoa->getDepartamento()) ?>"
+                                    required>
                             </div>
                         </div>
 
@@ -487,7 +502,8 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                     <label for="edit-person-email-<?= htmlspecialchars($encryptedPersonId) ?>">Email</label>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-asterisk-icon lucide-asterisk text-error">
                                         <path d="M12 6v12" />
                                         <path d="M17.196 9 6.804 15" />
                                         <path d="m6.804 9 10.392 6" />
@@ -499,17 +515,20 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 
                             <div class="d-flex flex-column form-item w-100 mw-0">
                                 <div class="d-flex gap-1">
-                                    <label for="edit-person-phone-<?= htmlspecialchars($encryptedPersonId) ?>">Telefone</label>
+                                    <label
+                                        for="edit-person-phone-<?= htmlspecialchars($encryptedPersonId) ?>">Telefone</label>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-asterisk-icon lucide-asterisk text-error">
                                         <path d="M12 6v12" />
                                         <path d="M17.196 9 6.804 15" />
                                         <path d="m6.804 9 10.392 6" />
                                     </svg>
                                 </div>
                                 <input type="text" id="edit-person-phone-<?= htmlspecialchars($encryptedPersonId) ?>"
-                                    name="person-phone" value="<?= htmlspecialchars($pessoa->getContactoTelefonico()) ?>" required>
+                                    name="person-phone" value="<?= htmlspecialchars($pessoa->getContactoTelefonico()) ?>"
+                                    required>
                             </div>
                         </div>
 
@@ -517,8 +536,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                         <div class="d-flex w-100 justify-content-end gap-4 button-row mt-4">
                             <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                                 data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" name="editar_pessoa"
-                                class="btn-edit-submit btn btn-primary btn-glowing">
+                            <button type="submit" name="editar_pessoa" class="btn-edit-submit btn btn-primary btn-glowing">
                                 Guardar Alterações
                             </button>
                         </div>

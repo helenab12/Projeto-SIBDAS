@@ -35,8 +35,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $message_sanitized = trim($message);
 
     try {
-        // Validar os dados usando InboxRequest::validarDados
-        $validation_errors = InboxRequest::validarDados([
+        // Validar os dados usando PedidoDemonstracao::validarDados
+        $validation_errors = PedidoDemonstracao::validarDados([
             'id' => 1,
             'name' => $name,
             'email' => $email,
@@ -463,7 +463,8 @@ try {
                                         400</small>
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-primary btn-large btn-glowing w-100 fw-700 gap-1" id="cta-submit-btn" disabled>
+                            <button type="submit" class="btn btn-primary btn-large btn-glowing w-100 fw-700 gap-1"
+                                id="cta-submit-btn" disabled>
                                 <?= $conteudoPagina['cta.btn_submit'] ?>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"
@@ -561,7 +562,7 @@ try {
             </div>
         </div>
     </footer>
-    
+
     <!-- Toast Container -->
     <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3 mt-4" style="z-index: 100;">
         <?php if (!empty($success_message)): ?>

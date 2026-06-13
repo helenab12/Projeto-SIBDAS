@@ -2477,14 +2477,23 @@ ul.action-dropdown-menu.show {
 .locations .accordion-button {
     border-radius: 0;
     transition: background-color .3s ease;
+    background-color: transparent !important;
 }
 
-.accordion-button.top-level {
+.location-row.building-row {
     border-bottom: var(--border-base);
 }
 
-.accordion-button:hover {
+.location-row {
+    transition: background-color .3s ease;
+}
+
+.location-row:hover {
     background-color: color-mix(in srgb, var(--text-secondary) 5%, transparent);
+}
+
+.locations .accordion-button:hover {
+    background-color: transparent !important;
 }
 
 .locations .accordion-button[aria-expanded="true"] .lucide-chevron-right {
@@ -2510,10 +2519,20 @@ ul.action-dropdown-menu.show {
 
 .locations .action-buttons svg.lucide-trash-2:hover {
     background: color-mix(in srgb, var(--error) 10%, transparent);
+    color: var(--error);
 }
 
 .locations .collapse-inner-level {
     padding-left: 0;
+}
+
+.floor-icon-wrapper {
+    background-color: color-mix(in srgb, var(--warning) 10%, transparent);
+    color: var(--warning);
+}
+
+.floor-icon-wrapper svg {
+    stroke: var(--warning);
 }
 
 .locations .level-1 {

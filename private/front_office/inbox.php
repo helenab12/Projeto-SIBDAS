@@ -4,13 +4,13 @@ redirect_if_not_logged();
 include_once BASE_PATH . 'private/includes/head.php';
 include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 
-$inboxStates = [
-    'Novo' => new InboxState('Novo', 'new'),
-    'Em Contacto' => new InboxState('Em Contacto', 'in-contact'),
-    'Fechado' => new InboxState('Fechado', 'concluded')
+$EstadoPedidoDemonstracaos = [
+    'Novo' => new EstadoPedidoDemonstracao('Novo', 'new'),
+    'Em Contacto' => new EstadoPedidoDemonstracao('Em Contacto', 'in-contact'),
+    'Fechado' => new EstadoPedidoDemonstracao('Fechado', 'concluded')
 ];
 
-$inboxRequests = [];
+$PedidoDemonstracaos = [];
 $validation_errors = [];
 if (!empty($_SESSION['validation_errors'])) {
     $validation_errors = $_SESSION['validation_errors'];
@@ -50,7 +50,7 @@ try {
 
     foreach ($requests as $row) {
         $estadoStr = $row->estado;
-        $stateObj = $inboxStates[$estadoStr] ?? new InboxState($estadoStr, 'new');
+        $stateObj = $EstadoPedidoDemonstracaos[$estadoStr] ?? new EstadoPedidoDemonstracao($estadoStr, 'new');
 
         $dateObj = new DateTime($row->dataCriacao);
         $day = $dateObj->format('d');
@@ -59,7 +59,7 @@ try {
         $time = $dateObj->format('H:i');
         $formattedDate = "{$day} {$months[$mNum]} {$year}, {$time}";
 
-        $inboxRequests[] = new InboxRequest(
+        $PedidoDemonstracaos[] = new PedidoDemonstracao(
             (int) $row->idPedido,
             $stateObj,
             $formattedDate,
@@ -122,7 +122,7 @@ try {
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($inboxRequests as $request):
+                            <?php foreach ($PedidoDemonstracaos as $request):
                                 $encryptedId = aes_encrypt($request->id);
                                 ?>
                                 <tr>
@@ -145,16 +145,16 @@ try {
                                             <ul class="dropdown-menu action-dropdown-menu">
                                                 <li>
                                                     <a class="dropdown-item action-dropdown-item" href="#"
-                                                        onclick="changeInboxState('<?php echo $encryptedId; ?>', 'Novo', 'new')">Novo</a>
+                                                        onclick="changeEstadoPedidoDemonstracao('<?php echo $encryptedId; ?>', 'Novo', 'new')">Novo</a>
                                                 </li>
                                                 <li>
                                                     <a class="dropdown-item action-dropdown-item" href="#"
-                                                        onclick="changeInboxState('<?php echo $encryptedId; ?>', 'Em Contacto', 'in-contact')">Em
+                                                        onclick="changeEstadoPedidoDemonstracao('<?php echo $encryptedId; ?>', 'Em Contacto', 'in-contact')">Em
                                                         Contacto</a>
                                                 </li>
                                                 <li>
                                                     <a class="dropdown-item action-dropdown-item" href="#"
-                                                        onclick="changeInboxState('<?php echo $encryptedId; ?>', 'Fechado', 'concluded')">Fechado</a>
+                                                        onclick="changeEstadoPedidoDemonstracao('<?php echo $encryptedId; ?>', 'Fechado', 'concluded')">Fechado</a>
                                                 </li>
                                             </ul>
                                         </div>
@@ -255,7 +255,7 @@ try {
     </form>
 
     <!-- Modais de Detalhes dos Pedidos de Demonstração -->
-    <?php foreach ($inboxRequests as $request):
+    <?php foreach ($PedidoDemonstracaos as $request):
         $encryptedId = aes_encrypt($request->id);
         ?>
         <div class="modal fade" id="inbox-detail-modal-<?php echo $encryptedId; ?>" tabindex="-1"

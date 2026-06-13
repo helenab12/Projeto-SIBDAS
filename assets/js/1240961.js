@@ -984,22 +984,52 @@ if (buildingNameInput && btnSubmitModal) {
     }
 }
 
-// Impedir que os botões de ação disparem o colapso do accordion
-const locationsContainer = document.querySelector(".locations");
-if (locationsContainer) {
-    locationsContainer.addEventListener(
-        "click",
-        (e) => {
-            const actionBtn = e.target.closest(
-                ".action-buttons, .action-buttons svg, .action-buttons path",
-            );
-            if (actionBtn) {
-                e.stopPropagation();
-                e.preventDefault();
+// Impedir que os botões de ação disparem o colapso do accordion nas localizações
+document.addEventListener(
+    "click",
+    (e) => {
+        const actionBtn = e.target.closest(
+            ".locations .action-buttons, .locations .action-buttons svg, .locations .action-buttons path",
+        );
+        if (actionBtn) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+    },
+    true,
+);
+
+// Pesquisa de Edifícios
+const locationsSearchInput = document.querySelector(".equipment-list-search-bar .search-bar-input");
+const locationsSearchForm = document.querySelector(".equipment-list-search-bar form");
+
+if (locationsSearchForm) {
+    locationsSearchForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+    });
+}
+
+if (locationsSearchInput) {
+    locationsSearchInput.addEventListener("input", function () {
+        const query = this.value.trim().toLowerCase();
+        const locationsBuildingCards = document.querySelectorAll(".locations");
+        let anyVisible = false;
+        locationsBuildingCards.forEach(function (card) {
+            const nameEl = card.querySelector(".building-row p.fw-700");
+            if (nameEl) {
+                const name = nameEl.textContent.trim().toLowerCase();
+                const isMatch = !query || name.includes(query);
+                card.classList.toggle("d-none", !isMatch);
+                if (isMatch) {
+                    anyVisible = true;
+                }
             }
-        },
-        true,
-    );
+        });
+        const emptyState = document.getElementById("locations-empty-state");
+        if (emptyState) {
+            emptyState.classList.toggle("d-none", anyVisible);
+        }
+    });
 }
 
 // Campos obrigatórios do Utilizador (Nome Completo, Username, Email, Password)
@@ -1460,7 +1490,162 @@ document.addEventListener("DOMContentLoaded", () => {
         userRoleInput.addEventListener('change', validateUserForm);
     }
 
+    // Validação Modal Criação de Edifício
+    const buildingNameInput = document.getElementById('building-name');
+    const buildingBtnSubmit = document.getElementById('btn-submit-building-modal');
+
+    if (buildingNameInput && buildingBtnSubmit) {
+        function validateBuildingForm() {
+            const isNameValid = buildingNameInput.value.trim() !== '';
+
+            if (isNameValid) {
+                buildingBtnSubmit.removeAttribute('disabled');
+            } else {
+                buildingBtnSubmit.setAttribute('disabled', 'true');
+            }
+        }
+
+        buildingNameInput.addEventListener('input', validateBuildingForm);
+    }
+
+    // Validação Modais de Edição de Edifício
+    const editBuildingForms = document.querySelectorAll('.building-edit-form');
+    editBuildingForms.forEach(form => {
+        const nameInput = form.querySelector('.building-edit-name');
+        const submitBtn = form.querySelector('.btn-edit-building-submit');
+
+        if (nameInput && submitBtn) {
+            function validateEditBuildingForm() {
+                const isNameValid = nameInput.value.trim() !== '';
+
+                if (isNameValid) {
+                    submitBtn.removeAttribute('disabled');
+                } else {
+                    submitBtn.setAttribute('disabled', 'true');
+                }
+            }
+
+            nameInput.addEventListener('input', validateEditBuildingForm);
+        }
+    });
+
+    // Validação Modais de Criação de Piso
+    const createFloorForms = document.querySelectorAll('.floor-create-form');
+    createFloorForms.forEach(form => {
+        const nameInput = form.querySelector('.floor-create-name');
+        const submitBtn = form.querySelector('.btn-create-floor-submit');
+
+        if (nameInput && submitBtn) {
+            function validateCreateFloorForm() {
+                if (nameInput.value.trim() !== '') {
+                    submitBtn.removeAttribute('disabled');
+                } else {
+                    submitBtn.setAttribute('disabled', 'true');
+                }
+            }
+
+            nameInput.addEventListener('input', validateCreateFloorForm);
+        }
+    });
+
+    // Validação Modais de Edição de Piso
+    const editFloorForms = document.querySelectorAll('.floor-edit-form');
+    editFloorForms.forEach(form => {
+        const nameInput = form.querySelector('.floor-edit-name');
+        const submitBtn = form.querySelector('.btn-edit-floor-submit');
+
+        if (nameInput && submitBtn) {
+            function validateEditFloorForm() {
+                if (nameInput.value.trim() !== '') {
+                    submitBtn.removeAttribute('disabled');
+                } else {
+                    submitBtn.setAttribute('disabled', 'true');
+                }
+            }
+
+            nameInput.addEventListener('input', validateEditFloorForm);
+        }
+    });
+
+    // Validação Modais de Criação de Serviço
+    const createServiceForms = document.querySelectorAll('.service-create-form');
+    createServiceForms.forEach(form => {
+        const nameInput = form.querySelector('.service-create-name');
+        const submitBtn = form.querySelector('.btn-create-service-submit');
+
+        if (nameInput && submitBtn) {
+            function validateCreateServiceForm() {
+                if (nameInput.value.trim() !== '') {
+                    submitBtn.removeAttribute('disabled');
+                } else {
+                    submitBtn.setAttribute('disabled', 'true');
+                }
+            }
+
+            nameInput.addEventListener('input', validateCreateServiceForm);
+        }
+    });
+
+    // Validação Modais de Edição de Serviço
+    const editServiceForms = document.querySelectorAll('.service-edit-form');
+    editServiceForms.forEach(form => {
+        const nameInput = form.querySelector('.service-edit-name');
+        const submitBtn = form.querySelector('.btn-edit-service-submit');
+
+        if (nameInput && submitBtn) {
+            function validateEditServiceForm() {
+                if (nameInput.value.trim() !== '') {
+                    submitBtn.removeAttribute('disabled');
+                } else {
+                    submitBtn.setAttribute('disabled', 'true');
+                }
+            }
+
+            nameInput.addEventListener('input', validateEditServiceForm);
+        }
+    });
+
+    // Validação Modais de Criação de Sala
+    const createRoomForms = document.querySelectorAll('.room-create-form');
+    createRoomForms.forEach(form => {
+        const nameInput = form.querySelector('.room-create-name');
+        const submitBtn = form.querySelector('.btn-create-room-submit');
+
+        if (nameInput && submitBtn) {
+            function validateCreateRoomForm() {
+                if (nameInput.value.trim() !== '') {
+                    submitBtn.removeAttribute('disabled');
+                } else {
+                    submitBtn.setAttribute('disabled', 'true');
+                }
+            }
+
+            nameInput.addEventListener('input', validateCreateRoomForm);
+        }
+    });
+
+    // Validação Modais de Edição de Sala
+    const editRoomForms = document.querySelectorAll('.room-edit-form');
+    editRoomForms.forEach(form => {
+        const nameInput = form.querySelector('.room-edit-name');
+        const submitBtn = form.querySelector('.btn-edit-room-submit');
+
+        if (nameInput && submitBtn) {
+            function validateEditRoomForm() {
+                if (nameInput.value.trim() !== '') {
+                    submitBtn.removeAttribute('disabled');
+                } else {
+                    submitBtn.setAttribute('disabled', 'true');
+                }
+            }
+
+            nameInput.addEventListener('input', validateEditRoomForm);
+        }
+    });
+
     // Validação Modais de Edição de Utilizador
+
+
     const editUserForms = document.querySelectorAll('.user-edit-form');
     editUserForms.forEach(form => {
         const authEmailInput = form.querySelector('.user-edit-email-input');
@@ -1530,6 +1715,7 @@ document.addEventListener("DOMContentLoaded", () => {
         function applyPersonFilters() {
             const searchTerm = personSearchInput ? personSearchInput.value.toLowerCase().trim() : "";
             const roleTerm = personRoleFilter ? personRoleFilter.value.toLowerCase().trim() : "";
+            let anyVisible = false;
 
             personCards.forEach(card => {
                 const nameEl = card.querySelector(".person-name");
@@ -1545,10 +1731,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 if (matchesSearch && matchesRole) {
                     card.classList.remove("d-none");
+                    anyVisible = true;
                 } else {
                     card.classList.add("d-none");
                 }
             });
+
+            const emptyState = document.getElementById("people-empty-state");
+            if (emptyState) {
+                emptyState.classList.toggle("d-none", anyVisible);
+            }
         }
 
         if (personSearchInput) personSearchInput.addEventListener("input", applyPersonFilters);
@@ -1556,41 +1748,41 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-    // Validação Modais de Edição de Pessoa
-    const personEditForms = document.querySelectorAll('.person-edit-form');
-    personEditForms.forEach(form => {
-        const nameInput = form.querySelector('[name="person-name"]');
-        const nifInput = form.querySelector('[name="person-nif"]');
-        const roleInput = form.querySelector('[name="person-role"]');
-        const deptInput = form.querySelector('[name="person-department"]');
-        const emailInput = form.querySelector('[name="person-email"]');
-        const phoneInput = form.querySelector('[name="person-phone"]');
-        const submitBtn = form.querySelector('.btn-edit-submit');
+// Validação Modais de Edição de Pessoa
+const personEditForms = document.querySelectorAll('.person-edit-form');
+personEditForms.forEach(form => {
+    const nameInput = form.querySelector('[name="person-name"]');
+    const nifInput = form.querySelector('[name="person-nif"]');
+    const roleInput = form.querySelector('[name="person-role"]');
+    const deptInput = form.querySelector('[name="person-department"]');
+    const emailInput = form.querySelector('[name="person-email"]');
+    const phoneInput = form.querySelector('[name="person-phone"]');
+    const submitBtn = form.querySelector('.btn-edit-submit');
 
-        if (nameInput && nifInput && roleInput && deptInput && emailInput && phoneInput && submitBtn) {
-            function validateEditForm() {
-                const isNameValid = nameInput.value.trim() !== '';
-                const isNifValid = /^\d{9}$/.test(nifInput.value.trim());
-                const isRoleValid = roleInput.value !== '';
-                const isDeptValid = deptInput.value.trim() !== '';
-                const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim());
-                const isPhoneValid = phoneInput.value.trim() !== '';
+    if (nameInput && nifInput && roleInput && deptInput && emailInput && phoneInput && submitBtn) {
+        function validateEditForm() {
+            const isNameValid = nameInput.value.trim() !== '';
+            const isNifValid = /^\d{9}$/.test(nifInput.value.trim());
+            const isRoleValid = roleInput.value !== '';
+            const isDeptValid = deptInput.value.trim() !== '';
+            const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim());
+            const isPhoneValid = phoneInput.value.trim() !== '';
 
-                if (isNameValid && isNifValid && isRoleValid && isDeptValid && isEmailValid && isPhoneValid) {
-                    submitBtn.removeAttribute('disabled');
-                } else {
-                    submitBtn.setAttribute('disabled', 'true');
-                }
+            if (isNameValid && isNifValid && isRoleValid && isDeptValid && isEmailValid && isPhoneValid) {
+                submitBtn.removeAttribute('disabled');
+            } else {
+                submitBtn.setAttribute('disabled', 'true');
             }
-
-            // Validar no início
-            validateEditForm();
-
-            nameInput.addEventListener('input', validateEditForm);
-            nifInput.addEventListener('input', validateEditForm);
-            roleInput.addEventListener('change', validateEditForm);
-            deptInput.addEventListener('input', validateEditForm);
-            emailInput.addEventListener('input', validateEditForm);
-            phoneInput.addEventListener('input', validateEditForm);
         }
-    });
+
+        // Validar no início
+        validateEditForm();
+
+        nameInput.addEventListener('input', validateEditForm);
+        nifInput.addEventListener('input', validateEditForm);
+        roleInput.addEventListener('change', validateEditForm);
+        deptInput.addEventListener('input', validateEditForm);
+        emailInput.addEventListener('input', validateEditForm);
+        phoneInput.addEventListener('input', validateEditForm);
+    }
+});

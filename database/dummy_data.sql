@@ -25,6 +25,9 @@ TRUNCATE TABLE `Perfil`;
 TRUNCATE TABLE `Permissao`;
 TRUNCATE TABLE `Pessoa`;
 TRUNCATE TABLE `Localizacao`;
+TRUNCATE TABLE `Servico`;
+TRUNCATE TABLE `Piso`;
+TRUNCATE TABLE `Edificio`;
 TRUNCATE TABLE `Marca`;
 TRUNCATE TABLE `CategoriaEquipamento`;
 TRUNCATE TABLE `PedidoDemonstracao`;
@@ -63,18 +66,50 @@ INSERT INTO `Marca` (`nome`, `ativo`, `dataCriacao`, `dataAtualizacao`) VALUES
 ('B. Braun',              true, '2024-01-15 10:40:00', '2024-01-15 10:40:00'),
 ('Getinge',               false, '2024-01-15 10:45:00', '2024-01-15 10:45:00');
 
--- 3. Localizacao (10)
-INSERT INTO `Localizacao` (`edificio`, `piso`, `servico`, `sala`, `ativo`, `dataCriacao`, `dataAtualizacao`) VALUES
-('Edifício Principal',  'Piso 0',   'Urgências',            'Sala 001',  true, '2024-02-01 08:00:00', '2024-02-01 08:00:00'),
-('Edifício Principal',  'Piso 1',   'Cardiologia',          'Sala 101',  true, '2024-02-01 08:05:00', '2024-02-01 08:05:00'),
-('Edifício Principal',  'Piso 2',   'Bloco Operatório',     'Sala 201',  true, '2024-02-01 08:10:00', '2024-02-01 08:10:00'),
-('Edifício Principal',  'Piso 3',   'UCI',                  'Sala 301',  true, '2024-02-01 08:15:00', '2024-02-01 08:15:00'),
-('Edifício Norte',      'Piso 0',   'Imagiologia',          'Sala 001',  true, '2024-02-01 08:20:00', '2024-02-01 08:20:00'),
-('Edifício Norte',      'Piso 1',   'Laboratório Central',  'Sala 101',  true, '2024-02-01 08:25:00', '2024-02-01 08:25:00'),
-('Edifício Norte',      'Piso 2',   'Neonatologia',         'Sala 201',  true, '2024-02-01 08:30:00', '2024-02-01 08:30:00'),
-('Edifício Sul',        'Piso 0',   'Fisioterapia',         'Sala 001',  true, '2024-02-01 08:35:00', '2024-02-01 08:35:00'),
-('Edifício Sul',        'Piso 1',   'Esterilização',        'Sala 101',  true, '2024-02-01 08:40:00', '2024-02-01 08:40:00'),
-('Edifício Sul',        'Piso 2',   'Oftalmologia',         'Sala 201',  false,'2024-02-01 08:45:00', '2024-02-01 08:45:00');
+-- 3. Edificio (3)
+INSERT INTO `Edificio` (`nome`, `ativo`) VALUES
+('Edifício Principal', true),
+('Edifício Norte', true),
+('Edifício Sul', true);
+
+-- 3.1 Piso (10)
+INSERT INTO `Piso` (`idEdificio`, `nome`, `ativo`) VALUES
+(1, 'Piso 0', true),
+(1, 'Piso 1', true),
+(1, 'Piso 2', true),
+(1, 'Piso 3', true),
+(2, 'Piso 0', true),
+(2, 'Piso 1', true),
+(2, 'Piso 2', true),
+(3, 'Piso 0', true),
+(3, 'Piso 1', true),
+(3, 'Piso 2', true);
+
+-- 3.2 Servico (10)
+INSERT INTO `Servico` (`idPiso`, `nome`, `ativo`) VALUES
+(1, 'Urgências', true),
+(2, 'Cardiologia', true),
+(3, 'Bloco Operatório', true),
+(4, 'UCI', true),
+(5, 'Imagiologia', true),
+(6, 'Laboratório Central', true),
+(7, 'Neonatologia', true),
+(8, 'Fisioterapia', true),
+(9, 'Esterilização', true),
+(10, 'Oftalmologia', true);
+
+-- 3.3 Localizacao (10)
+INSERT INTO `Localizacao` (`idServico`, `nomeSala`, `ativo`, `dataCriacao`, `dataAtualizacao`) VALUES
+(1, 'Sala 001', true, '2024-02-01 08:00:00', '2024-02-01 08:00:00'),
+(2, 'Sala 101', true, '2024-02-01 08:05:00', '2024-02-01 08:05:00'),
+(3, 'Sala 201', true, '2024-02-01 08:10:00', '2024-02-01 08:10:00'),
+(4, 'Sala 301', true, '2024-02-01 08:15:00', '2024-02-01 08:15:00'),
+(5, 'Sala 001', true, '2024-02-01 08:20:00', '2024-02-01 08:20:00'),
+(6, 'Sala 101', true, '2024-02-01 08:25:00', '2024-02-01 08:25:00'),
+(7, 'Sala 201', true, '2024-02-01 08:30:00', '2024-02-01 08:30:00'),
+(8, 'Sala 001', true, '2024-02-01 08:35:00', '2024-02-01 08:35:00'),
+(9, 'Sala 101', true, '2024-02-01 08:40:00', '2024-02-01 08:40:00'),
+(10, 'Sala 201', false,'2024-02-01 08:45:00', '2024-02-01 08:45:00');
 
 -- 4. Permissao (25 — todas as chaves de profiles.php)
 INSERT INTO `Permissao` (`chave`, `descricao`, `ativo`) VALUES
