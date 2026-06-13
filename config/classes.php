@@ -487,6 +487,195 @@ class Permissao implements Validavel
     }
 }
 
+// Fornecedores
+
+enum TipoFornecedor: string
+{
+    case FABRICANTE = 'Fabricante';
+    case DISTRIBUIDOR = 'Distribuidor';
+    case ASSISTENCIA_TECNICA = 'Assistência Técnica';
+    case CONSUMIVEIS = 'Consumíveis';
+}
+
+class Fornecedor implements Validavel
+{
+    private string $idFornecedor;
+    private string $nome;
+    private string $nifFornecedor;
+    private string $contactoTelefonico;
+    private string $email;
+    private string $website;
+    private ?string $idPessoaResponsavel;
+    private TipoFornecedor $tipoFornecedor;
+    private bool $ativo;
+    private DateTime $dataCriacao;
+    private DateTime $dataAtualizacao;
+
+    private ?Pessoa $pessoaResponsavel;
+
+    public function __construct(
+        string $idFornecedor,
+        string $nome,
+        string $nifFornecedor,
+        string $contactoTelefonico,
+        string $email,
+        string $website,
+        ?string $idPessoaResponsavel,
+        TipoFornecedor $tipoFornecedor,
+        bool $ativo,
+        DateTime $dataCriacao,
+        DateTime $dataAtualizacao,
+        ?Pessoa $pessoaResponsavel = null
+    ) {
+        $erros = self::validarDados([
+            "idFornecedor" => $idFornecedor,
+            "nome" => $nome,
+            "nifFornecedor" => $nifFornecedor,
+            "contactoTelefonico" => $contactoTelefonico,
+            "email" => $email,
+            "website" => $website,
+            "idPessoaResponsavel" => $idPessoaResponsavel,
+            "tipoFornecedor" => $tipoFornecedor,
+            "ativo" => $ativo,
+            "dataCriacao" => $dataCriacao,
+            "dataAtualizacao" => $dataAtualizacao
+        ]);
+
+        if (!empty($erros)) {
+            throw new Exception("Erro ao criar fornecedor: " . implode(", ", $erros));
+        }
+
+        $this->idFornecedor = $idFornecedor;
+        $this->nome = $nome;
+        $this->nifFornecedor = $nifFornecedor;
+        $this->contactoTelefonico = $contactoTelefonico;
+        $this->email = $email;
+        $this->website = $website;
+        $this->idPessoaResponsavel = $idPessoaResponsavel;
+        $this->tipoFornecedor = $tipoFornecedor;
+        $this->ativo = $ativo;
+        $this->dataCriacao = $dataCriacao;
+        $this->dataAtualizacao = $dataAtualizacao;
+        $this->pessoaResponsavel = $pessoaResponsavel;
+    }
+
+    public function getIdFornecedor(): string
+    {
+        return $this->idFornecedor;
+    }
+
+    public function getNome(): string
+    {
+        return $this->nome;
+    }
+
+    public function getNifFornecedor(): string
+    {
+        return $this->nifFornecedor;
+    }
+
+    public function getContactoTelefonico(): string
+    {
+        return $this->contactoTelefonico;
+    }
+
+    public function getEmail(): string
+    {
+        return $this->email;
+    }
+
+    public function getWebsite(): string
+    {
+        return $this->website;
+    }
+
+    public function getIdPessoaResponsavel(): ?string
+    {
+        return $this->idPessoaResponsavel;
+    }
+
+    public function getTipoFornecedor(): TipoFornecedor
+    {
+        return $this->tipoFornecedor;
+    }
+
+    public function getAtivo(): bool
+    {
+        return $this->ativo;
+    }
+
+    public function getDataCriacao(): DateTime
+    {
+        return $this->dataCriacao;
+    }
+
+    public function getDataAtualizacao(): DateTime
+    {
+        return $this->dataAtualizacao;
+    }
+
+    public function getPessoaResponsavel(): ?Pessoa
+    {
+        return $this->pessoaResponsavel;
+    }
+
+    public static function validarDados(array $dados): array
+    {
+        $erros = [];
+
+        if (empty(trim($dados["idFornecedor"]))) {
+            $erros[] = "O ID é obrigatório.";
+        }
+
+        if (empty(trim($dados["nome"]))) {
+            $erros[] = "O campo Nome é obrigatório.";
+        }
+
+        if (empty(trim($dados["nifFornecedor"]))) {
+            $erros[] = "O campo NIF é obrigatório.";
+        } elseif (preg_match('/[^0-9]/', $dados["nifFornecedor"])) {
+            $erros[] = "O campo NIF tem de conter apenas números.";
+        } elseif (strlen($dados["nifFornecedor"]) !== 9) {
+            $erros[] = "O campo NIF tem de ter 9 dígitos.";
+        }
+
+        if (empty(trim($dados["email"]))) {
+            $erros[] = "O campo Email é obrigatório.";
+        } elseif (!filter_var($dados["email"], FILTER_VALIDATE_EMAIL)) {
+            $erros[] = "O formato do e-mail é inválido.";
+        }
+
+        if (empty(trim($dados["contactoTelefonico"]))) {
+            $erros[] = "O campo Contacto Telefónico é obrigatório.";
+        }
+
+        if (empty($dados["dataCriacao"])) {
+            $erros[] = 'A data de criação é obrigatória.';
+        } elseif (!($dados["dataCriacao"] instanceof DateTime)) {
+            $d = DateTime::createFromFormat('Y-m-d', $dados["dataCriacao"]);
+            if (!$d || $d->format('Y-m-d') !== $dados["dataCriacao"]) {
+                $erros[] = "O campo Data de Criação tem de ser uma data válida no formato AAAA-MM-DD.";
+            }
+        }
+
+        if (empty($dados["dataAtualizacao"])) {
+            $erros[] = 'A data de atualização é obrigatória.';
+        } elseif (!($dados["dataAtualizacao"] instanceof DateTime)) {
+            $d = DateTime::createFromFormat('Y-m-d', $dados["dataAtualizacao"]);
+            if (!$d || $d->format('Y-m-d') !== $dados["dataAtualizacao"]) {
+                $erros[] = "O campo Data de Atualização tem de ser uma data válida no formato AAAA-MM-DD.";
+            }
+        }
+
+        $tipo = $dados["tipoFornecedor"] ?? null;
+        if (empty($tipo)) {
+            $erros[] = "O tipo de fornecedor é obrigatório.";
+        }
+
+        return $erros;
+    }
+}
+
 // Conteúdo do Site
 
 class ConteudoTexto implements Validavel

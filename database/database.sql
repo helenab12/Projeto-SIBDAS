@@ -177,11 +177,9 @@ CREATE TABLE `Fornecedor` (
   `nifFornecedor` varchar(9),
   `contactoTelefonico` varchar(15),
   `email` varchar(100),
-  `morada` text,
   `website` varchar(255),
   `idPessoaResponsavel` integer,
   `tipoFornecedor` ENUM ('Fabricante', 'Distribuidor', 'Assistência Técnica', 'Consumíveis'),
-  `observacoes` text,
   `ativo` boolean DEFAULT true,
   `dataCriacao` timestamp DEFAULT (CURRENT_TIMESTAMP),
   `dataAtualizacao` timestamp

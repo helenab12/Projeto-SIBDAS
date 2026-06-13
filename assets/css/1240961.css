@@ -2405,7 +2405,7 @@ ul.action-dropdown-menu.show {
     color: var(--primary-500) !important;
 }
 
-.supplier-badge-distribuitor {
+.supplier-badge-distributor {
     background: color-mix(in srgb, #a855f7 10%, transparent);
     color: #a855f7 !important;
 }

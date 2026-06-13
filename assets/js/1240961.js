@@ -1786,3 +1786,31 @@ personEditForms.forEach(form => {
         phoneInput.addEventListener('input', validateEditForm);
     }
 });
+
+// Lógica de Fornecedores
+document.addEventListener("DOMContentLoaded", function () {
+    const supplierForm = document.getElementById("supplier-creation-form");
+    if (supplierForm) {
+        const inputs = supplierForm.querySelectorAll("input[required], select[required]");
+        const submitButton = document.getElementById("btn-submit-modal");
+
+        if (submitButton) {
+            function checkFormValidity() {
+                let isValid = true;
+                inputs.forEach(input => {
+                    if (!input.value.trim() || !input.checkValidity()) {
+                        isValid = false;
+                    }
+                });
+                submitButton.disabled = !isValid;
+            }
+
+            inputs.forEach(input => {
+                input.addEventListener("input", checkFormValidity);
+                input.addEventListener("change", checkFormValidity);
+            });
+            checkFormValidity();
+        }
+    }
+
+});
