@@ -316,17 +316,17 @@ INSERT INTO `Equipamento` (`idCategoria`, `codigoInterno`, `designacao`, `idMarc
 (10, 'INF-001', 'Cama Articulada Elétrica com Balança',                   9,  'Dialog Plus',            'SN-BBR-20240010',  '2024-08-15', '2024-07-01', 8500.00,   'Empréstimo',  'Inativo',         'Baixa',   'Cama UCI com pesagem integrada e guardas laterais',   4,  true,  true, '2024-08-15 10:00:00', '2025-10-01 16:00:00');
 
 -- 13. Componente (10)
-INSERT INTO `Componente` (`codigoInterno`, `descricao`, `stock`, `stockMinimo`, `idLocalizacao`, `ativo`, `dataCriacao`, `dataAtualizacao`) VALUES
-('COMP-001', 'Filtro HEPA para ventilador',                    25,  5,  9,  true, '2024-05-01 10:00:00', '2024-05-01 10:00:00'),
-('COMP-002', 'Sensor de SpO2 descartável adulto',              100, 20, 4,  true, '2024-05-01 10:05:00', '2024-05-01 10:05:00'),
-('COMP-003', 'Braçadeira de pressão arterial reutilizável',    30,  10, 4,  true, '2024-05-01 10:10:00', '2024-05-01 10:10:00'),
-('COMP-004', 'Tubo de raio-X de substituição',                 3,   1,  5,  true, '2024-05-01 10:15:00', '2024-05-01 10:15:00'),
-('COMP-005', 'Kit de calibração de desfibrilhador',            8,   2,  1,  true, '2024-05-01 10:20:00', '2024-05-01 10:20:00'),
-('COMP-006', 'Lâmpada halógena para lâmpada de fenda',         15,  5,  10, true, '2024-05-01 10:25:00', '2024-05-01 10:25:00'),
-('COMP-007', 'Reagente hematológico (pack 500 testes)',         12,  3,  6,  true, '2024-05-01 10:30:00', '2024-05-01 10:30:00'),
-('COMP-008', 'Bateria de substituição para monitor',            20,  5,  4,  true, '2024-05-01 10:35:00', '2024-05-01 10:35:00'),
-('COMP-009', 'Vedante de autoclave (junta de porta)',            10,  3,  9,  true, '2024-05-01 10:40:00', '2024-05-01 10:40:00'),
-('COMP-010', 'Cabo ECG de 5 derivações',                       40,  10, 2,  true, '2024-05-01 10:45:00', '2024-05-01 10:45:00');
+INSERT INTO `Componente` (`codigoInterno`, `descricao`, `stock`, `stockMinimo`, `preco`, `idLocalizacao`, `ativo`, `dataCriacao`, `dataAtualizacao`) VALUES
+('COMP-001', 'Filtro HEPA para ventilador',                    25,  5,  12.50,  9,  true, '2024-05-01 10:00:00', '2024-05-01 10:00:00'),
+('COMP-002', 'Sensor de SpO2 descartável adulto',              100, 20, 8.90,   4,  true, '2024-05-01 10:05:00', '2024-05-01 10:05:00'),
+('COMP-003', 'Braçadeira de pressão arterial reutilizável',    30,  10, 45.00,  4,  true, '2024-05-01 10:10:00', '2024-05-01 10:10:00'),
+('COMP-004', 'Tubo de raio-X de substituição',                 3,   1,  1200.00,5,  true, '2024-05-01 10:15:00', '2024-05-01 10:15:00'),
+('COMP-005', 'Kit de calibração de desfibrilhador',            8,   2,  250.00, 1,  true, '2024-05-01 10:20:00', '2024-05-01 10:20:00'),
+('COMP-006', 'Lâmpada halógena para lâmpada de fenda',         15,  5,  35.50,  10, true, '2024-05-01 10:25:00', '2024-05-01 10:25:00'),
+('COMP-007', 'Reagente hematológico (pack 500 testes)',         12,  3,  180.00, 6,  true, '2024-05-01 10:30:00', '2024-05-01 10:30:00'),
+('COMP-008', 'Bateria de substituição para monitor',            20,  5,  95.00,  4,  true, '2024-05-01 10:35:00', '2024-05-01 10:35:00'),
+('COMP-009', 'Vedante de autoclave (junta de porta)',            10,  3,  65.00,  9,  true, '2024-05-01 10:40:00', '2024-05-01 10:40:00'),
+('COMP-010', 'Cabo ECG de 5 derivações',                       40,  10, 55.00,  2,  true, '2024-05-01 10:45:00', '2024-05-01 10:45:00');
 
 -- 14. ComponenteEquipamento (10)
 INSERT INTO `ComponenteEquipamento` (`idComponente`, `idEquipamento`, `quantidade`) VALUES

@@ -1,8 +1,104 @@
 <?php
 require_once(__DIR__ . "/../../config/funcoes.php");
 redirect_if_not_logged();
+$success_message = null;
+$server_error = null;
+
+if (!empty($_SESSION['success_message'])) {
+    $success_message = $_SESSION['success_message'];
+    unset($_SESSION['success_message']);
+}
+if (!empty($_SESSION['server_error'])) {
+    $server_error = $_SESSION['server_error'];
+    unset($_SESSION['server_error']);
+}
+
+$listaComponentes = [];
+$categoriasDisponiveis = [];
+$localizacoesDisponiveis = [];
+
+try {
+    $ligacao = connect_to_db();
+
+    // Obter Categorias para os dropdowns
+    $stmtCategorias = execute_query(
+        "SELECT * FROM CategoriaEquipamento WHERE ativo = 1 ORDER BY nome ASC",
+        [],
+        $ligacao
+    );
+    while ($row = $stmtCategorias->fetch(PDO::FETCH_ASSOC)) {
+        $categoriasDisponiveis[] = new Categoria(
+            (string) $row['idCategoria'],
+            $row['nome'],
+            $row['codigoPrefix'],
+            $row['descricao'],
+            (bool) $row['ativo'],
+            new DateTime($row['dataCriacao']),
+            new DateTime($row['dataAtualizacao'])
+        );
+    }
+
+    // Obter Localizações para os dropdowns (Formato: Edifício, Piso, Serviço, Sala)
+    $stmtLocalizacoes = execute_query(
+        "SELECT 
+            l.idLocalizacao,
+            l.idServico,
+            e.nome AS edificioNome,
+            p.nome AS pisoNome,
+            s.nome AS servicoNome,
+            l.nomeSala AS salaNome
+         FROM Localizacao l
+         JOIN Servico s ON l.idServico = s.idServico
+         JOIN Piso p ON s.idPiso = p.idPiso
+         JOIN Edificio e ON p.idEdificio = e.idEdificio
+         WHERE l.ativo = 1 AND s.ativo = 1 AND p.ativo = 1 AND e.ativo = 1
+         ORDER BY e.nome, p.nome, s.nome, l.nomeSala ASC",
+        [],
+        $ligacao
+    );
+    while ($row = $stmtLocalizacoes->fetch(PDO::FETCH_ASSOC)) {
+        $nomeCompleto = $row['edificioNome'] . ', ' . $row['pisoNome'] . ', ' . $row['servicoNome'] . ', ' . $row['salaNome'];
+        $localizacoesDisponiveis[] = new Localizacao(
+            (int) $row['idLocalizacao'],
+            (int) $row['idServico'],
+            $nomeCompleto
+        );
+    }
+
+    // Obter Componentes
+    $stmtComponentes = execute_query(
+        "SELECT c.*, cc.idCategoria as idCategoria
+         FROM Componente c 
+         LEFT JOIN ComponenteCategoria cc ON c.idComponente = cc.idComponente
+         WHERE c.ativo = 1 
+         GROUP BY c.idComponente
+         ORDER BY c.descricao ASC",
+        [],
+        $ligacao
+    );
+
+    while ($row = $stmtComponentes->fetch(PDO::FETCH_ASSOC)) {
+        $listaComponentes[] = new Componente(
+            (string) $row['idComponente'],
+            $row['codigoInterno'],
+            $row['descricao'],
+            (int) $row['stock'],
+            (int) $row['stockMinimo'],
+            (float) $row['preco'],
+            (string) $row['idLocalizacao'],
+            (bool) $row['ativo'],
+            new DateTime($row['dataCriacao']),
+            new DateTime($row['dataAtualizacao']),
+            $row['idCategoria']
+        );
+    }
+} catch (Exception $e) {
+    $server_error = "Erro ao carregar dados: " . $e->getMessage();
+}
+
 include_once BASE_PATH . 'private/includes/head.php';
 include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
+
 ?>
 
 <div class="d-flex flex-column flex-grow-1 overflow-x-hidden mw-0">
@@ -54,1056 +150,114 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         <th>COMPONENTE</th>
                         <th>SKU</th>
                         <th>CATEGORIA</th>
-                        <th>STOCK</th>
+                        <th>STOCK/MIN</th>
                         <th>PREÇO UNIT.</th>
                         <th class="text-end">AÇÕES</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Row 1 (Sensor de Fluxo) -->
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="table-icon-wrapper component-icon-wrapper">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-puzzle-icon lucide-puzzle">
-                                        <path
-                                            d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z" />
-                                    </svg>
+                    <?php foreach ($listaComponentes as $componente): ?>
+                        <?php $encryptedCompId = aes_encrypt($componente->getIdComponente()); ?>
+
+                        <tr>
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="table-icon-wrapper component-icon-wrapper">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" class="lucide lucide-puzzle-icon lucide-puzzle">
+                                            <path
+                                                d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z" />
+                                        </svg>
+                                    </div>
+                                    <p class="equipment-title fw-700 mb-0">
+                                        <?= htmlspecialchars($componente->getDescricao()) ?>
+                                    </p>
                                 </div>
-                                <p class="equipment-title fw-700 mb-0">Sensor de Fluxo</p>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="equipment-badge component-sku-badge font-mono">CMP-001</span>
-                        </td>
-                        <td>
-                            <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top"
-                                title="Componentes associados a ventiladores pulmonares e suporte respiratório.">Ventiladores</span>
-                        </td>
-                        <td class="fw-700">24</td>
-                        <td class="fw-700">€0.00</td>
-                        <td class="text-end equipment-actions">
-                            <div class="dropdown">
-                                <button
-                                    class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
-                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="1" />
-                                        <circle cx="19" cy="12" r="1" />
-                                        <circle cx="5" cy="12" r="1" />
-                                    </svg>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-primary" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-pencil">
-                                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                <path d="m15 5 4 4" />
-                                            </svg>
-                                            Editar
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-error" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-trash-2">
-                                                <path d="M3 6h18" />
-                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                                <line x1="10" x2="10" y1="11" y2="17" />
-                                                <line x1="14" x2="14" y1="11" y2="17" />
-                                            </svg>
-                                            Apagar Definitivamente
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Row 2 (Válvula de Expiração) -->
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="table-icon-wrapper component-icon-wrapper">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-puzzle-icon lucide-puzzle">
-                                        <path
-                                            d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z" />
-                                    </svg>
+                            </td>
+                            <td>
+                                <span class="equipment-badge component-sku-badge font-mono">
+                                    <?= htmlspecialchars($componente->getCodigoInterno()) ?>
+                                </span>
+                            </td>
+                            <td>
+                                <?php
+                                $catNome = "Sem Categoria";
+                                $catDescricao = "";
+                                $idCatComponente = $componente->getIdCategoria();
+
+                                if ($idCatComponente !== null) {
+                                    foreach ($categoriasDisponiveis as $catDisp) {
+                                        if ($catDisp->getIdCategoria() === $idCatComponente) {
+                                            $catNome = $catDisp->getNome();
+                                            $catDescricao = $catDisp->getDescricao();
+                                            break;
+                                        }
+                                    }
+                                }
+                                ?>
+                                <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top"
+                                    title="<?= htmlspecialchars($catDescricao) ?>">
+                                    <?= htmlspecialchars($catNome) ?>
+                                </span>
+                            </td>
+                            <td class="fw-700 <?= $componente->getStock() <= $componente->getStockMinimo() ? 'text-error' : ''; ?>">
+                                <?= htmlspecialchars($componente->getStock()) . '/' . htmlspecialchars($componente->getStockMinimo()) ?>
+                            </td>
+                            <td class="fw-700">
+                                €<?= htmlspecialchars(number_format($componente->getPreco(), 2, '.', '')) ?>
+                            </td>
+                            <td class="text-end equipment-actions">
+                                <div class="dropdown">
+                                    <button
+                                        class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
+                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="1" />
+                                            <circle cx="19" cy="12" r="1" />
+                                            <circle cx="5" cy="12" r="1" />
+                                        </svg>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
+                                        <li>
+                                            <a class="dropdown-item action-dropdown-item text-primary" href="#"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#component-edit-modal-<?= htmlspecialchars($encryptedCompId) ?>">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round"
+                                                    class="lucide lucide-pencil">
+                                                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                                    <path d="m15 5 4 4" />
+                                                </svg>
+                                                Editar
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item action-dropdown-item text-error" href="#"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#component-delete-modal-<?= htmlspecialchars($encryptedCompId) ?>">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round"
+                                                    class="lucide lucide-trash-2">
+                                                    <path d="M3 6h18" />
+                                                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                                    <line x1="10" x2="10" y1="11" y2="17" />
+                                                    <line x1="14" x2="14" y1="11" y2="17" />
+                                                </svg>
+                                                Eliminar
+                                            </a>
+                                        </li>
+                                    </ul>
                                 </div>
-                                <p class="equipment-title fw-700 mb-0">Válvula de Expiração</p>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="equipment-badge component-sku-badge font-mono">CMP-002</span>
-                        </td>
-                        <td>
-                            <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top"
-                                title="Componentes associados a ventiladores pulmonares e suporte respiratório.">Ventiladores</span>
-                        </td>
-                        <td class="fw-700">15</td>
-                        <td class="fw-700">€0.00</td>
-                        <td class="text-end equipment-actions">
-                            <div class="dropdown">
-                                <button
-                                    class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
-                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="1" />
-                                        <circle cx="19" cy="12" r="1" />
-                                        <circle cx="5" cy="12" r="1" />
-                                    </svg>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-primary" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-pencil">
-                                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                <path d="m15 5 4 4" />
-                                            </svg>
-                                            Editar
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-error" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-trash-2">
-                                                <path d="M3 6h18" />
-                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                                <line x1="10" x2="10" y1="11" y2="17" />
-                                                <line x1="14" x2="14" y1="11" y2="17" />
-                                            </svg>
-                                            Apagar Definitivamente
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Row 3 (Filtro HEPA) -->
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="table-icon-wrapper component-icon-wrapper">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-puzzle-icon lucide-puzzle">
-                                        <path
-                                            d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z" />
-                                    </svg>
-                                </div>
-                                <p class="equipment-title fw-700 mb-0">Filtro HEPA</p>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="equipment-badge component-sku-badge font-mono">CMP-003</span>
-                        </td>
-                        <td>
-                            <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top"
-                                title="Componentes associados a ventiladores pulmonares e suporte respiratório.">Ventiladores</span>
-                        </td>
-                        <td class="fw-700">48</td>
-                        <td class="fw-700">€0.00</td>
-                        <td class="text-end equipment-actions">
-                            <div class="dropdown">
-                                <button
-                                    class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
-                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="1" />
-                                        <circle cx="19" cy="12" r="1" />
-                                        <circle cx="5" cy="12" r="1" />
-                                    </svg>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-primary" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-pencil">
-                                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                <path d="m15 5 4 4" />
-                                            </svg>
-                                            Editar
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-error" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-trash-2">
-                                                <path d="M3 6h18" />
-                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                                <line x1="10" x2="10" y1="11" y2="17" />
-                                                <line x1="14" x2="14" y1="11" y2="17" />
-                                            </svg>
-                                            Apagar Definitivamente
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Row 4 (Cabo de ECG (5 derivações)) -->
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="table-icon-wrapper component-icon-wrapper">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-puzzle-icon lucide-puzzle">
-                                        <path
-                                            d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z" />
-                                    </svg>
-                                </div>
-                                <p class="equipment-title fw-700 mb-0">Cabo de ECG (5 derivações)</p>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="equipment-badge component-sku-badge font-mono">CMP-004</span>
-                        </td>
-                        <td>
-                            <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top"
-                                title="Sensores, cabos e acessórios para monitorização de parâmetros fisiológicos.">Monitores
-                                de Sinais Vitais</span>
-                        </td>
-                        <td class="fw-700">32</td>
-                        <td class="fw-700">€0.00</td>
-                        <td class="text-end equipment-actions">
-                            <div class="dropdown">
-                                <button
-                                    class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
-                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="1" />
-                                        <circle cx="19" cy="12" r="1" />
-                                        <circle cx="5" cy="12" r="1" />
-                                    </svg>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-primary" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-pencil">
-                                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                <path d="m15 5 4 4" />
-                                            </svg>
-                                            Editar
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-error" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-trash-2">
-                                                <path d="M3 6h18" />
-                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                                <line x1="10" x2="10" y1="11" y2="17" />
-                                                <line x1="14" x2="14" y1="11" y2="17" />
-                                            </svg>
-                                            Apagar Definitivamente
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Row 5 (Sensor SpO2 reutilizável) -->
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="table-icon-wrapper component-icon-wrapper">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-puzzle-icon lucide-puzzle">
-                                        <path
-                                            d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z" />
-                                    </svg>
-                                </div>
-                                <p class="equipment-title fw-700 mb-0">Sensor SpO2 reutilizável</p>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="equipment-badge component-sku-badge font-mono">CMP-005</span>
-                        </td>
-                        <td>
-                            <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top"
-                                title="Sensores, cabos e acessórios para monitorização de parâmetros fisiológicos.">Monitores
-                                de Sinais Vitais</span>
-                        </td>
-                        <td class="fw-700">18</td>
-                        <td class="fw-700">€0.00</td>
-                        <td class="text-end equipment-actions">
-                            <div class="dropdown">
-                                <button
-                                    class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
-                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="1" />
-                                        <circle cx="19" cy="12" r="1" />
-                                        <circle cx="5" cy="12" r="1" />
-                                    </svg>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-primary" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-pencil">
-                                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                <path d="m15 5 4 4" />
-                                            </svg>
-                                            Editar
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-error" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-trash-2">
-                                                <path d="M3 6h18" />
-                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                                <line x1="10" x2="10" y1="11" y2="17" />
-                                                <line x1="14" x2="14" y1="11" y2="17" />
-                                            </svg>
-                                            Apagar Definitivamente
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Row 6 (Braçadeira PNI (adulto)) -->
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="table-icon-wrapper component-icon-wrapper">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-puzzle-icon lucide-puzzle">
-                                        <path
-                                            d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z" />
-                                    </svg>
-                                </div>
-                                <p class="equipment-title fw-700 mb-0">Braçadeira PNI (adulto)</p>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="equipment-badge component-sku-badge font-mono">CMP-006</span>
-                        </td>
-                        <td>
-                            <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top"
-                                title="Sensores, cabos e acessórios para monitorização de parâmetros fisiológicos.">Monitores
-                                de Sinais Vitais</span>
-                        </td>
-                        <td class="fw-700">40</td>
-                        <td class="fw-700">€0.00</td>
-                        <td class="text-end equipment-actions">
-                            <div class="dropdown">
-                                <button
-                                    class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
-                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="1" />
-                                        <circle cx="19" cy="12" r="1" />
-                                        <circle cx="5" cy="12" r="1" />
-                                    </svg>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-primary" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-pencil">
-                                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                <path d="m15 5 4 4" />
-                                            </svg>
-                                            Editar
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-error" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-trash-2">
-                                                <path d="M3 6h18" />
-                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                                <line x1="10" x2="10" y1="11" y2="17" />
-                                                <line x1="14" x2="14" y1="11" y2="17" />
-                                            </svg>
-                                            Apagar Definitivamente
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Row 7 (Cassete de Infusão) -->
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="table-icon-wrapper component-icon-wrapper">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-puzzle-icon lucide-puzzle">
-                                        <path
-                                            d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z" />
-                                    </svg>
-                                </div>
-                                <p class="equipment-title fw-700 mb-0">Cassete de Infusão</p>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="equipment-badge component-sku-badge font-mono">CMP-007</span>
-                        </td>
-                        <td>
-                            <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top"
-                                title="Acessórios, seringas e consumíveis para bombas infusoras e perfusoras.">Bombas
-                                de Infusão</span>
-                        </td>
-                        <td class="fw-700">120</td>
-                        <td class="fw-700">€0.00</td>
-                        <td class="text-end equipment-actions">
-                            <div class="dropdown">
-                                <button
-                                    class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
-                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="1" />
-                                        <circle cx="19" cy="12" r="1" />
-                                        <circle cx="5" cy="12" r="1" />
-                                    </svg>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-primary" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-pencil">
-                                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                <path d="m15 5 4 4" />
-                                            </svg>
-                                            Editar
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-error" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-trash-2">
-                                                <path d="M3 6h18" />
-                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                                <line x1="10" x2="10" y1="11" y2="17" />
-                                                <line x1="14" x2="14" y1="11" y2="17" />
-                                            </svg>
-                                            Apagar Definitivamente
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Row 8 (Seringa de 50ml (BD)) -->
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="table-icon-wrapper component-icon-wrapper">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-puzzle-icon lucide-puzzle">
-                                        <path
-                                            d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z" />
-                                    </svg>
-                                </div>
-                                <p class="equipment-title fw-700 mb-0">Seringa de 50ml (BD)</p>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="equipment-badge component-sku-badge font-mono">CMP-008</span>
-                        </td>
-                        <td>
-                            <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top"
-                                title="Acessórios, seringas e consumíveis para bombas infusoras e perfusoras.">Bombas
-                                de Infusão</span>
-                        </td>
-                        <td class="fw-700">200</td>
-                        <td class="fw-700">€0.00</td>
-                        <td class="text-end equipment-actions">
-                            <div class="dropdown">
-                                <button
-                                    class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
-                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="1" />
-                                        <circle cx="19" cy="12" r="1" />
-                                        <circle cx="5" cy="12" r="1" />
-                                    </svg>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-primary" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-pencil">
-                                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                <path d="m15 5 4 4" />
-                                            </svg>
-                                            Editar
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-error" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-trash-2">
-                                                <path d="M3 6h18" />
-                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                                <line x1="10" x2="10" y1="11" y2="17" />
-                                                <line x1="14" x2="14" y1="11" y2="17" />
-                                            </svg>
-                                            Apagar Definitivamente
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Row 9 (Bateria Li-Ion) -->
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="table-icon-wrapper component-icon-wrapper">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-puzzle-icon lucide-puzzle">
-                                        <path
-                                            d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z" />
-                                    </svg>
-                                </div>
-                                <p class="equipment-title fw-700 mb-0">Bateria Li-Ion</p>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="equipment-badge component-sku-badge font-mono">CMP-009</span>
-                        </td>
-                        <td>
-                            <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top"
-                                title="Acessórios, seringas e consumíveis para bombas infusoras e perfusoras.">Bombas
-                                de Infusão</span>
-                        </td>
-                        <td class="fw-700">6</td>
-                        <td class="fw-700">€0.00</td>
-                        <td class="text-end equipment-actions">
-                            <div class="dropdown">
-                                <button
-                                    class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
-                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="1" />
-                                        <circle cx="19" cy="12" r="1" />
-                                        <circle cx="5" cy="12" r="1" />
-                                    </svg>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-primary" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-pencil">
-                                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                <path d="m15 5 4 4" />
-                                            </svg>
-                                            Editar
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-error" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-trash-2">
-                                                <path d="M3 6h18" />
-                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                                <line x1="10" x2="10" y1="11" y2="17" />
-                                                <line x1="14" x2="14" y1="11" y2="17" />
-                                            </svg>
-                                            Apagar Definitivamente
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Row 10 (Pás de Desfibrilhação (adulto)) -->
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="table-icon-wrapper component-icon-wrapper">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-puzzle-icon lucide-puzzle">
-                                        <path
-                                            d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z" />
-                                    </svg>
-                                </div>
-                                <p class="equipment-title fw-700 mb-0">Pás de Desfibrilhação (adulto)</p>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="equipment-badge component-sku-badge font-mono">CMP-010</span>
-                        </td>
-                        <td>
-                            <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top"
-                                title="Elétrodos, pás e baterias para equipamentos de desfibrilhação e cardioversão.">Desfibrilhadores</span>
-                        </td>
-                        <td class="fw-700">30</td>
-                        <td class="fw-700">€0.00</td>
-                        <td class="text-end equipment-actions">
-                            <div class="dropdown">
-                                <button
-                                    class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
-                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="1" />
-                                        <circle cx="19" cy="12" r="1" />
-                                        <circle cx="5" cy="12" r="1" />
-                                    </svg>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-primary" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-pencil">
-                                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                <path d="m15 5 4 4" />
-                                            </svg>
-                                            Editar
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-error" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-trash-2">
-                                                <path d="M3 6h18" />
-                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                                <line x1="10" x2="10" y1="11" y2="17" />
-                                                <line x1="14" x2="14" y1="11" y2="17" />
-                                            </svg>
-                                            Apagar Definitivamente
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Row 11 (Elétrodos de Desfibrilhação) -->
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="table-icon-wrapper component-icon-wrapper">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-puzzle-icon lucide-puzzle">
-                                        <path
-                                            d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z" />
-                                    </svg>
-                                </div>
-                                <p class="equipment-title fw-700 mb-0">Elétrodos de Desfibrilhação</p>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="equipment-badge component-sku-badge font-mono">CMP-011</span>
-                        </td>
-                        <td>
-                            <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top"
-                                title="Elétrodos, pás e baterias para equipamentos de desfibrilhação e cardioversão.">Desfibrilhadores</span>
-                        </td>
-                        <td class="fw-700">50</td>
-                        <td class="fw-700">€0.00</td>
-                        <td class="text-end equipment-actions">
-                            <div class="dropdown">
-                                <button
-                                    class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
-                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="1" />
-                                        <circle cx="19" cy="12" r="1" />
-                                        <circle cx="5" cy="12" r="1" />
-                                    </svg>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-primary" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-pencil">
-                                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                <path d="m15 5 4 4" />
-                                            </svg>
-                                            Editar
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-error" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-trash-2">
-                                                <path d="M3 6h18" />
-                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                                <line x1="10" x2="10" y1="11" y2="17" />
-                                                <line x1="14" x2="14" y1="11" y2="17" />
-                                            </svg>
-                                            Apagar Definitivamente
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Row 12 (Tubo de Rx) -->
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="table-icon-wrapper component-icon-wrapper">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-puzzle-icon lucide-puzzle">
-                                        <path
-                                            d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z" />
-                                    </svg>
-                                </div>
-                                <p class="equipment-title fw-700 mb-0">Tubo de Rx</p>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="equipment-badge component-sku-badge font-mono">CMP-012</span>
-                        </td>
-                        <td>
-                            <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top"
-                                title="Componentes e tubos para sistemas de diagnóstico por imagem (Raio-X, Eco, etc.).">Equipamento
-                                de Imagiologia</span>
-                        </td>
-                        <td class="fw-700">3</td>
-                        <td class="fw-700">€0.00</td>
-                        <td class="text-end equipment-actions">
-                            <div class="dropdown">
-                                <button
-                                    class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
-                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="1" />
-                                        <circle cx="19" cy="12" r="1" />
-                                        <circle cx="5" cy="12" r="1" />
-                                    </svg>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-primary" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-pencil">
-                                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                <path d="m15 5 4 4" />
-                                            </svg>
-                                            Editar
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-error" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-trash-2">
-                                                <path d="M3 6h18" />
-                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                                <line x1="10" x2="10" y1="11" y2="17" />
-                                                <line x1="14" x2="14" y1="11" y2="17" />
-                                            </svg>
-                                            Apagar Definitivamente
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Row 13 (Lâmpada de foco cirúrgico) -->
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="table-icon-wrapper component-icon-wrapper">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-puzzle-icon lucide-puzzle">
-                                        <path
-                                            d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z" />
-                                    </svg>
-                                </div>
-                                <p class="equipment-title fw-700 mb-0">Lâmpada de foco cirúrgico</p>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="equipment-badge component-sku-badge font-mono">CMP-013</span>
-                        </td>
-                        <td>
-                            <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top"
-                                title="Acessórios e lâmpadas para blocos operatórios e procedimentos cirúrgicos.">Equipamento
-                                Cirúrgico</span>
-                        </td>
-                        <td class="fw-700">12</td>
-                        <td class="fw-700">€0.00</td>
-                        <td class="text-end equipment-actions">
-                            <div class="dropdown">
-                                <button
-                                    class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
-                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="1" />
-                                        <circle cx="19" cy="12" r="1" />
-                                        <circle cx="5" cy="12" r="1" />
-                                    </svg>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-primary" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-pencil">
-                                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                <path d="m15 5 4 4" />
-                                            </svg>
-                                            Editar
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-error" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-trash-2">
-                                                <path d="M3 6h18" />
-                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                                <line x1="10" x2="10" y1="11" y2="17" />
-                                                <line x1="14" x2="14" y1="11" y2="17" />
-                                            </svg>
-                                            Apagar Definitivamente
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Row 14 (Reagentes bioquímicos) -->
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="table-icon-wrapper component-icon-wrapper">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-puzzle-icon lucide-puzzle">
-                                        <path
-                                            d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z" />
-                                    </svg>
-                                </div>
-                                <p class="equipment-title fw-700 mb-0">Reagentes bioquímicos</p>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="equipment-badge component-sku-badge font-mono">CMP-014</span>
-                        </td>
-                        <td>
-                            <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top"
-                                title="Consumíveis e reagentes para análise laboratorial e de diagnóstico.">Equipamento
-                                Laboratorial</span>
-                        </td>
-                        <td class="fw-700">8</td>
-                        <td class="fw-700">€0.00</td>
-                        <td class="text-end equipment-actions">
-                            <div class="dropdown">
-                                <button
-                                    class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
-                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="1" />
-                                        <circle cx="19" cy="12" r="1" />
-                                        <circle cx="5" cy="12" r="1" />
-                                    </svg>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-primary" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-pencil">
-                                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                <path d="m15 5 4 4" />
-                                            </svg>
-                                            Editar
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-error" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-trash-2">
-                                                <path d="M3 6h18" />
-                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                                <line x1="10" x2="10" y1="11" y2="17" />
-                                                <line x1="14" x2="14" y1="11" y2="17" />
-                                            </svg>
-                                            Apagar Definitivamente
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
-                    <!-- Row 15 (Indicador biológico) -->
-                    <tr>
-                        <td>
-                            <div class="d-flex align-items-center gap-3">
-                                <div class="table-icon-wrapper component-icon-wrapper">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-puzzle-icon lucide-puzzle">
-                                        <path
-                                            d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z" />
-                                    </svg>
-                                </div>
-                                <p class="equipment-title fw-700 mb-0">Indicador biológico</p>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="equipment-badge component-sku-badge font-mono">CMP-015</span>
-                        </td>
-                        <td>
-                            <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top"
-                                title="Indicadores biológicos, químicos e consumíveis para autoclave e esterilização.">Esterilizadores</span>
-                        </td>
-                        <td class="fw-700">60</td>
-                        <td class="fw-700">€0.00</td>
-                        <td class="text-end equipment-actions">
-                            <div class="dropdown">
-                                <button
-                                    class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
-                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="1" />
-                                        <circle cx="19" cy="12" r="1" />
-                                        <circle cx="5" cy="12" r="1" />
-                                    </svg>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-primary" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-pencil">
-                                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                <path d="m15 5 4 4" />
-                                            </svg>
-                                            Editar
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-error" href="#">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                stroke-linecap="round" stroke-linejoin="round"
-                                                class="lucide lucide-trash-2">
-                                                <path d="M3 6h18" />
-                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                                <line x1="10" x2="10" y1="11" y2="17" />
-                                                <line x1="14" x2="14" y1="11" y2="17" />
-                                            </svg>
-                                            Apagar Definitivamente
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
+
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
@@ -1143,74 +297,454 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 
             <!-- Body do Modal -->
             <div class="modal-body p-0">
-                <div class="equipment-creation-modal-content padding-6 gap-6 d-flex flex-column">
-                    <!-- Row 1: Nome e SKU -->
-                    <div class="d-flex gap-4 w-100">
-                        <div class="d-flex flex-column form-item w-100 mw-0">
-                            <div class="d-flex gap-1">
-                                <label for="component-name">Nome *</label>
+                <form id="form-create-component" action="components-crud/create-component.php" method="POST">
+                    <div class="equipment-creation-modal-content padding-6 gap-6 d-flex flex-column">
+                        <!-- Row 1: Nome e SKU -->
+                        <div class="d-flex gap-4 w-100">
+                            <div class="d-flex flex-column form-item w-100 mw-0">
+                                <div class="d-flex gap-1">
+                                    <label for="component-name">Nome</label>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                        <path d="M12 6v12" />
+                                        <path d="M17.196 9 6.804 15" />
+                                        <path d="m6.804 9 10.392 6" />
+                                    </svg>
+                                </div>
+                                <input type="text" id="component-name" name="component-name"
+                                    placeholder="Ex: Sensor SpO2 Neonatal" required>
                             </div>
-                            <input type="text" id="component-name" name="component-name"
-                                placeholder="Ex: Sensor SpO2 Neonatal" required>
-                        </div>
 
-                        <div class="d-flex flex-column form-item w-100 mw-0">
-                            <div class="d-flex gap-1">
-                                <label for="component-sku">SKU *</label>
+                            <div class="d-flex flex-column form-item w-100 mw-0">
+                                <div class="d-flex gap-1">
+                                    <label for="component-sku">SKU</label>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                        <path d="M12 6v12" />
+                                        <path d="M17.196 9 6.804 15" />
+                                        <path d="m6.804 9 10.392 6" />
+                                    </svg>
+                                </div>
+                                <input type="text" id="component-sku" name="component-sku"
+                                    placeholder="Ex: CMP-SP02-N01" maxlength="20" required>
                             </div>
-                            <input type="text" id="component-sku" name="component-sku" placeholder="Ex: CMP-SP02-N01"
-                                required>
-                        </div>
-                    </div>
-
-                    <!-- Row 2: Categoria -->
-                    <div class="d-flex flex-column form-item w-100">
-                        <label for="component-category">Categoria</label>
-                        <select id="component-category" name="component-category" class="form-select">
-                            <option value="" disabled selected>Selecionar categoria...</option>
-                            <option value="ventilador">Ventiladores</option>
-                            <option value="monitor">Monitores de Sinais Vitais</option>
-                            <option value="bomba">Bombas de Infusão</option>
-                            <option value="desfribilhador">Desfibrilhadores</option>
-                            <option value="imagiologia">Equipamento de Imagiologia</option>
-                            <option value="cirurgico">Equipamento Cirúrgico</option>
-                            <option value="laboratorial">Equipamento Laboratorial</option>
-                            <option value="esterilizadores">Esterilizadores</option>
-                        </select>
-                    </div>
-
-                    <!-- Row 3: Stock Atual, Stock Mínimo e Preço Unitário -->
-                    <div class="d-flex gap-4 w-100">
-                        <div class="d-flex flex-column form-item w-100 mw-0">
-                            <label for="component-stock-actual">Stock Atual</label>
-                            <input type="number" id="component-stock-actual" name="component-stock-actual" value="0"
-                                min="0" placeholder="0">
                         </div>
 
-                        <div class="d-flex flex-column form-item w-100 mw-0">
-                            <label for="component-stock-min">Stock Mínimo</label>
-                            <input type="number" id="component-stock-min" name="component-stock-min" value="0" min="0"
-                                placeholder="0">
+                        <!-- Row 2: Categoria e Localização -->
+                        <div class="d-flex gap-4 w-100">
+                            <div class="d-flex flex-column form-item w-100 mw-0">
+                                <div class="d-flex gap-1">
+                                    <label for="component-category">Categoria</label>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                        <path d="M12 6v12" />
+                                        <path d="M17.196 9 6.804 15" />
+                                        <path d="m6.804 9 10.392 6" />
+                                    </svg>
+                                </div>
+                                <select id="component-category" name="component-category" class="form-select" required>
+                                    <option value="" disabled selected>Selecionar categoria...</option>
+                                    <?php foreach ($categoriasDisponiveis as $cat): ?>
+                                        <option value="<?= htmlspecialchars($cat->getIdCategoria()) ?>">
+                                            <?= htmlspecialchars($cat->getNome()) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div class="d-flex flex-column form-item w-100 mw-0">
+                                <div class="d-flex gap-1">
+                                    <label for="component-location">Localização</label>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                        <path d="M12 6v12" />
+                                        <path d="M17.196 9 6.804 15" />
+                                        <path d="m6.804 9 10.392 6" />
+                                    </svg>
+                                </div>
+                                <select id="component-location" name="component-location" class="form-select" required>
+                                    <option value="" disabled selected>Selecionar localização...</option>
+                                    <?php foreach ($localizacoesDisponiveis as $loc): ?>
+                                        <option value="<?= htmlspecialchars($loc->getIdLocalizacao()) ?>">
+                                            <?= htmlspecialchars($loc->getNomeSala()) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
                         </div>
 
-                        <div class="d-flex flex-column form-item w-100 mw-0">
-                            <label for="component-price">Preço Unitário (€)</label>
-                            <input type="text" id="component-price" name="component-price" placeholder="0.00">
+                        <!-- Row 3: Stock Atual, Stock Mínimo e Preço Unitário -->
+                        <div class="d-flex gap-4 w-100">
+                            <div class="d-flex flex-column form-item w-100 mw-0">
+                                <div class="d-flex gap-1">
+                                    <label for="component-stock-actual">Stock Atual</label>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                        <path d="M12 6v12" />
+                                        <path d="M17.196 9 6.804 15" />
+                                        <path d="m6.804 9 10.392 6" />
+                                    </svg>
+                                </div>
+                                <input type="number" id="component-stock-actual" name="component-stock-actual" value="0"
+                                    min="0" placeholder="0" required>
+                            </div>
+
+                            <div class="d-flex flex-column form-item w-100 mw-0">
+                                <div class="d-flex gap-1">
+                                    <label for="component-stock-min">Stock Mínimo</label>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                        <path d="M12 6v12" />
+                                        <path d="M17.196 9 6.804 15" />
+                                        <path d="m6.804 9 10.392 6" />
+                                    </svg>
+                                </div>
+                                <input type="number" id="component-stock-min" name="component-stock-min" value="0"
+                                    min="0" placeholder="0" required>
+                            </div>
+
+                            <div class="d-flex flex-column form-item w-100 mw-0">
+                                <label for="component-price">Preço Unitário (€)</label>
+                                <input type="number" step="0.01" id="component-price" name="component-price"
+                                    placeholder="0.00" min="0">
+                            </div>
+                        </div>
+
+                        <!-- Button Row / Footer -->
+                        <div class="d-flex w-100 justify-content-end gap-4 button-row mt-4 pt-4 border-top">
+                            <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
+                                data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" id="btn-submit-modal" class="btn btn-primary btn-glowing">
+                                Criar Componente
+                            </button>
                         </div>
                     </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 
-                    <!-- Button Row / Footer -->
-                    <div class="d-flex w-100 justify-content-end gap-4 button-row mt-4 pt-4 border-top">
-                        <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
-                            data-bs-dismiss="modal">Cancelar</button>
-                        <button type="button" id="btn-submit-modal" class="btn btn-primary btn-glowing">
-                            Criar Componente
-                        </button>
+<?php foreach ($listaComponentes as $componente): ?>
+    <?php $encryptedCompId = aes_encrypt($componente->getIdComponente()); ?>
+
+    <!-- Modal de Edição de Componente para <?= htmlspecialchars($componente->getDescricao()) ?> -->
+    <div class="modal fade" id="component-edit-modal-<?= htmlspecialchars($encryptedCompId) ?>" tabindex="-1"
+        aria-labelledby="componentEditModalLabel-<?= htmlspecialchars($encryptedCompId) ?>" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
+            <div class="modal-content custom-modal-content d-flex flex-column">
+                <!-- Titulo -->
+                <div
+                    class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
+                    <div class="d-flex flex-column">
+                        <h2 class="equipment-creation-modal-title modal-title"
+                            id="componentEditModalLabel-<?= htmlspecialchars($encryptedCompId) ?>">
+                            Editar Componente
+                        </h2>
                     </div>
+
+                    <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
+                        data-bs-dismiss="modal" aria-label="Close">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-x-icon lucide-x stroke-secondary">
+                            <path d="M18 6 6 18" />
+                            <path d="m6 6 12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Body do Modal com scroll automático -->
+                <div class="modal-body p-0">
+                    <form action="components-crud/edit-component.php" method="POST" class="form-edit-component">
+                        <input type="hidden" name="component-id" value="<?= htmlspecialchars($encryptedCompId) ?>">
+                        <div class="equipment-creation-modal-content padding-6 gap-6 d-flex flex-column">
+                            <!-- Row 1: Nome e SKU -->
+                            <div class="d-flex gap-4 w-100">
+                                <div class="d-flex flex-column form-item w-100 mw-0">
+                                    <div class="d-flex gap-1">
+                                        <label for="component-name-<?= htmlspecialchars($encryptedCompId) ?>">Nome</label>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                            <path d="M12 6v12" />
+                                            <path d="M17.196 9 6.804 15" />
+                                            <path d="m6.804 9 10.392 6" />
+                                        </svg>
+                                    </div>
+                                    <input type="text" id="component-name-<?= htmlspecialchars($encryptedCompId) ?>"
+                                        name="component-name" placeholder="Ex: Sensor SpO2 Neonatal"
+                                        value="<?= htmlspecialchars($componente->getDescricao()) ?>" required>
+                                </div>
+
+                                <div class="d-flex flex-column form-item w-100 mw-0">
+                                    <div class="d-flex gap-1">
+                                        <label for="component-sku-<?= htmlspecialchars($encryptedCompId) ?>">SKU</label>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                            <path d="M12 6v12" />
+                                            <path d="M17.196 9 6.804 15" />
+                                            <path d="m6.804 9 10.392 6" />
+                                        </svg>
+                                    </div>
+                                    <input type="text" id="component-sku-<?= htmlspecialchars($encryptedCompId) ?>"
+                                        name="component-sku" placeholder="Ex: CMP-SP02-N01"
+                                        value="<?= htmlspecialchars($componente->getCodigoInterno()) ?>" maxlength="20"
+                                        required>
+                                </div>
+                            </div>
+
+                            <!-- Row 2: Categoria e Localização -->
+                            <div class="d-flex gap-4 w-100">
+                                <div class="d-flex flex-column form-item w-100 mw-0">
+                                    <div class="d-flex gap-1">
+                                        <label
+                                            for="component-category-<?= htmlspecialchars($encryptedCompId) ?>">Categoria</label>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                            <path d="M12 6v12" />
+                                            <path d="M17.196 9 6.804 15" />
+                                            <path d="m6.804 9 10.392 6" />
+                                        </svg>
+                                    </div>
+                                    <select id="component-category-<?= htmlspecialchars($encryptedCompId) ?>"
+                                        name="component-category" class="form-select" required>
+                                        <option value="" disabled>Selecionar categoria...</option>
+                                        <?php foreach ($categoriasDisponiveis as $cat): ?>
+                                            <option value="<?= htmlspecialchars($cat->getIdCategoria()) ?>"
+                                                <?= $cat->getIdCategoria() === $componente->getIdCategoria() ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($cat->getNome()) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+
+                                <div class="d-flex flex-column form-item w-100 mw-0">
+                                    <div class="d-flex gap-1">
+                                        <label
+                                            for="component-location-<?= htmlspecialchars($encryptedCompId) ?>">Localização</label>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                            <path d="M12 6v12" />
+                                            <path d="M17.196 9 6.804 15" />
+                                            <path d="m6.804 9 10.392 6" />
+                                        </svg>
+                                    </div>
+                                    <select id="component-location-<?= htmlspecialchars($encryptedCompId) ?>"
+                                        name="component-location" class="form-select" required>
+                                        <option value="" disabled>Selecionar localização...</option>
+                                        <?php foreach ($localizacoesDisponiveis as $loc): ?>
+                                            <option value="<?= htmlspecialchars($loc->getIdLocalizacao()) ?>"
+                                                <?= (string) $loc->getIdLocalizacao() === $componente->getIdLocalizacao() ? 'selected' : '' ?>>
+                                                <?= htmlspecialchars($loc->getNomeSala()) ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Row 3: Stock Atual, Stock Mínimo e Preço Unitário -->
+                            <div class="d-flex gap-4 w-100">
+                                <div class="d-flex flex-column form-item w-100 mw-0">
+                                    <div class="d-flex gap-1">
+                                        <label for="component-stock-actual-<?= htmlspecialchars($encryptedCompId) ?>">Stock
+                                            Atual</label>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                            <path d="M12 6v12" />
+                                            <path d="M17.196 9 6.804 15" />
+                                            <path d="m6.804 9 10.392 6" />
+                                        </svg>
+                                    </div>
+                                    <input type="number"
+                                        id="component-stock-actual-<?= htmlspecialchars($encryptedCompId) ?>"
+                                        name="component-stock-actual"
+                                        value="<?= htmlspecialchars($componente->getStock()) ?>" min="0" placeholder="0"
+                                        class="stock-actual-input" required>
+                                </div>
+
+                                <div class="d-flex flex-column form-item w-100 mw-0">
+                                    <div class="d-flex gap-1">
+                                        <label for="component-stock-min-<?= htmlspecialchars($encryptedCompId) ?>">Stock
+                                            Mínimo</label>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                            <path d="M12 6v12" />
+                                            <path d="M17.196 9 6.804 15" />
+                                            <path d="m6.804 9 10.392 6" />
+                                        </svg>
+                                    </div>
+                                    <input type="number" id="component-stock-min-<?= htmlspecialchars($encryptedCompId) ?>"
+                                        name="component-stock-min"
+                                        value="<?= htmlspecialchars($componente->getStockMinimo()) ?>" min="0"
+                                        placeholder="0" class="stock-min-input" required>
+                                </div>
+
+                                <div class="d-flex flex-column form-item w-100 mw-0">
+                                    <label for="component-price-<?= htmlspecialchars($encryptedCompId) ?>">Preço Unitário
+                                        (€)</label>
+                                    <input type="number" step="0.01"
+                                        id="component-price-<?= htmlspecialchars($encryptedCompId) ?>"
+                                        name="component-price" placeholder="0.00"
+                                        value="<?= htmlspecialchars($componente->getPreco()) ?>" min="0">
+                                </div>
+                            </div>
+
+                            <!-- Button Row / Footer -->
+                            <div class="d-flex w-100 justify-content-end gap-4 button-row mt-4 pt-4 border-top">
+                                <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
+                                    data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" name="editar_componente"
+                                    class="btn btn-primary btn-glowing btn-submit-edit">
+                                    Guardar
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Modal de Eliminação de Componente para <?= htmlspecialchars($componente->getDescricao()) ?> -->
+    <div class="modal fade" id="component-delete-modal-<?= htmlspecialchars($encryptedCompId) ?>" tabindex="-1"
+        aria-labelledby="componentDeleteModalLabel-<?= htmlspecialchars($encryptedCompId) ?>" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
+            <div class="modal-content custom-modal-content d-flex flex-column">
+                <!-- Titulo -->
+                <div
+                    class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
+                    <div class="d-flex flex-column">
+                        <h2 class="equipment-creation-modal-title modal-title"
+                            id="componentDeleteModalLabel-<?= htmlspecialchars($encryptedCompId) ?>">
+                            Eliminar Componente</h2>
+                        <span class="text-secondary fw-400">O componente será movido para a reciclagem.</span>
+                    </div>
+
+                    <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
+                        data-bs-dismiss="modal" aria-label="Close">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-x-icon lucide-x stroke-secondary">
+                            <path d="M18 6 6 18" />
+                            <path d="m6 6 12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Body do Modal -->
+                <div class="modal-body p-0">
+                    <form method="POST" action="components-crud/delete-component.php">
+                        <input type="hidden" name="component-id" value="<?= htmlspecialchars($encryptedCompId) ?>">
+                        <div
+                            class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
+
+                            <div class="d-flex flex-column align-items-center gap-4">
+                                <div class="d-flex padding-3 danger-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-triangle-alert">
+                                        <path
+                                            d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+                                        <path d="M12 9v4" />
+                                        <path d="M12 17h.01" />
+                                    </svg>
+                                </div>
+                                <div class="d-flex flex-column align-items-center justify-content-center gap-3">
+                                    <div
+                                        class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
+                                        <p class="text-secondary">
+                                            Tem a certeza que deseja eliminar o componente?
+                                        </p>
+                                        <h2 class="fw-700">
+                                            "<?= htmlspecialchars($componente->getDescricao()) ?>"
+                                        </h2>
+                                        <span class="text-muted">Tipo: Componente</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Botoes -->
+                            <div class="d-flex w-100 justify-content-end gap-4 button-row">
+                                <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
+                                    data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" name="apagar_componente"
+                                    class="btn btn-danger btn-glowing text-white">
+                                    Sim, Eliminar.
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endforeach; ?>
+
+<!-- Toast Container -->
+<div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3 mt-4" style="z-index: 100;">
+    <?php if (!empty($success_message)): ?>
+        <div class="toast align-items-center border-0 shadow-sm toast-success w-auto padding-4 show" role="alert"
+            aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+            <div class="d-flex align-items-center gap-2">
+                <div class="toast-body fw-500 p-0">
+                    <?= htmlspecialchars($success_message) ?>
+                </div>
+                <button type="button" class="text-success border-0 p-0 bg-transparent ms-auto" data-bs-dismiss="toast"
+                    aria-label="Close">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-x-icon lucide-x">
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if (!empty($server_error)): ?>
+        <div class="toast align-items-center border-0 shadow-sm toast-error w-auto padding-4 show" role="alert"
+            aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+            <div class="d-flex align-items-center gap-2">
+                <div class="toast-body fw-500 p-0">
+                    <?= htmlspecialchars($server_error) ?>
+                </div>
+                <button type="button" class="text-error border-0 p-0 bg-transparent ms-auto" data-bs-dismiss="toast"
+                    aria-label="Close">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-x-icon lucide-x">
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    <?php endif; ?>
 </div>
 
 <?php

@@ -106,6 +106,7 @@ CREATE TABLE `Componente` (
   `descricao` text,
   `stock` integer,
   `stockMinimo` integer DEFAULT 0,
+  `preco` DECIMAL(10,2) DEFAULT 0.00,
   `idLocalizacao` integer,
   `ativo` boolean DEFAULT true,
   `dataCriacao` timestamp DEFAULT (CURRENT_TIMESTAMP),

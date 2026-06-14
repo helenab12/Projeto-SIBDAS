@@ -1,8 +1,6 @@
 <?php
 require_once(__DIR__ . "/../../config/funcoes.php");
 redirect_if_not_logged();
-include_once BASE_PATH . 'private/includes/head.php';
-include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 
 $success_message = null;
 $server_error = null;
@@ -41,6 +39,9 @@ try {
 } catch (Exception $e) {
     $server_error = "Erro ao carregar dados: " . $e->getMessage();
 }
+
+include_once BASE_PATH . 'private/includes/head.php';
+include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 
 ?>
 

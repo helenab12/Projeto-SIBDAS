@@ -1463,5 +1463,149 @@ class Categoria implements Validavel
     }
 }
 
+// Componentes
 
+class Componente implements Validavel
+{
+    private string $idComponente;
+    private string $codigoInterno;
+    private string $descricao;
+    private int $stock;
+    private int $stockMinimo;
+    private float $preco;
+    private string $idLocalizacao;
+    private bool $ativo;
+    private DateTime $dataCriacao;
+    private DateTime $dataAtualizacao;
+    private ?string $idCategoria;
 
+    public function __construct(string $idComponente, string $codigoInterno, string $descricao, int $stock, int $stockMinimo, float $preco, string $idLocalizacao, bool $ativo, DateTime $dataCriacao, DateTime $dataAtualizacao, ?string $idCategoria = null)
+    {
+        $erros = self::validarDados([
+            "idComponente" => $idComponente,
+            "codigoInterno" => $codigoInterno,
+            "descricao" => $descricao,
+            "stock" => $stock,
+            "stockMinimo" => $stockMinimo,
+            "preco" => $preco,
+            "idLocalizacao" => $idLocalizacao,
+            "ativo" => $ativo,
+            "dataCriacao" => $dataCriacao,
+            "dataAtualizacao" => $dataAtualizacao
+        ]);
+
+        if (!empty($erros)) {
+            throw new Exception("Erro ao criar componente: " . implode(", ", $erros));
+        }
+
+        $this->idComponente = $idComponente;
+        $this->codigoInterno = $codigoInterno;
+        $this->descricao = $descricao;
+        $this->stock = $stock;
+        $this->stockMinimo = $stockMinimo;
+        $this->preco = $preco;
+        $this->idLocalizacao = $idLocalizacao;
+        $this->ativo = $ativo;
+        $this->dataCriacao = $dataCriacao;
+        $this->dataAtualizacao = $dataAtualizacao;
+        $this->idCategoria = $idCategoria;
+    }
+
+    public function getIdComponente(): string
+    {
+        return $this->idComponente;
+    }
+
+    public function getCodigoInterno(): string
+    {
+        return $this->codigoInterno;
+    }
+
+    public function getDescricao(): string
+    {
+        return $this->descricao;
+    }
+
+    public function getStock(): int
+    {
+        return $this->stock;
+    }
+
+    public function getStockMinimo(): int
+    {
+        return $this->stockMinimo;
+    }
+
+    public function getPreco(): float
+    {
+        return $this->preco;
+    }
+
+    public function getIdCategoria(): ?string
+    {
+        return $this->idCategoria;
+    }
+
+    public function getIdLocalizacao(): string
+    {
+        return $this->idLocalizacao;
+    }
+
+    public function getAtivo(): bool
+    {
+        return $this->ativo;
+    }
+
+    public function getDataCriacao(): DateTime
+    {
+        return $this->dataCriacao;
+    }
+
+    public function getDataAtualizacao(): DateTime
+    {
+        return $this->dataAtualizacao;
+    }
+
+    public static function validarDados(array $dados): array
+    {
+        $erros = [];
+        if (empty(trim($dados["codigoInterno"] ?? '')) || strlen(trim($dados['codigoInterno'])) > 20) {
+            $erros[] = "O campo Código Interno é obrigatório e não pode ter mais de 20 caracteres.";
+        }
+        if (empty(trim($dados["descricao"] ?? ''))) {
+            $erros[] = "O campo Descrição é obrigatório.";
+        }
+        if (!isset($dados["stock"]) || !is_numeric($dados["stock"]) || (int)$dados["stock"] < 0) {
+            $erros[] = "O campo Stock tem de ser um número inteiro maior ou igual a zero.";
+        }
+        if (!isset($dados["stockMinimo"]) || !is_numeric($dados["stockMinimo"]) || (int)$dados["stockMinimo"] < 0) {
+            $erros[] = "O campo Stock Mínimo tem de ser um número inteiro maior ou igual a zero.";
+        }
+        if (!isset($dados["preco"]) || !is_numeric($dados["preco"]) || (float)$dados["preco"] < 0) {
+            $erros[] = "O campo Preço tem de ser um número maior ou igual a zero.";
+        }
+        if (empty(trim($dados["idLocalizacao"] ?? ''))) {
+            $erros[] = "O campo Localização é obrigatório.";
+        }
+        if (!isset($dados["ativo"])) {
+            $erros[] = "O campo Ativo é obrigatório.";
+        }
+        if (empty($dados["dataCriacao"] ?? '')) {
+            $erros[] = "O campo Data de Criação é obrigatório.";
+        } elseif (!($dados["dataCriacao"] instanceof DateTime)) {
+            $d = DateTime::createFromFormat('Y-m-d', $dados["dataCriacao"]);
+            if (!$d || $d->format('Y-m-d') !== $dados["dataCriacao"]) {
+                $erros[] = "O campo Data de Criação tem de ser uma data válida no formato AAAA-MM-DD.";
+            }
+        }
+        if (empty($dados["dataAtualizacao"] ?? '')) {
+            $erros[] = "O campo Data de Atualização é obrigatório.";
+        } elseif (!($dados["dataAtualizacao"] instanceof DateTime)) {
+            $d = DateTime::createFromFormat('Y-m-d', $dados["dataAtualizacao"]);
+            if (!$d || $d->format('Y-m-d') !== $dados["dataAtualizacao"]) {
+                $erros[] = "O campo Data de Atualização tem de ser uma data válida no formato AAAA-MM-DD.";
+            }
+        }
+        return $erros;
+    }
+}

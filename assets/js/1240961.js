@@ -1843,4 +1843,47 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    // Validação Componentes (Criar e Editar)
+    const componentForms = document.querySelectorAll("#form-create-component, .form-edit-component");
+    
+    componentForms.forEach(form => {
+        const inputs = form.querySelectorAll("input[required], select[required]");
+        const stockActualInput = form.querySelector(".stock-actual-input, #component-stock-actual");
+        const stockMinInput = form.querySelector(".stock-min-input, #component-stock-min");
+        const submitButton = form.querySelector(".btn-submit-edit, #btn-submit-modal");
+
+        if (submitButton) {
+            function checkComponentFormValidity() {
+                let isValid = true;
+
+                inputs.forEach(input => {
+                    if (!input.value.trim() || !input.checkValidity()) {
+                        isValid = false;
+                    }
+                });
+
+                if (stockActualInput && stockMinInput) {
+                    const actual = parseInt(stockActualInput.value || "0", 10);
+                    const min = parseInt(stockMinInput.value || "0", 10);
+                    if (min > actual) {
+                        isValid = false;
+                        stockMinInput.setCustomValidity("O stock mínimo não pode ser superior ao stock atual.");
+                    } else {
+                        stockMinInput.setCustomValidity("");
+                    }
+                }
+
+                submitButton.disabled = !isValid;
+            }
+
+            inputs.forEach(input => {
+                input.addEventListener("input", checkComponentFormValidity);
+                input.addEventListener("change", checkComponentFormValidity);
+            });
+            if (stockActualInput) stockActualInput.addEventListener("input", checkComponentFormValidity);
+            if (stockMinInput) stockMinInput.addEventListener("input", checkComponentFormValidity);
+
+            checkComponentFormValidity();
+        }
+    });
 });
