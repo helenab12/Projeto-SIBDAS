@@ -669,11 +669,12 @@ const categoryDescriptionInput = document.getElementById(
 );
 const categoryModalEl = document.getElementById("category-creation-modal");
 
-if (categoryNameInput && categoryCodeInput && btnSubmitModal) {
+if (categoryNameInput && categoryCodeInput && categoryDescriptionInput && btnSubmitModal) {
     const validateCategoryForm = () => {
         if (
             categoryNameInput.value.trim() !== "" &&
-            categoryCodeInput.value.trim() !== ""
+            categoryCodeInput.value.trim() !== "" &&
+            categoryDescriptionInput.value.trim() !== ""
         ) {
             btnSubmitModal.removeAttribute("disabled");
         } else {
@@ -685,6 +686,7 @@ if (categoryNameInput && categoryCodeInput && btnSubmitModal) {
 
     categoryNameInput.addEventListener("input", validateCategoryForm);
     categoryCodeInput.addEventListener("input", validateCategoryForm);
+    categoryDescriptionInput.addEventListener("input", validateCategoryForm);
 
     if (categoryModalEl) {
         categoryModalEl.addEventListener("hidden.bs.modal", () => {
@@ -697,6 +699,34 @@ if (categoryNameInput && categoryCodeInput && btnSubmitModal) {
         });
     }
 }
+
+// Campos obrigatórios da Categoria (Editar)
+document.querySelectorAll(".edit-category-form").forEach(form => {
+    const nameInput = form.querySelector('input[name="category-name"]');
+    const codeInput = form.querySelector('input[name="category-code"]');
+    const descInput = form.querySelector('textarea[name="category-description"]');
+    const submitBtn = form.querySelector('button[name="editar_categoria"]');
+
+    if (nameInput && codeInput && descInput && submitBtn) {
+        const validateEditForm = () => {
+            if (
+                nameInput.value.trim() !== "" &&
+                codeInput.value.trim() !== "" &&
+                descInput.value.trim() !== ""
+            ) {
+                submitBtn.removeAttribute("disabled");
+            } else {
+                submitBtn.setAttribute("disabled", "true");
+            }
+        };
+
+        validateEditForm();
+
+        nameInput.addEventListener("input", validateEditForm);
+        codeInput.addEventListener("input", validateEditForm);
+        descInput.addEventListener("input", validateEditForm);
+    }
+});
 
 // Campos obrigatórios da Página 1
 const serialNumberInput = document.getElementById("serial-number");

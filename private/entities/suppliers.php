@@ -617,8 +617,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <div
                     class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
                     <div class="d-flex flex-column">
-                        <h2 class="equipment-creation-modal-title modal-title"
-                            id="deleteModalLabel-<?= $encryptedId ?>">
+                        <h2 class="equipment-creation-modal-title modal-title" id="deleteModalLabel-<?= $encryptedId ?>">
                             Eliminar Fornecedor</h2>
                         <span class="text-secondary fw-400">O fornecedor será movido para a reciclagem.</span>
                     </div>
@@ -670,7 +669,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                             <div class="d-flex w-100 justify-content-end gap-4 button-row">
                                 <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                                     data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" name="apagar_fornecedor" class="btn btn-danger btn-glowing text-white">
+                                <button type="submit" name="apagar_fornecedor"
+                                    class="btn btn-danger btn-glowing text-white">
                                     Sim, Apagar.
                                 </button>
                             </div>
@@ -724,7 +724,5 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
         </div>
     <?php endif; ?>
 </div>
-
-
 
 <?php include_once BASE_PATH . 'private/includes/footer.php'; ?>

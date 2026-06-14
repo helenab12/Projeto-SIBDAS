@@ -1337,3 +1337,131 @@ class Localizacao implements Validavel
         return $this->nomeSala;
     }
 }
+
+// Categorias
+
+class Categoria implements Validavel
+{
+    private string $idCategoria;
+    private string $nome;
+    private string $codigo;
+    private string $descricao;
+    private bool $ativo;
+    private DateTime $dataCriacao;
+    private DateTime $dataAtualizacao;
+
+    public function __construct(string $idCategoria, string $nome, string $codigo, string $descricao, bool $ativo, DateTime $dataCriacao, DateTime $dataAtualizacao)
+    {
+        $erros = self::validarDados([
+            "idCategoria" => $idCategoria,
+            "nome" => $nome,
+            "codigo" => $codigo,
+            "descricao" => $descricao,
+            "ativo" => $ativo,
+            "dataCriacao" => $dataCriacao,
+            "dataAtualizacao" => $dataAtualizacao
+        ]);
+
+        if (!empty($erros)) {
+            throw new Exception("Erro ao criar categoria: " . implode(", ", $erros));
+        }
+
+        $this->idCategoria = $idCategoria;
+        $this->nome = $nome;
+        $this->codigo = $codigo;
+        $this->descricao = $descricao;
+        $this->ativo = $ativo;
+        $this->dataCriacao = $dataCriacao;
+        $this->dataAtualizacao = $dataAtualizacao;
+    }
+
+    public function getIdCategoria(): string
+    {
+        return $this->idCategoria;
+    }
+
+    public function getNome(): string
+    {
+        return $this->nome;
+    }
+
+    public function getCodigo(): string
+    {
+        return $this->codigo;
+    }
+
+    public function getDescricao(): string
+    {
+        return $this->descricao;
+    }
+
+    public function getAtivo(): bool
+    {
+        return $this->ativo;
+    }
+
+    public function getDataCriacao(): DateTime
+    {
+        return $this->dataCriacao;
+    }
+
+    public function getDataAtualizacao(): DateTime
+    {
+        return $this->dataAtualizacao;
+    }
+
+    public function getEquipamentosCount(): int
+    {
+        try {
+            $ligacao = connect_to_db();
+
+            $stmt = execute_query(
+                "SELECT COUNT(*) as count FROM Equipamento WHERE idCategoria = :idCategoria AND ativo = 1",
+                ['idCategoria' => $this->idCategoria],
+                $ligacao
+            );
+
+            $row = $stmt->fetch(PDO::FETCH_ASSOC);
+            return $row['count'];
+        } catch (Exception $e) {
+            return 0;
+        }
+    }
+
+    public static function validarDados(array $dados): array
+    {
+        $erros = [];
+        if (empty(trim($dados["nome"] ?? ''))) {
+            $erros[] = "O campo Nome da Categoria é obrigatório.";
+        }
+        if (empty(trim($dados["codigo"] ?? '')) || strlen(trim($dados['codigo'])) > 5) {
+            $erros[] = "O campo Código é obrigatório.";
+        }
+        if (empty(trim($dados["descricao"] ?? ''))) {
+            $erros[] = "O campo Descrição é obrigatório.";
+        }
+        if (empty($dados["ativo"] ?? '')) {
+            $erros[] = "O campo Ativo é obrigatório.";
+        }
+        if (empty($dados["dataCriacao"] ?? '')) {
+            $erros[] = "O campo Data de Criação é obrigatório.";
+        } elseif (!($dados["dataCriacao"] instanceof DateTime)) {
+            $d = DateTime::createFromFormat('Y-m-d', $dados["dataCriacao"]);
+            if (!$d || $d->format('Y-m-d') !== $dados["dataCriacao"]) {
+                $erros[] = "O campo Data de Criação tem de ser uma data válida no formato AAAA-MM-DD.";
+            }
+        }
+        if (empty($dados["dataAtualizacao"] ?? '')) {
+            $erros[] = "O campo Data de Atualização é obrigatório.";
+        } elseif (!($dados["dataAtualizacao"] instanceof DateTime)) {
+            $d = DateTime::createFromFormat('Y-m-d', $dados["dataAtualizacao"]);
+            if (!$d || $d->format('Y-m-d') !== $dados["dataAtualizacao"]) {
+                $erros[] = "O campo Data de Atualização tem de ser uma data válida no formato AAAA-MM-DD.";
+            }
+        }
+        return $erros;
+    }
+}
+
+
+
