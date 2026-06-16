@@ -914,6 +914,9 @@ if (btnNextPage && btnPrevPage && modalPage1 && modalPage2) {
                 }
             }
         });
+
+        // Trigger inicial para aplicar o filtro e mostrar o empty state se necessário
+        equipmentCategorySelect.dispatchEvent(new Event("change"));
     }
 
     // Navegação
@@ -1005,7 +1008,26 @@ multiSelectCheckboxes.forEach((checkbox) => {
                 }
             }
         }
+
+        // Atualizar o texto de contagem de checkboxes selecionadas
+        const formItem = this.closest(".form-item");
+        if (formItem) {
+            const countLabel = formItem.querySelector(".multi-select-count-label");
+            if (countLabel) {
+                const checkedCount = formItem.querySelectorAll('.multi-select-form input[type="checkbox"]:checked').length;
+                countLabel.textContent = `${checkedCount} selecionado(s)`;
+            }
+        }
     });
+});
+
+// Inicializar os contadores de "selecionado(s)"
+document.querySelectorAll(".form-item").forEach(formItem => {
+    const countLabel = formItem.querySelector(".multi-select-count-label");
+    if (countLabel) {
+        const checkedCount = formItem.querySelectorAll('.multi-select-form input[type="checkbox"]:checked').length;
+        countLabel.textContent = `${checkedCount} selecionado(s)`;
+    }
 });
 
 // Lógica de Upload de Documentos Genérica
@@ -2249,6 +2271,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     }
                 }
             });
+
+            // Trigger inicial para aplicar o filtro e mostrar o empty state se necessário
+            categorySelect.dispatchEvent(new Event("change"));
         }
     });
 });

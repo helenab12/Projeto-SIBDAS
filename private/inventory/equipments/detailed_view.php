@@ -231,13 +231,15 @@ $estadoTooltip = match ($estado) {
 
 $criticidade = $equipamento->getCriticidade()->value;
 $critClass = match ($criticidade) {
-    'Alta' => 'equipment-badge-criticality-critical',
-    'Média' => 'equipment-badge-criticality-high',
+    'Crítico' => 'equipment-badge-criticality-critical',
+    'Alta' => 'equipment-badge-criticality-high',
+    'Média' => 'equipment-badge-criticality-medium',
     'Baixa' => 'equipment-badge-criticality-low',
     default => 'bg-secondary',
 };
 $criticidadeTooltip = match ($criticidade) {
-    'Alta' => "Equipamento vital — falha pode resultar em risco de vida para o paciente.",
+    'Crítico' => "Equipamento vital — falha pode resultar em risco de vida para o paciente.",
+    'Alta' => "Equipamento de elevado impacto — falha compromete seriamente o serviço.",
     'Média' => "Equipamento de impacto moderado — existem alternativas para suprir a falha.",
     'Baixa' => "Equipamento de apoio — falha com impacto mínimo no serviço.",
     default => "Criticidade: " . $criticidade,

@@ -882,7 +882,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                             <label>Assistentes Técnicos (Múltiplos)</label>
                                         </div>
                                         <div class="d-flex justify-content-between align-items-center w-100">
-                                            <span class="text-muted">0 selecionado(s)</span>
+                                            <span class="text-muted multi-select-count-label">0 selecionado(s)</span>
                                             <a href="<?= BASE_URL ?>private/entities/suppliers.php" target="_blank"
                                                 class="text-primary d-flex align-items-center gap-1 text-decoration-none fw-bold">
                                                 <p class="text-primary-500 d-flex align-items-center gap-1 fw-700">
@@ -934,7 +934,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                             <label>Fornecedores de Consumíveis (múltiplos)</label>
                                         </div>
                                         <div class="d-flex justify-content-between align-items-center w-100">
-                                            <span class="text-muted">0 selecionado(s)</span>
+                                            <span class="text-muted multi-select-count-label">0 selecionado(s)</span>
                                             <a href="<?= BASE_URL ?>private/entities/suppliers.php" target="_blank"
                                                 class="text-primary d-flex align-items-center gap-1 text-decoration-none fw-bold">
                                                 <p class="text-primary-500 d-flex align-items-center gap-1 fw-700">
