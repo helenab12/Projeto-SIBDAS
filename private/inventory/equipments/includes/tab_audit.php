@@ -9,7 +9,7 @@ $auditoria = [
     ]
 ];
 ?>
-<div class="tab-pane fade" id="nav-auditoria" role="tabpanel" aria-labelledby="nav-auditoria-tab">
+<div class="tab-pane fade <?= $activeTab === 'auditoria' ? 'show active' : '' ?>" id="nav-auditoria" role="tabpanel" aria-labelledby="nav-auditoria-tab">
     <div class="card bento-card padding-6 d-flex flex-column gap-4">
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="fw-700 m-0 text-primary">Histórico de Auditoria</h2>

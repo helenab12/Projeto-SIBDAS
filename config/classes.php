@@ -1795,6 +1795,189 @@ class Equipamento implements Validavel
     }
 }
 
+// Documentos
+
+enum TipoDocumento: string
+{
+    case MANUAL_UTILIZADOR = 'Manual de Utilizador';
+    case MANUAL_SERVICO = 'Manual de Serviço';
+    case CERTIFICADO_CALIBRACAO = 'Certificado de Calibração';
+    case CONTRATO_MANUTENCAO = 'Contrato de Manutenção';
+    case FATURA_GUIA = 'Fatura/Guia';
+    case DECLARACAO_CONFORMIDADE = 'Declaração de Conformidade';
+    case RELATORIO_TECNICO = 'Relatório Técnico';
+    case GARANTIA = 'Garantia';
+}
+
+class Documento implements Validavel
+{
+    private string $idDocumento;
+    private TipoDocumento $tipo;
+    private string $nome;
+    private ?string $caminhoFicheiro;
+    private ?DateTime $dataDocumento;
+    private ?DateTime $dataValidade;
+    private ?string $idEquipamento;
+    private ?string $idFornecedor;
+    private bool $ativo;
+    private DateTime $dataCriacao;
+    private DateTime $dataAtualizacao;
+    private ?string $fornecedorNome;
+
+    public function __construct(
+        string $idDocumento = "",
+        TipoDocumento $tipo = TipoDocumento::MANUAL_UTILIZADOR,
+        string $nome = "",
+        ?string $caminhoFicheiro = null,
+        ?DateTime $dataDocumento = null,
+        ?DateTime $dataValidade = null,
+        ?string $idEquipamento = null,
+        ?string $idFornecedor = null,
+        bool $ativo = true,
+        ?DateTime $dataCriacao = null,
+        ?DateTime $dataAtualizacao = null,
+        ?string $fornecedorNome = null
+    ) {
+        $erros = self::validarDados([
+            'nome' => $nome,
+            'tipo' => $tipo->value,
+            'caminhoFicheiro' => $caminhoFicheiro,
+            'dataDocumento' => $dataDocumento ? $dataDocumento->format('Y-m-d') : null,
+            'dataValidade' => $dataValidade ? $dataValidade->format('Y-m-d') : null,
+        ]);
+        
+        if (!empty($erros)) {
+            throw new Exception("Erro ao criar documento: " . implode(", ", $erros));
+        }
+
+        $this->idDocumento = $idDocumento;
+        $this->tipo = $tipo;
+        $this->nome = $nome;
+        $this->caminhoFicheiro = $caminhoFicheiro;
+        $this->dataDocumento = $dataDocumento;
+        $this->dataValidade = $dataValidade;
+        $this->idEquipamento = $idEquipamento;
+        $this->idFornecedor = $idFornecedor;
+        $this->ativo = $ativo;
+        $this->dataCriacao = $dataCriacao ?? new DateTime();
+        $this->dataAtualizacao = $dataAtualizacao ?? new DateTime();
+        $this->fornecedorNome = $fornecedorNome;
+    }
+
+    public function getIdDocumento(): string
+    {
+        return $this->idDocumento;
+    }
+    public function getTipo(): TipoDocumento
+    {
+        return $this->tipo;
+    }
+    public function getNome(): string
+    {
+        return $this->nome;
+    }
+    public function getCaminhoFicheiro(): ?string
+    {
+        return $this->caminhoFicheiro;
+    }
+    public function getDataDocumento(): ?DateTime
+    {
+        return $this->dataDocumento;
+    }
+    public function getDataValidade(): ?DateTime
+    {
+        return $this->dataValidade;
+    }
+    public function getIdEquipamento(): ?string
+    {
+        return $this->idEquipamento;
+    }
+    public function getIdFornecedor(): ?string
+    {
+        return $this->idFornecedor;
+    }
+    public function getAtivo(): bool
+    {
+        return $this->ativo;
+    }
+    public function getDataCriacao(): DateTime
+    {
+        return $this->dataCriacao;
+    }
+    public function getDataAtualizacao(): DateTime
+    {
+        return $this->dataAtualizacao;
+    }
+    public function getFornecedorNome(): ?string
+    {
+        return $this->fornecedorNome;
+    }
+
+    public static function validarDados(array $dados): array
+    {
+        $erros = [];
+        
+        if (empty(trim($dados['nome'] ?? ''))) {
+            $erros[] = "O campo Nome é obrigatório.";
+        } elseif (strlen(trim($dados['nome'])) > 255) {
+            $erros[] = "O campo Nome não pode ter mais de 255 caracteres.";
+        }
+
+        if (empty(trim($dados['tipo'] ?? ''))) {
+            $erros[] = "O campo Tipo de Documento é obrigatório.";
+        } else {
+            $tipoValido = false;
+            foreach (TipoDocumento::cases() as $t) {
+                if ($t->value === $dados['tipo']) {
+                    $tipoValido = true;
+                    break;
+                }
+            }
+            if (!$tipoValido) {
+                $erros[] = "Tipo de Documento inválido.";
+            }
+        }
+
+        if (isset($dados['caminhoFicheiro']) && strlen(trim($dados['caminhoFicheiro'])) > 255) {
+            $erros[] = "O caminho do ficheiro não pode ter mais de 255 caracteres.";
+        }
+
+        $dataDocObj = null;
+        if (!empty($dados['dataDocumento'])) {
+            if ($dados['dataDocumento'] instanceof DateTime) {
+                $dataDocObj = clone $dados['dataDocumento'];
+            } else {
+                $d = DateTime::createFromFormat('Y-m-d', $dados['dataDocumento']);
+                if (!$d || $d->format('Y-m-d') !== $dados['dataDocumento']) {
+                    $erros[] = "A Data do Documento tem de ser uma data válida no formato AAAA-MM-DD.";
+                } else {
+                    $dataDocObj = clone $d;
+                }
+            }
+        }
+
+        $dataValObj = null;
+        if (!empty($dados['dataValidade'])) {
+            if ($dados['dataValidade'] instanceof DateTime) {
+                $dataValObj = clone $dados['dataValidade'];
+            } else {
+                $d = DateTime::createFromFormat('Y-m-d', $dados['dataValidade']);
+                if (!$d || $d->format('Y-m-d') !== $dados['dataValidade']) {
+                    $erros[] = "A Data de Validade tem de ser uma data válida no formato AAAA-MM-DD.";
+                } else {
+                    $dataValObj = clone $d;
+                }
+            }
+        }
+
+        if ($dataDocObj && $dataValObj && $dataValObj < $dataDocObj) {
+            $erros[] = "A Data de Validade não pode ser anterior à Data do Documento.";
+        }
+
+        return $erros;
+    }
+}
+
 // Componentes
 
 class Componente implements Validavel

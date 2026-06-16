@@ -1,4 +1,4 @@
-<div class="tab-pane fade show active" id="nav-visao-geral" role="tabpanel" aria-labelledby="nav-visao-geral-tab">
+<div class="tab-pane fade <?= $activeTab === 'visao-geral' ? 'show active' : '' ?>" id="nav-visao-geral" role="tabpanel" aria-labelledby="nav-visao-geral-tab">
     <div class="visao-geral-container d-flex gap-4 w-100">
         <!-- Detalhes do Equipamento -->
         <div class="card bento-card details-card padding-6 d-flex flex-column gap-4">

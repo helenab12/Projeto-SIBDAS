@@ -930,25 +930,61 @@ if (btnNextPage && btnPrevPage && modalPage1 && modalPage2) {
     // Validação de Datas de Manutenção
     const maintenanceStartDate = document.getElementById("last-maintenance-start-date");
     const maintenanceEndDate = document.getElementById("last-maintenance-end-date");
-    
+
     const validateMaintenanceDates = () => {
+        let valid = true;
         if (maintenanceStartDate && maintenanceEndDate && maintenanceStartDate.value && maintenanceEndDate.value) {
             const startDate = new Date(maintenanceStartDate.value);
             const endDate = new Date(maintenanceEndDate.value);
-            
+
             if (startDate > endDate) {
                 maintenanceEndDate.setCustomValidity("A data de fim não pode ser anterior à data de início.");
                 maintenanceEndDate.reportValidity();
+                valid = false;
             } else {
                 maintenanceEndDate.setCustomValidity("");
             }
         } else if (maintenanceEndDate) {
             maintenanceEndDate.setCustomValidity("");
         }
+        return valid;
     };
 
-    if (maintenanceStartDate) maintenanceStartDate.addEventListener("change", validateMaintenanceDates);
-    if (maintenanceEndDate) maintenanceEndDate.addEventListener("change", validateMaintenanceDates);
+    const validatePage2 = () => {
+        let isPage2Valid = true;
+
+        if (!validateMaintenanceDates()) {
+            isPage2Valid = false;
+        }
+
+        const docTypes = document.querySelectorAll('#uploaded-files-container .doc-type-select');
+        docTypes.forEach(select => {
+            if (select.value === "") {
+                isPage2Valid = false;
+            }
+        });
+
+        if (btnSubmitModal) {
+            if (isPage2Valid) {
+                btnSubmitModal.removeAttribute("disabled");
+            } else {
+                btnSubmitModal.setAttribute("disabled", "true");
+            }
+        }
+    };
+    window.validatePage2 = validatePage2;
+
+    if (maintenanceStartDate) maintenanceStartDate.addEventListener("change", validatePage2);
+    if (maintenanceEndDate) maintenanceEndDate.addEventListener("change", validatePage2);
+
+    const localUploadContainer = document.getElementById("uploaded-files-container");
+    if (localUploadContainer) {
+        localUploadContainer.addEventListener("change", (e) => {
+            if (e.target.classList.contains("doc-type-select")) {
+                validatePage2();
+            }
+        });
+    }
 }
 
 // Lógica para Checkboxes Múltiplos com Quantidade
@@ -972,48 +1008,112 @@ multiSelectCheckboxes.forEach((checkbox) => {
     });
 });
 
-// Lógica de Upload de Documentos (Manutenção & Garantia)
-const uploadZone = document.querySelector(".file-upload-zone");
-const fileInput = document.getElementById("document-upload-input");
-const uploadContainer = document.getElementById("uploaded-files-container");
+// Lógica de Upload de Documentos Genérica
 const uploadTemplate = document.getElementById("uploaded-file-template");
+const localUploadContainer = document.getElementById("uploaded-files-container");
 
-if (uploadZone && fileInput && uploadContainer && uploadTemplate) {
+// Input de multi-upload
+const multiFileInput = document.getElementById("document-upload-input");
+if (multiFileInput) {
+    multiFileInput.addEventListener("change", (e) => {
+        if (typeof handleFiles === 'function') handleFiles(e.target.files);
+        multiFileInput.value = "";
+    });
+}
+
+document.querySelectorAll(".file-upload-zone").forEach(zone => {
+    const targetId = zone.getAttribute("data-dropzone-target");
+    const textTargetId = zone.getAttribute("data-text-target");
+    let fileInput = targetId ? document.getElementById(targetId) : multiFileInput;
+    const isMulti = !targetId;
+
+    if (!fileInput) return;
+
     // Abrir o file picker ao clicar na zona
-    uploadZone.addEventListener("click", () => {
+    zone.addEventListener("click", () => {
         fileInput.click();
     });
 
-    // Lidar com a seleção de ficheiros via input
-    fileInput.addEventListener("change", (e) => {
-        handleFiles(e.target.files);
-        fileInput.value = "";
-    });
-
     // Drag and Drop events
-    uploadZone.addEventListener("dragover", (e) => {
+    zone.addEventListener("dragover", (e) => {
         e.preventDefault();
-        uploadZone.style.borderColor = "var(--primary-500)";
-        uploadZone.style.backgroundColor = "var(--primary-50)";
+        zone.style.borderColor = "var(--primary-500)";
+        zone.style.backgroundColor = "var(--primary-50)";
     });
 
-    uploadZone.addEventListener("dragleave", (e) => {
+    zone.addEventListener("dragleave", (e) => {
         e.preventDefault();
-        uploadZone.style.borderColor = "";
-        uploadZone.style.backgroundColor = "";
+        zone.style.borderColor = "";
+        zone.style.backgroundColor = "";
     });
 
-    uploadZone.addEventListener("drop", (e) => {
+    zone.addEventListener("drop", (e) => {
         e.preventDefault();
-        uploadZone.style.borderColor = "";
-        uploadZone.style.backgroundColor = "";
-        handleFiles(e.dataTransfer.files);
+        zone.style.borderColor = "";
+        zone.style.backgroundColor = "";
+        
+        if (e.dataTransfer.files.length > 0) {
+            if (isMulti) {
+                if (typeof handleFiles === 'function') handleFiles(e.dataTransfer.files);
+            } else {
+                const file = e.dataTransfer.files[0];
+                const maxSize = 25 * 1024 * 1024; // 25MB
+                const allowedTypes = ["application/pdf", "image/jpeg", "image/png"];
+
+                if (!allowedTypes.includes(file.type) && !file.name.match(/\.(pdf|jpe?g|png)$/i)) {
+                    alert(`O ficheiro "${file.name}" tem um formato inválido. Apenas PDF, JPG e PNG são permitidos.`);
+                    return;
+                }
+
+                if (file.size > maxSize) {
+                    alert(`O ficheiro "${file.name}" excede o tamanho máximo de 25MB.`);
+                    return;
+                }
+
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                fileInput.files = dt.files;
+                fileInput.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+        }
     });
 
-    // Função para processar os ficheiros e criar os cards
-    function handleFiles(files) {
+    // Se for input único, atualiza o texto quando muda e valida
+    if (!isMulti && textTargetId) {
+        fileInput.addEventListener("change", (e) => {
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                const maxSize = 25 * 1024 * 1024; // 25MB
+                const allowedTypes = ["application/pdf", "image/jpeg", "image/png"];
+
+                if (!allowedTypes.includes(file.type) && !file.name.match(/\.(pdf|jpe?g|png)$/i)) {
+                    alert(`O ficheiro "${file.name}" tem um formato inválido. Apenas PDF, JPG e PNG são permitidos.`);
+                    e.target.value = ""; // Limpa o input
+                    return;
+                }
+
+                if (file.size > maxSize) {
+                    alert(`O ficheiro "${file.name}" excede o tamanho máximo de 25MB.`);
+                    e.target.value = ""; // Limpa o input
+                    return;
+                }
+
+                const textEl = document.getElementById(textTargetId);
+                if (textEl) {
+                    textEl.textContent = file.name;
+                    textEl.classList.remove("text-muted");
+                    textEl.classList.add("text-primary-700", "fw-600");
+                }
+            }
+        });
+    }
+});
+
+// Função para processar os ficheiros multi-upload e criar os cards
+function handleFiles(files) {
+    if (!uploadTemplate || !localUploadContainer) return;
         const allowedTypes = ["application/pdf", "image/jpeg", "image/png"];
-        const maxSize = 10 * 1024 * 1024; // 10MB
+        const maxSize = 25 * 1024 * 1024; // 25MB
 
         for (let i = 0; i < files.length; i++) {
             const file = files[i];
@@ -1029,9 +1129,9 @@ if (uploadZone && fileInput && uploadContainer && uploadTemplate) {
                 continue;
             }
 
-            // Validação de tamanho (máx 10MB)
+            // Validação de tamanho (máx 25MB)
             if (file.size > maxSize) {
-                alert(`O ficheiro "${file.name}" excede o tamanho máximo de 10MB.`);
+                alert(`O ficheiro "${file.name}" excede o tamanho máximo de 25MB.`);
                 continue;
             }
 
@@ -1045,16 +1145,25 @@ if (uploadZone && fileInput && uploadContainer && uploadTemplate) {
             nameDisplay.textContent = file.name;
             nameDisplay.title = file.name;
 
+            // Popular o input escondido do template com o ficheiro selecionado
+            const hiddenInput = clone.querySelector(".real-file-input");
+            if (hiddenInput) {
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                hiddenInput.files = dt.files;
+            }
+
             // Lógica de remoção
             closeBtn.addEventListener("click", () => {
                 card.remove();
+                if (window.validatePage2) window.validatePage2();
             });
 
             // Adicionar ao container
-            uploadContainer.appendChild(clone);
+            localUploadContainer.appendChild(clone);
+            if (window.validatePage2) window.validatePage2();
         }
     }
-}
 
 // Inicializar Tooltips do Bootstrap
 function initTooltips() {
@@ -1475,9 +1584,8 @@ function changeInboxState(requestId, stateName, stateClass) {
     }
 }
 
-// Lógica de Modais de Documentos (Equipamento Detailed View)
+// Lógica de Contagem de Caracteres (Form Area Publica)
 document.addEventListener("DOMContentLoaded", () => {
-    // Character count for public page message textarea
     const msgInput = document.getElementById("message");
     const charCount = document.getElementById("message-char-count");
     if (msgInput && charCount) {
@@ -1486,48 +1594,6 @@ document.addEventListener("DOMContentLoaded", () => {
             charCount.textContent = `${currentLength} / 400`;
         });
     }
-
-    // 1. Drag & Drop Upload Handlers
-    const addDropzone = document.getElementById("add-dropzone");
-    const addFileInput = document.getElementById("doc-file");
-    const addDropzoneText = document.getElementById("add-dropzone-text");
-
-    const editDropzone = document.getElementById("edit-dropzone");
-    const editFileInput = document.getElementById("edit-doc-file");
-    const editDropzoneText = document.getElementById("edit-dropzone-text");
-
-    const setupDropzone = (dropzone, fileInput, textEl) => {
-        if (!dropzone || !fileInput || !textEl) return;
-        dropzone.addEventListener("click", () => fileInput.click());
-        fileInput.addEventListener("change", (e) => {
-            if (e.target.files.length > 0) {
-                textEl.textContent = `Ficheiro selecionado: ${e.target.files[0].name}`;
-                textEl.style.color = "var(--primary-500)";
-            }
-        });
-        dropzone.addEventListener("dragover", (e) => {
-            e.preventDefault();
-            dropzone.style.borderColor = "var(--primary-500)";
-            dropzone.style.backgroundColor = "light-dark(var(--primary-50), color-mix(in srgb, var(--primary-500) 10%, transparent))";
-        });
-        dropzone.addEventListener("dragleave", () => {
-            dropzone.style.borderColor = "";
-            dropzone.style.backgroundColor = "";
-        });
-        dropzone.addEventListener("drop", (e) => {
-            e.preventDefault();
-            dropzone.style.borderColor = "";
-            dropzone.style.backgroundColor = "";
-            if (e.dataTransfer.files.length > 0) {
-                fileInput.files = e.dataTransfer.files;
-                textEl.textContent = `Ficheiro selecionado: ${e.dataTransfer.files[0].name}`;
-                textEl.style.color = "var(--primary-500)";
-            }
-        });
-    };
-
-    setupDropzone(addDropzone, addFileInput, addDropzoneText);
-    setupDropzone(editDropzone, editFileInput, editDropzoneText);
 });
 
 // Lógica do Modal de Pesquisa Global (Foco automático e alternância de estado)
@@ -2026,7 +2092,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Validação Componentes (Criar e Editar)
     const componentForms = document.querySelectorAll("#form-create-component, .form-edit-component");
-    
+
     componentForms.forEach(form => {
         const inputs = form.querySelectorAll("input[required], select[required]");
         const stockActualInput = form.querySelector(".stock-actual-input, #component-stock-actual");
@@ -2080,7 +2146,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const btnPrevPage = form.querySelector(`#btn-prev-page-edit-${eqId}`);
         const modalPage1 = form.querySelector(`#modal-page-1-edit-${eqId}`);
         const modalPage2 = form.querySelector(`#modal-page-2-edit-${eqId}`);
-        
+
         // Instância do Modal
         const modalEl = document.getElementById(`equipment-edit-modal-${eqId}`);
         if (modalEl) {
@@ -2145,7 +2211,7 @@ document.addEventListener("DOMContentLoaded", () => {
         attachValidation(brandSelect, "change");
         attachValidation(statusSelect, "change");
         attachValidation(locationSelect, "change");
-        
+
         // Chamada inicial para preencher corretamente o estado ativado/desativado do form
         validatePage1();
 

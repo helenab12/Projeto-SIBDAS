@@ -1,4 +1,4 @@
-<div class="tab-pane fade" id="nav-fornecedores" role="tabpanel"
+<div class="tab-pane fade <?= $activeTab === 'fornecedores' ? 'show active' : '' ?>" id="nav-fornecedores" role="tabpanel"
     aria-labelledby="nav-fornecedores-tab">
     <?php
 

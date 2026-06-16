@@ -23,7 +23,7 @@ $componentes_associados = [
     ]
 ];
 ?>
-<div class="tab-pane fade" id="nav-componentes" role="tabpanel" aria-labelledby="nav-componentes-tab">
+<div class="tab-pane fade <?= $activeTab === 'componentes' ? 'show active' : '' ?>" id="nav-componentes" role="tabpanel" aria-labelledby="nav-componentes-tab">
     <div class="card bento-card padding-6 d-flex flex-column gap-4">
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="fw-700 m-0 text-primary">Componentes Associados</h2>

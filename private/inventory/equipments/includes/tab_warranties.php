@@ -1,4 +1,4 @@
-<div class="tab-pane fade" id="nav-garantias" role="tabpanel" aria-labelledby="nav-garantias-tab">
+<div class="tab-pane fade <?= $activeTab === 'garantias' ? 'show active' : '' ?>" id="nav-garantias" role="tabpanel" aria-labelledby="nav-garantias-tab">
     <?php
     $garantias = [
         [

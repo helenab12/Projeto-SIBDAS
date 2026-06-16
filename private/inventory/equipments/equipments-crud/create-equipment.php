@@ -144,6 +144,74 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             );
         }
 
+        // 5. Documentos
+        if (isset($_FILES['doc-files']) && is_array($_FILES['doc-files']['name'])) {
+            $docTypes = $_POST['doc-type'] ?? [];
+            $docSuppliers = $_POST['doc-supplier'] ?? [];
+            
+            $fileCount = count($_FILES['doc-files']['name']);
+            for ($i = 0; $i < $fileCount; $i++) {
+                if ($_FILES['doc-files']['error'][$i] === UPLOAD_ERR_OK) {
+                    $tipo = trim($docTypes[$i] ?? '');
+                    $idFornecedor = trim($docSuppliers[$i] ?? '');
+                    if (empty($idFornecedor)) $idFornecedor = null;
+                    
+                    $nomeDoc = $_FILES['doc-files']['name'][$i];
+                    
+                    $erros = Documento::validarDados([
+                        'nome' => $nomeDoc,
+                        'tipo' => $tipo
+                    ]);
+
+                    if (!empty($erros)) {
+                        throw new Exception("Erro no documento '$nomeDoc': " . implode(", ", $erros));
+                    }
+                    
+                    // Validação de Tamanho (25MB)
+                    $maxSize = 25 * 1024 * 1024;
+                    if ($_FILES['doc-files']['size'][$i] > $maxSize) {
+                        throw new Exception("O documento '$nomeDoc' excede o tamanho máximo permitido de 25MB.");
+                    }
+
+                    // Validação de Formato
+                    $allowedExtensions = ['pdf', 'jpg', 'jpeg', 'png'];
+                    $fileInfo = pathinfo($nomeDoc);
+                    $extension = strtolower($fileInfo['extension'] ?? '');
+                    if (!in_array($extension, $allowedExtensions)) {
+                        throw new Exception("O documento '$nomeDoc' tem um formato inválido. Apenas PDF, JPG, JPEG e PNG.");
+                    }
+
+                    $uploadDir = BASE_PATH . 'files/documents/';
+                    if (!is_dir($uploadDir)) {
+                        if (!mkdir($uploadDir, 0777, true)) {
+                            throw new Exception("Erro ao criar diretório para documentos.");
+                        }
+                    }
+
+                    $newFileName = uniqid('doc_') . '_' . preg_replace('/[^a-zA-Z0-9.-]/', '_', $fileInfo['basename']);
+                    $destinationPath = $uploadDir . $newFileName;
+                    $dbPath = 'files/documents/' . $newFileName;
+
+                    if (!move_uploaded_file($_FILES['doc-files']['tmp_name'][$i], $destinationPath)) {
+                        throw new Exception("Erro ao guardar o ficheiro '$nomeDoc' no servidor.");
+                    }
+
+                    execute_query(
+                        "INSERT INTO Documento (tipo, nome, caminhoFicheiro, dataDocumento, idEquipamento, idFornecedor, ativo)
+                         VALUES (:tipo, :nome, :caminho, CURDATE(), :idEq, :idForn, 1)",
+                        [
+                            'tipo' => $tipo,
+                            'nome' => $nomeDoc,
+                            'caminho' => $dbPath,
+                            'idEq' => $idEquipamento,
+                            'idForn' => $idFornecedor
+                        ],
+                        $ligacao
+                    );
+                }
+            }
+        }
+
         $ligacao->commit();
         $_SESSION['success_message'] = "Equipamento '$nome' criado com sucesso!";
 

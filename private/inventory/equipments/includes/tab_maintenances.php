@@ -16,7 +16,7 @@ $manutencoes = [
     ]
 ];
 ?>
-<div class="tab-pane fade" id="nav-manutencoes" role="tabpanel" aria-labelledby="nav-manutencoes-tab">
+<div class="tab-pane fade <?= $activeTab === 'manutencoes' ? 'show active' : '' ?>" id="nav-manutencoes" role="tabpanel" aria-labelledby="nav-manutencoes-tab">
     <div class="card bento-card padding-6 d-flex flex-column gap-4">
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="fw-700 m-0 text-primary">Manutenções</h2>

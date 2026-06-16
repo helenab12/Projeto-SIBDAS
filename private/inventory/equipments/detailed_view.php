@@ -2,6 +2,18 @@
 require_once(__DIR__ . "/../../../config/funcoes.php");
 redirect_if_not_logged();
 
+$success_message = null;
+$server_error = null;
+
+if (!empty($_SESSION['success_message'])) {
+    $success_message = $_SESSION['success_message'];
+    unset($_SESSION['success_message']);
+}
+if (!empty($_SESSION['server_error'])) {
+    $server_error = $_SESSION['server_error'];
+    unset($_SESSION['server_error']);
+}
+
 $encryptedId = $_GET['id'] ?? null;
 if (!$encryptedId) {
     $_SESSION['server_error'] = "ID do equipamento não fornecido.";
@@ -113,6 +125,55 @@ try {
         $supplier = $fornRow['nome'];
     }
 
+    // Dados para a Tab Documentos 
+
+    // Obter Documentos Associados ao Equipamento
+    $stmtDocs = execute_query(
+        "SELECT d.*, f.nome as fornecedorNome
+         FROM Documento d
+         LEFT JOIN Fornecedor f ON d.idFornecedor = f.idFornecedor
+         WHERE d.idEquipamento = :id AND d.ativo = 1
+         ORDER BY d.dataCriacao DESC",
+        ['id' => $id],
+        $ligacao
+    );
+    $documentos = [];
+    while ($docRow = $stmtDocs->fetch(PDO::FETCH_ASSOC)) {
+        $documentos[] = new Documento(
+            (string) $docRow['idDocumento'],
+            TipoDocumento::from($docRow['tipo']),
+            $docRow['nome'],
+            $docRow['caminhoFicheiro'],
+            $docRow['dataDocumento'] ? new DateTime($docRow['dataDocumento']) : null,
+            $docRow['dataValidade'] ? new DateTime($docRow['dataValidade']) : null,
+            (string) $docRow['idEquipamento'],
+            $docRow['idFornecedor'] ? (string) $docRow['idFornecedor'] : null,
+            (bool) $docRow['ativo'],
+            new DateTime($docRow['dataCriacao']),
+            new DateTime($docRow['dataAtualizacao']),
+            $docRow['fornecedorNome']
+        );
+    }
+
+    // Calcular Documentos em Falta
+    $tiposExistentes = array_map(fn($d) => $d->getTipo()->value, $documentos);
+    $tiposEmFalta = [];
+    foreach (TipoDocumento::cases() as $tipo) {
+        if (!in_array($tipo->value, $tiposExistentes)) {
+            $tiposEmFalta[] = $tipo;
+        }
+    }
+    $totalTipos = count(TipoDocumento::cases());
+    $totalEmFalta = count($tiposEmFalta);
+
+    // Buscar Fornecedores (para os modais)
+    $stmtFornecedoresDoc = execute_query(
+        "SELECT idFornecedor, nome FROM Fornecedor WHERE ativo = 1 ORDER BY nome ASC",
+        [],
+        $ligacao
+    );
+    $fornecedoresDisponiveis = $stmtFornecedoresDoc->fetchAll(PDO::FETCH_ASSOC);
+
 } catch (Exception $e) {
     $_SESSION['server_error'] = "Erro ao carregar os dados do equipamento: " . $e->getMessage();
     header("Location: equipment_list.php");
@@ -181,6 +242,8 @@ $criticidadeTooltip = match ($criticidade) {
     'Baixa' => "Equipamento de apoio — falha com impacto mínimo no serviço.",
     default => "Criticidade: " . $criticidade,
 };
+
+$activeTab = $_GET['nav'] ?? 'visao-geral';
 
 include_once BASE_PATH . 'private/includes/head.php';
 include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
@@ -366,9 +429,11 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
         <!-- Menu de Navegação por Separadores (Tabs) -->
         <nav>
             <div class="bento-card d-flex gap-2 padding-1 flex-wrap" id="nav-tab" role="tablist">
-                <button class="filter-bar-badge active d-flex align-items-center gap-2 border-0"
+                <button
+                    class="filter-bar-badge d-flex align-items-center gap-2 border-0 <?= $activeTab === 'visao-geral' ? 'active' : '' ?>"
                     id="nav-visao-geral-tab" data-bs-toggle="tab" data-bs-target="#nav-visao-geral" type="button"
-                    role="tab" aria-controls="nav-visao-geral" aria-selected="true">
+                    role="tab" aria-controls="nav-visao-geral"
+                    aria-selected="<?= $activeTab === 'visao-geral' ? 'true' : 'false' ?>">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-box">
@@ -380,9 +445,11 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                     </svg>
                     <p class="d-none d-md-inline m-0">Visão Geral</p>
                 </button>
-                <button class="filter-bar-badge d-flex align-items-center gap-2 border-0" id="nav-documentos-tab"
-                    data-bs-toggle="tab" data-bs-target="#nav-documentos" type="button" role="tab"
-                    aria-controls="nav-documentos" aria-selected="false">
+                <button
+                    class="filter-bar-badge d-flex align-items-center gap-2 border-0 <?= $activeTab === 'documentos' ? 'active' : '' ?>"
+                    id="nav-documentos-tab" data-bs-toggle="tab" data-bs-target="#nav-documentos" type="button"
+                    role="tab" aria-controls="nav-documentos"
+                    aria-selected="<?= $activeTab === 'documentos' ? 'true' : 'false' ?>">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-file-text">
@@ -394,9 +461,11 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                     </svg>
                     <p class="d-none d-md-inline m-0">Documentos</p>
                 </button>
-                <button class="filter-bar-badge d-flex align-items-center gap-2 border-0" id="nav-fornecedores-tab"
-                    data-bs-toggle="tab" data-bs-target="#nav-fornecedores" type="button" role="tab"
-                    aria-controls="nav-fornecedores" aria-selected="false">
+                <button
+                    class="filter-bar-badge d-flex align-items-center gap-2 border-0 <?= $activeTab === 'fornecedores' ? 'active' : '' ?>"
+                    id="nav-fornecedores-tab" data-bs-toggle="tab" data-bs-target="#nav-fornecedores" type="button"
+                    role="tab" aria-controls="nav-fornecedores"
+                    aria-selected="<?= $activeTab === 'fornecedores' ? 'true' : 'false' ?>">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-building-2">
@@ -410,9 +479,10 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                     </svg>
                     <p class="d-none d-md-inline m-0">Fornecedores</p>
                 </button>
-                <button class="filter-bar-badge d-flex align-items-center gap-2 border-0" id="nav-garantias-tab"
-                    data-bs-toggle="tab" data-bs-target="#nav-garantias" type="button" role="tab"
-                    aria-controls="nav-garantias" aria-selected="false">
+                <button
+                    class="filter-bar-badge d-flex align-items-center gap-2 border-0 <?= $activeTab === 'garantias' ? 'active' : '' ?>"
+                    id="nav-garantias-tab" data-bs-toggle="tab" data-bs-target="#nav-garantias" type="button" role="tab"
+                    aria-controls="nav-garantias" aria-selected="<?= $activeTab === 'garantias' ? 'true' : 'false' ?>">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-shield">
@@ -421,9 +491,11 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                     </svg>
                     <p class="d-none d-md-inline m-0">Garantias & Contratos</p>
                 </button>
-                <button class="filter-bar-badge d-flex align-items-center gap-2 border-0" id="nav-componentes-tab"
-                    data-bs-toggle="tab" data-bs-target="#nav-componentes" type="button" role="tab"
-                    aria-controls="nav-componentes" aria-selected="false">
+                <button
+                    class="filter-bar-badge d-flex align-items-center gap-2 border-0 <?= $activeTab === 'componentes' ? 'active' : '' ?>"
+                    id="nav-componentes-tab" data-bs-toggle="tab" data-bs-target="#nav-componentes" type="button"
+                    role="tab" aria-controls="nav-componentes"
+                    aria-selected="<?= $activeTab === 'componentes' ? 'true' : 'false' ?>">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-puzzle-icon lucide-puzzle">
@@ -432,9 +504,11 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                     </svg>
                     <p class="d-none d-md-inline m-0">Componentes</p>
                 </button>
-                <button class="filter-bar-badge d-flex align-items-center gap-2 border-0" id="nav-manutencoes-tab"
-                    data-bs-toggle="tab" data-bs-target="#nav-manutencoes" type="button" role="tab"
-                    aria-controls="nav-manutencoes" aria-selected="false">
+                <button
+                    class="filter-bar-badge d-flex align-items-center gap-2 border-0 <?= $activeTab === 'manutencoes' ? 'active' : '' ?>"
+                    id="nav-manutencoes-tab" data-bs-toggle="tab" data-bs-target="#nav-manutencoes" type="button"
+                    role="tab" aria-controls="nav-manutencoes"
+                    aria-selected="<?= $activeTab === 'manutencoes' ? 'true' : 'false' ?>">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-wrench">
@@ -443,9 +517,10 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                     </svg>
                     <p class="d-none d-md-inline m-0">Manutenções</p>
                 </button>
-                <button class="filter-bar-badge d-flex align-items-center gap-2 border-0" id="nav-auditoria-tab"
-                    data-bs-toggle="tab" data-bs-target="#nav-auditoria" type="button" role="tab"
-                    aria-controls="nav-auditoria" aria-selected="false">
+                <button
+                    class="filter-bar-badge d-flex align-items-center gap-2 border-0 <?= $activeTab === 'auditoria' ? 'active' : '' ?>"
+                    id="nav-auditoria-tab" data-bs-toggle="tab" data-bs-target="#nav-auditoria" type="button" role="tab"
+                    aria-controls="nav-auditoria" aria-selected="<?= $activeTab === 'auditoria' ? 'true' : 'false' ?>">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-history">
@@ -472,6 +547,48 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
     </section>
 </div>
 
+<!-- Toast Container -->
+<div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3 mt-4" style="z-index: 100;">
+    <?php if (!empty($success_message)): ?>
+        <div class="toast align-items-center border-0 shadow-sm toast-success w-auto padding-4 show" role="alert"
+            aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+            <div class="d-flex align-items-center gap-2">
+                <div class="toast-body fw-500 p-0">
+                    <?= htmlspecialchars($success_message) ?>
+                </div>
+                <button type="button" class="text-success border-0 p-0 bg-transparent ms-auto" data-bs-dismiss="toast"
+                    aria-label="Close">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-x-icon lucide-x">
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if (!empty($server_error)): ?>
+        <div class="toast align-items-center border-0 shadow-sm toast-error w-auto padding-4 show" role="alert"
+            aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+            <div class="d-flex align-items-center gap-2">
+                <div class="toast-body fw-500 p-0">
+                    <?= htmlspecialchars($server_error) ?>
+                </div>
+                <button type="button" class="text-error border-0 p-0 bg-transparent ms-auto" data-bs-dismiss="toast"
+                    aria-label="Close">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-x-icon lucide-x">
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    <?php endif; ?>
+</div>
 
 <?php
 include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
