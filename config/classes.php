@@ -1463,6 +1463,338 @@ class Categoria implements Validavel
     }
 }
 
+// Equipamentos
+
+enum EstadoEquipamento: string
+{
+    case ATIVO = 'Ativo';
+    case EM_MANUTENCAO = 'Em manutenção';
+    case INATIVO = 'Inativo';
+    case EM_CALIBRACAO = 'Em calibração';
+    case EM_QUARENTENA = 'Em Quarentena';
+    case ABATIDO = 'Abatido';
+}
+
+enum CriticidadeEquipamento: string
+{
+    case BAIXA = 'Baixa';
+    case MEDIA = 'Média';
+    case ALTA = 'Alta';
+    case CRITICO = 'Crítico';
+}
+
+enum TipoEntrada: string
+{
+    case COMPRA = 'Compra';
+    case DOACAO = 'Doação';
+    case ALUGUER = 'Aluguer';
+    case EMPRESTIMO = 'Empréstimo';
+}
+
+class Marca implements Validavel
+{
+    private string $idMarca;
+    private string $nome;
+    private bool $ativo;
+    private DateTime $dataCriacao;
+    private DateTime $dataAtualizacao;
+
+    public function __construct(string $idMarca, string $nome, bool $ativo, DateTime $dataCriacao, DateTime $dataAtualizacao)
+    {
+        $erros = self::validarDados([
+            "idMarca" => $idMarca,
+            "nome" => $nome,
+            "ativo" => $ativo,
+            "dataCriacao" => $dataCriacao,
+            "dataAtualizacao" => $dataAtualizacao
+        ]);
+
+        if (!empty($erros)) {
+            throw new Exception("Erro ao criar marca: " . implode(", ", $erros));
+        }
+
+        $this->idMarca = $idMarca;
+        $this->nome = $nome;
+        $this->ativo = $ativo;
+        $this->dataCriacao = $dataCriacao;
+        $this->dataAtualizacao = $dataAtualizacao;
+    }
+
+    public function getIdMarca(): string
+    {
+        return $this->idMarca;
+    }
+
+    public function getNome(): string
+    {
+        return $this->nome;
+    }
+
+    public function getAtivo(): bool
+    {
+        return $this->ativo;
+    }
+
+    public function getDataCriacao(): DateTime
+    {
+        return $this->dataCriacao;
+    }
+
+    public function getDataAtualizacao(): DateTime
+    {
+        return $this->dataAtualizacao;
+    }
+
+    public static function validarDados(array $dados): array
+    {
+        $erros = [];
+        if (empty(trim($dados["nome"] ?? ''))) {
+            $erros[] = "O campo Nome é obrigatório.";
+        }
+        return $erros;
+    }
+}
+
+class Equipamento implements Validavel
+{
+    private string $idEquipamento;
+    private ?string $idCategoria;
+    private string $codigoInterno;
+    private string $designacao;
+    private ?string $idMarca;
+    private string $modelo;
+    private string $numeroSerie;
+    private ?DateTime $dataAquisicao;
+    private ?DateTime $dataFabrico;
+    private float $custoAquisicao;
+    private TipoEntrada $tipoEntrada;
+    private EstadoEquipamento $estadoAtual;
+    private CriticidadeEquipamento $criticidade;
+    private string $observacoes;
+    private ?string $idLocalizacao;
+    private bool $arquivado;
+    private bool $ativo;
+    private DateTime $dataCriacao;
+    private DateTime $dataAtualizacao;
+    private ?string $marcaNome;
+
+    public function __construct(
+        string $idEquipamento,
+        ?string $idCategoria,
+        string $codigoInterno,
+        string $designacao,
+        ?string $idMarca,
+        string $modelo,
+        string $numeroSerie,
+        ?DateTime $dataAquisicao,
+        ?DateTime $dataFabrico,
+        float $custoAquisicao,
+        TipoEntrada $tipoEntrada,
+        EstadoEquipamento $estadoAtual,
+        CriticidadeEquipamento $criticidade,
+        string $observacoes,
+        ?string $idLocalizacao,
+        bool $arquivado,
+        bool $ativo,
+        DateTime $dataCriacao,
+        DateTime $dataAtualizacao,
+        ?string $marcaNome = null
+    ) {
+        $erros = self::validarDados([
+            "idEquipamento" => $idEquipamento,
+            "codigoInterno" => $codigoInterno,
+            "designacao" => $designacao,
+            "tipoEntrada" => $tipoEntrada,
+            "estadoAtual" => $estadoAtual,
+            "criticidade" => $criticidade,
+            "ativo" => $ativo,
+            "arquivado" => $arquivado,
+            "dataCriacao" => $dataCriacao,
+            "dataAtualizacao" => $dataAtualizacao
+        ]);
+
+        if (!empty($erros)) {
+            throw new Exception("Erro ao criar equipamento: " . implode(", ", $erros));
+        }
+
+        $this->idEquipamento = $idEquipamento;
+        $this->idCategoria = $idCategoria;
+        $this->codigoInterno = $codigoInterno;
+        $this->designacao = $designacao;
+        $this->idMarca = $idMarca;
+        $this->modelo = $modelo;
+        $this->numeroSerie = $numeroSerie;
+        $this->dataAquisicao = $dataAquisicao;
+        $this->dataFabrico = $dataFabrico;
+        $this->custoAquisicao = $custoAquisicao;
+        $this->tipoEntrada = $tipoEntrada;
+        $this->estadoAtual = $estadoAtual;
+        $this->criticidade = $criticidade;
+        $this->observacoes = $observacoes;
+        $this->idLocalizacao = $idLocalizacao;
+        $this->arquivado = $arquivado;
+        $this->ativo = $ativo;
+        $this->dataCriacao = $dataCriacao;
+        $this->dataAtualizacao = $dataAtualizacao;
+        $this->marcaNome = $marcaNome;
+    }
+
+    public function getIdEquipamento(): string
+    {
+        return $this->idEquipamento;
+    }
+    public function getIdCategoria(): ?string
+    {
+        return $this->idCategoria;
+    }
+    public function getCodigoInterno(): string
+    {
+        return $this->codigoInterno;
+    }
+    public function getDesignacao(): string
+    {
+        return $this->designacao;
+    }
+    public function getIdMarca(): ?string
+    {
+        return $this->idMarca;
+    }
+    public function getModelo(): string
+    {
+        return $this->modelo;
+    }
+    public function getNumeroSerie(): string
+    {
+        return $this->numeroSerie;
+    }
+    public function getDataAquisicao(): ?DateTime
+    {
+        return $this->dataAquisicao;
+    }
+    public function getDataFabrico(): ?DateTime
+    {
+        return $this->dataFabrico;
+    }
+    public function getCustoAquisicao(): float
+    {
+        return $this->custoAquisicao;
+    }
+    public function getTipoEntrada(): TipoEntrada
+    {
+        return $this->tipoEntrada;
+    }
+    public function getEstadoAtual(): EstadoEquipamento
+    {
+        return $this->estadoAtual;
+    }
+    public function getCriticidade(): CriticidadeEquipamento
+    {
+        return $this->criticidade;
+    }
+    public function getObservacoes(): string
+    {
+        return $this->observacoes;
+    }
+    public function getIdLocalizacao(): ?string
+    {
+        return $this->idLocalizacao;
+    }
+    public function getArquivado(): bool
+    {
+        return $this->arquivado;
+    }
+    public function getAtivo(): bool
+    {
+        return $this->ativo;
+    }
+    public function getDataCriacao(): DateTime
+    {
+        return $this->dataCriacao;
+    }
+    public function getDataAtualizacao(): DateTime
+    {
+        return $this->dataAtualizacao;
+    }
+    public function getMarcaNome(): ?string
+    {
+        return $this->marcaNome;
+    }
+
+    public static function validarDados(array $dados): array
+    {
+        $erros = [];
+        if (empty(trim($dados["codigoInterno"] ?? ''))) {
+            $erros[] = "O campo Código Interno é obrigatório.";
+        } elseif (strlen(trim($dados["codigoInterno"])) > 20) {
+            $erros[] = "O campo Código Interno não pode ter mais de 20 caracteres.";
+        }
+        if (empty(trim($dados["designacao"] ?? ''))) {
+            $erros[] = "O campo Designação é obrigatório.";
+        }
+        if (isset($dados["modelo"]) && strlen(trim($dados["modelo"])) > 255) {
+            $erros[] = "O campo Modelo não pode ter mais de 255 caracteres.";
+        }
+        if (isset($dados["numeroSerie"]) && strlen(trim($dados["numeroSerie"])) > 255) {
+            $erros[] = "O campo Número de Série não pode ter mais de 255 caracteres.";
+        }
+        if (isset($dados["custoAquisicao"]) && is_numeric($dados["custoAquisicao"]) && $dados["custoAquisicao"] < 0) {
+            $erros[] = "O Custo de Aquisição não pode ser negativo.";
+        }
+        $dataFabrico = null;
+        if (!empty($dados["dataFabrico"])) {
+            if ($dados["dataFabrico"] instanceof DateTime) {
+                $dataFabrico = clone $dados["dataFabrico"];
+            } else {
+                $d = DateTime::createFromFormat('Y-m-d', $dados["dataFabrico"]);
+                if (!$d || $d->format('Y-m-d') !== $dados["dataFabrico"]) {
+                    $erros[] = "O campo Data de Fabrico tem de ser uma data válida no formato AAAA-MM-DD.";
+                } else {
+                    $dataFabrico = clone $d;
+                }
+            }
+            if ($dataFabrico && (int) $dataFabrico->format('Y') < 1950) {
+                $erros[] = "A Data de Fabrico não pode ser antes de 1950.";
+            }
+            if ($dataFabrico && $dataFabrico > new DateTime('today')) {
+                $erros[] = "A Data de Fabrico não pode ser no futuro.";
+            }
+        }
+        $dataAquisicao = null;
+        if (!empty($dados["dataAquisicao"])) {
+            if ($dados["dataAquisicao"] instanceof DateTime) {
+                $dataAquisicao = clone $dados["dataAquisicao"];
+            } else {
+                $d = DateTime::createFromFormat('Y-m-d', $dados["dataAquisicao"]);
+                if (!$d || $d->format('Y-m-d') !== $dados["dataAquisicao"]) {
+                    $erros[] = "O campo Data de Aquisição tem de ser uma data válida no formato AAAA-MM-DD.";
+                } else {
+                    $dataAquisicao = clone $d;
+                }
+            }
+            if ($dataAquisicao && (int) $dataAquisicao->format('Y') < 1950) {
+                $erros[] = "A Data de Aquisição não pode ser antes de 1950.";
+            }
+            if ($dataAquisicao && $dataAquisicao > new DateTime('today')) {
+                $erros[] = "A Data de Aquisição não pode ser no futuro.";
+            }
+        }
+
+        if ($dataFabrico && $dataAquisicao && $dataFabrico > $dataAquisicao) {
+            $erros[] = "A Data de Fabrico não pode ser posterior à Data de Aquisição.";
+        }
+        if (!isset($dados["tipoEntrada"])) {
+            $erros[] = "O campo Tipo Entrada é obrigatório.";
+        }
+        if (!isset($dados["estadoAtual"])) {
+            $erros[] = "O campo Estado Atual é obrigatório.";
+        }
+        if (!isset($dados["criticidade"])) {
+            $erros[] = "O campo Criticidade é obrigatório.";
+        }
+        return $erros;
+    }
+}
+
 // Componentes
 
 class Componente implements Validavel
@@ -1575,13 +1907,13 @@ class Componente implements Validavel
         if (empty(trim($dados["descricao"] ?? ''))) {
             $erros[] = "O campo Descrição é obrigatório.";
         }
-        if (!isset($dados["stock"]) || !is_numeric($dados["stock"]) || (int)$dados["stock"] < 0) {
+        if (!isset($dados["stock"]) || !is_numeric($dados["stock"]) || (int) $dados["stock"] < 0) {
             $erros[] = "O campo Stock tem de ser um número inteiro maior ou igual a zero.";
         }
-        if (!isset($dados["stockMinimo"]) || !is_numeric($dados["stockMinimo"]) || (int)$dados["stockMinimo"] < 0) {
+        if (!isset($dados["stockMinimo"]) || !is_numeric($dados["stockMinimo"]) || (int) $dados["stockMinimo"] < 0) {
             $erros[] = "O campo Stock Mínimo tem de ser um número inteiro maior ou igual a zero.";
         }
-        if (!isset($dados["preco"]) || !is_numeric($dados["preco"]) || (float)$dados["preco"] < 0) {
+        if (!isset($dados["preco"]) || !is_numeric($dados["preco"]) || (float) $dados["preco"] < 0) {
             $erros[] = "O campo Preço tem de ser um número maior ou igual a zero.";
         }
         if (empty(trim($dados["idLocalizacao"] ?? ''))) {

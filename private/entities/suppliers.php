@@ -131,12 +131,12 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         <path d="m21 21-4.34-4.34" />
                         <circle cx="11" cy="11" r="8" />
                     </svg>
-                    <input type="text" class="form-item w-100 search-bar-input" id="search-input"
-                        placeholder="Pesquisar por nome, NIF ou email...">
+                    <input type="text" class="form-item w-100 search-bar-input" id="search-input-suppliers"
+                        placeholder="Pesquisar por nome, email ou pessoa de contacto...">
                 </div>
             </form>
             <div class="d-flex gap-2 equipment-list-search-bar-filters">
-                <select class="form-select" aria-label="Filtro Tipo" id="filter-type">
+                <select class="form-select" aria-label="Filtro Tipo" id="filter-type-suppliers">
                     <option value="" selected>Todos os Tipos</option>
                     <option value="Fabricante">Fabricante</option>
                     <option value="Distribuidor">Distribuidor</option>
@@ -148,7 +148,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 
         <!-- Tabela -->
         <div class="bento-card w-100 p-0 border-0" id="table-container">
-            <table id="equipmentsTable" class="sibdas-table w-100 display">
+            <table id="suppliersTable" class="sibdas-table w-100 display">
                 <thead>
                     <tr>
                         <th>FORNECEDOR</th>

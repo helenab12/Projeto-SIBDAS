@@ -388,18 +388,29 @@ if (
         },
     });
 
+    table.on('datatable.page', initTooltips);
+    table.on('datatable.sort', initTooltips);
+    table.on('datatable.search', initTooltips);
+    table.on('datatable.update', initTooltips);
+
     // Custom search binding
     const searchInputs = document.querySelectorAll(".search-bar-input");
-    const filterSelect = document.getElementById("filter-type");
+    const filterEstado = document.getElementById("filter-estado");
+    const filterCriticidade = document.getElementById("filter-criticidade");
+    const filterCategoria = document.getElementById("filter-categoria");
 
     function applyFilters() {
         const searchVal = searchInputs.length > 0 ? searchInputs[0].value.trim() : "";
-        const filterVal = filterSelect ? filterSelect.value : "";
+        const estadoVal = filterEstado ? filterEstado.value : "";
+        const critVal = filterCriticidade ? filterCriticidade.value : "";
+        const catVal = filterCategoria ? filterCategoria.value : "";
 
         if (typeof table.multiSearch === 'function') {
             let queries = [];
             if (searchVal) queries.push({ terms: [searchVal] });
-            if (filterVal) queries.push({ terms: [filterVal], columns: [1] });
+            if (catVal) queries.push({ terms: [catVal], columns: [1] });
+            if (estadoVal) queries.push({ terms: [estadoVal], columns: [3] });
+            if (critVal) queries.push({ terms: [critVal], columns: [4] });
 
             if (queries.length > 0) {
                 table.multiSearch(queries);
@@ -409,7 +420,9 @@ if (
         } else {
             let terms = [];
             if (searchVal) terms.push(searchVal);
-            if (filterVal) terms.push(filterVal);
+            if (estadoVal) terms.push(estadoVal);
+            if (critVal) terms.push(critVal);
+            if (catVal) terms.push(catVal);
             table.search(terms.join(" "));
         }
     }
@@ -418,9 +431,103 @@ if (
         input.addEventListener("input", applyFilters);
     });
 
-    if (filterSelect) {
-        filterSelect.addEventListener("change", applyFilters);
+    [filterEstado, filterCriticidade, filterCategoria].forEach(select => {
+        if (select) select.addEventListener("change", applyFilters);
+    });
+}
+
+// Inicializar DataTables (Fornecedores)
+if (
+    document.getElementById("suppliersTable") &&
+    typeof simpleDatatables !== "undefined"
+) {
+    const table = new simpleDatatables.DataTable("#suppliersTable", {
+        searchable: true,
+        perPage: 8,
+        perPageSelect: false,
+        labels: {
+            placeholder: "Pesquisar...",
+            perPage: "entradas por página",
+            noRows: "Nenhum registo encontrado",
+            noResults: "Nenhum resultado corresponde à sua pesquisa",
+            info: "A mostrar {start}–{end} de {rows}",
+        },
+    });
+
+    const searchInput = document.getElementById("search-input-suppliers");
+    const filterType = document.getElementById("filter-type-suppliers");
+
+    function applySupplierFilters() {
+        const searchVal = searchInput ? searchInput.value.trim() : "";
+        const typeVal = filterType ? filterType.value : "";
+
+        if (typeof table.multiSearch === 'function') {
+            let queries = [];
+            if (searchVal) queries.push({ terms: [searchVal] });
+            if (typeVal) queries.push({ terms: [typeVal], columns: [1] });
+
+            if (queries.length > 0) {
+                table.multiSearch(queries);
+            } else {
+                table.search("");
+            }
+        } else {
+            let terms = [];
+            if (searchVal) terms.push(searchVal);
+            if (typeVal) terms.push(typeVal);
+            table.search(terms.join(" "));
+        }
     }
+
+    if (searchInput) searchInput.addEventListener("input", applySupplierFilters);
+    if (filterType) filterType.addEventListener("change", applySupplierFilters);
+}
+
+// Inicializar DataTables (Utilizadores)
+if (
+    document.getElementById("usersTable") &&
+    typeof simpleDatatables !== "undefined"
+) {
+    const table = new simpleDatatables.DataTable("#usersTable", {
+        searchable: true,
+        perPage: 8,
+        perPageSelect: false,
+        labels: {
+            placeholder: "Pesquisar...",
+            perPage: "entradas por página",
+            noRows: "Nenhum registo encontrado",
+            noResults: "Nenhum resultado corresponde à sua pesquisa",
+            info: "A mostrar {start}–{end} de {rows}",
+        },
+    });
+
+    const searchInput = document.getElementById("search-input-users");
+    const filterType = document.getElementById("filter-type-users");
+
+    function applyUserFilters() {
+        const searchVal = searchInput ? searchInput.value.trim() : "";
+        const typeVal = filterType ? filterType.value : "";
+
+        if (typeof table.multiSearch === 'function') {
+            let queries = [];
+            if (searchVal) queries.push({ terms: [searchVal] });
+            if (typeVal) queries.push({ terms: [typeVal], columns: [1] });
+
+            if (queries.length > 0) {
+                table.multiSearch(queries);
+            } else {
+                table.search("");
+            }
+        } else {
+            let terms = [];
+            if (searchVal) terms.push(searchVal);
+            if (typeVal) terms.push(typeVal);
+            table.search(terms.join(" "));
+        }
+    }
+
+    if (searchInput) searchInput.addEventListener("input", applyUserFilters);
+    if (filterType) filterType.addEventListener("change", applyUserFilters);
 }
 
 // Inicializar DataTables (Funcionalidades)
@@ -729,19 +836,25 @@ document.querySelectorAll(".edit-category-form").forEach(form => {
 });
 
 // Campos obrigatórios da Página 1
-const serialNumberInput = document.getElementById("serial-number");
-const categorySelect = document.getElementById("category");
+const equipmentCodeInput = document.getElementById("equipment-code");
+const equipmentCategorySelect = document.getElementById("equipment-category");
+const equipmentSerialInput = document.getElementById("equipment-serial");
 const equipmentNameInput = document.getElementById("equipment-name");
-const brandInput = document.getElementById("brand");
+const equipmentBrandSelect = document.getElementById("equipment-brand");
+const equipmentStatusSelect = document.getElementById("equipment-status");
+const equipmentLocationSelect = document.getElementById("equipment-location");
 
 if (btnNextPage && btnPrevPage && modalPage1 && modalPage2) {
     // Validação da Página 1
     const validatePage1 = () => {
         if (
-            serialNumberInput.value.trim() !== "" &&
-            categorySelect.value !== "" &&
-            equipmentNameInput.value.trim() !== "" &&
-            brandInput.value.trim() !== ""
+            equipmentCodeInput?.value.trim() !== "" &&
+            equipmentCategorySelect?.value !== "" &&
+            equipmentSerialInput?.value.trim() !== "" &&
+            equipmentNameInput?.value.trim() !== "" &&
+            equipmentBrandSelect?.value !== "" &&
+            equipmentStatusSelect?.value !== "" &&
+            equipmentLocationSelect?.value !== ""
         ) {
             btnNextPage.removeAttribute("disabled");
         } else {
@@ -749,20 +862,58 @@ if (btnNextPage && btnPrevPage && modalPage1 && modalPage2) {
         }
     };
 
-    if (serialNumberInput) {
-        serialNumberInput.addEventListener("input", validatePage1);
-    }
+    const attachValidation = (element, eventType) => {
+        if (element) {
+            element.addEventListener(eventType, validatePage1);
+        }
+    };
 
-    if (categorySelect) {
-        categorySelect.addEventListener("change", validatePage1);
-    }
+    attachValidation(equipmentCodeInput, "input");
+    attachValidation(equipmentCategorySelect, "change");
+    attachValidation(equipmentSerialInput, "input");
+    attachValidation(equipmentNameInput, "input");
+    attachValidation(equipmentBrandSelect, "change");
+    attachValidation(equipmentStatusSelect, "change");
+    attachValidation(equipmentLocationSelect, "change");
 
-    if (equipmentNameInput) {
-        equipmentNameInput.addEventListener("input", validatePage1);
-    }
+    // Filtragem de componentes pela categoria selecionada
+    if (equipmentCategorySelect) {
+        equipmentCategorySelect.addEventListener("change", (e) => {
+            const selectedCategoryId = e.target.value;
+            const componentItems = document.querySelectorAll(".multi-select-item[data-category-id]");
+            const noComponentsMsg = document.getElementById("no-components-msg");
+            let visibleCount = 0;
 
-    if (brandInput) {
-        brandInput.addEventListener("input", validatePage1);
+            componentItems.forEach(item => {
+                const itemCategoryId = item.getAttribute("data-category-id");
+                // Se o componente não tiver categoria (vazio) ou pertencer à selecionada, mostra
+                if (selectedCategoryId === "" || itemCategoryId === selectedCategoryId || itemCategoryId === "") {
+                    item.classList.remove("d-none");
+                    item.classList.add("d-flex");
+                    visibleCount++;
+                } else {
+                    item.classList.remove("d-flex");
+                    item.classList.add("d-none");
+                    // Desmarcar componente se for escondido
+                    const checkbox = item.querySelector('input[type="checkbox"]');
+                    if (checkbox && checkbox.checked) {
+                        checkbox.checked = false;
+                        const qtyContainer = item.querySelector(".multi-select-qty-container");
+                        if (qtyContainer) {
+                            qtyContainer.classList.add("d-none");
+                        }
+                    }
+                }
+            });
+
+            if (noComponentsMsg) {
+                if (visibleCount === 0) {
+                    noComponentsMsg.classList.remove("d-none");
+                } else {
+                    noComponentsMsg.classList.add("d-none");
+                }
+            }
+        });
     }
 
     // Navegação
@@ -775,6 +926,29 @@ if (btnNextPage && btnPrevPage && modalPage1 && modalPage2) {
         modalPage2.classList.add("d-none");
         modalPage1.classList.remove("d-none");
     });
+
+    // Validação de Datas de Manutenção
+    const maintenanceStartDate = document.getElementById("last-maintenance-start-date");
+    const maintenanceEndDate = document.getElementById("last-maintenance-end-date");
+    
+    const validateMaintenanceDates = () => {
+        if (maintenanceStartDate && maintenanceEndDate && maintenanceStartDate.value && maintenanceEndDate.value) {
+            const startDate = new Date(maintenanceStartDate.value);
+            const endDate = new Date(maintenanceEndDate.value);
+            
+            if (startDate > endDate) {
+                maintenanceEndDate.setCustomValidity("A data de fim não pode ser anterior à data de início.");
+                maintenanceEndDate.reportValidity();
+            } else {
+                maintenanceEndDate.setCustomValidity("");
+            }
+        } else if (maintenanceEndDate) {
+            maintenanceEndDate.setCustomValidity("");
+        }
+    };
+
+    if (maintenanceStartDate) maintenanceStartDate.addEventListener("change", validateMaintenanceDates);
+    if (maintenanceEndDate) maintenanceEndDate.addEventListener("change", validateMaintenanceDates);
 }
 
 // Lógica para Checkboxes Múltiplos com Quantidade
@@ -883,13 +1057,20 @@ if (uploadZone && fileInput && uploadContainer && uploadTemplate) {
 }
 
 // Inicializar Tooltips do Bootstrap
-document.addEventListener("DOMContentLoaded", function () {
+function initTooltips() {
     var tooltipTriggerList = [].slice.call(
-        document.querySelectorAll('[data-bs-toggle="tooltip"]'),
+        document.querySelectorAll('[data-bs-toggle="tooltip"]')
     );
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        // Apenas inicializa se ainda não estiver inicializado
+        if (!bootstrap.Tooltip.getInstance(tooltipTriggerEl)) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
+        }
     });
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    initTooltips();
 });
 
 // Campos obrigatórios do Fornecedor (Nome da Empresa, NIF)
@@ -1884,6 +2065,124 @@ document.addEventListener("DOMContentLoaded", function () {
             if (stockMinInput) stockMinInput.addEventListener("input", checkComponentFormValidity);
 
             checkComponentFormValidity();
+        }
+    });
+});
+
+// Lógica de Paginação e Validação para Modais de Edição de Equipamento
+document.addEventListener("DOMContentLoaded", () => {
+    const editForms = document.querySelectorAll(".form-edit-equipment");
+
+    editForms.forEach((form) => {
+        // Encontrar os elementos do form
+        const eqId = form.querySelector('input[name="equipment-id"]').value;
+        const btnNextPage = form.querySelector(`#btn-next-page-edit-${eqId}`);
+        const btnPrevPage = form.querySelector(`#btn-prev-page-edit-${eqId}`);
+        const modalPage1 = form.querySelector(`#modal-page-1-edit-${eqId}`);
+        const modalPage2 = form.querySelector(`#modal-page-2-edit-${eqId}`);
+        
+        // Instância do Modal
+        const modalEl = document.getElementById(`equipment-edit-modal-${eqId}`);
+        if (modalEl) {
+            modalEl.addEventListener("hidden.bs.modal", () => {
+                if (modalPage1 && modalPage2) {
+                    modalPage1.classList.remove("d-none");
+                    modalPage1.classList.add("d-flex");
+                    modalPage2.classList.remove("d-flex");
+                    modalPage2.classList.add("d-none");
+                }
+            });
+        }
+
+        // Navegação
+        if (btnNextPage && btnPrevPage && modalPage1 && modalPage2) {
+            btnNextPage.addEventListener("click", () => {
+                modalPage1.classList.add("d-none");
+                modalPage2.classList.remove("d-none");
+            });
+
+            btnPrevPage.addEventListener("click", () => {
+                modalPage2.classList.add("d-none");
+                modalPage1.classList.remove("d-none");
+            });
+        }
+
+        // Validação da Página 1
+        const codeInput = form.querySelector(`#equipment-code-${eqId}`);
+        const categorySelect = form.querySelector(`#equipment-category-${eqId}`);
+        const serialInput = form.querySelector(`#equipment-serial-${eqId}`);
+        const nameInput = form.querySelector(`#equipment-name-${eqId}`);
+        const brandSelect = form.querySelector(`#equipment-brand-${eqId}`);
+        const statusSelect = form.querySelector(`#equipment-status-${eqId}`);
+        const locationSelect = form.querySelector(`#equipment-location-${eqId}`);
+
+        const validatePage1 = () => {
+            if (
+                codeInput?.value.trim() !== "" &&
+                categorySelect?.value !== "" &&
+                serialInput?.value.trim() !== "" &&
+                nameInput?.value.trim() !== "" &&
+                brandSelect?.value !== "" &&
+                statusSelect?.value !== "" &&
+                locationSelect?.value !== ""
+            ) {
+                btnNextPage?.removeAttribute("disabled");
+            } else {
+                btnNextPage?.setAttribute("disabled", "true");
+            }
+        };
+
+        const attachValidation = (element, eventType) => {
+            if (element) {
+                element.addEventListener(eventType, validatePage1);
+            }
+        };
+
+        attachValidation(codeInput, "input");
+        attachValidation(categorySelect, "change");
+        attachValidation(serialInput, "input");
+        attachValidation(nameInput, "input");
+        attachValidation(brandSelect, "change");
+        attachValidation(statusSelect, "change");
+        attachValidation(locationSelect, "change");
+        
+        // Chamada inicial para preencher corretamente o estado ativado/desativado do form
+        validatePage1();
+
+        // Filtragem de componentes pela categoria
+        if (categorySelect) {
+            categorySelect.addEventListener("change", (e) => {
+                const selectedCategoryId = e.target.value;
+                const componentItems = form.querySelectorAll(".multi-select-item[data-category-id]");
+                const noComponentsMsg = form.querySelector(`#no-components-msg-edit-${eqId}`);
+                let visibleCount = 0;
+
+                componentItems.forEach(item => {
+                    const itemCategoryId = item.getAttribute("data-category-id");
+                    if (selectedCategoryId === "" || itemCategoryId === selectedCategoryId || itemCategoryId === "") {
+                        item.style.setProperty("display", "flex", "important");
+                        visibleCount++;
+                    } else {
+                        item.style.setProperty("display", "none", "important");
+                        const checkbox = item.querySelector('input[type="checkbox"]');
+                        if (checkbox && checkbox.checked) {
+                            checkbox.checked = false;
+                            const qtyContainer = item.querySelector(".multi-select-qty-container");
+                            if (qtyContainer) {
+                                qtyContainer.classList.add("d-none");
+                            }
+                        }
+                    }
+                });
+
+                if (noComponentsMsg) {
+                    if (visibleCount === 0) {
+                        noComponentsMsg.classList.remove("d-none");
+                    } else {
+                        noComponentsMsg.classList.add("d-none");
+                    }
+                }
+            });
         }
     });
 });
