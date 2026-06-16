@@ -677,6 +677,12 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                             </select>
                         </div>
 
+                        <!-- Row 8: Observações -->
+                        <div class="d-flex flex-column form-item w-100 mw-0">
+                            <label for="equipment-notes">Observações</label>
+                            <textarea id="equipment-notes" name="equipment-notes" class="form-control" rows="3" placeholder="Insira observações relevantes sobre o equipamento..."></textarea>
+                        </div>
+
                         <!-- Linha de Botões -->
                         <div class="d-flex w-100 justify-content-end gap-4 button-row mt-auto">
                             <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
@@ -1406,6 +1412,12 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                     <?php endforeach; ?>
 
                                 </select>
+                            </div>
+
+                            <!-- Row 8: Observações -->
+                            <div class="d-flex flex-column form-item w-100 mw-0">
+                                <label for="equipment-notes-<?= htmlspecialchars($encryptedEqId) ?>">Observações</label>
+                                <textarea id="equipment-notes-<?= htmlspecialchars($encryptedEqId) ?>" name="equipment-notes" class="form-control" rows="3" placeholder="Insira observações relevantes sobre o equipamento..."><?= htmlspecialchars($equipamento->getObservacoes()) ?></textarea>
                             </div>
 
                             <!-- Linha de Botões -->

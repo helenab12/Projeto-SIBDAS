@@ -46,6 +46,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $criticidade = trim($_POST['equipment-criticality'] ?? 'Baixa');
         $estadoAtual = trim($_POST['equipment-status'] ?? 'Ativo');
         $idLocalizacao = trim($_POST['equipment-location'] ?? '');
+        $observacoes = trim($_POST['equipment-notes'] ?? '');
+        
         
         // Validação básica
         if (empty($codigoInterno) || empty($idCategoria) || empty($numeroSerie) || empty($nome) || empty($idMarca) || empty($idLocalizacao)) {
@@ -78,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 estadoAtual = :estadoAtual,
                 criticidade = :criticidade,
                 idLocalizacao = :idLocalizacao,
+                observacoes = :observacoes,
                 dataAtualizacao = CURRENT_TIMESTAMP
             WHERE idEquipamento = :idEquipamento",
             [
@@ -94,6 +97,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'estadoAtual' => $estadoAtual,
                 'criticidade' => $criticidade,
                 'idLocalizacao' => $idLocalizacao,
+                'observacoes' => $observacoes,
                 'idEquipamento' => $idEquipamento
             ],
             $ligacao

@@ -35,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $criticidade = trim($_POST['equipment-criticality'] ?? 'Baixa');
         $estadoAtual = trim($_POST['equipment-status'] ?? 'Ativo');
         $idLocalizacao = trim($_POST['equipment-location'] ?? '');
+        $observacoes = trim($_POST['equipment-notes'] ?? '');
         
         // Validação básica
         if (empty($codigoInterno) || empty($idCategoria) || empty($numeroSerie) || empty($nome) || empty($idMarca) || empty($idLocalizacao)) {
@@ -52,11 +53,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             "INSERT INTO Equipamento (
                 idCategoria, codigoInterno, designacao, idMarca, modelo, numeroSerie,
                 dataAquisicao, dataFabrico, custoAquisicao, tipoEntrada, estadoAtual,
-                criticidade, idLocalizacao, ativo
+                criticidade, idLocalizacao, observacoes, ativo
             ) VALUES (
                 :idCategoria, :codigoInterno, :designacao, :idMarca, :modelo, :numeroSerie,
                 :dataAquisicao, :dataFabrico, :custoAquisicao, :tipoEntrada, :estadoAtual,
-                :criticidade, :idLocalizacao, 1
+                :criticidade, :idLocalizacao, :observacoes, 1
             )",
             [
                 'idCategoria' => $idCategoria,
@@ -71,7 +72,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'tipoEntrada' => $tipoEntrada,
                 'estadoAtual' => $estadoAtual,
                 'criticidade' => $criticidade,
-                'idLocalizacao' => $idLocalizacao
+                'idLocalizacao' => $idLocalizacao,
+                'observacoes' => $observacoes
             ],
             $ligacao
         );

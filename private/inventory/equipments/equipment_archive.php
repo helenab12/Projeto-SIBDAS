@@ -245,9 +245,12 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                         </svg>
                                     </div>
                                     <div class="d-flex flex-column">
-                                        <p class="equipment-title fw-700 mb-0">
-                                            <?= htmlspecialchars($equipamento->getDesignacao()) ?>
-                                        </p>
+                                        <a href="detailed_view.php?id=<?= htmlspecialchars($encryptedEqId) ?>"
+                                            class="text-primary">
+                                            <p class="equipment-title fw-700 mb-0">
+                                                <?= htmlspecialchars($equipamento->getDesignacao()) ?>
+                                            </p>
+                                        </a>
                                         <span
                                             class="equipment-subtitle text-secondary fw-400"><?= htmlspecialchars($marcaModeloString) ?>
                                             &bull; <?= htmlspecialchars($equipamento->getNumeroSerie()) ?></span>

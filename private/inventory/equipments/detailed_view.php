@@ -1,28 +1,189 @@
 <?php
 require_once(__DIR__ . "/../../../config/funcoes.php");
 redirect_if_not_logged();
-include_once BASE_PATH . 'private/includes/head.php';
-include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 
-// Dados do equipamento
-$serialNumber = 'DRG-V500-78234';
-$category = 'Ventiladores';
-$purchaseDate = '15/03/2022';
-$supplier = 'Dräger Portugal, Lda.';
-$lastMaintenance = '20/11/2025';
-$nextMaintenance = '20/05/2026';
-$notes = 'Equipamento principal da UCI. Última calibração em conformidade.';
-$warrantyExpirationDate = '15/03/2026';
+$encryptedId = $_GET['id'] ?? null;
+if (!$encryptedId) {
+    $_SESSION['server_error'] = "ID do equipamento não fornecido.";
+    header("Location: equipment_list.php");
+    exit;
+}
+
+$id = aes_decrypt($encryptedId);
+if ($id === false) {
+    $_SESSION['server_error'] = "ID do equipamento inválido.";
+    header("Location: equipment_list.php");
+    exit;
+}
+$id = (int) $id;
+
+try {
+    $ligacao = connect_to_db();
+
+    // Query Equipamento + Marca
+    $stmt = execute_query(
+        "SELECT e.*, m.nome as marcaNome 
+         FROM Equipamento e 
+         LEFT JOIN Marca m ON e.idMarca = m.idMarca 
+         WHERE e.idEquipamento = :id",
+        ['id' => $id],
+        $ligacao
+    );
+
+    $row = $stmt->fetch(PDO::FETCH_ASSOC);
+    if (!$row) {
+        $_SESSION['server_error'] = "Equipamento não encontrado.";
+        header("Location: equipment_list.php");
+        exit;
+    }
+
+    $equipamento = new Equipamento(
+        (string) $row['idEquipamento'],
+        $row['idCategoria'],
+        $row['codigoInterno'],
+        $row['designacao'],
+        $row['idMarca'],
+        $row['modelo'],
+        $row['numeroSerie'],
+        $row['dataAquisicao'] ? new DateTime($row['dataAquisicao']) : null,
+        $row['dataFabrico'] ? new DateTime($row['dataFabrico']) : null,
+        (float) $row['custoAquisicao'],
+        TipoEntrada::from($row['tipoEntrada']),
+        EstadoEquipamento::from($row['estadoAtual']),
+        CriticidadeEquipamento::from($row['criticidade']),
+        $row['observacoes'] ?? '',
+        $row['idLocalizacao'],
+        (bool) $row['arquivado'],
+        (bool) $row['ativo'],
+        new DateTime($row['dataCriacao']),
+        new DateTime($row['dataAtualizacao']),
+        $row['marcaNome']
+    );
+
+    // Get Categoria
+    $catNome = "Sem Categoria";
+    if ($equipamento->getIdCategoria()) {
+        $stmtCat = execute_query(
+            "SELECT nome FROM CategoriaEquipamento WHERE idCategoria = :idCat",
+            ['idCat' => $equipamento->getIdCategoria()],
+            $ligacao
+        );
+        $catRow = $stmtCat->fetch(PDO::FETCH_ASSOC);
+        if ($catRow) {
+            $catNome = $catRow['nome'];
+        }
+    }
+
+    // Get Localizacao
+    $locNome = "Desconhecida";
+    if ($equipamento->getIdLocalizacao()) {
+        $stmtLoc = execute_query(
+            "SELECT 
+                l.idLocalizacao,
+                e.nome AS edificioNome,
+                p.nome AS pisoNome,
+                s.nome AS servicoNome,
+                l.nomeSala AS salaNome
+             FROM Localizacao l
+             JOIN Servico s ON l.idServico = s.idServico
+             JOIN Piso p ON s.idPiso = p.idPiso
+             JOIN Edificio e ON p.idEdificio = e.idEdificio
+             WHERE l.idLocalizacao = :idLoc",
+            ['idLoc' => $equipamento->getIdLocalizacao()],
+            $ligacao
+        );
+        $locRow = $stmtLoc->fetch(PDO::FETCH_ASSOC);
+        if ($locRow) {
+            $locNome = $locRow['edificioNome'] . ', ' . $locRow['pisoNome'] . ', ' . $locRow['servicoNome'] . ', ' . $locRow['salaNome'];
+        }
+    }
+
+    // Obter Fornecedor Fabricante
+    $supplier = '—';
+    $stmtFornecedor = execute_query(
+        "SELECT f.nome 
+         FROM Fornecedor f
+         INNER JOIN FornecedorEquipamento fe ON f.idFornecedor = fe.idFornecedor
+         WHERE fe.idEquipamento = :id AND f.tipoFornecedor = 'Fabricante' AND f.ativo = 1 AND fe.ativo = 1
+         LIMIT 1",
+        ['id' => $id],
+        $ligacao
+    );
+    if ($fornRow = $stmtFornecedor->fetch(PDO::FETCH_ASSOC)) {
+        $supplier = $fornRow['nome'];
+    }
+
+} catch (Exception $e) {
+    $_SESSION['server_error'] = "Erro ao carregar os dados do equipamento: " . $e->getMessage();
+    header("Location: equipment_list.php");
+    exit;
+}
+
+// Variáveis para o template
+$designacao = $equipamento->getDesignacao();
+$codigoInterno = $equipamento->getCodigoInterno();
+$marcaNome = $equipamento->getMarcaNome() ?? '—';
+$modelo = $equipamento->getModelo();
+$tipoEntrada = $equipamento->getTipoEntrada()->value;
+$dataFabricoObj = $equipamento->getDataFabrico();
+$dataFabricoFormatada = $dataFabricoObj ? $dataFabricoObj->format('d/m/Y') : 'Desconhecida';
+$serialNumber = $equipamento->getNumeroSerie();
+$category = $catNome;
+$purchaseDateObj = $equipamento->getDataAquisicao();
+$purchaseDate = $purchaseDateObj ? $purchaseDateObj->format('d/m/Y') : 'Desconhecida';
+$notes = $equipamento->getObservacoes() ?: 'Sem observações.';
+
+// TODO: Implementar no futuro - Placeholder para ja
+$lastMaintenance = '—';
+$nextMaintenance = '—';
+$warrantyExpirationDate = null;
 
 // Cálculo da garantia
-$today = new DateTime('now');
-$expiration = DateTime::createFromFormat('d/m/Y', $warrantyExpirationDate);
-$isExpired = $today > $expiration;
+$isExpired = false;
 $daysRemaining = 0;
-if (!$isExpired) {
-    $diff = $today->diff($expiration);
-    $daysRemaining = $diff->days;
+if ($warrantyExpirationDate !== null) {
+    $today = new DateTime('now');
+    $expiration = DateTime::createFromFormat('d/m/Y', $warrantyExpirationDate);
+    $isExpired = $today > $expiration;
+    if (!$isExpired) {
+        $diff = $today->diff($expiration);
+        $daysRemaining = $diff->days;
+    }
 }
+
+// Tooltips e Classes de Badges
+$estado = $equipamento->getEstadoAtual()->value;
+$statusClass = match ($estado) {
+    'Ativo' => 'equipment-badge-status-active',
+    'Manutenção' => 'equipment-badge-status-maintenance',
+    'Inativo' => 'equipment-badge-status-inactive',
+    'Abatido' => 'equipment-badge-status-scrapped',
+    default => 'bg-secondary',
+};
+$estadoTooltip = match ($estado) {
+    'Ativo' => "Equipamento operacional e disponível para uso clínico.",
+    'Manutenção' => "Equipamento em reparação ou calibração.",
+    'Inativo' => "Equipamento parado, a aguardar decisão.",
+    'Abatido' => "Equipamento retirado definitivamente do serviço.",
+    default => "Estado: " . $estado,
+};
+
+$criticidade = $equipamento->getCriticidade()->value;
+$critClass = match ($criticidade) {
+    'Alta' => 'equipment-badge-criticality-critical',
+    'Média' => 'equipment-badge-criticality-high',
+    'Baixa' => 'equipment-badge-criticality-low',
+    default => 'bg-secondary',
+};
+$criticidadeTooltip = match ($criticidade) {
+    'Alta' => "Equipamento vital — falha pode resultar em risco de vida para o paciente.",
+    'Média' => "Equipamento de impacto moderado — existem alternativas para suprir a falha.",
+    'Baixa' => "Equipamento de apoio — falha com impacto mínimo no serviço.",
+    default => "Criticidade: " . $criticidade,
+};
+
+include_once BASE_PATH . 'private/includes/head.php';
+include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 ?>
 
 <div class="d-flex flex-column flex-grow-1 overflow-x-hidden mw-0">
@@ -50,7 +211,7 @@ if (!$isExpired) {
                 class="lucide lucide-chevron-right text-secondary opacity-50 d-none d-md-inline-block">
                 <path d="m9 18 6-6-6-6" />
             </svg>
-            <h3 class="fw-600 text-primary mb-0">Ventilador Mecânico V500</h3>
+            <h3 class="fw-600 text-primary mb-0"><?= htmlspecialchars($designacao) ?></h3>
         </div>
 
         <!-- Bento Card de Detalhes -->
@@ -70,14 +231,14 @@ if (!$isExpired) {
 
             <!-- Title & Badges Wrapper -->
             <div class="detailed-header-info d-flex flex-column flex-md-row justify-content-start gap-2">
-                <h2 class="fw-700 text-primary mb-0">Ventilador Mecânico V500</h2>
+                <h2 class="fw-700 text-primary mb-0"><?= htmlspecialchars($designacao) ?></h2>
                 <div class="d-flex align-items-center gap-2 flex-wrap">
-                    <span class="equipment-badge equipment-badge-status-active equipment-badge-tooltip"
-                        data-bs-toggle="tooltip" data-bs-placement="top"
-                        title="Equipamento operacional e disponível para uso clínico.">Ativo</span>
-                    <span class="equipment-badge equipment-badge-criticality-critical equipment-badge-tooltip"
-                        data-bs-toggle="tooltip" data-bs-placement="top"
-                        title="Equipamento vital — falha pode resultar em risco de vida para o paciente.">Crítico</span>
+                    <span class="equipment-badge <?= $statusClass ?> equipment-badge-tooltip" data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="<?= htmlspecialchars($estadoTooltip) ?>"><?= htmlspecialchars($estado) ?></span>
+                    <span class="equipment-badge <?= $critClass ?> equipment-badge-tooltip" data-bs-toggle="tooltip"
+                        data-bs-placement="top"
+                        title="<?= htmlspecialchars($criticidadeTooltip) ?>"><?= htmlspecialchars($criticidade) ?></span>
 
                     <!-- QR Code Badge -->
                     <button class="equipment-badge equipment-badge-status-inactive btn-qr-code border-0 gap-1">
@@ -115,7 +276,7 @@ if (!$isExpired) {
                         </svg>
                         <label class="text-secondary fw-500">ID</label>
                     </div>
-                    <p class="fw-700 text-primary m-0">EQ-2024-001</p>
+                    <p class="fw-700 text-primary m-0"><?= htmlspecialchars($codigoInterno) ?></p>
                 </div>
 
                 <!-- Marca -->
@@ -134,7 +295,7 @@ if (!$isExpired) {
                         </svg>
                         <label class="text-secondary fw-500">Marca</label>
                     </div>
-                    <p class="fw-700 text-primary m-0">Dräger</p>
+                    <p class="fw-700 text-primary m-0"><?= htmlspecialchars($marcaNome) ?></p>
                 </div>
 
                 <!-- Modelo -->
@@ -150,7 +311,7 @@ if (!$isExpired) {
                         </svg>
                         <label class="text-secondary fw-500">Modelo</label>
                     </div>
-                    <p class="fw-700 text-primary m-0">Evita V500</p>
+                    <p class="fw-700 text-primary m-0"><?= htmlspecialchars($modelo) ?></p>
                 </div>
 
                 <!-- Localização -->
@@ -164,7 +325,7 @@ if (!$isExpired) {
                         </svg>
                         <label class="text-secondary fw-500">Localização</label>
                     </div>
-                    <p class="fw-700 text-primary m-0">UCI - Piso 3</p>
+                    <p class="fw-700 text-primary m-0"><?= htmlspecialchars($locNome) ?></p>
                 </div>
 
                 <!-- Tipo de Entrada -->
@@ -181,7 +342,7 @@ if (!$isExpired) {
                         </svg>
                         <label class="text-secondary fw-500">Tipo de Entrada</label>
                     </div>
-                    <p class="fw-700 text-primary m-0">Compra</p>
+                    <p class="fw-700 text-primary m-0"><?= htmlspecialchars($tipoEntrada) ?></p>
                 </div>
 
                 <!-- Data de Fabrico -->
@@ -197,7 +358,7 @@ if (!$isExpired) {
                         </svg>
                         <label class="text-secondary fw-500">Data de Fabrico</label>
                     </div>
-                    <p class="fw-700 text-primary m-0">20/08/2021</p>
+                    <p class="fw-700 text-primary m-0"><?= $dataFabricoFormatada ?></p>
                 </div>
             </div>
         </div>
