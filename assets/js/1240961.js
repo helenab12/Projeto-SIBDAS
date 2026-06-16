@@ -649,7 +649,11 @@ if (typeof flatpickr !== "undefined") {
         dateFormat: "d/m/Y",
         allowInput: true,
     });
-    flatpickr("#warranty-date", {
+    flatpickr("#warranty-start-date", {
+        dateFormat: "d/m/Y",
+        allowInput: true,
+    });
+    flatpickr("#warranty-end-date", {
         dateFormat: "d/m/Y",
         allowInput: true,
     });
@@ -1073,7 +1077,7 @@ document.querySelectorAll(".file-upload-zone").forEach(zone => {
         e.preventDefault();
         zone.style.borderColor = "";
         zone.style.backgroundColor = "";
-        
+
         if (e.dataTransfer.files.length > 0) {
             if (isMulti) {
                 if (typeof handleFiles === 'function') handleFiles(e.dataTransfer.files);
@@ -1134,58 +1138,58 @@ document.querySelectorAll(".file-upload-zone").forEach(zone => {
 // Função para processar os ficheiros multi-upload e criar os cards
 function handleFiles(files) {
     if (!uploadTemplate || !localUploadContainer) return;
-        const allowedTypes = ["application/pdf", "image/jpeg", "image/png"];
-        const maxSize = 25 * 1024 * 1024; // 25MB
+    const allowedTypes = ["application/pdf", "image/jpeg", "image/png"];
+    const maxSize = 25 * 1024 * 1024; // 25MB
 
-        for (let i = 0; i < files.length; i++) {
-            const file = files[i];
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
 
-            // Validação de tipo
-            if (
-                !allowedTypes.includes(file.type) &&
-                !file.name.match(/\.(pdf|jpe?g|png)$/i)
-            ) {
-                alert(
-                    `O ficheiro "${file.name}" tem um formato inválido. Apenas PDF, JPG e PNG são permitidos.`,
-                );
-                continue;
-            }
-
-            // Validação de tamanho (máx 25MB)
-            if (file.size > maxSize) {
-                alert(`O ficheiro "${file.name}" excede o tamanho máximo de 25MB.`);
-                continue;
-            }
-
-            // Criar o card do ficheiro a partir do template
-            const clone = uploadTemplate.content.cloneNode(true);
-            const card = clone.querySelector(".uploaded-file-card");
-            const nameDisplay = clone.querySelector(".file-name-display");
-            const closeBtn = clone.querySelector(".btn-close-file");
-
-            // Atualizar os dados
-            nameDisplay.textContent = file.name;
-            nameDisplay.title = file.name;
-
-            // Popular o input escondido do template com o ficheiro selecionado
-            const hiddenInput = clone.querySelector(".real-file-input");
-            if (hiddenInput) {
-                const dt = new DataTransfer();
-                dt.items.add(file);
-                hiddenInput.files = dt.files;
-            }
-
-            // Lógica de remoção
-            closeBtn.addEventListener("click", () => {
-                card.remove();
-                if (window.validatePage2) window.validatePage2();
-            });
-
-            // Adicionar ao container
-            localUploadContainer.appendChild(clone);
-            if (window.validatePage2) window.validatePage2();
+        // Validação de tipo
+        if (
+            !allowedTypes.includes(file.type) &&
+            !file.name.match(/\.(pdf|jpe?g|png)$/i)
+        ) {
+            alert(
+                `O ficheiro "${file.name}" tem um formato inválido. Apenas PDF, JPG e PNG são permitidos.`,
+            );
+            continue;
         }
+
+        // Validação de tamanho (máx 25MB)
+        if (file.size > maxSize) {
+            alert(`O ficheiro "${file.name}" excede o tamanho máximo de 25MB.`);
+            continue;
+        }
+
+        // Criar o card do ficheiro a partir do template
+        const clone = uploadTemplate.content.cloneNode(true);
+        const card = clone.querySelector(".uploaded-file-card");
+        const nameDisplay = clone.querySelector(".file-name-display");
+        const closeBtn = clone.querySelector(".btn-close-file");
+
+        // Atualizar os dados
+        nameDisplay.textContent = file.name;
+        nameDisplay.title = file.name;
+
+        // Popular o input escondido do template com o ficheiro selecionado
+        const hiddenInput = clone.querySelector(".real-file-input");
+        if (hiddenInput) {
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            hiddenInput.files = dt.files;
+        }
+
+        // Lógica de remoção
+        closeBtn.addEventListener("click", () => {
+            card.remove();
+            if (window.validatePage2) window.validatePage2();
+        });
+
+        // Adicionar ao container
+        localUploadContainer.appendChild(clone);
+        if (window.validatePage2) window.validatePage2();
     }
+}
 
 // Inicializar Tooltips do Bootstrap
 function initTooltips() {
@@ -1326,6 +1330,110 @@ if (buildingNameInput && btnSubmitModal) {
     }
 }
 
+// Validação do Form de Criar Garantia/Contrato
+const warrantyForm = document.getElementById("add-warranty-form");
+if (warrantyForm) {
+    const typeInput = document.getElementById("warranty-type");
+    const periodicityInput = document.getElementById("warranty-periodicity");
+    const startDateInput = document.getElementById("warranty-start-date");
+    const endDateInput = document.getElementById("warranty-end-date");
+    const btnSubmitWarranty = document.getElementById("btn-submit-warranty");
+
+    if (typeInput && periodicityInput && startDateInput && endDateInput && btnSubmitWarranty) {
+        // Função para converter dd/mm/yyyy para objeto Date
+        const parseDate = (dateString) => {
+            if (!dateString) return null;
+            const parts = dateString.split("/");
+            if (parts.length === 3) {
+                return new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
+            }
+            return null;
+        };
+
+        const validateWarrantyForm = () => {
+            let isValid = false;
+            if (typeInput.value && periodicityInput.value && startDateInput.value && endDateInput.value) {
+                const startDate = parseDate(startDateInput.value);
+                const endDate = parseDate(endDateInput.value);
+
+                if (startDate && endDate && endDate > startDate) {
+                    isValid = true;
+                }
+            }
+
+            if (isValid) {
+                btnSubmitWarranty.removeAttribute("disabled");
+            } else {
+                btnSubmitWarranty.setAttribute("disabled", "true");
+            }
+        };
+
+        validateWarrantyForm();
+
+        typeInput.addEventListener("change", validateWarrantyForm);
+        periodicityInput.addEventListener("change", validateWarrantyForm);
+        startDateInput.addEventListener("change", validateWarrantyForm);
+        endDateInput.addEventListener("change", validateWarrantyForm);
+        startDateInput.addEventListener("input", validateWarrantyForm);
+        endDateInput.addEventListener("input", validateWarrantyForm);
+    }
+}
+
+// Validação e Inicialização dos Forms de Editar Garantia/Contrato
+const editWarrantyForms = document.querySelectorAll(".edit-warranty-form");
+editWarrantyForms.forEach((form) => {
+    const typeInput = form.querySelector(".edit-warranty-type");
+    const periodicityInput = form.querySelector(".edit-warranty-periodicity");
+    const startDateInput = form.querySelector(".edit-warranty-start-date");
+    const endDateInput = form.querySelector(".edit-warranty-end-date");
+    const btnSubmit = form.querySelector(".btn-submit-edit-warranty");
+
+    if (typeInput && periodicityInput && startDateInput && endDateInput && btnSubmit) {
+        const parseDate = (dateString) => {
+            if (!dateString) return null;
+            const parts = dateString.split("/");
+            if (parts.length === 3) {
+                return new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
+            }
+            return null;
+        };
+
+        const validateForm = () => {
+            let isValid = false;
+            if (typeInput.value && periodicityInput.value && startDateInput.value && endDateInput.value) {
+                const startDate = parseDate(startDateInput.value);
+                const endDate = parseDate(endDateInput.value);
+                if (startDate && endDate && endDate > startDate) {
+                    isValid = true;
+                }
+            }
+            if (isValid) {
+                btnSubmit.disabled = false;
+            } else {
+                btnSubmit.disabled = true;
+            }
+        };
+
+        // Initialize flatpickr on this form's date inputs
+        flatpickr(startDateInput, {
+            dateFormat: "d/m/Y",
+            allowInput: true,
+            onChange: validateForm
+        });
+        flatpickr(endDateInput, {
+            dateFormat: "d/m/Y",
+            allowInput: true,
+            onChange: validateForm
+        });
+
+        validateForm();
+
+        typeInput.addEventListener("change", validateForm);
+        periodicityInput.addEventListener("change", validateForm);
+        startDateInput.addEventListener("input", validateForm);
+        endDateInput.addEventListener("input", validateForm);
+    }
+});
 // Impedir que os botões de ação disparem o colapso do accordion nas localizações
 document.addEventListener(
     "click",

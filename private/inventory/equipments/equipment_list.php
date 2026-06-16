@@ -1180,7 +1180,6 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                         </template>
                                     </div>
 
-
                                 </div>
                             </div>
 

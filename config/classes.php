@@ -2124,3 +2124,218 @@ class Componente implements Validavel
         return $erros;
     }
 }
+
+// Garantias e Contratos
+
+enum TipoRegisto: string
+{
+    case GARANTIA_FABRICA = 'Garantia de Fábrica';
+    case CONTRATO_MANUTENCAO = 'Contrato de Manutenção';
+}
+
+enum Periodicidade: string
+{
+    case MENSAL = 'Mensal';
+    case SEMESTRAL = 'Semestral';
+    case ANUAL = 'Anual';
+    case NA = 'N/A';
+}
+
+class GarantiaContrato implements Validavel
+{
+    private string $idGarantiaContrato;
+    private ?string $idEquipamento;
+    private ?string $idFornecedor;
+    private ?string $idDocumento;
+    private TipoRegisto $tipoRegisto;
+    private ?DateTime $dataInicio;
+    private ?DateTime $dataFim;
+    private Periodicidade $periodicidade;
+    private ?string $observacoes;
+    private bool $ativo;
+    private DateTime $dataCriacao;
+    private DateTime $dataAtualizacao;
+    private ?string $fornecedorNome;
+    private ?string $documentoCaminho;
+
+    public function __construct(
+        string $idGarantiaContrato = "",
+        ?string $idEquipamento = null,
+        ?string $idFornecedor = null,
+        ?string $idDocumento = null,
+        TipoRegisto $tipoRegisto = TipoRegisto::GARANTIA_FABRICA,
+        ?DateTime $dataInicio = null,
+        ?DateTime $dataFim = null,
+        Periodicidade $periodicidade = Periodicidade::NA,
+        ?string $observacoes = null,
+        bool $ativo = true,
+        ?DateTime $dataCriacao = null,
+        ?DateTime $dataAtualizacao = null,
+        ?string $fornecedorNome = null,
+        ?string $documentoCaminho = null
+    ) {
+        $erros = self::validarDados([
+            'idGarantiaContrato' => $idGarantiaContrato,
+            'tipoRegisto' => $tipoRegisto->value,
+            'dataInicio' => $dataInicio ? $dataInicio->format('Y-m-d') : null,
+            'dataFim' => $dataFim ? $dataFim->format('Y-m-d') : null,
+            'periodicidade' => $periodicidade->value,
+            'dataCriacao' => $dataCriacao ? $dataCriacao->format('Y-m-d') : null,
+            'dataAtualizacao' => $dataAtualizacao ? $dataAtualizacao->format('Y-m-d') : null,
+        ]);
+
+        if (!empty($erros)) {
+            throw new Exception("Erro ao criar garantia/contrato: " . implode(", ", $erros));
+        }
+
+        $this->idGarantiaContrato = $idGarantiaContrato;
+        $this->idEquipamento = $idEquipamento;
+        $this->idFornecedor = $idFornecedor;
+        $this->idDocumento = $idDocumento;
+        $this->tipoRegisto = $tipoRegisto;
+        $this->dataInicio = $dataInicio;
+        $this->dataFim = $dataFim;
+        $this->periodicidade = $periodicidade;
+        $this->observacoes = $observacoes;
+        $this->ativo = $ativo;
+        $this->dataCriacao = $dataCriacao ?? new DateTime();
+        $this->dataAtualizacao = $dataAtualizacao ?? new DateTime();
+        $this->fornecedorNome = $fornecedorNome;
+        $this->documentoCaminho = $documentoCaminho;
+    }
+
+    public function getIdGarantiaContrato(): string
+    {
+        return $this->idGarantiaContrato;
+    }
+    public function getIdEquipamento(): ?string
+    {
+        return $this->idEquipamento;
+    }
+    public function getIdFornecedor(): ?string
+    {
+        return $this->idFornecedor;
+    }
+    public function getIdDocumento(): ?string
+    {
+        return $this->idDocumento;
+    }
+    public function getTipoRegisto(): TipoRegisto
+    {
+        return $this->tipoRegisto;
+    }
+    public function getDataInicio(): ?DateTime
+    {
+        return $this->dataInicio;
+    }
+    public function getDataFim(): ?DateTime
+    {
+        return $this->dataFim;
+    }
+    public function getPeriodicidade(): Periodicidade
+    {
+        return $this->periodicidade;
+    }
+    public function getObservacoes(): ?string
+    {
+        return $this->observacoes;
+    }
+    public function getAtivo(): bool
+    {
+        return $this->ativo;
+    }
+    public function getDataCriacao(): DateTime
+    {
+        return $this->dataCriacao;
+    }
+    public function getDataAtualizacao(): DateTime
+    {
+        return $this->dataAtualizacao;
+    }
+    public function getFornecedorNome(): ?string
+    {
+        return $this->fornecedorNome;
+    }
+    public function getDocumentoCaminho(): ?string
+    {
+        return $this->documentoCaminho;
+    }
+    
+    public function getEstado(): string
+    {
+        if ($this->dataFim === null) {
+            return 'Ativo';
+        }
+        return $this->dataFim >= new DateTime('today') ? 'Ativo' : 'Expirado';
+    }
+
+    public static function validarDados(array $dados): array
+    {
+        $erros = [];
+
+        if (empty(trim($dados['tipoRegisto'] ?? ''))) {
+            $erros[] = "O campo Tipo de Registo é obrigatório.";
+        } else {
+            $tipoValido = false;
+            foreach (TipoRegisto::cases() as $t) {
+                if ($t->value === $dados['tipoRegisto']) {
+                    $tipoValido = true;
+                    break;
+                }
+            }
+            if (!$tipoValido) {
+                $erros[] = "Tipo de Registo inválido.";
+            }
+        }
+
+        $dataInicioObj = null;
+        if (!empty($dados['dataInicio'])) {
+            if ($dados['dataInicio'] instanceof DateTime) {
+                $dataInicioObj = clone $dados['dataInicio'];
+            } else {
+                $d = DateTime::createFromFormat('Y-m-d', $dados['dataInicio']);
+                if (!$d || $d->format('Y-m-d') !== $dados['dataInicio']) {
+                    $erros[] = "A Data de Início tem de ser uma data válida no formato AAAA-MM-DD.";
+                } else {
+                    $dataInicioObj = clone $d;
+                }
+            }
+        }
+
+        $dataFimObj = null;
+        if (!empty($dados['dataFim'])) {
+            if ($dados['dataFim'] instanceof DateTime) {
+                $dataFimObj = clone $dados['dataFim'];
+            } else {
+                $d = DateTime::createFromFormat('Y-m-d', $dados['dataFim']);
+                if (!$d || $d->format('Y-m-d') !== $dados['dataFim']) {
+                    $erros[] = "A Data de Fim tem de ser uma data válida no formato AAAA-MM-DD.";
+                } else {
+                    $dataFimObj = clone $d;
+                }
+            }
+        }
+
+        if ($dataInicioObj && $dataFimObj && $dataFimObj <= $dataInicioObj) {
+            $erros[] = "A Data de Fim tem de ser posterior à Data de Início.";
+        }
+
+        if (empty(trim($dados['periodicidade'] ?? ''))) {
+            $erros[] = "O campo Periodicidade é obrigatório.";
+        } else {
+            $periodicidadeValida = false;
+            foreach (Periodicidade::cases() as $p) {
+                if ($p->value === $dados['periodicidade']) {
+                    $periodicidadeValida = true;
+                    break;
+                }
+            }
+            if (!$periodicidadeValida) {
+                $erros[] = "Periodicidade inválida.";
+            }
+        }
+
+        return $erros;
+    }
+}
+
