@@ -174,6 +174,14 @@ try {
     );
     $fornecedoresDisponiveis = $stmtFornecedoresDoc->fetchAll(PDO::FETCH_ASSOC);
 
+    // Buscar Pessoas (para modais de manutenção)
+    $stmtPessoas = execute_query(
+        "SELECT idPessoa, nome, funcao FROM Pessoa WHERE ativo = 1 ORDER BY nome ASC",
+        [],
+        $ligacao
+    );
+    $pessoasDisponiveis = $stmtPessoas->fetchAll(PDO::FETCH_ASSOC);
+
 } catch (Exception $e) {
     $_SESSION['server_error'] = "Erro ao carregar os dados do equipamento: " . $e->getMessage();
     header("Location: equipment_list.php");

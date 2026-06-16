@@ -76,7 +76,7 @@ $cardsConfig = [
 
 <div class="tab-pane fade <?= $activeTab === 'fornecedores' ? 'show active' : '' ?>" id="nav-fornecedores"
     role="tabpanel" aria-labelledby="nav-fornecedores-tab">
-    <div class="row g-4 w-100 m-0">
+    <div class="row g-4">
         <?php foreach ($cardsConfig as $config): ?>
             <div class="col-12 col-lg-6">
                 <div class="card bento-card supplier-card padding-6 d-flex flex-column gap-4 h-100">

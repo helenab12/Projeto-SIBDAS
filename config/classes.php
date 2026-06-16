@@ -2339,3 +2339,155 @@ class GarantiaContrato implements Validavel
     }
 }
 
+enum TipoManutencao: string
+{
+    case Preventiva = 'Preventiva';
+    case Corretiva = 'Corretiva';
+    case Calibracao = 'Calibração';
+}
+
+class Manutencao implements Validavel
+{
+    private string $idManutencao;
+    private string $idEquipamento;
+    private TipoManutencao $tipoManutencao;
+    private DateTime $dataInicio;
+    private ?DateTime $dataFim;
+    private string $idPessoaResponsavel;
+    private ?string $idFornecedor;
+    private ?float $custoManutencao;
+    private ?string $observacoes;
+    private bool $ativo;
+    private DateTime $dataCriacao;
+    private DateTime $dataAtualizacao;
+    private ?string $pessoaNome;
+    private ?string $fornecedorNome;
+
+    public function __construct(
+        string $idManutencao,
+        string $idEquipamento,
+        TipoManutencao $tipoManutencao,
+        DateTime $dataInicio,
+        ?DateTime $dataFim,
+        string $idPessoaResponsavel,
+        ?string $idFornecedor,
+        ?float $custoManutencao,
+        ?string $observacoes,
+        bool $ativo,
+        ?DateTime $dataCriacao = null,
+        ?DateTime $dataAtualizacao = null,
+        ?string $pessoaNome = null,
+        ?string $fornecedorNome = null
+    ) {
+        $erros = self::validarDados([
+            'idManutencao' => $idManutencao,
+            'idEquipamento' => $idEquipamento,
+            'tipoManutencao' => $tipoManutencao->value,
+            'dataInicio' => $dataInicio->format('Y-m-d'),
+            'dataFim' => $dataFim ? $dataFim->format('Y-m-d') : null,
+            'idPessoaResponsavel' => $idPessoaResponsavel,
+            'idFornecedor' => $idFornecedor,
+            'custoManutencao' => $custoManutencao,
+        ]);
+
+        if (!empty($erros)) {
+            throw new Exception(implode(", ", $erros));
+        }
+
+        $this->idManutencao = $idManutencao;
+        $this->idEquipamento = $idEquipamento;
+        $this->tipoManutencao = $tipoManutencao;
+        $this->dataInicio = $dataInicio;
+        $this->dataFim = $dataFim;
+        $this->idPessoaResponsavel = $idPessoaResponsavel;
+        $this->idFornecedor = $idFornecedor;
+        $this->custoManutencao = $custoManutencao;
+        $this->observacoes = $observacoes;
+        $this->ativo = $ativo;
+        $this->dataCriacao = $dataCriacao ?? new DateTime();
+        $this->dataAtualizacao = $dataAtualizacao ?? new DateTime();
+        $this->pessoaNome = $pessoaNome;
+        $this->fornecedorNome = $fornecedorNome;
+    }
+
+    public function getIdManutencao(): string { return $this->idManutencao; }
+    public function getIdEquipamento(): string { return $this->idEquipamento; }
+    public function getTipoManutencao(): TipoManutencao { return $this->tipoManutencao; }
+    public function getDataInicio(): DateTime { return $this->dataInicio; }
+    public function getDataFim(): ?DateTime { return $this->dataFim; }
+    public function getIdPessoaResponsavel(): string { return $this->idPessoaResponsavel; }
+    public function getIdFornecedor(): ?string { return $this->idFornecedor; }
+    public function getCustoManutencao(): ?float { return $this->custoManutencao; }
+    public function getObservacoes(): ?string { return $this->observacoes; }
+    public function getAtivo(): bool { return $this->ativo; }
+    public function getDataCriacao(): DateTime { return $this->dataCriacao; }
+    public function getDataAtualizacao(): DateTime { return $this->dataAtualizacao; }
+    public function getPessoaNome(): ?string { return $this->pessoaNome; }
+    public function getFornecedorNome(): ?string { return $this->fornecedorNome; }
+
+    public static function validarDados(array $dados): array
+    {
+        $erros = [];
+
+        if (empty(trim($dados['tipoManutencao'] ?? ''))) {
+            $erros[] = "O campo Tipo de Manutenção é obrigatório.";
+        } else {
+            $tipoValido = false;
+            foreach (TipoManutencao::cases() as $t) {
+                if ($t->value === $dados['tipoManutencao']) {
+                    $tipoValido = true;
+                    break;
+                }
+            }
+            if (!$tipoValido) {
+                $erros[] = "Tipo de Manutenção inválido.";
+            }
+        }
+
+        $dataInicioObj = null;
+        if (!empty($dados['dataInicio'])) {
+            if ($dados['dataInicio'] instanceof DateTime) {
+                $dataInicioObj = clone $dados['dataInicio'];
+            } else {
+                $d = DateTime::createFromFormat('Y-m-d', $dados['dataInicio']);
+                if (!$d || $d->format('Y-m-d') !== $dados['dataInicio']) {
+                    $erros[] = "A Data de Início tem de ser uma data válida no formato AAAA-MM-DD.";
+                } else {
+                    $dataInicioObj = clone $d;
+                }
+            }
+        } else {
+            $erros[] = "A Data de Início é obrigatória.";
+        }
+
+        $dataFimObj = null;
+        if (!empty($dados['dataFim'])) {
+            if ($dados['dataFim'] instanceof DateTime) {
+                $dataFimObj = clone $dados['dataFim'];
+            } else {
+                $d = DateTime::createFromFormat('Y-m-d', $dados['dataFim']);
+                if (!$d || $d->format('Y-m-d') !== $dados['dataFim']) {
+                    $erros[] = "A Data de Fim tem de ser uma data válida no formato AAAA-MM-DD.";
+                } else {
+                    $dataFimObj = clone $d;
+                }
+            }
+        }
+
+        if ($dataInicioObj && $dataFimObj && $dataFimObj <= $dataInicioObj) {
+            $erros[] = "A Data de Fim tem de ser posterior à Data de Início.";
+        }
+
+        if (empty(trim($dados['idPessoaResponsavel'] ?? ''))) {
+            $erros[] = "A Pessoa Responsável é obrigatória.";
+        }
+
+        if (!empty($dados['custoManutencao']) && !is_numeric($dados['custoManutencao'])) {
+            $erros[] = "O Custo da Manutenção tem de ser um valor numérico.";
+        } elseif (!empty($dados['custoManutencao']) && (float)$dados['custoManutencao'] < 0) {
+            $erros[] = "O Custo da Manutenção não pode ser negativo.";
+        }
+
+        return $erros;
+    }
+}

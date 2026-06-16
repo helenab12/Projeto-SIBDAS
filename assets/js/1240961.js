@@ -1379,6 +1379,60 @@ if (warrantyForm) {
     }
 }
 
+// Validação do Form de Criar Manutenção
+const maintenanceForm = document.getElementById("add-maintenance-form");
+if (maintenanceForm) {
+    const typeInput = document.getElementById("maintenance-type");
+    const responsibleInput = document.getElementById("maintenance-responsible");
+    const startDateInput = document.getElementById("maintenance-start-date");
+    const endDateInput = document.getElementById("maintenance-end-date");
+    const btnSubmitMaintenance = document.getElementById("btn-submit-maintenance");
+
+    if (typeInput && responsibleInput && startDateInput && btnSubmitMaintenance) {
+        const parseDate = (dateString) => {
+            if (!dateString) return null;
+            const parts = dateString.split("/");
+            if (parts.length === 3) {
+                return new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
+            }
+            return null;
+        };
+
+        const validateMaintenanceForm = () => {
+            let isValid = false;
+            if (typeInput.value && responsibleInput.value && startDateInput.value) {
+                isValid = true;
+                
+                // Se houver data de fim preenchida, tem de ser maior que a data de início
+                if (endDateInput && endDateInput.value) {
+                    const startDate = parseDate(startDateInput.value);
+                    const endDate = parseDate(endDateInput.value);
+                    if (!startDate || !endDate || endDate <= startDate) {
+                        isValid = false;
+                    }
+                }
+            }
+
+            if (isValid) {
+                btnSubmitMaintenance.removeAttribute("disabled");
+            } else {
+                btnSubmitMaintenance.setAttribute("disabled", "true");
+            }
+        };
+
+        validateMaintenanceForm();
+
+        typeInput.addEventListener("change", validateMaintenanceForm);
+        responsibleInput.addEventListener("change", validateMaintenanceForm);
+        startDateInput.addEventListener("change", validateMaintenanceForm);
+        startDateInput.addEventListener("input", validateMaintenanceForm);
+        if (endDateInput) {
+            endDateInput.addEventListener("change", validateMaintenanceForm);
+            endDateInput.addEventListener("input", validateMaintenanceForm);
+        }
+    }
+}
+
 // Validação e Inicialização dos Forms de Editar Garantia/Contrato
 const editWarrantyForms = document.querySelectorAll(".edit-warranty-form");
 editWarrantyForms.forEach((form) => {
@@ -2384,4 +2438,57 @@ document.addEventListener("DOMContentLoaded", () => {
             categorySelect.dispatchEvent(new Event("change"));
         }
     });
+});
+
+// Validação dos Forms de Editar Manutenção
+const editMaintenanceForms = document.querySelectorAll(".edit-maintenance-form");
+editMaintenanceForms.forEach((form) => {
+    const typeInput = form.querySelector(".edit-maintenance-type");
+    const responsibleInput = form.querySelector(".edit-maintenance-responsible");
+    const startDateInput = form.querySelector(".edit-maintenance-start-date");
+    const endDateInput = form.querySelector(".edit-maintenance-end-date");
+    const btnSubmit = form.querySelector(".btn-submit-edit-maintenance");
+
+    if (typeInput && responsibleInput && startDateInput && btnSubmit) {
+        const parseDate = (dateString) => {
+            if (!dateString) return null;
+            const parts = dateString.split("/");
+            if (parts.length === 3) {
+                return new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
+            }
+            return null;
+        };
+
+        const validateForm = () => {
+            let isValid = false;
+            if (typeInput.value && responsibleInput.value && startDateInput.value) {
+                isValid = true;
+                
+                if (endDateInput && endDateInput.value) {
+                    const startDate = parseDate(startDateInput.value);
+                    const endDate = parseDate(endDateInput.value);
+                    if (!startDate || !endDate || endDate <= startDate) {
+                        isValid = false;
+                    }
+                }
+            }
+
+            if (isValid) {
+                btnSubmit.removeAttribute("disabled");
+            } else {
+                btnSubmit.setAttribute("disabled", "true");
+            }
+        };
+
+        validateForm();
+
+        typeInput.addEventListener("change", validateForm);
+        responsibleInput.addEventListener("change", validateForm);
+        startDateInput.addEventListener("change", validateForm);
+        startDateInput.addEventListener("input", validateForm);
+        if (endDateInput) {
+            endDateInput.addEventListener("change", validateForm);
+            endDateInput.addEventListener("input", validateForm);
+        }
+    }
 });
