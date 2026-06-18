@@ -88,8 +88,10 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                                     class="text-secondary fw-400"><?= $item->getDataFim() ? htmlspecialchars($item->getDataFim()->format('d/m/Y')) : '—' ?></span>
                             </td>
                             <td>
-                                <span
-                                    class="text-primary-500 fw-700"><?= htmlspecialchars($item->getPessoaNome() ?? 'Desconhecido') ?></span>
+                                <a href="../../entities/people_management.php?search=<?= urlencode(aes_encrypt($item->getIdPessoaResponsavel())) ?>"
+                                    class="text-primary-500 fw-700 text-decoration-none hover-underline">
+                                    <?= htmlspecialchars($item->getPessoaNome() ?? 'Desconhecido') ?>
+                                </a>
                             </td>
                             <td>
                                 <span

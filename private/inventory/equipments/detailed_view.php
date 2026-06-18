@@ -438,7 +438,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 
         <!-- Menu de Navegação por Separadores (Tabs) -->
         <nav>
-            <div class="bento-card d-flex gap-2 padding-1 flex-wrap" id="nav-tab" role="tablist">
+            <div class="nav bento-card d-flex gap-2 padding-1 flex-wrap" id="nav-tab" role="tablist">
                 <button
                     class="filter-bar-badge d-flex align-items-center gap-2 border-0 <?= $activeTab === 'visao-geral' ? 'active' : '' ?>"
                     id="nav-visao-geral-tab" data-bs-toggle="tab" data-bs-target="#nav-visao-geral" type="button"

@@ -126,18 +126,18 @@ if (sidebarBackground && mobileSidebar) {
 /* Gráficos de Estatísticas */
 
 // Variáveis partilhadas de Dados e Cores para os Gráficos
-const estatisticasLabels = [
+const estatisticasLabels = window.DashboardData?.graficoCategoria?.labels || [
     "Ventiladores",
-    "Monitores de sinais vitais",
-    "Bombas de infusão",
     "Desfibrilhadores",
-    "Equipamentos de Imagem",
-    "Equipamento Cirúrgico",
-    "Equipamento de Laboratório",
-    "Esterilizadores",
+    "Bombas Infusão",
+    "Monitores Paciente",
+    "Máquinas Anestesia",
+    "Incubadoras",
+    "Eletrocardiógrafos",
+    "Aspiradores",
 ];
 
-const estatisticasData = [42, 67, 89, 28, 15, 53, 38, 22];
+const estatisticasData = window.DashboardData?.graficoCategoria?.data || [42, 67, 89, 28, 15, 53, 38, 22];
 
 const estatisticasColors = [
     "#3b82f6", // azul
@@ -151,7 +151,6 @@ const estatisticasColors = [
 ];
 
 function getCalculatedCssColor(varName) {
-    // getCalculatedColor("--primary-500") -> "rgb(59, 130, 246)"
     const div = document.createElement("div");
     div.style.color = `var(${varName})`;
     div.style.display = "none";
@@ -230,7 +229,7 @@ if (canvas1) {
 }
 
 // Dados para Gráfico de Donut (Serviços)
-const servicosLabels = [
+const servicosLabels = window.DashboardData?.graficoServico?.labels || [
     "UCI",
     "Bloco Operatório",
     "Urgência",
@@ -238,7 +237,7 @@ const servicosLabels = [
     "Laboratório",
     "Esterilização",
 ];
-const servicosData = [2, 2, 3, 1, 1, 1];
+const servicosData = window.DashboardData?.graficoServico?.data || [2, 2, 3, 1, 1, 1];
 const servicosColors = [
     "#3b82f6",
     "#22c55e",
@@ -282,22 +281,11 @@ if (canvas2) {
 }
 
 // Dados para Gráfico de Tendência (Manutenções)
-const tendenciaLabels = [
-    "Abr",
-    "Mai",
-    "Jun",
-    "Jul",
-    "Ago",
-    "Set",
-    "Out",
-    "Nov",
-    "Dez",
-    "Jan",
-    "Fev",
-    "Mar",
+const tendenciaLabels = window.DashboardData?.graficoManutencao?.labels || [
+    "Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"
 ];
-const preventivaData = [8, 10, 12, 9, 11, 14, 10, 18, 15, 12, 16, 20];
-const corretivaData = [3, 4, 5, 2, 6, 4, 7, 5, 3, 6, 4, 5];
+const preventivaData = window.DashboardData?.graficoManutencao?.preventiva || [8, 10, 12, 9, 11, 14, 10, 18, 15, 12, 16, 20];
+const corretivaData = window.DashboardData?.graficoManutencao?.corretiva || [3, 4, 5, 2, 6, 4, 7, 5, 3, 6, 4, 5];
 
 // Grafico de Tendencia de Manuntencoes (Linhas)
 const ctx3 = document.getElementById("maintenanceTrendChart");

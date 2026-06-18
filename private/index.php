@@ -1,5 +1,6 @@
 <?php
 require_once(__DIR__ . "/../config/funcoes.php");
+require_once(__DIR__ . "/includes/dashboard_stats.php");
 redirect_if_not_logged();
 
 include_once 'includes/head.php';
@@ -80,19 +81,23 @@ if (!empty($_SESSION['server_error'])) {
                         <polyline points="3.29 7 12 12 20.71 7" />
                         <path d="m7.5 4.27 9 5.15" />
                     </svg>
-                    <div
-                        class="d-flex flex-row dashboard-bento-trend dashboard-bento-trend-up gap-1 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-trending-up-icon lucide-trending-up ">
-                            <path d="M16 7h6v6" />
-                            <path d="m22 7-8.5 8.5-5-5L2 17" />
-                        </svg>
-                        <span class="fw-600">+12</span>
+                    <?php if ($dashboardStats['totalEquipamentos']['growth']): ?>
+                    <div class="d-flex flex-row dashboard-bento-trend <?php echo $dashboardStats['totalEquipamentos']['growth']['isPositive'] ? 'dashboard-bento-trend-up' : 'dashboard-bento-trend-down'; ?> gap-1 align-items-center">
+                        <?php if ($dashboardStats['totalEquipamentos']['growth']['isPositive']): ?>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up-icon lucide-trending-up ">
+                                <path d="M16 7h6v6" /><path d="m22 7-8.5 8.5-5-5L2 17" />
+                            </svg>
+                        <?php else: ?>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-down-icon lucide-trending-down">
+                                <path d="M16 17h6v-6" /><path d="m22 17-8.5-8.5-5 5L2 7" />
+                            </svg>
+                        <?php endif; ?>
+                        <span class="fw-600"><?php echo ($dashboardStats['totalEquipamentos']['growth']['isPositive'] ? '+' : '') . $dashboardStats['totalEquipamentos']['growth']['value']; ?></span>
                     </div>
+                    <?php endif; ?>
                 </div>
                 <div class="d-flex flex-column gap-1">
-                    <h1>13</h1>
+                    <h1><?php echo $dashboardStats['totalEquipamentos']['count']; ?></h1>
                     <span class="text-secondary fw-400">Total de Equipamentos</span>
                 </div>
             </div>
@@ -106,19 +111,23 @@ if (!empty($_SESSION['server_error'])) {
                         <path
                             d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2" />
                     </svg>
-                    <div
-                        class="d-flex flex-row dashboard-bento-trend dashboard-bento-trend-up gap-1 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-trending-up-icon lucide-trending-up ">
-                            <path d="M16 7h6v6" />
-                            <path d="m22 7-8.5 8.5-5-5L2 17" />
-                        </svg>
-                        <span class="fw-600">+8</span>
+                    <?php if ($dashboardStats['equipamentosAtivos']['growth']): ?>
+                    <div class="d-flex flex-row dashboard-bento-trend <?php echo $dashboardStats['equipamentosAtivos']['growth']['isPositive'] ? 'dashboard-bento-trend-up' : 'dashboard-bento-trend-down'; ?> gap-1 align-items-center">
+                        <?php if ($dashboardStats['equipamentosAtivos']['growth']['isPositive']): ?>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up-icon lucide-trending-up ">
+                                <path d="M16 7h6v6" /><path d="m22 7-8.5 8.5-5-5L2 17" />
+                            </svg>
+                        <?php else: ?>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-down-icon lucide-trending-down">
+                                <path d="M16 17h6v-6" /><path d="m22 17-8.5-8.5-5 5L2 7" />
+                            </svg>
+                        <?php endif; ?>
+                        <span class="fw-600"><?php echo ($dashboardStats['equipamentosAtivos']['growth']['isPositive'] ? '+' : '') . $dashboardStats['equipamentosAtivos']['growth']['value']; ?></span>
                     </div>
+                    <?php endif; ?>
                 </div>
                 <div class="d-flex flex-column gap-1">
-                    <h1>8</h1>
+                    <h1><?php echo $dashboardStats['equipamentosAtivos']['count']; ?></h1>
                     <span class="text-secondary fw-400">Equipamentos ativos</span>
                 </div>
             </div>
@@ -132,19 +141,23 @@ if (!empty($_SESSION['server_error'])) {
                         <path
                             d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z" />
                     </svg>
-                    <div
-                        class="d-flex flex-row dashboard-bento-trend dashboard-bento-trend-down gap-1 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-trending-down-icon lucide-trending-down">
-                            <path d="M16 17h6v-6" />
-                            <path d="m22 17-8.5-8.5-5 5L2 7" />
-                        </svg>
-                        <span class="fw-600">-3</span>
+                    <?php if ($dashboardStats['emManutencao']['growth']): ?>
+                    <div class="d-flex flex-row dashboard-bento-trend <?php echo $dashboardStats['emManutencao']['growth']['isPositive'] ? 'dashboard-bento-trend-up' : 'dashboard-bento-trend-down'; ?> gap-1 align-items-center">
+                        <?php if ($dashboardStats['emManutencao']['growth']['isPositive']): ?>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up-icon lucide-trending-up ">
+                                <path d="M16 7h6v6" /><path d="m22 7-8.5 8.5-5-5L2 17" />
+                            </svg>
+                        <?php else: ?>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-down-icon lucide-trending-down">
+                                <path d="M16 17h6v-6" /><path d="m22 17-8.5-8.5-5 5L2 7" />
+                            </svg>
+                        <?php endif; ?>
+                        <span class="fw-600"><?php echo ($dashboardStats['emManutencao']['growth']['isPositive'] ? '+' : '') . $dashboardStats['emManutencao']['growth']['value']; ?></span>
                     </div>
+                    <?php endif; ?>
                 </div>
                 <div class="d-flex flex-column gap-1">
-                    <h1>1</h1>
+                    <h1><?php echo $dashboardStats['emManutencao']['count']; ?></h1>
                     <span class="text-secondary fw-400">Em Manutenção</span>
                 </div>
             </div>
@@ -160,19 +173,23 @@ if (!empty($_SESSION['server_error'])) {
                         <path d="M12 8v4" />
                         <path d="M12 16h.01" />
                     </svg>
-                    <div
-                        class="d-flex flex-row dashboard-bento-trend dashboard-bento-trend-up gap-1 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-trending-up-icon lucide-trending-up ">
-                            <path d="M16 7h6v6" />
-                            <path d="m22 7-8.5 8.5-5-5L2 17" />
-                        </svg>
-                        <span class="fw-600">+2</span>
+                    <?php if ($dashboardStats['garantiasAExpirar']['growth']): ?>
+                    <div class="d-flex flex-row dashboard-bento-trend <?php echo $dashboardStats['garantiasAExpirar']['growth']['isPositive'] ? 'dashboard-bento-trend-up' : 'dashboard-bento-trend-down'; ?> gap-1 align-items-center">
+                        <?php if ($dashboardStats['garantiasAExpirar']['growth']['isPositive']): ?>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up-icon lucide-trending-up ">
+                                <path d="M16 7h6v6" /><path d="m22 7-8.5 8.5-5-5L2 17" />
+                            </svg>
+                        <?php else: ?>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-down-icon lucide-trending-down">
+                                <path d="M16 17h6v-6" /><path d="m22 17-8.5-8.5-5 5L2 7" />
+                            </svg>
+                        <?php endif; ?>
+                        <span class="fw-600"><?php echo ($dashboardStats['garantiasAExpirar']['growth']['isPositive'] ? '+' : '') . $dashboardStats['garantiasAExpirar']['growth']['value']; ?></span>
                     </div>
+                    <?php endif; ?>
                 </div>
                 <div class="d-flex flex-column gap-1">
-                    <h1>3</h1>
+                    <h1><?php echo $dashboardStats['garantiasAExpirar']['count']; ?></h1>
                     <span class="text-secondary fw-400">Garantia a Expirar</span>
                 </div>
             </div>
@@ -193,7 +210,7 @@ if (!empty($_SESSION['server_error'])) {
                     </svg>
                 </div>
                 <div class="d-flex flex-column gap-1">
-                    <h1>1</h1>
+                    <h1><?php echo $dashboardStats['equipamentosInativos']['count']; ?></h1>
                     <span class="text-secondary fw-400">Equipamentos Inativos</span>
                 </div>
             </div>
@@ -208,19 +225,9 @@ if (!empty($_SESSION['server_error'])) {
                         <path d="M12 9v4" />
                         <path d="M12 17h.01" />
                     </svg>
-                    <div
-                        class="d-flex flex-row dashboard-bento-trend dashboard-bento-trend-up gap-1 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-trending-up-icon lucide-trending-up ">
-                            <path d="M16 7h6v6" />
-                            <path d="m22 7-8.5 8.5-5-5L2 17" />
-                        </svg>
-                        <span class="fw-600">+2</span>
-                    </div>
                 </div>
                 <div class="d-flex flex-column gap-1">
-                    <h1>6</h1>
+                    <h1><?php echo $dashboardStats['garantiasExpiradas']['count']; ?></h1>
                     <span class="text-secondary fw-400">Garantias Expiradas</span>
                 </div>
             </div>
@@ -236,7 +243,7 @@ if (!empty($_SESSION['server_error'])) {
                     </svg>
                 </div>
                 <div class="d-flex flex-column gap-1">
-                    <h1>5</h1>
+                    <h1><?php echo $dashboardStats['criticidadeElevada']['count']; ?></h1>
                     <span class="text-secondary fw-400">Criticidade Elevada</span>
                 </div>
             </div>
@@ -247,25 +254,14 @@ if (!empty($_SESSION['server_error'])) {
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-file-x-icon lucide-file-x dashboard-bento-icon dashboard-bento-icon-no-documents">
-                        <path
-                            d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z" />
-                        <path d="M14 2v5a1 1 0 0 0 1 1h5" />
-                        <path d="m14.5 12.5-5 5" />
-                        <path d="m9.5 12.5 5 5" />
+                        <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+                        <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                        <path d="m9 13 6 6" />
+                        <path d="m15 13-6 6" />
                     </svg>
-                    <div
-                        class="d-flex flex-row dashboard-bento-trend dashboard-bento-trend-down gap-1 align-items-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-trending-down-icon lucide-trending-down">
-                            <path d="M16 17h6v-6" />
-                            <path d="m22 17-8.5-8.5-5 5L2 7" />
-                        </svg>
-                        <span class="fw-600">-2</span>
-                    </div>
                 </div>
                 <div class="d-flex flex-column gap-1">
-                    <h1>5</h1>
+                    <h1><?php echo $dashboardStats['semDocumentos']['count']; ?></h1>
                     <span class="text-secondary fw-400">Sem Documentos</span>
                 </div>
             </div>
@@ -413,92 +409,6 @@ if (!empty($_SESSION['server_error'])) {
                 </div>
             </div>
         </div>
-
-        <!-- Atividade Recente -->
-        <div class="bento-card bento-card-move-up d-flex flex-column gap-6 padding-6">
-            <div class="d-flex flex-row align-items-center justify-content-between w-100">
-                <h2 class="text-primary m-0">Atividade Recente</h2>
-                <a href="#" class="text-primary d-flex flex-row gap-1 align-items-center text-primary-500">
-                    <p class="fw-400">Ver tudo</p>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-arrow-up-right-icon lucide-arrow-up-right">
-                        <path d="M7 7h10v10" />
-                        <path d="M7 17 17 7" />
-                    </svg>
-                </a>
-            </div>
-
-            <!-- Lista de Atividades -->
-            <div class="d-flex flex-column gap-2 w-100">
-                <div class="d-flex flex-row align-items-center gap-3 activity-item w-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-clock-icon lucide-clock">
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M12 6v6l4 2" />
-                    </svg>
-                    <div class="d-flex flex-column gap-1">
-                        <span class="fw-500">Atualização: Campo atualizado de 2025-09-20 para 2025-11-20</span>
-                        <label class="fw-400 text-secondary">Dr. Manuel Costa &bull; 07/04/2026</label>
-                    </div>
-                </div>
-
-                <div class="d-flex flex-row align-items-center gap-3 activity-item w-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-clock-icon lucide-clock">
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M12 6v6l4 2" />
-                    </svg>
-                    <div class="d-flex flex-column gap-1">
-                        <span class="fw-500">Manutenção Registada: Manutenção preventiva concluída</span>
-                        <label class="fw-400 text-secondary">Eng.ª Ana Ferreira &bull; 07/04/2026</label>
-                    </div>
-                </div>
-
-                <div class="d-flex flex-row align-items-center gap-3 activity-item w-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-clock-icon lucide-clock">
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M12 6v6l4 2" />
-                    </svg>
-                    <div class="d-flex flex-column gap-1">
-                        <span class="fw-500">Abate de Equipamento: Equipamento marcado como abatido por
-                            obsolescência</span>
-                        <label class="fw-400 text-secondary">Admin Sistema &bull; 07/04/2026</label>
-                    </div>
-                </div>
-
-                <div class="d-flex flex-row align-items-center gap-3 activity-item w-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-clock-icon lucide-clock">
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M12 6v6l4 2" />
-                    </svg>
-                    <div class="d-flex flex-column gap-1">
-                        <span class="fw-500">Criação: Novo fornecedor de consumíveis registado</span>
-                        <label class="fw-400 text-secondary">Sofia Oliveira &bull; 06/04/2026</label>
-                    </div>
-                </div>
-
-                <div class="d-flex flex-row align-items-center gap-3 activity-item w-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-clock-icon lucide-clock">
-                        <circle cx="12" cy="12" r="10" />
-                        <path d="M12 6v6l4 2" />
-                    </svg>
-                    <div class="d-flex flex-column gap-1">
-                        <span class="fw-500">Soft Delete: Dr.ª Maria Lopes marcada como inativa</span>
-                        <label class="fw-400 text-secondary">Admin Sistema &bull; 06/04/2026</label>
-                    </div>
-                </div>
-            </div>
-        </div>
-
     </section>
 </div>
 
@@ -541,6 +451,15 @@ include_once 'includes/sidebar-mobile.php';
         <?php endforeach; ?>
     <?php endif; ?>
 </div>
+
+<!-- Passar Dados para o Javascript dos Gráficos -->
+<script>
+window.DashboardData = {
+    graficoCategoria: <?php echo json_encode($dashboardStats['graficoCategoria']); ?>,
+    graficoServico: <?php echo json_encode($dashboardStats['graficoServico']); ?>,
+    graficoManutencao: <?php echo json_encode($dashboardStats['graficoManutencao']); ?>
+};
+</script>
 
 <?php
 include_once 'includes/footer.php';
