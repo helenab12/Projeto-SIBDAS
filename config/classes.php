@@ -2491,3 +2491,37 @@ class Manutencao implements Validavel
         return $erros;
     }
 }
+
+class TipoNotificacao
+{
+    public string $nome;
+    public string $cor;
+    public string $caminhoSvg;
+
+    public function __construct(string $nome, string $cor, string $caminhoSvg)
+    {
+        $this->nome = $nome;
+        $this->cor = $cor;
+        $this->caminhoSvg = $caminhoSvg;
+    }
+}
+
+class Notificacao
+{
+    public int $idNotificacao;
+    public TipoNotificacao $tipo;
+    public string $titulo;
+    public string $mensagem;
+    public DateTime $dataCriacao;
+    public bool $lida;
+
+    public function __construct(int $idNotificacao, TipoNotificacao $tipo, string $titulo, string $mensagem, DateTime $dataCriacao, bool $lida)
+    {
+        $this->idNotificacao = $idNotificacao;
+        $this->tipo = $tipo;
+        $this->titulo = $titulo;
+        $this->mensagem = $mensagem;
+        $this->dataCriacao = $dataCriacao;
+        $this->lida = $lida;
+    }
+}

@@ -1,3 +1,20 @@
+<?php
+$numeroNotificacoesNaoLidas = 0;
+if (isset($_SESSION['id_utilizador'])) {
+    try {
+        $ligacaoHeaders = connect_to_db();
+        $stmtHeaders = execute_query(
+            "SELECT COUNT(*) as count FROM NotificacaoUtilizador WHERE idUtilizador = :idUtilizador AND lida = 0",
+            ['idUtilizador' => $_SESSION['id_utilizador']],
+            $ligacaoHeaders
+        );
+        if ($row = $stmtHeaders->fetch(PDO::FETCH_ASSOC)) {
+            $numeroNotificacoesNaoLidas = (int) $row['count'];
+        }
+    } catch (Exception $e) {
+    }
+}
+?>
 <!-- Header Desktop + Tablet -->
 <header class="d-flex flex-row w-100 padding-4 desktop-header justify-content-between">
     <form action="" class="d-flex flex-column" style="width: 400px;">
@@ -41,13 +58,23 @@
                 <path d="m19.07 4.93-1.41 1.41" />
             </svg>
         </button>
-        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-            class="lucide lucide-bell-icon lucide-bell stroke-secondary">
-            <path d="M10.268 21a2 2 0 0 0 3.464 0" />
-            <path
-                d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
-        </svg>
+        <a href="<?php echo BASE_URL; ?>/private/notifications.php"
+            class="text-decoration-none d-flex align-items-center position-relative">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                class="lucide lucide-bell-icon lucide-bell stroke-secondary">
+                <path d="M10.268 21a2 2 0 0 0 3.464 0" />
+                <path
+                    d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
+            </svg>
+            <?php if ($numeroNotificacoesNaoLidas > 0): ?>
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-flex align-items-center justify-content-center"
+                    style="min-width: 18px; height: 18px; font-size: 0.65rem; padding: 0 4px; transform: translate(-30%, -30%) !important;">
+                    <?php echo $numeroNotificacoesNaoLidas > 99 ? '99+' : $numeroNotificacoesNaoLidas; ?>
+                    <span class="visually-hidden">notificações não lidas</span>
+                </span>
+            <?php endif; ?>
+        </a>
         <div class="dropdown">
             <div class="d-flex flex-row align-items-center navbar-user gap-3 dropdown-toggle" data-bs-toggle="dropdown"
                 aria-expanded="false" style="cursor: pointer;">
@@ -129,13 +156,23 @@
                     <path d="m19.07 4.93-1.41 1.41" />
                 </svg>
             </button>
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                class="lucide lucide-bell-icon lucide-bell stroke-secondary">
-                <path d="M10.268 21a2 2 0 0 0 3.464 0" />
-                <path
-                    d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
-            </svg>
+            <a href="<?php echo BASE_URL; ?>/private/notifications.php"
+                class="text-decoration-none d-flex align-items-center position-relative">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-bell-icon lucide-bell stroke-secondary">
+                    <path d="M10.268 21a2 2 0 0 0 3.464 0" />
+                    <path
+                        d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
+                </svg>
+                <?php if ($numeroNotificacoesNaoLidas > 0): ?>
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-flex align-items-center justify-content-center"
+                        style="min-width: 18px; height: 18px; font-size: 0.65rem; padding: 0 4px; transform: translate(-30%, -30%) !important;">
+                        <?php echo $numeroNotificacoesNaoLidas > 99 ? '99+' : $numeroNotificacoesNaoLidas; ?>
+                        <span class="visually-hidden">notificações não lidas</span>
+                    </span>
+                <?php endif; ?>
+            </a>
             <div class="dropdown">
                 <div class="d-flex flex-row align-items-center navbar-user gap-3 dropdown-toggle"
                     data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">

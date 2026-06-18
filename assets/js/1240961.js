@@ -1689,51 +1689,6 @@ function changeSelectedTyoe(buttonId) {
     }
 }
 
-// Notificações
-function markAsRead(index) {
-    const card = document.getElementById(`notification-${index}`);
-    if (card && !card.classList.contains("unread")) {
-        card.classList.add("unread");
-        const dot = card.querySelector(".text-primary-500");
-        if (dot) {
-            dot.remove();
-        }
-
-        const countEl = document.getElementById("unread-count");
-        if (countEl) {
-            let count = parseInt(countEl.textContent);
-            if (count > 0) {
-                const newCount = count - 1;
-                countEl.textContent = newCount;
-                if (newCount === 0) {
-                    const markAllBtn = document.getElementById("mark-all-read-btn");
-                    if (markAllBtn) {
-                        markAllBtn.style.display = "none";
-                    }
-                }
-            }
-        }
-    }
-}
-
-const markAllBtn = document.getElementById("mark-all-read-btn");
-if (markAllBtn) {
-    markAllBtn.addEventListener("click", () => {
-        const unreadCards = document.querySelectorAll(".notifications .bento-card:not(.unread)");
-        unreadCards.forEach((card) => {
-            card.classList.add("unread");
-            const dot = card.querySelector(".text-primary-500");
-            if (dot) {
-                dot.remove();
-            }
-        });
-        const countEl = document.getElementById("unread-count");
-        if (countEl) {
-            countEl.textContent = "0";
-        }
-        markAllBtn.style.display = "none";
-    });
-}
 
 // Inbox 
 function changeInboxState(requestId, stateName, stateClass) {
