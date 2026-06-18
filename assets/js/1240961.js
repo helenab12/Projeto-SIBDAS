@@ -2559,6 +2559,55 @@ if (
     }
 }
 
+// Inicializar DataTables (Reciclagem)
+if (document.getElementById("recyclingTable") && typeof simpleDatatables !== "undefined") {
+    const table = new simpleDatatables.DataTable("#recyclingTable", {
+        searchable: true,
+        perPage: 10,
+        perPageSelect: false,
+        labels: {
+            placeholder: "Pesquisar...",
+            perPage: "entradas por página",
+            noRows: "Nenhum registo encontrado",
+            noResults: "Nenhum resultado corresponde à sua pesquisa",
+            info: "A mostrar {start}–{end} de {rows}",
+        },
+    });
+
+    table.on('datatable.page', initTooltips);
+    table.on('datatable.sort', initTooltips);
+    table.on('datatable.search', initTooltips);
+    table.on('datatable.update', initTooltips);
+
+    const searchInput = document.getElementById("search-input-recycling");
+    const filterType = document.getElementById("filter-type-recycling");
+
+    function applyRecyclingFilters() {
+        const searchVal = searchInput ? searchInput.value.trim() : "";
+        const typeVal = filterType ? filterType.value : "";
+
+        if (typeof table.multiSearch === 'function') {
+            let queries = [];
+            if (searchVal) queries.push({ terms: [searchVal] });
+            if (typeVal) queries.push({ terms: [typeVal], columns: [1] });
+
+            if (queries.length > 0) {
+                table.multiSearch(queries);
+            } else {
+                table.search("");
+            }
+        } else {
+            let terms = [];
+            if (searchVal) terms.push(searchVal);
+            if (typeVal) terms.push(typeVal);
+            table.search(terms.join(" "));
+        }
+    }
+
+    if (searchInput) searchInput.addEventListener("input", applyRecyclingFilters);
+    if (filterType) filterType.addEventListener("change", applyRecyclingFilters);
+}
+
 // Disparar o evento "input" em todas as barras de pesquisa preenchidas
 window.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".search-bar-input, .person-search-input").forEach(input => {
