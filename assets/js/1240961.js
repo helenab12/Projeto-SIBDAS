@@ -1402,7 +1402,7 @@ if (maintenanceForm) {
             let isValid = false;
             if (typeInput.value && responsibleInput.value && startDateInput.value) {
                 isValid = true;
-                
+
                 // Se houver data de fim preenchida, tem de ser maior que a data de início
                 if (endDateInput && endDateInput.value) {
                     const startDate = parseDate(startDateInput.value);
@@ -1514,15 +1514,17 @@ if (locationsSearchForm) {
 }
 
 if (locationsSearchInput) {
-    locationsSearchInput.addEventListener("input", function () {
-        const query = this.value.trim().toLowerCase();
+    function applyLocationsFilter() {
+        const query = locationsSearchInput.value.trim().toLowerCase();
         const locationsBuildingCards = document.querySelectorAll(".locations");
         let anyVisible = false;
         locationsBuildingCards.forEach(function (card) {
             const nameEl = card.querySelector(".building-row p.fw-700");
+            const hiddenIdEl = card.querySelector(".building-row .visually-hidden");
             if (nameEl) {
                 const name = nameEl.textContent.trim().toLowerCase();
-                const isMatch = !query || name.includes(query);
+                const hiddenId = hiddenIdEl ? hiddenIdEl.textContent.trim().toLowerCase() : "";
+                const isMatch = !query || name.includes(query) || hiddenId.includes(query);
                 card.classList.toggle("d-none", !isMatch);
                 if (isMatch) {
                     anyVisible = true;
@@ -1533,7 +1535,9 @@ if (locationsSearchInput) {
         if (emptyState) {
             emptyState.classList.toggle("d-none", anyVisible);
         }
-    });
+    }
+
+    locationsSearchInput.addEventListener("input", applyLocationsFilter);
 }
 
 // Campos obrigatórios do Utilizador (Nome Completo, Username, Email, Password)
@@ -2182,12 +2186,14 @@ document.addEventListener("DOMContentLoaded", () => {
                 const nameEl = card.querySelector(".person-name");
                 const emailEl = card.querySelector(".person-email");
                 const roleEl = card.querySelector(".person-role");
+                const hiddenIdEl = card.querySelector(".visually-hidden");
 
                 const name = nameEl ? nameEl.textContent.toLowerCase() : "";
                 const email = emailEl ? emailEl.textContent.toLowerCase() : "";
                 const role = roleEl ? roleEl.textContent.toLowerCase() : "";
+                const hiddenId = hiddenIdEl ? hiddenIdEl.textContent.toLowerCase() : "";
 
-                const matchesSearch = searchTerm === "" || name.includes(searchTerm) || email.includes(searchTerm);
+                const matchesSearch = searchTerm === "" || name.includes(searchTerm) || email.includes(searchTerm) || hiddenId.includes(searchTerm);
                 const matchesRole = roleTerm === "" || role === roleTerm;
 
                 if (matchesSearch && matchesRole) {
@@ -2205,7 +2211,9 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         if (personSearchInput) personSearchInput.addEventListener("input", applyPersonFilters);
-        if (personRoleFilter) personRoleFilter.addEventListener("change", applyPersonFilters);
+        if (personRoleFilter) {
+            personRoleFilter.addEventListener("change", applyPersonFilters);
+        }
     }
 });
 
@@ -2463,7 +2471,7 @@ editMaintenanceForms.forEach((form) => {
             let isValid = false;
             if (typeInput.value && responsibleInput.value && startDateInput.value) {
                 isValid = true;
-                
+
                 if (endDateInput && endDateInput.value) {
                     const startDate = parseDate(startDateInput.value);
                     const endDate = parseDate(endDateInput.value);
@@ -2491,4 +2499,71 @@ editMaintenanceForms.forEach((form) => {
             endDateInput.addEventListener("input", validateForm);
         }
     }
+});
+
+// Inicializar DataTables (Global Audit Logs)
+if (
+    document.getElementById("globalAuditTable") &&
+    typeof simpleDatatables !== "undefined"
+) {
+    const table = new simpleDatatables.DataTable("#globalAuditTable", {
+        searchable: true,
+        perPage: 10,
+        perPageSelect: [10, 25, 50, 100],
+        labels: {
+            placeholder: "Pesquisar...",
+            perPage: "entradas por página",
+            noRows: "Nenhum registo encontrado",
+            noResults: "Nenhum resultado corresponde à sua pesquisa",
+            info: "A mostrar {start}–{end} de {rows}",
+        },
+    });
+
+    table.on('datatable.page', initTooltips);
+    table.on('datatable.sort', initTooltips);
+    table.on('datatable.search', initTooltips);
+    table.on('datatable.update', initTooltips);
+
+    // Custom search binding
+    const searchInput = document.getElementById("search-global-audit");
+    const filterType = document.getElementById("filter-global-audit-type");
+
+    function applyGlobalAuditFilters() {
+        const searchVal = searchInput ? searchInput.value.trim() : "";
+        const typeVal = filterType ? filterType.value : "";
+
+        if (typeof table.multiSearch === 'function') {
+            let queries = [];
+            if (searchVal) queries.push({ terms: [searchVal] });
+            if (typeVal) queries.push({ terms: [typeVal], columns: [1] });
+
+            if (queries.length > 0) {
+                table.multiSearch(queries);
+            } else {
+                table.search("");
+            }
+        } else {
+            let terms = [];
+            if (searchVal) terms.push(searchVal);
+            if (typeVal) terms.push(typeVal);
+            table.search(terms.join(" "));
+        }
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener("input", applyGlobalAuditFilters);
+    }
+
+    if (filterType) {
+        filterType.addEventListener("change", applyGlobalAuditFilters);
+    }
+}
+
+// Disparar o evento "input" em todas as barras de pesquisa preenchidas
+window.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".search-bar-input, .person-search-input").forEach(input => {
+        if (input.value.trim() !== "") {
+            input.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+    });
 });

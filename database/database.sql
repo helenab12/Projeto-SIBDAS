@@ -222,7 +222,9 @@ CREATE TABLE `HistoricoAuditoria` (
   `tabelaAfetada` varchar(50),
   `idRegistoAfetado` integer,
   `acao` ENUM ('Criação', 'Edição', 'Remoção'),
-  `dadosAlterados` json,
+  `campoAfetado` varchar(100),
+  `valorAntigo` text,
+  `valorNovo` text,
   `dataCriacao` timestamp DEFAULT (CURRENT_TIMESTAMP)
 );
 

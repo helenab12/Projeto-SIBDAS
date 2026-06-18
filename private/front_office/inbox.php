@@ -29,6 +29,8 @@ if (!empty($_SESSION['success_message'])) {
     unset($_SESSION['success_message']);
 }
 
+$search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
+
 try {
     $stmt = execute_query("SELECT * FROM PedidoDemonstracao WHERE ativo = 1 ORDER BY dataCriacao DESC");
     $requests = $stmt->fetchAll(PDO::FETCH_OBJ);
@@ -103,7 +105,7 @@ try {
                                 <circle cx="11" cy="11" r="8" />
                             </svg>
                             <input type="text" class="form-item w-100 search-bar-input"
-                                placeholder="Pesquisar por nome ou organização...">
+                                placeholder="Pesquisar por nome ou organização..." value="<?= htmlspecialchars($search_query) ?>">
                         </div>
                     </div>
                 </div>
@@ -168,6 +170,7 @@ try {
                                         <div class="d-flex align-items-center gap-3">
                                             <div class="d-flex flex-column">
                                                 <p class="equipment-title fw-700 mb-0"><?php echo $request->name; ?></p>
+                                                <span class="visually-hidden"><?php echo $encryptedId; ?></span>
                                             </div>
                                         </div>
                                     </td>

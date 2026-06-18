@@ -14,6 +14,8 @@ if (!empty($_SESSION['server_error'])) {
     unset($_SESSION['server_error']);
 }
 
+$search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
+
 $listaFornecedores = [];
 $pessoasDisponiveis = [];
 
@@ -132,7 +134,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         <circle cx="11" cy="11" r="8" />
                     </svg>
                     <input type="text" class="form-item w-100 search-bar-input" id="search-input-suppliers"
-                        placeholder="Pesquisar por nome, email ou pessoa de contacto...">
+                        placeholder="Pesquisar por nome, email ou pessoa de contacto..." value="<?= htmlspecialchars($search_query) ?>">
                 </div>
             </form>
             <div class="d-flex gap-2 equipment-list-search-bar-filters">
@@ -205,6 +207,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                             </p>
                                             <span
                                                 class="equipment-subtitle text-secondary fw-400"><?= htmlspecialchars($fornecedor->getEmail()) ?></span>
+                                            <span class="visually-hidden"><?= htmlspecialchars($encryptedId) ?></span>
                                         </div>
                                     </div>
                                 </td>

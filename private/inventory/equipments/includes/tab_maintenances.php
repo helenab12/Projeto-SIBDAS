@@ -536,36 +536,57 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
     </div>
 
     <!-- Modal de Remoção de Manutenção -->
-    <div class="modal fade" id="delete-maintenance-modal-<?= htmlspecialchars($encId) ?>" tabindex="-1" aria-labelledby="deleteMaintenanceModalLabel-<?= htmlspecialchars($encId) ?>" aria-hidden="true">
+    <div class="modal fade" id="delete-maintenance-modal-<?= htmlspecialchars($encId) ?>" tabindex="-1"
+        aria-labelledby="deleteMaintenanceModalLabel-<?= htmlspecialchars($encId) ?>" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
             <div class="modal-content custom-modal-content d-flex flex-column">
-                <div class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
+                <div
+                    class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
                     <div class="d-flex flex-column">
-                        <h2 class="equipment-creation-modal-title modal-title fw-700 text-primary" id="deleteMaintenanceModalLabel-<?= htmlspecialchars($encId) ?>">Eliminar Registo</h2>
+                        <h2 class="equipment-creation-modal-title modal-title fw-700 text-primary"
+                            id="deleteMaintenanceModalLabel-<?= htmlspecialchars($encId) ?>">Eliminar Registo</h2>
                         <span class="text-secondary fw-400">Esta ação moverá o registo para o arquivo.</span>
                     </div>
-                    <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent" data-bs-dismiss="modal" aria-label="Close">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x stroke-secondary"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+                    <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
+                        data-bs-dismiss="modal" aria-label="Close">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-x stroke-secondary">
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
                     </button>
                 </div>
                 <div class="modal-body p-0">
                     <form method="POST" action="equipments-crud/delete-maintenance.php">
                         <input type="hidden" name="equipment-id" value="<?= htmlspecialchars($encryptedId) ?>">
                         <input type="hidden" name="maintenance-id" value="<?= htmlspecialchars($encId) ?>">
-                        <div class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
+                        <div
+                            class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
                             <div class="d-flex flex-column align-items-center gap-4">
                                 <div class="d-flex padding-3 danger-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle text-error"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-alert-triangle text-error">
+                                        <path
+                                            d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+                                        <line x1="12" y1="9" x2="12" y2="13" />
+                                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                                    </svg>
                                 </div>
                                 <div class="d-flex flex-column align-items-center justify-content-center gap-3">
-                                    <div class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
-                                        <p class="text-secondary m-0">Tem a certeza que deseja remover o registo de manutenção de</p>
-                                        <h2 class="fw-700 text-primary m-0">"<?= htmlspecialchars($item->getTipoManutencao()->value) ?>"</h2>
+                                    <div
+                                        class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
+                                        <p class="text-secondary m-0">Tem a certeza que deseja remover o registo de
+                                            manutenção de</p>
+                                        <h2 class="fw-700 text-primary m-0">
+                                            "<?= htmlspecialchars($item->getTipoManutencao()->value) ?>"</h2>
                                     </div>
                                 </div>
                             </div>
                             <div class="d-flex w-100 justify-content-end gap-4 button-row">
-                                <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
+                                    data-bs-dismiss="modal">Cancelar</button>
                                 <button type="submit" class="btn btn-danger btn-glowing text-white">Sim, Eliminar</button>
                             </div>
                         </div>

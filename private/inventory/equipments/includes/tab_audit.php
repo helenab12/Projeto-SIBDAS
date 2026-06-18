@@ -1,15 +1,86 @@
 <?php
-$auditoria = [
-    [
-        'id' => 1,
-        'data' => '07/04/2026, 13:45:00',
-        'acao' => 'Atualização',
-        'utilizador' => 'Dr. Manuel Costa',
-        'detalhes' => 'Campo atualizado de 2025-09-20 para 2025-11-20'
-    ]
-];
+try {
+    // A ligação à BD já deve estar aberta ($ligacao) a partir do detailed_view.php, mas caso não:
+    if (!isset($ligacao)) {
+        $ligacao = connect_to_db();
+    }
+
+    $stmtAuditoria = execute_query(
+        "SELECT ha.*, p.nome AS nomeUtilizador 
+         FROM HistoricoAuditoria ha
+         LEFT JOIN Utilizador u ON ha.idUtilizador = u.idUtilizador
+         LEFT JOIN Pessoa p ON u.idPessoa = p.idPessoa
+         WHERE 
+            (ha.tabelaAfetada = 'Equipamento' AND ha.idRegistoAfetado = :id1)
+            OR (ha.tabelaAfetada = 'Manutencao' AND ha.idRegistoAfetado IN (SELECT idManutencao FROM Manutencao WHERE idEquipamento = :id2))
+            OR (ha.tabelaAfetada = 'GarantiaContrato' AND ha.idRegistoAfetado IN (SELECT idGarantiaContrato FROM GarantiaContrato WHERE idEquipamento = :id3))
+            OR (ha.tabelaAfetada = 'Documento' AND ha.idRegistoAfetado IN (SELECT idDocumento FROM Documento WHERE idEquipamento = :id4))
+            OR (ha.tabelaAfetada = 'FornecedorEquipamento' AND ha.idRegistoAfetado = :id5)
+            OR (ha.tabelaAfetada = 'ComponenteEquipamento' AND ha.idRegistoAfetado = :id6)
+         ORDER BY ha.dataCriacao DESC",
+        [
+            'id1' => $id,
+            'id2' => $id,
+            'id3' => $id,
+            'id4' => $id,
+            'id5' => $id,
+            'id6' => $id
+        ],
+        $ligacao
+    );
+
+    $auditoria = [];
+    while ($row = $stmtAuditoria->fetch(PDO::FETCH_ASSOC)) {
+        $data = new DateTime($row['dataCriacao']);
+
+        $detalhes = '';
+        if ($row['acao'] === 'Edição') {
+            $campo = $row['campoAfetado'] ?? 'Desconhecido';
+            $antigo = $row['valorAntigo'] ?? 'vazio';
+            $novo = $row['valorNovo'] ?? 'vazio';
+            $detalhes = "Campo <strong>" . htmlspecialchars($campo) . "</strong> alterado de <em>\"" . htmlspecialchars($antigo) . "\"</em> para <em>\"" . htmlspecialchars($novo) . "\"</em>";
+            if ($row['tabelaAfetada'] !== 'Equipamento') {
+                $detalhes = "[Relacionamento: " . htmlspecialchars($row['tabelaAfetada']) . "] " . $detalhes;
+            }
+        } else if ($row['acao'] === 'Criação') {
+            if ($row['tabelaAfetada'] === 'Equipamento') {
+                $detalhes = "Registo de Equipamento criado no sistema.";
+            } else {
+                $detalhes = "Adicionado relacionamento com <strong>" . htmlspecialchars($row['tabelaAfetada']) . "</strong>";
+                if (!empty($row['valorNovo'])) {
+                    $detalhes .= " (ID: " . htmlspecialchars($row['valorNovo']) . ")";
+                }
+            }
+        } else if ($row['acao'] === 'Remoção') {
+            if ($row['tabelaAfetada'] === 'Equipamento') {
+                $detalhes = "Registo de Equipamento removido/arquivado.";
+            } else {
+                $detalhes = "Removido relacionamento com <strong>" . htmlspecialchars($row['tabelaAfetada']) . "</strong>";
+            }
+        }
+
+        $badgeClass = 'badge-primary';
+        if ($row['acao'] === 'Criação') {
+            $badgeClass = 'badge-success';
+        } else if ($row['acao'] === 'Remoção') {
+            $badgeClass = 'badge-error';
+        }
+
+        $auditoria[] = [
+            'data' => $data->format('d/m/Y, H:i:s'),
+            'acao' => $row['acao'],
+            'badgeClass' => $badgeClass,
+            'utilizador' => $row['nomeUtilizador'] ?? 'Sistema',
+            'detalhes' => $detalhes
+        ];
+    }
+} catch (Exception $e) {
+    // Em caso de erro, a auditoria fica vazia
+    $auditoria = [];
+}
 ?>
-<div class="tab-pane fade <?= $activeTab === 'auditoria' ? 'show active' : '' ?>" id="nav-auditoria" role="tabpanel" aria-labelledby="nav-auditoria-tab">
+<div class="tab-pane fade <?= $activeTab === 'auditoria' ? 'show active' : '' ?>" id="nav-auditoria" role="tabpanel"
+    aria-labelledby="nav-auditoria-tab">
     <div class="card bento-card padding-6 d-flex flex-column gap-4">
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="fw-700 m-0 text-primary">Histórico de Auditoria</h2>
@@ -45,13 +116,14 @@ $auditoria = [
                                 <span class="text-secondary fw-400"><?= htmlspecialchars($item['data']) ?></span>
                             </td>
                             <td>
-                                <span class="badge badge-primary"><?= htmlspecialchars($item['acao']) ?></span>
+                                <span
+                                    class="badge <?= htmlspecialchars($item['badgeClass']) ?>"><?= htmlspecialchars($item['acao']) ?></span>
                             </td>
                             <td>
                                 <span class="text-secondary fw-400"><?= htmlspecialchars($item['utilizador']) ?></span>
                             </td>
                             <td>
-                                <span class="text-secondary fw-400"><?= htmlspecialchars($item['detalhes']) ?></span>
+                                <span class="text-secondary fw-400"><?= $item['detalhes'] ?></span>
                             </td>
                         </tr>
                     <?php endforeach; ?>

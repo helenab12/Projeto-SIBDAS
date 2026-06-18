@@ -14,6 +14,8 @@ if (!empty($_SESSION['server_error'])) {
     unset($_SESSION['server_error']);
 }
 
+$search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
+
 redirect_if_not_logged();
 
 // Obter perfis e permissões da base de dados
@@ -74,7 +76,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                 <circle cx="11" cy="11" r="8" />
                             </svg>
                             <input type="text" class="form-item w-100 search-bar-input"
-                                placeholder="Pesquisar por permissão...">
+                                placeholder="Pesquisar por permissão..." value="<?= htmlspecialchars($search_query) ?>">
                         </div>
                     </form>
                 </div>
@@ -119,6 +121,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                             <p class="font-mono fw-700">
                                                 <?= htmlspecialchars($permission['chave']) ?>
                                             </p>
+                                            <span class="visually-hidden"><?= htmlspecialchars(aes_encrypt($permission['idPermissao'])) ?></span>
                                             <span class="text-muted">
                                                 <?= htmlspecialchars($permission['descricao']) ?>
                                             </span>

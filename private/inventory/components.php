@@ -13,6 +13,8 @@ if (!empty($_SESSION['server_error'])) {
     unset($_SESSION['server_error']);
 }
 
+$search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
+
 $listaComponentes = [];
 $categoriasDisponiveis = [];
 $localizacoesDisponiveis = [];
@@ -137,7 +139,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         <path d="m21 21-4.34-4.34" />
                         <circle cx="11" cy="11" r="8" />
                     </svg>
-                    <input type="text" class="form-item w-100 search-bar-input" placeholder="Pesquisar componentes...">
+                    <input type="text" class="form-item w-100 search-bar-input" placeholder="Pesquisar componentes..." value="<?= htmlspecialchars($search_query) ?>">
                 </div>
             </form>
         </div>
@@ -173,6 +175,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                     <p class="equipment-title fw-700 mb-0">
                                         <?= htmlspecialchars($componente->getDescricao()) ?>
                                     </p>
+                                    <span class="visually-hidden"><?= htmlspecialchars($encryptedCompId) ?></span>
                                 </div>
                             </td>
                             <td>

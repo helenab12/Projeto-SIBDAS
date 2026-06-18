@@ -15,6 +15,8 @@ if (!empty($_SESSION['server_error'])) {
     unset($_SESSION['server_error']);
 }
 
+$search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
+
 // Obter todas as permissões da base de dados
 $permissoes = [];
 try {
@@ -68,7 +70,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         <circle cx="11" cy="11" r="8" />
                     </svg>
                     <input type="text" class="form-item w-100 search-bar-input"
-                        placeholder="Pesquisar por permissão...">
+                        placeholder="Pesquisar por permissão..." value="<?= htmlspecialchars($search_query) ?>">
                 </div>
             </form>
         </div>
@@ -91,6 +93,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                 <span class="equipment-badge supplier-badge-supplier text-primary-500 font-mono fw-700">
                                     <?= htmlspecialchars($permissao->getChave()) ?>
                                 </span>
+                                <span class="visually-hidden"><?= htmlspecialchars($encryptedPermId) ?></span>
                             </td>
                             <td>
                                 <p class="fw-400"><?= htmlspecialchars($permissao->getDescricao()) ?></p>
@@ -409,7 +412,6 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
         </div>
     <?php endif; ?>
 </div>
-
 
 <?php
 include_once BASE_PATH . 'private/includes/footer.php';

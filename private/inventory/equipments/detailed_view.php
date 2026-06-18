@@ -487,7 +487,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         <path d="M10 14h4" />
                         <path d="M10 18h4" />
                     </svg>
-                    <p class="d-none d-md-inline m-0">Fornecedores</p>
+                    <span class="d-none d-md-inline m-0"
+                        style="font-size: 14px; line-height: 20px; font-weight: 500;">Fornecedores</span>
                 </button>
                 <button
                     class="filter-bar-badge d-flex align-items-center gap-2 border-0 <?= $activeTab === 'garantias' ? 'active' : '' ?>"
@@ -499,7 +500,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         <path
                             d="M20 13c0 5-8 7-8 7s-8-2-8-7V5a1 1 0 0 1 1-1c2.4 0 5.4-1.2 7-2.5 1.6 1.3 4.6 2.5 7 2.5a1 1 0 0 1 1 1v8z" />
                     </svg>
-                    <p class="d-none d-md-inline m-0">Garantias & Contratos</p>
+                    <span class="d-none d-md-inline m-0"
+                        style="font-size: 14px; line-height: 20px; font-weight: 500;">Garantias & Contratos</span>
                 </button>
                 <button
                     class="filter-bar-badge d-flex align-items-center gap-2 border-0 <?= $activeTab === 'componentes' ? 'active' : '' ?>"
@@ -512,7 +514,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         <path
                             d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z" />
                     </svg>
-                    <p class="d-none d-md-inline m-0">Componentes</p>
+                    <span class="d-none d-md-inline m-0"
+                        style="font-size: 14px; line-height: 20px; font-weight: 500;">Componentes</span>
                 </button>
                 <button
                     class="filter-bar-badge d-flex align-items-center gap-2 border-0 <?= $activeTab === 'manutencoes' ? 'active' : '' ?>"
@@ -525,7 +528,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         <path
                             d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
                     </svg>
-                    <p class="d-none d-md-inline m-0">Manutenções</p>
+                    <span class="d-none d-md-inline m-0"
+                        style="font-size: 14px; line-height: 20px; font-weight: 500;">Manutenções</span>
                 </button>
                 <button
                     class="filter-bar-badge d-flex align-items-center gap-2 border-0 <?= $activeTab === 'auditoria' ? 'active' : '' ?>"
@@ -538,7 +542,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         <path d="M3 3v5h5" />
                         <path d="M12 7v5l4 2" />
                     </svg>
-                    <p class="d-none d-md-inline m-0">Auditoria</p>
+                    <span class="d-none d-md-inline m-0"
+                        style="font-size: 14px; line-height: 20px; font-weight: 500;">Auditoria</span>
                 </button>
             </div>
         </nav>

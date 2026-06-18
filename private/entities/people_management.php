@@ -14,6 +14,8 @@ if (!empty($_SESSION['server_error'])) {
     unset($_SESSION['server_error']);
 }
 
+$search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
+
 $listaPessoas = [];
 try {
     $ligacao = connect_to_db();
@@ -79,7 +81,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         <circle cx="11" cy="11" r="8" />
                     </svg>
                     <input type="text" class="form-item w-100 search-bar-input person-search-input"
-                        placeholder="Pesquisar por nome ou email...">
+                        placeholder="Pesquisar por nome ou email..." value="<?= htmlspecialchars($search_query) ?>">
                 </div>
             </form>
             <div class="d-flex gap-2 equipment-list-search-bar-filters">
@@ -115,6 +117,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                             </p>
                             <div class="d-flex flex-column gap-half">
                                 <p class="fw-700 person-name"><?= htmlspecialchars($pessoa->getNome()) ?></p>
+                                <span class="visually-hidden"><?= htmlspecialchars(aes_encrypt($pessoa->getId())) ?></span>
                                 <span
                                     class="text-secondary person-role"><?= htmlspecialchars($pessoa->getFuncao()?->value ?? 'Sem Função') ?></span>
                             </div>

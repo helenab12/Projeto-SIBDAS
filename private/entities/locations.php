@@ -17,6 +17,8 @@ if (!empty($_SESSION['server_error'])) {
     unset($_SESSION['server_error']);
 }
 
+$search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
+
 // Obter todas as localizações da base de dados
 $edificios = [];
 try {
@@ -129,7 +131,7 @@ try {
                         <path d="m21 21-4.34-4.34"></path>
                         <circle cx="11" cy="11" r="8"></circle>
                     </svg>
-                    <input type="text" class="form-item w-100 search-bar-input" placeholder="Pesquisar edificios...">
+                    <input type="text" class="form-item w-100 search-bar-input" placeholder="Pesquisar edificios..." value="<?= htmlspecialchars($search_query) ?>">
                 </div>
             </form>
         </div>
@@ -186,6 +188,7 @@ try {
                                                     <p class="fw-700 text-decoration-none m-0">
                                                         <?= htmlspecialchars($edificio->getNome()) ?>
                                                     </p>
+                                                    <span class="visually-hidden"><?= htmlspecialchars($encryptedEdificioId) ?></span>
                                                     <span class="text-secondary text-decoration-none"><?= $pisoCount ?> pisos •
                                                         <?= $servicoCount ?> serviços</span>
                                                 </div>

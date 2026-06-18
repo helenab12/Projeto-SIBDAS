@@ -14,6 +14,8 @@ if (!empty($_SESSION['server_error'])) {
     unset($_SESSION['server_error']);
 }
 
+$search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
+
 $listaEquipamentos = [];
 $categoriasDisponiveis = [];
 $localizacoesDisponiveis = [];
@@ -168,7 +170,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         <circle cx="11" cy="11" r="8" />
                     </svg>
                     <input type="text" class="form-item w-100 search-bar-input"
-                        placeholder="Pesquisar por nome, nº série, marca, modelo...">
+                        placeholder="Pesquisar por nome, nº série, marca, modelo..."
+                        value="<?= htmlspecialchars($search_query) ?>">
                 </div>
             </form>
             <div class="d-flex gap-2 equipment-list-search-bar-filters">
@@ -178,7 +181,6 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         <option value="<?= htmlspecialchars($estado->value) ?>"><?= htmlspecialchars($estado->value) ?>
                         </option>
                     <?php endforeach; ?>
-
                 </select>
                 <select class="form-select" id="filter-criticidade" aria-label="Filtro Criticidade">
                     <option value="" selected>Criticidade</option>
@@ -283,6 +285,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                             <p class="equipment-title fw-700 mb-0">
                                                 <?= htmlspecialchars($equipamento->getDesignacao()) ?>
                                             </p>
+                                            <span class="visually-hidden"><?= htmlspecialchars($encryptedEqId) ?></span>
                                         </a>
                                         <span
                                             class="equipment-subtitle text-secondary fw-400"><?= htmlspecialchars($marcaModeloString) ?>

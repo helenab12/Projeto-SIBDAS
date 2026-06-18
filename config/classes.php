@@ -2316,8 +2316,8 @@ class GarantiaContrato implements Validavel
             }
         }
 
-        if ($dataInicioObj && $dataFimObj && $dataFimObj <= $dataInicioObj) {
-            $erros[] = "A Data de Fim tem de ser posterior à Data de Início.";
+        if ($dataInicioObj && $dataFimObj && $dataFimObj < $dataInicioObj) {
+            $erros[] = "A Data de Fim não pode ser anterior à Data de Início.";
         }
 
         if (empty(trim($dados['periodicidade'] ?? ''))) {
@@ -2474,8 +2474,8 @@ class Manutencao implements Validavel
             }
         }
 
-        if ($dataInicioObj && $dataFimObj && $dataFimObj <= $dataInicioObj) {
-            $erros[] = "A Data de Fim tem de ser posterior à Data de Início.";
+        if ($dataInicioObj && $dataFimObj && $dataFimObj < $dataInicioObj) {
+            $erros[] = "A Data de Fim não pode ser anterior à Data de Início.";
         }
 
         if (empty(trim($dados['idPessoaResponsavel'] ?? ''))) {
