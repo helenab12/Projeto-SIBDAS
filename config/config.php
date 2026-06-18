@@ -12,10 +12,11 @@ define('SHOW_DEBUG_BUTTONS', true);
 
 // Conexão com a Base de Dados
 // define('MYSQL_HOST', 'localhost');
-define('MYSQL_HOST', '127.0.0.1'); // TODO: Trocar, apenas usar com live server
-define('MYSQL_DATABASE', 'heba-db');
-define('MYSQL_USERNAME', 'heba');
-define('MYSQL_PASSWORD', '3LduNkJe55lVk0ia0RXvVQ1tZpA7OW5');
+define('MYSQL_HOST', 'vsgate-s1.dei.isep.ipp.pt'); // TODO: Trocar, apenas usar com live server
+define('MYSQL_PORT', '10464');
+define('MYSQL_DATABASE', 'db1240961');
+define('MYSQL_USERNAME', '1240961');
+define('MYSQL_PASSWORD', 'barbosa_961');
 define('MYSQL_AES_KEY', 'Vduu47qL51hLn6bkYkY6NlO1nivsmdfD');
 
 // Encriptação dos dados sensíveis

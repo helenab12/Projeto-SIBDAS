@@ -96,7 +96,15 @@ try {
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/1240961.css">
 </head>
 
-<body class="pa-body">
+<body class="pa-body overflow-hidden">
+    <!-- Spinner de Carregamento -->
+    <div id="page-loading-overlay"
+        class="page-loading-overlay position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+        <div class="page-loading-spinner"></div>
+    </div>
+    <?php ob_flush();
+    flush(); ?>
+
     <!-- Nav Bar -->
     <nav class="pa-navbar">
         <div class="pa-page-container">

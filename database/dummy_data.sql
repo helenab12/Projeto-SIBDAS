@@ -2,7 +2,7 @@
 -- HEBA — Dummy Data
 -- ============================================================
 
-USE `heba-db`;
+USE `db1240961`;
 
 -- Desativar verificações de FK durante TRUNCATE
 SET FOREIGN_KEY_CHECKS = 0;

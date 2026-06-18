@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS `heba-db`;
-CREATE DATABASE IF NOT EXISTS `heba-db`;
-USE `heba-db`;
+DROP DATABASE IF EXISTS `db1240961`;
+CREATE DATABASE IF NOT EXISTS `db1240961`;
+USE `db1240961`;
 
 CREATE TABLE `CategoriaEquipamento` (
   `idCategoria` integer PRIMARY KEY AUTO_INCREMENT,
@@ -290,7 +290,7 @@ ALTER TABLE `Servico` ADD FOREIGN KEY (`idPiso`) REFERENCES `Piso` (`idPiso`);
 
 ALTER TABLE `Localizacao` ADD FOREIGN KEY (`idServico`) REFERENCES `Servico` (`idServico`);
 
-CREATE UNIQUE INDEX `Equipamento_index_1` ON `Equipamento` (`numeroSerie`, `idMarca`, `modelo`, `designacao`);
+CREATE UNIQUE INDEX `Equipamento_index_1` ON `Equipamento` (`numeroSerie`, `idMarca`, `modelo`, `designacao`(255));
 
 ALTER TABLE `Equipamento` ADD FOREIGN KEY (`idCategoria`) REFERENCES `CategoriaEquipamento` (`idCategoria`);
 

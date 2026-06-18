@@ -34,7 +34,15 @@ if (!empty($_SESSION['server_error'])) {
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/1240961.css">
 </head>
 
-<body>
+<body class="overflow-hidden">
+    <!-- Spinner de Carregamento -->
+    <div id="page-loading-overlay"
+        class="page-loading-overlay position-fixed top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center">
+        <div class="page-loading-spinner"></div>
+    </div>
+    <?php ob_flush();
+    flush(); ?>
+
     <main class="login-page-container vh-100">
         <div class="d-flex vh-100">
             <button class="pa-theme-toggle" aria-label="Alternar tema">

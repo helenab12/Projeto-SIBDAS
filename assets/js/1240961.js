@@ -2558,4 +2558,11 @@ window.addEventListener("DOMContentLoaded", () => {
             input.dispatchEvent(new Event("input", { bubbles: true }));
         }
     });
+
+    const overlay = document.getElementById('page-loading-overlay');
+    if (overlay) {
+        overlay.classList.add('hidden');
+        if (overlay) overlay.remove();
+        document.body.classList.remove("overflow-hidden");
+    }
 });

@@ -1004,14 +1004,18 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                         <div class="d-flex flex-column gap-3 padding-4 multi-select-form">
                                             <span id="no-components-msg" class="text-muted d-none">Nenhum componente
                                                 disponível para a categoria selecionada.</span>
-                                            <?php foreach ($componentesDisponiveis as $comp): ?>
-                                                <div class="d-flex align-items-start gap-3 w-100 multi-select-item"
+                                            <?php foreach ($componentesDisponiveis as $comp): 
+                                                $stock = (int)$comp['stock'];
+                                                $disabled = $stock <= 0 ? 'disabled' : '';
+                                                $minValue = $stock <= 0 ? 0 : 1;
+                                            ?>
+                                                <div class="d-flex align-items-start gap-3 w-100 multi-select-item <?= $stock <= 0 ? 'opacity-50' : '' ?>"
                                                     data-category-id="<?= htmlspecialchars($comp['idCategoria'] ?? '') ?>">
                                                     <div class="form-check m-0 pt-1">
                                                         <input class="form-check-input m-0" type="checkbox"
                                                             name="equipment-components[]"
                                                             value="<?= htmlspecialchars($comp['idComponente']) ?>"
-                                                            id="check-comp-<?= htmlspecialchars($comp['idComponente']) ?>">
+                                                            id="check-comp-<?= htmlspecialchars($comp['idComponente']) ?>" <?= $disabled ?>>
                                                     </div>
                                                     <div class="d-flex flex-column gap-2 flex-grow-1">
                                                         <div
@@ -1020,7 +1024,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                                                 <label
                                                                     for="check-comp-<?= htmlspecialchars($comp['idComponente']) ?>"
                                                                     class="fw-400 m-0 cursor-pointer"><?= htmlspecialchars($comp['descricao']) ?></label>
-                                                                <span class="text-muted multi-select-stock-badge">Em Stock:
+                                                                <span class="text-muted multi-select-stock-badge <?= $stock <= 0 ? 'text-error' : '' ?>">Em Stock:
                                                                     <?= htmlspecialchars($comp['stock']) ?> un.</span>
                                                             </div>
                                                             <!-- Quantidade -->
@@ -1031,8 +1035,8 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                                                 <input type="number"
                                                                     name="equipment-components-qty[<?= htmlspecialchars($comp['idComponente']) ?>]"
                                                                     class="form-control text-center p-0 multi-select-qty-input"
-                                                                    value="1" min="1"
-                                                                    max="<?= htmlspecialchars($comp['stock']) ?>">
+                                                                    value="<?= $minValue ?>" min="<?= $minValue ?>"
+                                                                    max="<?= $stock ?>" <?= $disabled ?>>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -1758,8 +1762,15 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                                 <?php foreach ($componentesDisponiveis as $comp):
                                                     $isChecked = isset($componentesEq[$comp['idComponente']]);
                                                     $qty = $isChecked ? $componentesEq[$comp['idComponente']] : 1;
+                                                    
+                                                    // Se não estiver checked e não houver stock, desativar
+                                                    $stockDisponivel = (int)$comp['stock'];
+                                                    $maxStock = $stockDisponivel + ($isChecked ? $qty : 0);
+                                                    $disabled = (!$isChecked && $stockDisponivel <= 0) ? 'disabled' : '';
+                                                    $minValue = $maxStock <= 0 ? 0 : 1;
+                                                    if (!$isChecked && $stockDisponivel <= 0) $qty = 0;
                                                     ?>
-                                                    <div class="d-flex align-items-start gap-3 w-100 multi-select-item"
+                                                    <div class="d-flex align-items-start gap-3 w-100 multi-select-item <?= ($disabled && !$isChecked) ? 'opacity-50' : '' ?>"
                                                         data-category-id="<?= htmlspecialchars($comp['idCategoria'] ?? '') ?>"
                                                         style="<?= ($equipamento->getIdCategoria() == $comp['idCategoria'] || $isChecked) ? '' : 'display: none !important;' ?>">
                                                         <div class="form-check m-0 pt-1">
@@ -1767,7 +1778,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                                                 name="equipment-components[]"
                                                                 value="<?= htmlspecialchars($comp['idComponente']) ?>"
                                                                 id="check-comp-<?= $encryptedEqId ?>-<?= htmlspecialchars($comp['idComponente']) ?>"
-                                                                <?= $isChecked ? 'checked' : '' ?>>
+                                                                <?= $isChecked ? 'checked' : '' ?> <?= $disabled ?>>
                                                         </div>
                                                         <div class="d-flex flex-column gap-2 flex-grow-1">
                                                             <div
@@ -1778,7 +1789,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                                                         class="fw-400 m-0 cursor-pointer">
                                                                         <?= htmlspecialchars($comp['descricao']) ?>
                                                                     </label>
-                                                                    <span class="text-muted multi-select-stock-badge">Em Stock:
+                                                                    <span class="text-muted multi-select-stock-badge <?= ($stockDisponivel <= 0 && !$isChecked) ? 'text-error' : '' ?>">Em Stock:
                                                                         <?= htmlspecialchars($comp['stock']) ?> un.</span>
                                                                 </div>
                                                                 <!-- Quantidade -->
@@ -1789,8 +1800,8 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                                                     <input type="number"
                                                                         name="equipment-components-qty[<?= htmlspecialchars($comp['idComponente']) ?>]"
                                                                         class="form-control text-center p-0 multi-select-qty-input"
-                                                                        value="<?= htmlspecialchars($qty) ?>" min="1"
-                                                                        max="<?= htmlspecialchars($comp['stock'] + ($isChecked ? $qty : 0)) ?>">
+                                                                        value="<?= htmlspecialchars($qty) ?>" min="<?= $minValue ?>"
+                                                                        max="<?= $maxStock ?>" <?= $disabled ?>>
                                                                 </div>
                                                             </div>
                                                         </div>

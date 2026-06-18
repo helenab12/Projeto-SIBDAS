@@ -126,8 +126,9 @@ function aes_decrypt($value)
 function connect_to_db(): PDO
 {
     try {
+        $port = defined('MYSQL_PORT') ? MYSQL_PORT : '3306';
         $pdo = new PDO(
-            "mysql:host=" . MYSQL_HOST . ";dbname=" . MYSQL_DATABASE . ";charset=utf8",
+            "mysql:host=" . MYSQL_HOST . ";port=" . $port . ";dbname=" . MYSQL_DATABASE . ";charset=utf8",
             MYSQL_USERNAME,
             MYSQL_PASSWORD,
             [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
