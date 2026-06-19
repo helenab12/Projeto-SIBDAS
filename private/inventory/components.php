@@ -14,6 +14,10 @@ if (!empty($_SESSION['server_error'])) {
 }
 
 $search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
+$current_page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
+$sort_param = isset($_GET['sort']) ? trim($_GET['sort']) : 'descricao';
+$dir_param = (isset($_GET['dir']) && strtolower(trim($_GET['dir'])) === 'desc') ? 'desc' : 'asc';
+$items_per_page = 8;
 
 $listaComponentes = [];
 $categoriasDisponiveis = [];
@@ -67,17 +71,54 @@ try {
         );
     }
 
-    // Obter Componentes
-    $stmtComponentes = execute_query(
-        "SELECT c.*, MIN(cc.idCategoria) as idCategoria
-         FROM Componente c 
-         LEFT JOIN ComponenteCategoria cc ON c.idComponente = cc.idComponente
-         WHERE c.ativo = 1 
-         GROUP BY c.idComponente
-         ORDER BY c.descricao ASC",
-        [],
-        $ligacao
-    );
+    // Condições de Pesquisa
+    $whereConditions = ["c.ativo = 1"];
+    $params = [];
+
+    if ($search_query !== '') {
+        $whereConditions[] = "(c.descricao LIKE :search OR c.codigoInterno LIKE :search)";
+        $params['search'] = '%' . $search_query . '%';
+    }
+
+    $whereSQL = implode(" AND ", $whereConditions);
+
+    // Contar total filtrado
+    $countSql = "SELECT COUNT(DISTINCT c.idComponente) as total 
+                 FROM Componente c 
+                 LEFT JOIN ComponenteCategoria cc ON c.idComponente = cc.idComponente 
+                 WHERE $whereSQL";
+
+    $stmtCount = execute_query($countSql, $params, $ligacao);
+    $totalComponentesFiltered = (int) $stmtCount->fetch(PDO::FETCH_ASSOC)['total'];
+
+    $totalPages = max(1, ceil($totalComponentesFiltered / $items_per_page));
+    if ($current_page > $totalPages) {
+        $current_page = $totalPages;
+    }
+
+    $offset = ($current_page - 1) * $items_per_page;
+
+    // Definição de Sort
+    $allowed_sorts = [
+        'descricao' => 'c.descricao',
+        'sku' => 'c.codigoInterno',
+        'categoria' => 'idCategoria',
+        'stock' => 'c.stock',
+        'preco' => 'c.preco'
+    ];
+    $sort_field = isset($allowed_sorts[$sort_param]) ? $allowed_sorts[$sort_param] : 'c.descricao';
+    $sort_dir = strtoupper($dir_param);
+
+    // Obter Componentes com LIMIT, OFFSET e ORDER BY
+    $dataSql = "SELECT c.*, MIN(cc.idCategoria) as idCategoria
+                FROM Componente c 
+                LEFT JOIN ComponenteCategoria cc ON c.idComponente = cc.idComponente
+                WHERE $whereSQL 
+                GROUP BY c.idComponente
+                ORDER BY $sort_field $sort_dir 
+                LIMIT " . (int) $items_per_page . " OFFSET " . (int) $offset;
+
+    $stmtComponentes = execute_query($dataSql, $params, $ligacao);
 
     while ($row = $stmtComponentes->fetch(PDO::FETCH_ASSOC)) {
         $listaComponentes[] = new Componente(
@@ -130,8 +171,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
         </div>
 
         <!-- Barra de Pesquisa -->
-        <div class="bento-card padding-4">
-            <form action="" class="flex-grow-1">
+        <div class="bento-card padding-4 equipment-list-search-bar">
+            <form action="" method="GET" style="display: contents;">
                 <div class="form-item w-100 position-relative">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -139,25 +180,61 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         <path d="m21 21-4.34-4.34" />
                         <circle cx="11" cy="11" r="8" />
                     </svg>
-                    <input type="text" class="form-item w-100 search-bar-input" placeholder="Pesquisar componentes..." value="<?= htmlspecialchars($search_query) ?>">
+                    <input type="text" class="form-item w-100 search-bar-input" name="search" id="search-input-field" placeholder="Pesquisar componentes..." value="<?= htmlspecialchars($search_query) ?>">
+                    <?php if ($search_query !== ''): ?>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function() {
+                                const searchInput = document.getElementById('search-input-field');
+                                if (searchInput) {
+                                    searchInput.focus();
+                                    const val = searchInput.value;
+                                    searchInput.value = '';
+                                    searchInput.value = val;
+                                }
+                            });
+                        </script>
+                    <?php endif; ?>
                 </div>
             </form>
         </div>
 
         <!-- Tabela -->
         <div class="bento-card w-100 p-0 border-0">
-            <table id="equipmentsTable" class="sibdas-table w-100 display">
-                <thead>
-                    <tr>
-                        <th>COMPONENTE</th>
-                        <th>SKU</th>
-                        <th>CATEGORIA</th>
-                        <th>STOCK/MIN</th>
-                        <th>PREÇO UNIT.</th>
-                        <th class="text-end">AÇÕES</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <div class="datatable-wrapper no-footer sortable fixed-columns">
+                <div class="datatable-container">
+                    <?php
+                    // Função auxiliar para criar links de ordenação
+                    $buildSortUrl = function ($column) use ($search_query, $sort_param, $dir_param) {
+                        $params = [];
+                        if ($search_query !== '')
+                            $params['search'] = $search_query;
+
+                        $params['sort'] = $column;
+                        // Inverte a direção se estiver a clicar na mesma coluna, senão default para asc
+                        $params['dir'] = ($sort_param === $column && $dir_param === 'asc') ? 'desc' : 'asc';
+
+                        return '?' . http_build_query($params);
+                    };
+
+                    // Função auxiliar para mostrar o ícone/seta
+                    $getSortIcon = function ($column) use ($sort_param, $dir_param) {
+                        if ($sort_param !== $column)
+                            return '';
+                        return $dir_param === 'asc' ? ' ↑' : ' ↓';
+                    };
+                    ?>
+                    <table id="componentsTable" class="sibdas-table w-100 display datatable-table">
+                        <thead>
+                            <tr>
+                                <th><a href="<?= $buildSortUrl('descricao') ?>" class="datatable-sorter text-decoration-none text-inherit">COMPONENTE<?= $getSortIcon('descricao') ?></a></th>
+                                <th><a href="<?= $buildSortUrl('sku') ?>" class="datatable-sorter text-decoration-none text-inherit">SKU<?= $getSortIcon('sku') ?></a></th>
+                                <th><a href="<?= $buildSortUrl('categoria') ?>" class="datatable-sorter text-decoration-none text-inherit">CATEGORIA<?= $getSortIcon('categoria') ?></a></th>
+                                <th><a href="<?= $buildSortUrl('stock') ?>" class="datatable-sorter text-decoration-none text-inherit">STOCK/MIN<?= $getSortIcon('stock') ?></a></th>
+                                <th><a href="<?= $buildSortUrl('preco') ?>" class="datatable-sorter text-decoration-none text-inherit">PREÇO UNIT.<?= $getSortIcon('preco') ?></a></th>
+                                <th class="text-end">AÇÕES</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                     <?php foreach ($listaComponentes as $componente): ?>
                         <?php $encryptedCompId = aes_encrypt($componente->getIdComponente()); ?>
 
@@ -261,8 +338,57 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         </tr>
 
                     <?php endforeach; ?>
-                </tbody>
-            </table>
+                        <?php if (empty($listaComponentes)): ?>
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-secondary">
+                                    Nenhum componente encontrado.
+                                </td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="d-flex justify-content-between align-items-center padding-4 datatable-bottom">
+                <div class="datatable-info">
+                    A mostrar
+                    <?= $totalComponentesFiltered > 0 ? $offset + 1 : 0 ?>–<?= min($offset + $items_per_page, $totalComponentesFiltered) ?>
+                    de <?= $totalComponentesFiltered ?> registos
+                </div>
+                <nav class="datatable-pagination">
+                    <ul class="datatable-pagination-list">
+                        <?php
+                        // Função auxiliar para criar a query string mantendo os outros filtros
+                        $buildQueryString = function ($newPage) use ($search_query, $sort_param, $dir_param) {
+                            $params = ['page' => $newPage];
+                            if ($search_query !== '')
+                                $params['search'] = $search_query;
+                            if ($sort_param !== 'descricao')
+                                $params['sort'] = $sort_param;
+                            if ($dir_param !== 'asc')
+                                $params['dir'] = $dir_param;
+                            return '?' . http_build_query($params);
+                        };
+                        ?>
+
+                        <?php if ($current_page > 1): ?>
+                            <li class="datatable-pagination-list-item pager"><a
+                                    href="<?= $buildQueryString($current_page - 1) ?>">‹</a></li>
+                        <?php endif; ?>
+
+                        <?php for ($i = max(1, $current_page - 2); $i <= min($totalPages, $current_page + 2); $i++): ?>
+                            <li class="datatable-pagination-list-item <?= $i === $current_page ? 'datatable-active' : '' ?>">
+                                <a href="<?= $buildQueryString($i) ?>"><?= $i ?></a>
+                            </li>
+                        <?php endfor; ?>
+
+                        <?php if ($current_page < $totalPages): ?>
+                            <li class="datatable-pagination-list-item pager"><a
+                                    href="<?= $buildQueryString($current_page + 1) ?>">›</a></li>
+                        <?php endif; ?>
+                    </ul>
+                </nav>
+            </div>
         </div>
 
     </section>

@@ -16,21 +16,67 @@ if (!empty($_SESSION['server_error'])) {
 }
 
 $search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
+$perfil_filter = isset($_GET['perfil']) ? trim($_GET['perfil']) : '';
+$current_page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
+$sort_param = isset($_GET['sort']) ? trim($_GET['sort']) : 'nome';
+$dir_param = (isset($_GET['dir']) && strtolower(trim($_GET['dir'])) === 'desc') ? 'desc' : 'asc';
+$items_per_page = 8;
 
 $listaUtilizadores = [];
 try {
     $ligacao = connect_to_db();
-    $stmt = execute_query(
-        "SELECT u.idUtilizador, u.idPessoa, u.emailAutenticacao, u.password, u.idPerfil, u.ativo as utilizador_ativo, u.dataCriacao as utilizador_dataCriacao, u.dataAtualizacao as utilizador_dataAtualizacao,
+    // Condições de Pesquisa
+    $whereConditions = ["u.ativo = 1"];
+    $params = [];
+
+    if ($search_query !== '') {
+        $whereConditions[] = "(p.nome LIKE :search OR u.emailAutenticacao LIKE :search OR p.email LIKE :search)";
+        $params['search'] = '%' . $search_query . '%';
+    }
+
+    if ($perfil_filter !== '') {
+        $whereConditions[] = "pf.nome = :perfil";
+        $params['perfil'] = $perfil_filter;
+    }
+
+    $whereSQL = implode(" AND ", $whereConditions);
+
+    // Contar total
+    $countSql = "SELECT COUNT(u.idUtilizador) as total
+                 FROM Utilizador u
+                 INNER JOIN Pessoa p ON u.idPessoa = p.idPessoa
+                 LEFT JOIN Perfil pf ON u.idPerfil = pf.idPerfil
+                 WHERE $whereSQL";
+    
+    $stmtCount = execute_query($countSql, $params, $ligacao);
+    $totalUtilizadoresFiltered = (int) $stmtCount->fetch(PDO::FETCH_ASSOC)['total'];
+
+    $totalPages = max(1, ceil($totalUtilizadoresFiltered / $items_per_page));
+    if ($current_page > $totalPages) {
+        $current_page = $totalPages;
+    }
+
+    $offset = ($current_page - 1) * $items_per_page;
+
+    // Definição de Sort
+    $allowed_sorts = [
+        'nome' => 'p.nome',
+        'perfil' => 'pf.nome'
+    ];
+    $sort_field = isset($allowed_sorts[$sort_param]) ? $allowed_sorts[$sort_param] : 'p.nome';
+    $sort_dir = strtoupper($dir_param);
+
+    $dataSql = "SELECT u.idUtilizador, u.idPessoa, u.emailAutenticacao, u.password, u.idPerfil, u.ativo as utilizador_ativo, u.dataCriacao as utilizador_dataCriacao, u.dataAtualizacao as utilizador_dataAtualizacao,
                 p.nome as pessoa_nome, p.email as pessoa_email, p.contactoTelefonico as pessoa_contacto, p.nif as pessoa_nif, p.funcao as pessoa_funcao, p.departamento as pessoa_departamento, p.ativo as pessoa_ativo, p.dataCriacao as pessoa_dataCriacao, p.dataAtualizacao as pessoa_dataAtualizacao,
                 pf.idPerfil as perfil_id, pf.nome as perfil_nome, pf.dataCriacao as perfil_dataCriacao, pf.dataAtualizacao as perfil_dataAtualizacao
         FROM Utilizador u
         INNER JOIN Pessoa p ON u.idPessoa = p.idPessoa
         LEFT JOIN Perfil pf ON u.idPerfil = pf.idPerfil
-        WHERE u.ativo = 1",
-        [],
-        $ligacao
-    );
+        WHERE $whereSQL
+        ORDER BY $sort_field $sort_dir
+        LIMIT " . (int) $items_per_page . " OFFSET " . (int) $offset;
+
+    $stmt = execute_query($dataSql, $params, $ligacao);
 
     $utilizadoresDb = $stmt->fetchAll(PDO::FETCH_ASSOC);
     foreach ($utilizadoresDb as $row) {
@@ -144,42 +190,77 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 
         <!-- Barra de Pesquisa -->
         <div class="bento-card padding-4 gap-4 equipment-list-search-bar">
-            <form action="" class="flex-grow-1">
-                <div class="form-item w-100 position-relative">
+            <form action="" method="GET" style="display: contents;">
+                <div class="form-item position-relative flex-grow-1">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-search-icon lucide-search search-bar-icon position-absolute text-secondary">
                         <path d="m21 21-4.34-4.34" />
                         <circle cx="11" cy="11" r="8" />
                     </svg>
-                    <input type="text" class="form-item w-100 search-bar-input" id="search-input-users"
+                    <input type="text" class="form-item w-100 search-bar-input" name="search" id="search-input-field"
                         placeholder="Pesquisar por nome, username ou email..." value="<?= htmlspecialchars($search_query) ?>">
+                    <?php if ($search_query !== ''): ?>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function() {
+                                const searchInput = document.getElementById('search-input-field');
+                                if (searchInput) {
+                                    searchInput.focus();
+                                    const val = searchInput.value;
+                                    searchInput.value = '';
+                                    searchInput.value = val;
+                                }
+                            });
+                        </script>
+                    <?php endif; ?>
+                </div>
+                <div class="d-flex gap-2 equipment-list-search-bar-filters">
+                    <select class="form-select" name="perfil" aria-label="Filtro Perfil" onchange="this.form.submit()">
+                        <option value="" <?= $perfil_filter === '' ? 'selected' : '' ?>>Todos os Perfis</option>
+                        <option value="Administrador" <?= $perfil_filter === 'Administrador' ? 'selected' : '' ?>>Administrador</option>
+                        <option value="Engenheiro Biomédico" <?= $perfil_filter === 'Engenheiro Biomédico' ? 'selected' : '' ?>>Engenheiro Biomédico</option>
+                        <option value="Técnico de Manutenção" <?= $perfil_filter === 'Técnico de Manutenção' ? 'selected' : '' ?>>Técnico de Manutenção</option>
+                        <option value="Aprovisionamento" <?= $perfil_filter === 'Aprovisionamento' ? 'selected' : '' ?>>Aprovisionamento</option>
+                        <option value="Consulta" <?= $perfil_filter === 'Consulta' ? 'selected' : '' ?>>Consulta</option>
+                    </select>
                 </div>
             </form>
-            <div class="d-flex gap-2 equipment-list-search-bar-filters">
-                <select class="form-select" aria-label="Filtro Perfil" id="filter-type-users">
-                    <option value="" selected>Todos os Perfis</option>
-                    <option value="Administrador">Administrador</option>
-                    <option value="Engenheiro Biomédico">Engenheiro Biomédico</option>
-                    <option value="Técnico de Manutenção">Técnico de Manutenção</option>
-                    <option value="Aprovisionamento">Aprovisionamento</option>
-                    <option value="Consulta">Consulta</option>
-                </select>
-            </div>
         </div>
 
         <!-- Tabela -->
         <div class="bento-card w-100 p-0 border-0">
-            <table id="usersTable" class="sibdas-table w-100 display">
-                <thead>
-                    <tr>
-                        <th>UTILIZADOR</th>
-                        <th>PERFIL</th>
-                        <th class="text-end">AÇÕES</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($listaUtilizadores as $item): ?>
+            <div class="datatable-wrapper no-footer sortable fixed-columns">
+                <div class="datatable-container">
+                    <?php
+                    $buildSortUrl = function ($column) use ($search_query, $perfil_filter, $sort_param, $dir_param) {
+                        $params = [];
+                        if ($search_query !== '') $params['search'] = $search_query;
+                        if ($perfil_filter !== '') $params['perfil'] = $perfil_filter;
+                        $params['sort'] = $column;
+                        $params['dir'] = ($sort_param === $column && $dir_param === 'asc') ? 'desc' : 'asc';
+                        return '?' . http_build_query($params);
+                    };
+
+                    $getSortIcon = function ($column) use ($sort_param, $dir_param) {
+                        if ($sort_param !== $column) return '';
+                        return $dir_param === 'asc' ? ' ↑' : ' ↓';
+                    };
+                    ?>
+                    <table id="usersTable" class="sibdas-table w-100 display datatable-table">
+                        <thead>
+                            <tr>
+                                <th><a href="<?= $buildSortUrl('nome') ?>" class="datatable-sorter text-decoration-none text-inherit">UTILIZADOR<?= $getSortIcon('nome') ?></a></th>
+                                <th><a href="<?= $buildSortUrl('perfil') ?>" class="datatable-sorter text-decoration-none text-inherit">PERFIL<?= $getSortIcon('perfil') ?></a></th>
+                                <th class="text-end">AÇÕES</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($listaUtilizadores)): ?>
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted py-4">Nenhum utilizador encontrado.</td>
+                                </tr>
+                            <?php else: ?>
+                                <?php foreach ($listaUtilizadores as $item): ?>
                         <?php
                         $utilizador = $item['utilizador'];
                         $pessoa = $item['pessoa'];
@@ -255,9 +336,48 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                 </div>
                             </td>
                         </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center padding-4 datatable-bottom">
+                    <div class="datatable-info">
+                        A mostrar
+                        <?= $totalUtilizadoresFiltered > 0 ? $offset + 1 : 0 ?>–<?= min($offset + $items_per_page, $totalUtilizadoresFiltered) ?>
+                        de <?= $totalUtilizadoresFiltered ?> registos
+                    </div>
+                    <nav class="datatable-pagination">
+                        <ul class="datatable-pagination-list">
+                            <?php
+                            $buildQueryString = function ($newPage) use ($search_query, $perfil_filter, $sort_param, $dir_param) {
+                                $params = ['page' => $newPage];
+                                if ($search_query !== '') $params['search'] = $search_query;
+                                if ($perfil_filter !== '') $params['perfil'] = $perfil_filter;
+                                if ($sort_param !== 'nome') $params['sort'] = $sort_param;
+                                if ($dir_param !== 'asc') $params['dir'] = $dir_param;
+                                return '?' . http_build_query($params);
+                            };
+                            ?>
+
+                            <?php if ($current_page > 1): ?>
+                                <li class="datatable-pagination-list-item pager"><a href="<?= $buildQueryString($current_page - 1) ?>">‹</a></li>
+                            <?php endif; ?>
+
+                            <?php for ($i = max(1, $current_page - 2); $i <= min($totalPages, $current_page + 2); $i++): ?>
+                                <li class="datatable-pagination-list-item <?= $i === $current_page ? 'datatable-active' : '' ?>">
+                                    <a href="<?= $buildQueryString($i) ?>"><?= $i ?></a>
+                                </li>
+                            <?php endfor; ?>
+
+                            <?php if ($current_page < $totalPages): ?>
+                                <li class="datatable-pagination-list-item pager"><a href="<?= $buildQueryString($current_page + 1) ?>">›</a></li>
+                            <?php endif; ?>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
         </div>
 
     </section>

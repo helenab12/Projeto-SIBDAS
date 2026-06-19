@@ -16,11 +16,48 @@ if (!empty($_SESSION['server_error'])) {
 }
 
 $search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
+$current_page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
+$sort_param = isset($_GET['sort']) ? trim($_GET['sort']) : 'chave';
+$dir_param = (isset($_GET['dir']) && strtolower(trim($_GET['dir'])) === 'desc') ? 'desc' : 'asc';
+$items_per_page = 8;
 
-// Obter todas as permissões da base de dados
+// Obter todas as permissões da base de dados com paginação
 $permissoes = [];
 try {
-    $stmt = execute_query("SELECT idPermissao, chave, descricao FROM Permissao WHERE ativo = 1");
+    $ligacao = connect_to_db();
+    $whereConditions = ["ativo = 1"];
+    $params = [];
+
+    if ($search_query !== '') {
+        $whereConditions[] = "(chave LIKE :search OR descricao LIKE :search)";
+        $params['search'] = '%' . $search_query . '%';
+    }
+
+    $whereSQL = implode(" AND ", $whereConditions);
+
+    // Contar total
+    $countSql = "SELECT COUNT(idPermissao) as total FROM Permissao WHERE $whereSQL";
+    $stmtCount = execute_query($countSql, $params, $ligacao);
+    $totalPermissoesFiltered = (int) $stmtCount->fetch(PDO::FETCH_ASSOC)['total'];
+
+    $totalPages = max(1, ceil($totalPermissoesFiltered / $items_per_page));
+    if ($current_page > $totalPages) {
+        $current_page = $totalPages;
+    }
+
+    $offset = ($current_page - 1) * $items_per_page;
+
+    // Definição de Sort
+    $allowed_sorts = [
+        'chave' => 'chave',
+        'descricao' => 'descricao'
+    ];
+    $sort_field = isset($allowed_sorts[$sort_param]) ? $allowed_sorts[$sort_param] : 'chave';
+    $sort_dir = strtoupper($dir_param);
+
+    $dataSql = "SELECT idPermissao, chave, descricao FROM Permissao WHERE $whereSQL ORDER BY $sort_field $sort_dir LIMIT " . (int)$items_per_page . " OFFSET " . (int)$offset;
+
+    $stmt = execute_query($dataSql, $params, $ligacao);
     $permissoesDb = $stmt->fetchAll(PDO::FETCH_ASSOC);
     foreach ($permissoesDb as $row) {
         $permissoes[] = new Permissao((int) $row['idPermissao'], $row['chave'], $row['descricao']);
@@ -61,32 +98,66 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 
         <!-- Barra de Pesquisa -->
         <div class="bento-card padding-4 gap-4 equipment-list-search-bar">
-            <form action="" class="flex-grow-1">
-                <div class="form-item w-100 position-relative">
+            <form action="" method="GET" style="display: contents;">
+                <div class="form-item position-relative flex-grow-1">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-search-icon lucide-search search-bar-icon position-absolute text-secondary">
                         <path d="m21 21-4.34-4.34" />
                         <circle cx="11" cy="11" r="8" />
                     </svg>
-                    <input type="text" class="form-item w-100 search-bar-input"
+                    <input type="text" class="form-item w-100 search-bar-input" name="search" id="search-input-field"
                         placeholder="Pesquisar por permissão..." value="<?= htmlspecialchars($search_query) ?>">
+                    <?php if ($search_query !== ''): ?>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function() {
+                                const searchInput = document.getElementById('search-input-field');
+                                if (searchInput) {
+                                    searchInput.focus();
+                                    const val = searchInput.value;
+                                    searchInput.value = '';
+                                    searchInput.value = val;
+                                }
+                            });
+                        </script>
+                    <?php endif; ?>
                 </div>
             </form>
         </div>
 
         <!-- Tabela -->
         <div class="bento-card w-100 p-0 border-0">
-            <table id="equipmentsTable" class="sibdas-table w-100 display">
-                <thead>
-                    <tr>
-                        <th>CHAVE</th>
-                        <th>DESCRIÇÃO</th>
-                        <th class="text-end">AÇÕES</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($permissoes as $permissao): ?>
+            <div class="datatable-wrapper no-footer sortable fixed-columns">
+                <div class="datatable-container">
+                    <?php
+                    $buildSortUrl = function ($column) use ($search_query, $sort_param, $dir_param) {
+                        $params = [];
+                        if ($search_query !== '') $params['search'] = $search_query;
+                        $params['sort'] = $column;
+                        $params['dir'] = ($sort_param === $column && $dir_param === 'asc') ? 'desc' : 'asc';
+                        return '?' . http_build_query($params);
+                    };
+
+                    $getSortIcon = function ($column) use ($sort_param, $dir_param) {
+                        if ($sort_param !== $column) return '';
+                        return $dir_param === 'asc' ? ' ↑' : ' ↓';
+                    };
+                    ?>
+                    <table id="equipmentsTable" class="sibdas-table w-100 display datatable-table">
+                        <thead>
+                            <tr>
+                                <th><a href="<?= $buildSortUrl('chave') ?>" class="datatable-sorter text-decoration-none text-inherit">CHAVE<?= $getSortIcon('chave') ?></a></th>
+                                <th><a href="<?= $buildSortUrl('descricao') ?>" class="datatable-sorter text-decoration-none text-inherit">DESCRIÇÃO<?= $getSortIcon('descricao') ?></a></th>
+                                <th class="text-end">AÇÕES</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($permissoes)): ?>
+                                <tr>
+                                    <td colspan="3" class="text-center text-muted py-4">Nenhuma permissão encontrada.</td>
+                                </tr>
+                            <?php else: ?>
+                                <?php foreach ($permissoes as $permissao): ?>
                         <?php $encryptedPermId = aes_encrypt($permissao->getIdPermissao()); ?>
                         <tr>
                             <td>
@@ -145,9 +216,47 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                 </div>
                             </td>
                         </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center padding-4 datatable-bottom">
+                    <div class="datatable-info">
+                        A mostrar
+                        <?= $totalPermissoesFiltered > 0 ? $offset + 1 : 0 ?>–<?= min($offset + $items_per_page, $totalPermissoesFiltered) ?>
+                        de <?= $totalPermissoesFiltered ?> registos
+                    </div>
+                    <nav class="datatable-pagination">
+                        <ul class="datatable-pagination-list">
+                            <?php
+                            $buildQueryString = function ($newPage) use ($search_query, $sort_param, $dir_param) {
+                                $params = ['page' => $newPage];
+                                if ($search_query !== '') $params['search'] = $search_query;
+                                if ($sort_param !== 'chave') $params['sort'] = $sort_param;
+                                if ($dir_param !== 'asc') $params['dir'] = $dir_param;
+                                return '?' . http_build_query($params);
+                            };
+                            ?>
+
+                            <?php if ($current_page > 1): ?>
+                                <li class="datatable-pagination-list-item pager"><a href="<?= $buildQueryString($current_page - 1) ?>">‹</a></li>
+                            <?php endif; ?>
+
+                            <?php for ($i = max(1, $current_page - 2); $i <= min($totalPages, $current_page + 2); $i++): ?>
+                                <li class="datatable-pagination-list-item <?= $i === $current_page ? 'datatable-active' : '' ?>">
+                                    <a href="<?= $buildQueryString($i) ?>"><?= $i ?></a>
+                                </li>
+                            <?php endfor; ?>
+
+                            <?php if ($current_page < $totalPages): ?>
+                                <li class="datatable-pagination-list-item pager"><a href="<?= $buildQueryString($current_page + 1) ?>">›</a></li>
+                            <?php endif; ?>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
         </div>
 
     </section>

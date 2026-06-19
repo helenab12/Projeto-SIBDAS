@@ -15,6 +15,8 @@ if (!empty($_SESSION['server_error'])) {
 }
 
 $search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
+$current_page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
+$items_per_page = 8;
 
 redirect_if_not_logged();
 
@@ -26,8 +28,31 @@ try {
     $stmt = execute_query("SELECT idPerfil, nome FROM Perfil WHERE ativo = 1 ORDER BY idPerfil ASC", [], $ligacao);
     $perfis = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Obter permissões
-    $stmt = execute_query("SELECT idPermissao, chave, descricao FROM Permissao WHERE ativo = 1 ORDER BY idPermissao ASC", [], $ligacao);
+    // Obter permissões com paginação
+    $whereConditions = ["ativo = 1"];
+    $params = [];
+
+    if ($search_query !== '') {
+        $whereConditions[] = "(chave LIKE :search OR descricao LIKE :search)";
+        $params['search'] = '%' . $search_query . '%';
+    }
+
+    $whereSQL = implode(" AND ", $whereConditions);
+
+    // Contar total
+    $countSql = "SELECT COUNT(idPermissao) as total FROM Permissao WHERE $whereSQL";
+    $stmtCount = execute_query($countSql, $params, $ligacao);
+    $totalPermissoesFiltered = (int) $stmtCount->fetch(PDO::FETCH_ASSOC)['total'];
+
+    $totalPages = max(1, ceil($totalPermissoesFiltered / $items_per_page));
+    if ($current_page > $totalPages) {
+        $current_page = $totalPages;
+    }
+
+    $offset = ($current_page - 1) * $items_per_page;
+
+    $dataSql = "SELECT idPermissao, chave, descricao FROM Permissao WHERE $whereSQL ORDER BY idPermissao ASC LIMIT " . (int)$items_per_page . " OFFSET " . (int)$offset;
+    $stmt = execute_query($dataSql, $params, $ligacao);
     $permissoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     // Obter relações de PerfilPermissao
@@ -53,38 +78,52 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
     <?php include_once BASE_PATH . 'private/includes/headers.php'; ?>
 
     <!-- Conteúdo -->
-    <form method="POST" action="profiles-crud/update-profiles.php" class="flex-grow-1 d-flex flex-column">
-        <section class="content-container gap-6 security-profiles flex-grow-1 p-0">
-            <div class="d-flex flex-column flex-grow-1 gap-6 padding-6">
-                <!-- Titulo -->
-                <div class="d-flex justify-content-between align-items-center w-100 dashboard-title">
-                    <div class="d-flex flex-column gap-1">
-                        <h1>Perfis</h1>
-                        <p class="text-secondary fw-400">Gestão de perfis de utilizadores</p>
+    <section class="content-container gap-6 security-profiles flex-grow-1 p-0">
+        <div class="d-flex flex-column flex-grow-1 gap-6 padding-6">
+            <!-- Titulo -->
+            <div class="d-flex justify-content-between align-items-center w-100 dashboard-title">
+                <div class="d-flex flex-column gap-1">
+                    <h1>Perfis</h1>
+                    <p class="text-secondary fw-400">Gestão de perfis de utilizadores</p>
+                </div>
+            </div>
+
+            <!-- Barra de Pesquisa -->
+            <div class="bento-card padding-4 gap-4 equipment-list-search-bar">
+                <form action="" method="GET" style="display: contents;">
+                    <div class="form-item position-relative flex-grow-1">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                            stroke-linejoin="round"
+                            class="lucide lucide-search-icon lucide-search search-bar-icon position-absolute text-secondary">
+                            <path d="m21 21-4.34-4.34" />
+                            <circle cx="11" cy="11" r="8" />
+                        </svg>
+                        <input type="text" class="form-item w-100 search-bar-input" name="search" id="search-input-field"
+                            placeholder="Pesquisar por permissão..." value="<?= htmlspecialchars($search_query) ?>">
+                        <?php if ($search_query !== ''): ?>
+                            <script>
+                                document.addEventListener("DOMContentLoaded", function() {
+                                    const searchInput = document.getElementById('search-input-field');
+                                    if (searchInput) {
+                                        searchInput.focus();
+                                        const val = searchInput.value;
+                                        searchInput.value = '';
+                                        searchInput.value = val;
+                                    }
+                                });
+                            </script>
+                        <?php endif; ?>
                     </div>
-                </div>
+                </form>
+            </div>
 
-                <!-- Barra de Pesquisa -->
-                <div class="bento-card padding-4 gap-4 equipment-list-search-bar">
-                    <form action="" class="flex-grow-1">
-                        <div class="form-item w-100 position-relative">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round"
-                                class="lucide lucide-search-icon lucide-search search-bar-icon position-absolute text-secondary">
-                                <path d="m21 21-4.34-4.34" />
-                                <circle cx="11" cy="11" r="8" />
-                            </svg>
-                            <input type="text" class="form-item w-100 search-bar-input"
-                                placeholder="Pesquisar por permissão..." value="<?= htmlspecialchars($search_query) ?>">
-                        </div>
-                    </form>
-                </div>
-
-
-                <!-- Tabela -->
+            <!-- Tabela form -->
+            <form method="POST" action="profiles-crud/update-profiles.php" class="flex-grow-1 d-flex flex-column gap-6">
                 <div class="bento-card w-100 p-0 border-0">
-                    <table id="equipmentsTable" class="sibdas-table w-100 display">
+                    <div class="datatable-wrapper no-footer sortable fixed-columns">
+                        <div class="datatable-container">
+                            <table class="sibdas-table w-100 display datatable-table">
                         <thead>
                             <tr>
                                 <th class="text-center align-middle">
@@ -157,31 +196,64 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                         </td>
                                     <?php endforeach; ?>
                                 </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center padding-4 datatable-bottom">
+                        <div class="datatable-info">
+                            A mostrar
+                            <?= $totalPermissoesFiltered > 0 ? $offset + 1 : 0 ?>–<?= min($offset + $items_per_page, $totalPermissoesFiltered) ?>
+                            de <?= $totalPermissoesFiltered ?> registos
+                        </div>
+                        <nav class="datatable-pagination">
+                            <ul class="datatable-pagination-list">
+                                <?php
+                                $buildQueryString = function ($newPage) use ($search_query) {
+                                    $params = ['page' => $newPage];
+                                    if ($search_query !== '') $params['search'] = $search_query;
+                                    return '?' . http_build_query($params);
+                                };
+                                ?>
+
+                                <?php if ($current_page > 1): ?>
+                                    <li class="datatable-pagination-list-item pager"><a href="<?= $buildQueryString($current_page - 1) ?>">‹</a></li>
+                                <?php endif; ?>
+
+                                <?php for ($i = max(1, $current_page - 2); $i <= min($totalPages, $current_page + 2); $i++): ?>
+                                    <li class="datatable-pagination-list-item <?= $i === $current_page ? 'datatable-active' : '' ?>">
+                                        <a href="<?= $buildQueryString($i) ?>"><?= $i ?></a>
+                                    </li>
+                                <?php endfor; ?>
+
+                                <?php if ($current_page < $totalPages): ?>
+                                    <li class="datatable-pagination-list-item pager"><a href="<?= $buildQueryString($current_page + 1) ?>">›</a></li>
+                                <?php endif; ?>
+                            </ul>
+                        </nav>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Alterações pendentes -->
-            <div class="inbox-changes-container justify-content-between align-items-center padding-6"
-                style="display: none;">
-                <p class="text-muted m-0">Existem alterações pendentes</p>
-                <button type="submit" class="btn btn-primary btn-glowing gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-save-icon lucide-save">
-                        <path
-                            d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
-                        <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" />
-                        <path d="M7 3v4a1 1 0 0 0 1 1h7" />
-                    </svg>
-                    Guardar Alterações
-                </button>
-            </div>
-
-        </section>
-    </form>
+                <!-- Alterações pendentes -->
+                <div class="inbox-changes-container justify-content-between align-items-center padding-6"
+                    style="display: none;">
+                    <p class="text-muted m-0">Existem alterações pendentes</p>
+                    <button type="submit" class="btn btn-primary btn-glowing gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-save-icon lucide-save">
+                            <path
+                                d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
+                            <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" />
+                            <path d="M7 3v4a1 1 0 0 0 1 1h7" />
+                        </svg>
+                        Guardar Alterações
+                    </button>
+                </div>
+            </form>
+        </div>
+    </section>
 </div>
 
 <!-- Toast Container -->

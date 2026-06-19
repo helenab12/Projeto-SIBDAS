@@ -364,65 +364,39 @@ if (
     typeof simpleDatatables !== "undefined"
 ) {
     const table = new simpleDatatables.DataTable("#equipmentsTable", {
-        searchable: true,
-        perPage: 8,
-        perPageSelect: false,
+        searchable: false,
+        paging: false,
+        sortable: false,
         labels: {
-            placeholder: "Pesquisar...",
-            perPage: "entradas por página",
             noRows: "Nenhum registo encontrado",
-            noResults: "Nenhum resultado corresponde à sua pesquisa",
-            info: "A mostrar {start}–{end} de {rows}",
+            info: "",
         },
     });
 
     table.on('datatable.page', initTooltips);
     table.on('datatable.sort', initTooltips);
     table.on('datatable.search', initTooltips);
-    table.on('datatable.update', initTooltips);
-
-    // Custom search binding
-    const searchInputs = document.querySelectorAll(".search-bar-input");
-    const filterEstado = document.getElementById("filter-estado");
-    const filterCriticidade = document.getElementById("filter-criticidade");
-    const filterCategoria = document.getElementById("filter-categoria");
-
-    function applyFilters() {
-        const searchVal = searchInputs.length > 0 ? searchInputs[0].value.trim() : "";
-        const estadoVal = filterEstado ? filterEstado.value : "";
-        const critVal = filterCriticidade ? filterCriticidade.value : "";
-        const catVal = filterCategoria ? filterCategoria.value : "";
-
-        if (typeof table.multiSearch === 'function') {
-            let queries = [];
-            if (searchVal) queries.push({ terms: [searchVal] });
-            if (catVal) queries.push({ terms: [catVal], columns: [1] });
-            if (estadoVal) queries.push({ terms: [estadoVal], columns: [3] });
-            if (critVal) queries.push({ terms: [critVal], columns: [4] });
-
-            if (queries.length > 0) {
-                table.multiSearch(queries);
-            } else {
-                table.search("");
-            }
-        } else {
-            let terms = [];
-            if (searchVal) terms.push(searchVal);
-            if (estadoVal) terms.push(estadoVal);
-            if (critVal) terms.push(critVal);
-            if (catVal) terms.push(catVal);
-            table.search(terms.join(" "));
-        }
-    }
-
-    searchInputs.forEach((input) => {
-        input.addEventListener("input", applyFilters);
-    });
-
-    [filterEstado, filterCriticidade, filterCategoria].forEach(select => {
-        if (select) select.addEventListener("change", applyFilters);
-    });
 }
+
+// Auto-submit da pesquisa global (para qualquer input de pesquisa que use form)
+document.addEventListener("DOMContentLoaded", function () {
+    const searchInputs = document.querySelectorAll(".equipment-list-search-bar .search-bar-input");
+    let debounceTimer;
+    searchInputs.forEach((input) => {
+        input.addEventListener("keyup", function (e) {
+            // Ignorar teclas que não mudam o texto (setas, shift, control, etc)
+            const ignoredKeys = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Shift', 'Control', 'Alt', 'Meta', 'Escape', 'Tab'];
+            if (ignoredKeys.includes(e.key)) return;
+
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                if (input.form) {
+                    input.form.submit();
+                }
+            }, 600);
+        });
+    });
+});
 
 // Inicializar DataTables (Fornecedores)
 if (
@@ -1779,9 +1753,9 @@ document.addEventListener("DOMContentLoaded", () => {
             try {
                 const response = await fetch(`${searchUrl}?q=${encodeURIComponent(term)}`);
                 if (!response.ok) throw new Error("Erro de rede ao pesquisar");
-                
+
                 const data = await response.json();
-                
+
                 searchLoading.classList.add("d-none");
 
                 if (data.error) {
@@ -1823,15 +1797,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 section.items.forEach(item => {
                     const itemClone = itemTemplate.content.cloneNode(true);
-                    
+
                     const link = itemClone.querySelector(".item-link");
                     link.href = item.url;
-                    
+
                     const iconWrapper = itemClone.querySelector(".item-icon-wrapper");
                     iconWrapper.style.backgroundColor = section.bg;
                     iconWrapper.style.color = section.color;
                     iconWrapper.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${section.icon}</svg>`;
-                    
+
                     itemClone.querySelector(".item-title").textContent = item.title;
                     itemClone.querySelector(".item-subtitle").textContent = item.subtitle;
 

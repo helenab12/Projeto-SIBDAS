@@ -14,15 +14,67 @@ if (!empty($_SESSION['server_error'])) {
     unset($_SESSION['server_error']);
 }
 
+$search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
+$acao_filter = isset($_GET['acao']) ? trim($_GET['acao']) : '';
+$current_page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
+$sort_param = isset($_GET['sort']) ? trim($_GET['sort']) : 'dataCriacao';
+$dir_param = (isset($_GET['dir']) && strtolower(trim($_GET['dir'])) === 'asc') ? 'asc' : 'desc'; // default desc
+$items_per_page = 8;
+
 $auditoria = [];
 try {
-    $stmt = execute_query(
-        "SELECT ha.*, p.nome AS nomeUtilizador 
+    $ligacao = connect_to_db();
+    $whereConditions = ["1 = 1"];
+    $params = [];
+
+    if ($search_query !== '') {
+        $whereConditions[] = "(ha.acao LIKE :search OR p.nome LIKE :search OR ha.campoAfetado LIKE :search OR ha.valorAntigo LIKE :search OR ha.valorNovo LIKE :search OR ha.tabelaAfetada LIKE :search)";
+        $params['search'] = '%' . $search_query . '%';
+    }
+
+    if ($acao_filter !== '') {
+        $whereConditions[] = "ha.acao = :acao";
+        $params['acao'] = $acao_filter;
+    }
+
+    $whereSQL = implode(" AND ", $whereConditions);
+
+    // Contar total
+    $countSql = "SELECT COUNT(ha.idAuditoria) as total
+                 FROM HistoricoAuditoria ha
+                 LEFT JOIN Utilizador u ON ha.idUtilizador = u.idUtilizador
+                 LEFT JOIN Pessoa p ON u.idPessoa = p.idPessoa
+                 WHERE $whereSQL";
+    
+    $stmtCount = execute_query($countSql, $params, $ligacao);
+    $totalLogsFiltered = (int) $stmtCount->fetch(PDO::FETCH_ASSOC)['total'];
+
+    $totalPages = max(1, ceil($totalLogsFiltered / $items_per_page));
+    if ($current_page > $totalPages) {
+        $current_page = $totalPages;
+    }
+
+    $offset = ($current_page - 1) * $items_per_page;
+
+    // Definição de Sort
+    $allowed_sorts = [
+        'dataCriacao' => 'ha.dataCriacao',
+        'acao' => 'ha.acao',
+        'utilizador' => 'p.nome',
+        'tabela' => 'ha.tabelaAfetada'
+    ];
+    $sort_field = isset($allowed_sorts[$sort_param]) ? $allowed_sorts[$sort_param] : 'ha.dataCriacao';
+    $sort_dir = strtoupper($dir_param);
+
+    $dataSql = "SELECT ha.*, p.nome AS nomeUtilizador 
          FROM HistoricoAuditoria ha
          LEFT JOIN Utilizador u ON ha.idUtilizador = u.idUtilizador
          LEFT JOIN Pessoa p ON u.idPessoa = p.idPessoa
-         ORDER BY ha.dataCriacao DESC"
-    );
+         WHERE $whereSQL
+         ORDER BY $sort_field $sort_dir
+         LIMIT " . (int)$items_per_page . " OFFSET " . (int)$offset;
+
+    $stmt = execute_query($dataSql, $params, $ligacao);
 
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         $data = new DateTime($row['dataCriacao']);
@@ -87,7 +139,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
         <div class="d-flex justify-content-between align-items-center w-100 dashboard-title">
             <div class="d-flex flex-column gap-1">
                 <h1>Logs de Auditoria</h1>
-                <p class="text-secondary fw-400"><?php echo count($auditoria); ?> registos encontrados</p>
+                <p class="text-secondary fw-400"><?= htmlspecialchars($totalLogsFiltered ?? count($auditoria)) ?> registos encontrados</p>
             </div>
             <div class="d-flex gap-2">
                 <button class="btn btn-primary-outline gap-2">
@@ -105,45 +157,80 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 
         <!-- Barra de Pesquisa -->
         <div class="bento-card padding-4 gap-4 equipment-list-search-bar">
-            <form action="" class="flex-grow-1">
-                <div class="form-item w-100 position-relative">
+            <form action="" method="GET" style="display: contents;">
+                <div class="form-item position-relative flex-grow-1">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-search-icon lucide-search search-bar-icon position-absolute text-secondary">
                         <path d="m21 21-4.34-4.34" />
                         <circle cx="11" cy="11" r="8" />
                     </svg>
-                    <input type="text" class="form-item w-100 search-bar-input" id="search-global-audit"
-                        placeholder="Pesquisar por ação, utilizador ou detalhes...">
+                    <input type="text" class="form-item w-100 search-bar-input" name="search" id="search-input-field"
+                        placeholder="Pesquisar por ação, utilizador ou detalhes..." value="<?= htmlspecialchars($search_query) ?>">
+                    <?php if ($search_query !== ''): ?>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function() {
+                                const searchInput = document.getElementById('search-input-field');
+                                if (searchInput) {
+                                    searchInput.focus();
+                                    const val = searchInput.value;
+                                    searchInput.value = '';
+                                    searchInput.value = val;
+                                }
+                            });
+                        </script>
+                    <?php endif; ?>
+                </div>
+                <div class="d-flex gap-2 equipment-list-search-bar-filters">
+                    <select class="form-select" name="acao" aria-label="Filtro Ações" onchange="this.form.submit()">
+                        <option value="" <?= $acao_filter === '' ? 'selected' : '' ?>>Todas as ações</option>
+                        <option value="Criação" <?= $acao_filter === 'Criação' ? 'selected' : '' ?>>Criação</option>
+                        <option value="Edição" <?= $acao_filter === 'Edição' ? 'selected' : '' ?>>Edição</option>
+                        <option value="Remoção" <?= $acao_filter === 'Remoção' ? 'selected' : '' ?>>Remoção</option>
+                    </select>
                 </div>
             </form>
-            <div class="d-flex gap-2 equipment-list-search-bar-filters">
-                <select class="form-select" aria-label="Filtro Ações" id="filter-global-audit-type">
-                    <option value="" selected>Todas as ações</option>
-                    <option value="Criação">Criação</option>
-                    <option value="Edição">Edição</option>
-                    <option value="Remoção">Remoção</option>
-                </select>
-            </div>
         </div>
 
         <!-- Lista de Logs de Auditoria -->
         <div class="bento-card w-100 p-0 border-0">
-            <table id="globalAuditTable" class="sibdas-table w-100 display">
-                <thead>
-                    <tr>
-                        <th>DATA</th>
-                        <th>AÇÃO</th>
-                        <th>UTILIZADOR</th>
-                        <th>TABELA</th>
-                        <th>ID REGISTO</th>
-                        <th>CAMPO</th>
-                        <th>VALOR ANTIGO</th>
-                        <th>VALOR NOVO</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($auditoria as $item): ?>
+            <div class="datatable-wrapper no-footer sortable fixed-columns">
+                <div class="datatable-container">
+                    <?php
+                    $buildSortUrl = function ($column) use ($search_query, $acao_filter, $sort_param, $dir_param) {
+                        $params = [];
+                        if ($search_query !== '') $params['search'] = $search_query;
+                        if ($acao_filter !== '') $params['acao'] = $acao_filter;
+                        $params['sort'] = $column;
+                        $params['dir'] = ($sort_param === $column && $dir_param === 'asc') ? 'desc' : 'asc';
+                        return '?' . http_build_query($params);
+                    };
+
+                    $getSortIcon = function ($column) use ($sort_param, $dir_param) {
+                        if ($sort_param !== $column) return '';
+                        return $dir_param === 'asc' ? ' ↑' : ' ↓';
+                    };
+                    ?>
+                    <table id="globalAuditTable" class="sibdas-table w-100 display datatable-table">
+                        <thead>
+                            <tr>
+                                <th><a href="<?= $buildSortUrl('dataCriacao') ?>" class="datatable-sorter text-decoration-none text-inherit">DATA<?= $getSortIcon('dataCriacao') ?></a></th>
+                                <th><a href="<?= $buildSortUrl('acao') ?>" class="datatable-sorter text-decoration-none text-inherit">AÇÃO<?= $getSortIcon('acao') ?></a></th>
+                                <th><a href="<?= $buildSortUrl('utilizador') ?>" class="datatable-sorter text-decoration-none text-inherit">UTILIZADOR<?= $getSortIcon('utilizador') ?></a></th>
+                                <th><a href="<?= $buildSortUrl('tabela') ?>" class="datatable-sorter text-decoration-none text-inherit">TABELA<?= $getSortIcon('tabela') ?></a></th>
+                                <th>ID REGISTO</th>
+                                <th>CAMPO</th>
+                                <th>VALOR ANTIGO</th>
+                                <th>VALOR NOVO</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php if (empty($auditoria)): ?>
+                                <tr>
+                                    <td colspan="8" class="text-center text-muted py-4">Nenhum log encontrado.</td>
+                                </tr>
+                            <?php else: ?>
+                                <?php foreach ($auditoria as $item): ?>
                         <tr>
                             <td>
                                 <span class="text-secondary fw-400"><?= htmlspecialchars($item['data']) ?></span>
@@ -172,9 +259,48 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                 <span class="text-secondary fw-400"><?= htmlspecialchars($item['valorNovo']) ?></span>
                             </td>
                         </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="d-flex justify-content-between align-items-center padding-4 datatable-bottom">
+                    <div class="datatable-info">
+                        A mostrar
+                        <?= $totalLogsFiltered > 0 ? $offset + 1 : 0 ?>–<?= min($offset + $items_per_page, $totalLogsFiltered) ?>
+                        de <?= $totalLogsFiltered ?> registos
+                    </div>
+                    <nav class="datatable-pagination">
+                        <ul class="datatable-pagination-list">
+                            <?php
+                            $buildQueryString = function ($newPage) use ($search_query, $acao_filter, $sort_param, $dir_param) {
+                                $params = ['page' => $newPage];
+                                if ($search_query !== '') $params['search'] = $search_query;
+                                if ($acao_filter !== '') $params['acao'] = $acao_filter;
+                                if ($sort_param !== 'dataCriacao') $params['sort'] = $sort_param;
+                                if ($dir_param !== 'desc') $params['dir'] = $dir_param;
+                                return '?' . http_build_query($params);
+                            };
+                            ?>
+
+                            <?php if ($current_page > 1): ?>
+                                <li class="datatable-pagination-list-item pager"><a href="<?= $buildQueryString($current_page - 1) ?>">‹</a></li>
+                            <?php endif; ?>
+
+                            <?php for ($i = max(1, $current_page - 2); $i <= min($totalPages, $current_page + 2); $i++): ?>
+                                <li class="datatable-pagination-list-item <?= $i === $current_page ? 'datatable-active' : '' ?>">
+                                    <a href="<?= $buildQueryString($i) ?>"><?= $i ?></a>
+                                </li>
+                            <?php endfor; ?>
+
+                            <?php if ($current_page < $totalPages): ?>
+                                <li class="datatable-pagination-list-item pager"><a href="<?= $buildQueryString($current_page + 1) ?>">›</a></li>
+                            <?php endif; ?>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
         </div>
 
     </section>

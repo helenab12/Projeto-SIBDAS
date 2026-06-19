@@ -14,6 +14,15 @@ if (!empty($_SESSION['server_error'])) {
     unset($_SESSION['server_error']);
 }
 
+$search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
+$estado_filter = isset($_GET['estado']) ? trim($_GET['estado']) : '';
+$criticidade_filter = isset($_GET['criticidade']) ? trim($_GET['criticidade']) : '';
+$categoria_filter = isset($_GET['categoria']) ? trim($_GET['categoria']) : '';
+$current_page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
+$sort_param = isset($_GET['sort']) ? trim($_GET['sort']) : 'equipamento';
+$dir_param = (isset($_GET['dir']) && strtolower(trim($_GET['dir'])) === 'desc') ? 'desc' : 'asc';
+$items_per_page = 8;
+
 $listaEquipamentos = [];
 $categoriasDisponiveis = [];
 $localizacoesDisponiveis = [];
@@ -66,16 +75,75 @@ try {
         );
     }
 
-    // Obter Equipamentos
-    $stmtEquipamentos = execute_query(
-        "SELECT e.*, m.nome as marcaNome 
-         FROM Equipamento e 
-         LEFT JOIN Marca m ON e.idMarca = m.idMarca 
-         WHERE e.ativo = 1 AND e.arquivado = 1 
-         ORDER BY e.designacao ASC",
-        [],
-        $ligacao
-    );
+    // Condições de Pesquisa
+    $whereConditions = ["e.ativo = 1", "e.arquivado = 1"];
+    $params = [];
+
+    if ($search_query !== '') {
+        $whereConditions[] = "(e.designacao LIKE :search OR e.numeroSerie LIKE :search OR m.nome LIKE :search OR e.modelo LIKE :search)";
+        $params['search'] = '%' . $search_query . '%';
+    }
+    if ($estado_filter !== '') {
+        $whereConditions[] = "e.estadoAtual = :estado";
+        $params['estado'] = $estado_filter;
+    }
+    if ($criticidade_filter !== '') {
+        $whereConditions[] = "e.criticidade = :criticidade";
+        $params['criticidade'] = $criticidade_filter;
+    }
+    if ($categoria_filter !== '') {
+        $whereConditions[] = "c.nome = :categoria";
+        $params['categoria'] = $categoria_filter;
+    }
+
+    $whereSQL = implode(" AND ", $whereConditions);
+
+    // Contar total de equipamentos (sem filtros)
+    $stmtTotal = execute_query("SELECT COUNT(*) as total FROM Equipamento WHERE ativo = 1 AND arquivado = 1", [], $ligacao);
+    $totalEquipamentosAll = (int) $stmtTotal->fetch(PDO::FETCH_ASSOC)['total'];
+
+    // Contar total filtrado
+    $countSql = "SELECT COUNT(e.idEquipamento) as total 
+                 FROM Equipamento e 
+                 LEFT JOIN Marca m ON e.idMarca = m.idMarca 
+                 LEFT JOIN CategoriaEquipamento c ON e.idCategoria = c.idCategoria 
+                 WHERE $whereSQL";
+
+    $stmtCount = execute_query($countSql, $params, $ligacao);
+    $totalEquipamentosFiltered = (int) $stmtCount->fetch(PDO::FETCH_ASSOC)['total'];
+
+    $totalPages = max(1, ceil($totalEquipamentosFiltered / $items_per_page));
+    if ($current_page > $totalPages) {
+        $current_page = $totalPages;
+    }
+
+    $offset = ($current_page - 1) * $items_per_page;
+
+    // Definição de Sort
+    $allowed_sorts = [
+        'equipamento' => 'e.designacao',
+        'categoria' => 'c.nome',
+        'localizacao' => 'l.nomeSala',
+        'estado' => 'e.estadoAtual',
+        'criticidade' => 'e.criticidade'
+    ];
+    $sort_field = isset($allowed_sorts[$sort_param]) ? $allowed_sorts[$sort_param] : 'e.designacao';
+    $sort_dir = strtoupper($dir_param);
+
+    if ($sort_param === 'localizacao') {
+        $sort_field = 'e.idLocalizacao';
+    }
+
+    // Obter Equipamentos com LIMIT, OFFSET e ORDER BY
+    $dataSql = "SELECT e.*, m.nome as marcaNome 
+                FROM Equipamento e 
+                LEFT JOIN Marca m ON e.idMarca = m.idMarca 
+                LEFT JOIN CategoriaEquipamento c ON e.idCategoria = c.idCategoria 
+                WHERE $whereSQL 
+                ORDER BY $sort_field $sort_dir 
+                LIMIT " . (int) $items_per_page . " OFFSET " . (int) $offset;
+
+    $stmtEquipamentos = execute_query($dataSql, $params, $ligacao);
 
     while ($row = $stmtEquipamentos->fetch(PDO::FETCH_ASSOC)) {
         $listaEquipamentos[] = new Equipamento(
@@ -126,62 +194,118 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 
         <!-- Barra de Pesquisa -->
         <div class="bento-card padding-4 gap-4 equipment-list-search-bar">
-            <form action="" class="flex-grow-1">
-                <div class="form-item w-100 position-relative">
+            <form action="" method="GET" style="display: contents;">
+                <div class="form-item position-relative flex-grow-1">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-search-icon lucide-search search-bar-icon position-absolute text-secondary">
                         <path d="m21 21-4.34-4.34" />
                         <circle cx="11" cy="11" r="8" />
                     </svg>
-                    <input type="text" class="form-item w-100 search-bar-input"
-                        placeholder="Pesquisar por nome, nº série, marca, modelo...">
+                    <input type="text" class="form-item w-100 search-bar-input" name="search" id="search-input-field"
+                        placeholder="Pesquisar por nome, nº série, marca, modelo..."
+                        value="<?= htmlspecialchars($search_query) ?>">
+                    <?php if ($search_query !== ''): ?>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function() {
+                                const searchInput = document.getElementById('search-input-field');
+                                if (searchInput) {
+                                    searchInput.focus();
+                                    const val = searchInput.value;
+                                    searchInput.value = '';
+                                    searchInput.value = val;
+                                }
+                            });
+                        </script>
+                    <?php endif; ?>
+                </div>
+                <div class="d-flex gap-2 equipment-list-search-bar-filters">
+                    <select class="form-select" name="estado" aria-label="Filtro Estado" onchange="this.form.submit()">
+                        <option value="" <?= $estado_filter === '' ? 'selected' : '' ?>>Estado</option>
+                        <?php foreach (EstadoEquipamento::cases() as $estado): ?>
+                            <option value="<?= htmlspecialchars($estado->value) ?>" <?= $estado_filter === $estado->value ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($estado->value) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <select class="form-select" name="criticidade" aria-label="Filtro Criticidade"
+                        onchange="this.form.submit()">
+                        <option value="" <?= $criticidade_filter === '' ? 'selected' : '' ?>>Criticidade</option>
+                        <?php foreach (CriticidadeEquipamento::cases() as $criticidade): ?>
+                            <option value="<?= htmlspecialchars($criticidade->value) ?>"
+                                <?= $criticidade_filter === $criticidade->value ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($criticidade->value) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <select class="form-select" name="categoria" aria-label="Filtro Categoria"
+                        onchange="this.form.submit()">
+                        <option value="" <?= $categoria_filter === '' ? 'selected' : '' ?>>Categoria</option>
+                        <?php foreach ($categoriasDisponiveis as $catDisp): ?>
+                            <option value="<?= htmlspecialchars($catDisp->getNome()) ?>"
+                                <?= $categoria_filter === $catDisp->getNome() ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($catDisp->getNome()) ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button type="submit" class="btn btn-primary d-none">Filtrar</button>
                 </div>
             </form>
-            <div class="d-flex gap-2 equipment-list-search-bar-filters">
-                <select class="form-select" id="filter-estado" aria-label="Filtro Estado">
-                    <option value="" selected>Estado</option>
-                    <?php foreach (EstadoEquipamento::cases() as $estado): ?>
-                        <option value="<?= htmlspecialchars($estado->value) ?>"><?= htmlspecialchars($estado->value) ?>
-                        </option>
-                    <?php endforeach; ?>
-
-                </select>
-                <select class="form-select" id="filter-criticidade" aria-label="Filtro Criticidade">
-                    <option value="" selected>Criticidade</option>
-                    <?php foreach (CriticidadeEquipamento::cases() as $criticidade): ?>
-                        <option value="<?= htmlspecialchars($criticidade->value) ?>">
-                            <?= htmlspecialchars($criticidade->value) ?>
-                        </option>
-                    <?php endforeach; ?>
-
-                </select>
-                <select class="form-select" id="filter-categoria" aria-label="Filtro Categoria">
-                    <option value="" selected>Categoria</option>
-                    <?php foreach ($categoriasDisponiveis as $catDisp): ?>
-                        <option value="<?= htmlspecialchars($catDisp->getNome()) ?>">
-                            <?= htmlspecialchars($catDisp->getNome()) ?>
-                        </option>
-                    <?php endforeach; ?>
-
-                </select>
-            </div>
         </div>
 
         <!-- Tabela -->
         <div class="bento-card w-100 p-0 border-0">
-            <table id="equipmentsTable" class="sibdas-table w-100 display">
-                <thead>
-                    <tr>
-                        <th>EQUIPAMENTO</th>
-                        <th>CATEGORIA</th>
-                        <th>LOCALIZAÇÃO</th>
-                        <th>ESTADO</th>
-                        <th>CRITICIDADE</th>
-                        <th class="text-end">AÇÕES</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <div class="datatable-wrapper no-footer sortable fixed-columns">
+                <div class="datatable-container">
+                    <?php
+                    // Função auxiliar para criar links de ordenação
+                    $buildSortUrl = function ($column) use ($search_query, $estado_filter, $criticidade_filter, $categoria_filter, $sort_param, $dir_param) {
+                        $params = [];
+                        if ($search_query !== '')
+                            $params['search'] = $search_query;
+                        if ($estado_filter !== '')
+                            $params['estado'] = $estado_filter;
+                        if ($criticidade_filter !== '')
+                            $params['criticidade'] = $criticidade_filter;
+                        if ($categoria_filter !== '')
+                            $params['categoria'] = $categoria_filter;
+
+                        $params['sort'] = $column;
+                        // Inverte a direção se estiver a clicar na mesma coluna, senão default para asc
+                        $params['dir'] = ($sort_param === $column && $dir_param === 'asc') ? 'desc' : 'asc';
+
+                        return '?' . http_build_query($params);
+                    };
+
+                    // Funço auxiliar para mostrar o ícone/seta
+                    $getSortIcon = function ($column) use ($sort_param, $dir_param) {
+                        if ($sort_param !== $column)
+                            return '';
+                        return $dir_param === 'asc' ? ' ↑' : ' ↓';
+                    };
+                    ?>
+                    <table id="archiveTable" class="sibdas-table w-100 display datatable-table">
+                        <thead>
+                            <tr>
+                                <th><a href="<?= $buildSortUrl('equipamento') ?>"
+                                        class="datatable-sorter text-decoration-none text-inherit">EQUIPAMENTO<?= $getSortIcon('equipamento') ?></a>
+                                </th>
+                                <th><a href="<?= $buildSortUrl('categoria') ?>"
+                                        class="datatable-sorter text-decoration-none text-inherit">CATEGORIA<?= $getSortIcon('categoria') ?></a>
+                                </th>
+                                <th><a href="<?= $buildSortUrl('localizacao') ?>"
+                                        class="datatable-sorter text-decoration-none text-inherit">LOCALIZAÇÃO<?= $getSortIcon('localizacao') ?></a>
+                                </th>
+                                <th><a href="<?= $buildSortUrl('estado') ?>"
+                                        class="datatable-sorter text-decoration-none text-inherit">ESTADO<?= $getSortIcon('estado') ?></a>
+                                </th>
+                                <th><a href="<?= $buildSortUrl('criticidade') ?>"
+                                        class="datatable-sorter text-decoration-none text-inherit">CRITICIDADE<?= $getSortIcon('criticidade') ?></a>
+                                </th>
+                                <th class="text-end">AÇÕES</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                     <?php foreach ($listaEquipamentos as $equipamento): ?>
                         <?php
                         $encryptedEqId = aes_encrypt((string) $equipamento->getIdEquipamento());
@@ -215,7 +339,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         $statusClass = match ($estado) {
                             EstadoEquipamento::EM_MANUTENCAO->value, EstadoEquipamento::EM_CALIBRACAO->value => 'equipment-badge-status-maintenance',
                             EstadoEquipamento::INATIVO->value, EstadoEquipamento::EM_QUARENTENA->value => 'equipment-badge-status-inactive',
-                            EstadoEquipamento::ABATIDO->value => 'equipment-badge-status-scrapped',
+                            EstadoEquipamento::ABATIDO->value => 'equipment-badge-status-abated',
                             default => 'equipment-badge-status-active',
                         };
 
@@ -335,8 +459,64 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         </tr>
                     <?php endforeach; ?>
 
-                </tbody>
-            </table>
+                        <?php if (empty($listaEquipamentos)): ?>
+                            <tr>
+                                <td colspan="6" class="text-center py-4 text-secondary">
+                                    Nenhum registo arquivado encontrado.
+                                </td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="d-flex justify-content-between align-items-center padding-4 datatable-bottom">
+                <div class="datatable-info">
+                    A mostrar
+                    <?= $totalEquipamentosFiltered > 0 ? $offset + 1 : 0 ?>–<?= min($offset + $items_per_page, $totalEquipamentosFiltered) ?>
+                    de <?= $totalEquipamentosFiltered ?> registos
+                </div>
+                <nav class="datatable-pagination">
+                    <ul class="datatable-pagination-list">
+                        <?php
+                        // Função auxiliar para criar a query string mantendo os outros filtros
+                        $buildQueryString = function ($newPage) use ($search_query, $estado_filter, $criticidade_filter, $categoria_filter, $sort_param, $dir_param) {
+                            $params = ['page' => $newPage];
+                            if ($search_query !== '')
+                                $params['search'] = $search_query;
+                            if ($estado_filter !== '')
+                                $params['estado'] = $estado_filter;
+                            if ($criticidade_filter !== '')
+                                $params['criticidade'] = $criticidade_filter;
+                            if ($categoria_filter !== '')
+                                $params['categoria'] = $categoria_filter;
+                            if ($sort_param !== 'equipamento')
+                                $params['sort'] = $sort_param;
+                            if ($dir_param !== 'asc')
+                                $params['dir'] = $dir_param;
+                            return '?' . http_build_query($params);
+                        };
+                        ?>
+
+                        <?php if ($current_page > 1): ?>
+                            <li class="datatable-pagination-list-item pager"><a
+                                    href="<?= $buildQueryString($current_page - 1) ?>">‹</a></li>
+                        <?php endif; ?>
+
+                        <?php for ($i = max(1, $current_page - 2); $i <= min($totalPages, $current_page + 2); $i++): ?>
+                            <li
+                                class="datatable-pagination-list-item <?= $i === $current_page ? 'datatable-active' : '' ?>">
+                                <a href="<?= $buildQueryString($i) ?>"><?= $i ?></a>
+                            </li>
+                        <?php endfor; ?>
+
+                        <?php if ($current_page < $totalPages): ?>
+                            <li class="datatable-pagination-list-item pager"><a
+                                    href="<?= $buildQueryString($current_page + 1) ?>">›</a></li>
+                        <?php endif; ?>
+                    </ul>
+                </nav>
+            </div>
         </div>
 
     </section>

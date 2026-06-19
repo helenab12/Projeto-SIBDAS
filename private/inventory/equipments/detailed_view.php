@@ -202,38 +202,71 @@ $purchaseDateObj = $equipamento->getDataAquisicao();
 $purchaseDate = $purchaseDateObj ? $purchaseDateObj->format('d/m/Y') : 'Desconhecida';
 $notes = $equipamento->getObservacoes() ?: 'Sem observações.';
 
-// TODO: Implementar no futuro - Placeholder para ja
-$lastMaintenance = '—';
-$nextMaintenance = '—';
-$warrantyExpirationDate = null;
-
 // Cálculo da garantia
+$warrantyExpirationDate = null;
+$stmtWarranty = execute_query(
+    "SELECT dataFim FROM GarantiaContrato WHERE idEquipamento = :id AND tipoRegisto = 'Garantia de Fábrica' AND ativo = 1 AND dataFim IS NOT NULL ORDER BY dataFim DESC LIMIT 1",
+    ['id' => $id],
+    $ligacao
+);
+if ($warrantyRow = $stmtWarranty->fetch(PDO::FETCH_ASSOC)) {
+    $warrantyExpirationDate = (new DateTime($warrantyRow['dataFim']))->format('d/m/Y');
+}
+
+// Última manutenção (concluída)
+$lastMaintenance = '—';
+$stmtLastMaint = execute_query(
+    "SELECT dataFim FROM Manutencao WHERE idEquipamento = :id AND dataFim IS NOT NULL AND ativo = 1 ORDER BY dataFim DESC LIMIT 1",
+    ['id' => $id],
+    $ligacao
+);
+if ($lastMaintRow = $stmtLastMaint->fetch(PDO::FETCH_ASSOC)) {
+    $lastMaintenance = (new DateTime($lastMaintRow['dataFim']))->format('d/m/Y');
+}
+
+// Próxima manutenção (agendada/em curso)
+$nextMaintenance = '—';
+$stmtNextMaint = execute_query(
+    "SELECT dataInicio FROM Manutencao WHERE idEquipamento = :id AND dataFim IS NULL AND dataInicio > NOW() AND ativo = 1 ORDER BY dataInicio ASC LIMIT 1",
+    ['id' => $id],
+    $ligacao
+);
+if ($nextMaintRow = $stmtNextMaint->fetch(PDO::FETCH_ASSOC)) {
+    $nextMaintenance = (new DateTime($nextMaintRow['dataInicio']))->format('d/m/Y');
+}
+
+// Cálculo da garantia para exibição na UI
 $isExpired = false;
 $daysRemaining = 0;
 if ($warrantyExpirationDate !== null) {
     $today = new DateTime('now');
     $expiration = DateTime::createFromFormat('d/m/Y', $warrantyExpirationDate);
-    $isExpired = $today > $expiration;
-    if (!$isExpired) {
-        $diff = $today->diff($expiration);
-        $daysRemaining = $diff->days;
+    if ($expiration) {
+        $expiration->setTime(0, 0, 0);
+        $today->setTime(0, 0, 0);
+        $isExpired = $today > $expiration;
+        if (!$isExpired) {
+            $diff = $today->diff($expiration);
+            $daysRemaining = $diff->days;
+        }
     }
 }
 
 // Tooltips e Classes de Badges
 $estado = $equipamento->getEstadoAtual()->value;
 $statusClass = match ($estado) {
-    'Ativo' => 'equipment-badge-status-active',
-    'Manutenção' => 'equipment-badge-status-maintenance',
-    'Inativo' => 'equipment-badge-status-inactive',
-    'Abatido' => 'equipment-badge-status-scrapped',
-    default => 'bg-secondary',
+    EstadoEquipamento::EM_MANUTENCAO->value, EstadoEquipamento::EM_CALIBRACAO->value => 'equipment-badge-status-maintenance',
+    EstadoEquipamento::INATIVO->value, EstadoEquipamento::EM_QUARENTENA->value => 'equipment-badge-status-inactive',
+    EstadoEquipamento::ABATIDO->value => 'equipment-badge-status-abated',
+    default => 'equipment-badge-status-active',
 };
 $estadoTooltip = match ($estado) {
-    'Ativo' => "Equipamento operacional e disponível para uso clínico.",
-    'Manutenção' => "Equipamento em reparação ou calibração.",
-    'Inativo' => "Equipamento parado, a aguardar decisão.",
-    'Abatido' => "Equipamento retirado definitivamente do serviço.",
+    EstadoEquipamento::ATIVO->value => "Equipamento operacional e disponível para uso clínico.",
+    EstadoEquipamento::EM_MANUTENCAO->value => "Equipamento em reparação.",
+    EstadoEquipamento::EM_CALIBRACAO->value => "Equipamento em calibração.",
+    EstadoEquipamento::EM_QUARENTENA->value => "Equipamento temporariamente impedido de uso.",
+    EstadoEquipamento::INATIVO->value => "Equipamento parado, a aguardar decisão.",
+    EstadoEquipamento::ABATIDO->value => "Equipamento retirado definitivamente do serviço.",
     default => "Estado: " . $estado,
 };
 

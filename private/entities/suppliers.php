@@ -15,6 +15,11 @@ if (!empty($_SESSION['server_error'])) {
 }
 
 $search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
+$tipo_filter = isset($_GET['tipo']) ? trim($_GET['tipo']) : '';
+$current_page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
+$sort_param = isset($_GET['sort']) ? trim($_GET['sort']) : 'nome';
+$dir_param = (isset($_GET['dir']) && strtolower(trim($_GET['dir'])) === 'desc') ? 'desc' : 'asc';
+$items_per_page = 8;
 
 $listaFornecedores = [];
 $pessoasDisponiveis = [];
@@ -44,18 +49,60 @@ try {
         );
     }
 
-    // Obter Fornecedores
-    $stmtFornecedores = execute_query(
-        "SELECT f.*, p.nome as pessoa_nome, p.email as pessoa_email, p.contactoTelefonico as pessoa_contacto, 
+    // Condições de Pesquisa
+    $whereConditions = ["f.ativo = 1"];
+    $params = [];
+
+    if ($search_query !== '') {
+        $whereConditions[] = "(f.nome LIKE :search OR f.nifFornecedor LIKE :search OR f.email LIKE :search OR p.nome LIKE :search)";
+        $params['search'] = '%' . $search_query . '%';
+    }
+
+    if ($tipo_filter !== '') {
+        $whereConditions[] = "f.tipoFornecedor = :tipo";
+        $params['tipo'] = $tipo_filter;
+    }
+
+    $whereSQL = implode(" AND ", $whereConditions);
+
+    // Contar total filtrado
+    $countSql = "SELECT COUNT(f.idFornecedor) as total 
+                 FROM Fornecedor f 
+                 LEFT JOIN Pessoa p ON f.idPessoaResponsavel = p.idPessoa 
+                 WHERE $whereSQL";
+
+    $stmtCount = execute_query($countSql, $params, $ligacao);
+    $totalFornecedoresFiltered = (int) $stmtCount->fetch(PDO::FETCH_ASSOC)['total'];
+
+    $totalPages = max(1, ceil($totalFornecedoresFiltered / $items_per_page));
+    if ($current_page > $totalPages) {
+        $current_page = $totalPages;
+    }
+
+    $offset = ($current_page - 1) * $items_per_page;
+
+    // Definição de Sort
+    $allowed_sorts = [
+        'nome' => 'f.nome',
+        'tipo' => 'f.tipoFornecedor',
+        'contacto' => 'p.nome',
+        'telefone' => 'f.contactoTelefonico',
+        'website' => 'f.website'
+    ];
+    $sort_field = isset($allowed_sorts[$sort_param]) ? $allowed_sorts[$sort_param] : 'f.nome';
+    $sort_dir = strtoupper($dir_param);
+
+    // Obter Fornecedores com LIMIT, OFFSET e ORDER BY
+    $dataSql = "SELECT f.*, p.nome as pessoa_nome, p.email as pessoa_email, p.contactoTelefonico as pessoa_contacto, 
                 p.nif as pessoa_nif, p.funcao as pessoa_funcao, p.departamento as pessoa_departamento, 
                 p.ativo as pessoa_ativo, p.dataCriacao as pessoa_dataCriacao, p.dataAtualizacao as pessoa_dataAtualizacao 
          FROM Fornecedor f 
          LEFT JOIN Pessoa p ON f.idPessoaResponsavel = p.idPessoa 
-         WHERE f.ativo = 1 
-         ORDER BY f.nome ASC",
-        [],
-        $ligacao
-    );
+         WHERE $whereSQL 
+         ORDER BY $sort_field $sort_dir 
+         LIMIT " . (int) $items_per_page . " OFFSET " . (int) $offset;
+
+    $stmtFornecedores = execute_query($dataSql, $params, $ligacao);
 
     while ($row = $stmtFornecedores->fetch(PDO::FETCH_ASSOC)) {
         $pessoa = null;
@@ -125,43 +172,81 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 
         <!-- Barra de Pesquisa -->
         <div class="bento-card padding-4 gap-4 equipment-list-search-bar">
-            <form action="" class="flex-grow-1" onsubmit="event.preventDefault();">
-                <div class="form-item w-100 position-relative">
+            <form action="" method="GET" style="display: contents;">
+                <div class="form-item position-relative flex-grow-1">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-search-icon lucide-search search-bar-icon position-absolute text-secondary">
                         <path d="m21 21-4.34-4.34" />
                         <circle cx="11" cy="11" r="8" />
                     </svg>
-                    <input type="text" class="form-item w-100 search-bar-input" id="search-input-suppliers"
+                    <input type="text" class="form-item w-100 search-bar-input" name="search" id="search-input-field"
                         placeholder="Pesquisar por nome, email ou pessoa de contacto..." value="<?= htmlspecialchars($search_query) ?>">
+                    <?php if ($search_query !== ''): ?>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function() {
+                                const searchInput = document.getElementById('search-input-field');
+                                if (searchInput) {
+                                    searchInput.focus();
+                                    const val = searchInput.value;
+                                    searchInput.value = '';
+                                    searchInput.value = val;
+                                }
+                            });
+                        </script>
+                    <?php endif; ?>
+                </div>
+                <div class="d-flex gap-2 equipment-list-search-bar-filters">
+                    <select class="form-select" name="tipo" aria-label="Filtro Tipo" onchange="this.form.submit()">
+                        <option value="" <?= $tipo_filter === '' ? 'selected' : '' ?>>Todos os Tipos</option>
+                        <option value="Fabricante" <?= $tipo_filter === 'Fabricante' ? 'selected' : '' ?>>Fabricante</option>
+                        <option value="Distribuidor" <?= $tipo_filter === 'Distribuidor' ? 'selected' : '' ?>>Distribuidor</option>
+                        <option value="Assistência Técnica" <?= $tipo_filter === 'Assistência Técnica' ? 'selected' : '' ?>>Assistência Técnica</option>
+                        <option value="Consumíveis" <?= $tipo_filter === 'Consumíveis' ? 'selected' : '' ?>>Consumíveis</option>
+                    </select>
                 </div>
             </form>
-            <div class="d-flex gap-2 equipment-list-search-bar-filters">
-                <select class="form-select" aria-label="Filtro Tipo" id="filter-type-suppliers">
-                    <option value="" selected>Todos os Tipos</option>
-                    <option value="Fabricante">Fabricante</option>
-                    <option value="Distribuidor">Distribuidor</option>
-                    <option value="Assistência Técnica">Assistência Técnica</option>
-                    <option value="Consumíveis">Consumíveis</option>
-                </select>
-            </div>
         </div>
 
         <!-- Tabela -->
         <div class="bento-card w-100 p-0 border-0" id="table-container">
-            <table id="suppliersTable" class="sibdas-table w-100 display">
-                <thead>
-                    <tr>
-                        <th>FORNECEDOR</th>
-                        <th>TIPO</th>
-                        <th>CONTACTO</th>
-                        <th>TELEFONE</th>
-                        <th>WEBSITE</th>
-                        <th class="text-end">AÇÕES</th>
-                    </tr>
-                </thead>
-                <tbody>
+            <div class="datatable-wrapper no-footer sortable fixed-columns">
+                <div class="datatable-container">
+                    <?php
+                    // Função auxiliar para criar links de ordenação
+                    $buildSortUrl = function ($column) use ($search_query, $tipo_filter, $sort_param, $dir_param) {
+                        $params = [];
+                        if ($search_query !== '')
+                            $params['search'] = $search_query;
+                        if ($tipo_filter !== '')
+                            $params['tipo'] = $tipo_filter;
+
+                        $params['sort'] = $column;
+                        // Inverte a direção se estiver a clicar na mesma coluna, senão default para asc
+                        $params['dir'] = ($sort_param === $column && $dir_param === 'asc') ? 'desc' : 'asc';
+
+                        return '?' . http_build_query($params);
+                    };
+
+                    // Função auxiliar para mostrar o ícone/seta
+                    $getSortIcon = function ($column) use ($sort_param, $dir_param) {
+                        if ($sort_param !== $column)
+                            return '';
+                        return $dir_param === 'asc' ? ' ↑' : ' ↓';
+                    };
+                    ?>
+                    <table id="suppliersTable" class="sibdas-table w-100 display datatable-table">
+                        <thead>
+                            <tr>
+                                <th><a href="<?= $buildSortUrl('nome') ?>" class="datatable-sorter text-decoration-none text-inherit">FORNECEDOR<?= $getSortIcon('nome') ?></a></th>
+                                <th><a href="<?= $buildSortUrl('tipo') ?>" class="datatable-sorter text-decoration-none text-inherit">TIPO<?= $getSortIcon('tipo') ?></a></th>
+                                <th><a href="<?= $buildSortUrl('contacto') ?>" class="datatable-sorter text-decoration-none text-inherit">CONTACTO<?= $getSortIcon('contacto') ?></a></th>
+                                <th><a href="<?= $buildSortUrl('telefone') ?>" class="datatable-sorter text-decoration-none text-inherit">TELEFONE<?= $getSortIcon('telefone') ?></a></th>
+                                <th><a href="<?= $buildSortUrl('website') ?>" class="datatable-sorter text-decoration-none text-inherit">WEBSITE<?= $getSortIcon('website') ?></a></th>
+                                <th class="text-end">AÇÕES</th>
+                            </tr>
+                        </thead>
+                        <tbody>
                     <?php if (empty($listaFornecedores)): ?>
                         <tr>
                             <td colspan="6" class="text-center text-muted py-4">Nenhum fornecedor encontrado.</td>
@@ -296,10 +381,50 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                     <?php endif; ?>
                 </tbody>
             </table>
-        </div>
+            </div>
 
-        <div id="empty-state-card" class="bento-card p-5 text-center d-none">
-            <h4 class="text-secondary">Não foram encontrados resultados consoante a pesquisa</h4>
+            <div class="d-flex justify-content-between align-items-center padding-4 datatable-bottom">
+                <div class="datatable-info">
+                    A mostrar
+                    <?= $totalFornecedoresFiltered > 0 ? $offset + 1 : 0 ?>–<?= min($offset + $items_per_page, $totalFornecedoresFiltered) ?>
+                    de <?= $totalFornecedoresFiltered ?> registos
+                </div>
+                <nav class="datatable-pagination">
+                    <ul class="datatable-pagination-list">
+                        <?php
+                        // Função auxiliar para criar a query string mantendo os outros filtros
+                        $buildQueryString = function ($newPage) use ($search_query, $tipo_filter, $sort_param, $dir_param) {
+                            $params = ['page' => $newPage];
+                            if ($search_query !== '')
+                                $params['search'] = $search_query;
+                            if ($tipo_filter !== '')
+                                $params['tipo'] = $tipo_filter;
+                            if ($sort_param !== 'nome')
+                                $params['sort'] = $sort_param;
+                            if ($dir_param !== 'asc')
+                                $params['dir'] = $dir_param;
+                            return '?' . http_build_query($params);
+                        };
+                        ?>
+
+                        <?php if ($current_page > 1): ?>
+                            <li class="datatable-pagination-list-item pager"><a
+                                    href="<?= $buildQueryString($current_page - 1) ?>">‹</a></li>
+                        <?php endif; ?>
+
+                        <?php for ($i = max(1, $current_page - 2); $i <= min($totalPages, $current_page + 2); $i++): ?>
+                            <li class="datatable-pagination-list-item <?= $i === $current_page ? 'datatable-active' : '' ?>">
+                                <a href="<?= $buildQueryString($i) ?>"><?= $i ?></a>
+                            </li>
+                        <?php endfor; ?>
+
+                        <?php if ($current_page < $totalPages): ?>
+                            <li class="datatable-pagination-list-item pager"><a
+                                    href="<?= $buildQueryString($current_page + 1) ?>">›</a></li>
+                        <?php endif; ?>
+                    </ul>
+                </nav>
+            </div>
         </div>
 
     </section>
