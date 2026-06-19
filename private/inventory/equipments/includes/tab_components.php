@@ -38,14 +38,20 @@ try {
         </div>
 
         <?php if (empty($componentes_associados)): ?>
-            <div class="d-flex flex-column align-items-center justify-content-center gap-2 py-5 text-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-puzzle text-muted opacity-50">
-                    <path
-                        d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z" />
-                </svg>
-                <span class="text-secondary fw-500">Sem componentes associados</span>
+            <div
+                class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4 w-100">
+                <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-puzzle">
+                        <path
+                            d="M19.439 7.85c-.049.322.059.648.289.878l1.568 1.568c.47.47.706 1.087.706 1.704s-.235 1.233-.706 1.704l-1.611 1.611a.954.954 0 0 0-.288.877l.154 1.011c.176 1.157-.22 2.339-1.077 3.196-.857.857-2.039 1.253-3.196 1.077l-1.011-.154a.954.954 0 0 0-.877.288l-1.611 1.611c-.47.47-1.087.706-1.704.706s-1.233-.235-1.704-.706l-1.568-1.568a.954.954 0 0 0-.878-.289l-1.011.154c-1.157.176-2.339-.22-3.196-1.077-.857-.857-1.253-2.039-1.077-3.196l.154-1.011a.954.954 0 0 0-.288-.877l-1.611-1.611c-.47-.47-.706-1.087-.706-1.704s.235-1.233.706-1.704l1.568-1.568c.23-.23.338-.556.289-.878l-.154-1.011c-.176-1.157.22-2.339 1.077-3.196.857-.857 2.039-1.253 3.196-1.077l1.011.154c.322.049.648-.059.878-.289l1.568-1.568c.47-.47 1.087-.706 1.704-.706s1.233.235 1.704.706l1.611 1.611c.23.23.556.338.877.288l1.011-.154c1.157-.176 2.339.22 3.196 1.077.857.857 1.253 2.039 1.077 3.196l-.154 1.011Z" />
+                    </svg>
+                </div>
+                <div class="d-flex flex-column gap-2">
+                    <h3 class="fw-700 m-0">Sem Componentes</h3>
+                    <p class="text-secondary m-0">Ainda não existem componentes associados a este equipamento.</p>
+                </div>
             </div>
         <?php else: ?>
             <table id="componentsTable" class="sibdas-table w-100 display border-0">

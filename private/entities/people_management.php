@@ -15,6 +15,7 @@ if (!empty($_SESSION['server_error'])) {
 }
 
 $search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
+$role_filter = isset($_GET['role']) ? trim($_GET['role']) : '';
 
 $listaPessoas = [];
 try {
@@ -72,7 +73,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 
         <!-- Barra de Pesquisa -->
         <div class="bento-card padding-4 gap-4 equipment-list-search-bar">
-            <form action="" class="flex-grow-1">
+            <form action="" method="GET" style="display: contents;">
                 <div class="form-item w-100 position-relative">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -80,147 +81,179 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         <path d="m21 21-4.34-4.34" />
                         <circle cx="11" cy="11" r="8" />
                     </svg>
-                    <input type="text" class="form-item w-100 search-bar-input person-search-input"
+                    <input type="search" name="search" class="form-item w-100 search-bar-input person-search-input"
                         placeholder="Pesquisar por nome ou email..." value="<?= htmlspecialchars($search_query) ?>">
                 </div>
+                <div class="d-flex gap-2 equipment-list-search-bar-filters">
+                    <select class="form-select" name="role" aria-label="Filtro Função" id="filter-role" onchange="this.form.submit()">
+                        <option value="" <?= $role_filter === '' ? 'selected' : '' ?>>Todas as Funções</option>
+                        <?php foreach (Funcao::cases() as $funcao): ?>
+                            <option value="<?= $funcao->value ?>" <?= $role_filter === $funcao->value ? 'selected' : '' ?>><?= $funcao->value ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
             </form>
-            <div class="d-flex gap-2 equipment-list-search-bar-filters">
-                <select class="form-select" aria-label="Filtro Função" id="filter-role">
-                    <option value="" selected>Todas as Funções</option>
-                    <?php foreach (Funcao::cases() as $funcao): ?>
-                        <option value="<?= $funcao->value ?>"><?= $funcao->value ?></option>
-                    <?php endforeach; ?>
-                </select>
-            </div>
         </div>
 
-        <!-- Conteudo -->
-        <div class="bento-grid people-management gap-4">
-            <?php foreach ($listaPessoas as $pessoa): ?>
-                <?php
+        <?php if (empty($listaPessoas)): ?>
+            <div
+                class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
+                <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-bell-off-icon lucide-bell-off">
+                        <path d="M9 10h.01" />
+                        <path d="M15 10h.01" />
+                        <path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z" />
+                    </svg>
+                </div>
+                <div class="d-flex flex-column gap-2">
+                    <h3 class="fw-700 m-0">Sem Pessoas</h3>
+                    <p class="text-secondary m-0">De momento não existe nenhuma pessoa.</p>
+                </div>
+            </div>
+        <?php else: ?>
+            <div id="people-empty-state"
+                class="bento-card padding-6 flex-column align-items-center justify-content-center text-center gap-4 py-5 d-none">
+                <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-search-x">
+                        <path d="m13.5 8.5-5 5" />
+                        <path d="m8.5 8.5 5 5" />
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
+                    </svg>
+                </div>
+                <div class="d-flex flex-column gap-2">
+                    <h3 class="fw-700 m-0">Sem resultados</h3>
+                    <p class="text-secondary m-0">Nenhum registo encontrado correspondente à sua pesquisa.</p>
+                </div>
+            </div>
 
-                $initials = get_user_initials($pessoa->getNome());
+            <!-- Conteudo -->
+            <div class="bento-grid people-management gap-4">
+                <?php foreach ($listaPessoas as $pessoa): ?>
+                    <?php
 
-                $colors = ['pink', 'cyan', 'blue', 'yellow', 'green', 'purple'];
-                $colorIndex = array_search($pessoa, $listaPessoas);
-                $color = $colors[$colorIndex % count($colors)];
+                    $initials = get_user_initials($pessoa->getNome());
 
-                ?>
-                <!-- Card Pessoa -->
-                <div class="bento-card padding-6 d-flex flex-column gap-6">
-                    <!-- Row 1: Nome -->
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div class="d-flex gap-3 align-items-center">
-                            <p
-                                class="user-icon d-flex align-items-center justify-content-center fw-700 text-white <?= $color ?>">
-                                <?= htmlspecialchars($initials) ?>
-                            </p>
-                            <div class="d-flex flex-column gap-half">
-                                <p class="fw-700 person-name"><?= htmlspecialchars($pessoa->getNome()) ?></p>
-                                <span class="visually-hidden"><?= htmlspecialchars(aes_encrypt($pessoa->getId())) ?></span>
-                                <span
-                                    class="text-secondary person-role"><?= htmlspecialchars($pessoa->getFuncao()?->value ?? 'Sem Função') ?></span>
+                    $colors = ['pink', 'cyan', 'blue', 'yellow', 'green', 'purple'];
+                    $colorIndex = array_search($pessoa, $listaPessoas);
+                    $color = $colors[$colorIndex % count($colors)];
+
+                    ?>
+                    <!-- Card Pessoa -->
+                    <div class="bento-card padding-6 d-flex flex-column gap-6">
+                        <!-- Row 1: Nome -->
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div class="d-flex gap-3 align-items-center">
+                                <p
+                                    class="user-icon d-flex align-items-center justify-content-center fw-700 text-white <?= $color ?>">
+                                    <?= htmlspecialchars($initials) ?>
+                                </p>
+                                <div class="d-flex flex-column gap-half">
+                                    <p class="fw-700 person-name"><?= htmlspecialchars($pessoa->getNome()) ?></p>
+                                    <span class="visually-hidden"><?= htmlspecialchars(aes_encrypt($pessoa->getId())) ?></span>
+                                    <span
+                                        class="text-secondary person-role"><?= htmlspecialchars($pessoa->getFuncao()?->value ?? 'Sem Função') ?></span>
+                                </div>
+                            </div>
+                            <div class="dropdown">
+                                <button
+                                    class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-primary"
+                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="1" />
+                                        <circle cx="19" cy="12" r="1" />
+                                        <circle cx="5" cy="12" r="1" />
+                                    </svg>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item action-dropdown-item text-primary" href="#"
+                                            data-bs-toggle="modal"
+                                            data-bs-target="#person-edit-modal-<?= htmlspecialchars(aes_encrypt($pessoa->getId())) ?>">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" class="lucide lucide-pencil">
+                                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                                <path d="m15 5 4 4" />
+                                            </svg>
+                                            Editar
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item action-dropdown-item text-error" href="#" data-bs-toggle="modal"
+                                            data-bs-target="#delete-confirm-modal-<?= htmlspecialchars(aes_encrypt($pessoa->getId())) ?>">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                stroke-linejoin="round" class="lucide lucide-archive">
+                                                <rect width="20" height="5" x="2" y="3" rx="1" />
+                                                <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
+                                                <path d="M10 12h4" />
+                                            </svg>
+                                            Mover para Reciclagem
+                                        </a>
+                                    </li>
+                                </ul>
                             </div>
                         </div>
-                        <div class="dropdown">
-                            <button
-                                class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-primary"
-                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round">
-                                    <circle cx="12" cy="12" r="1" />
-                                    <circle cx="19" cy="12" r="1" />
-                                    <circle cx="5" cy="12" r="1" />
+
+                        <!-- Row 2: Contacto -->
+                        <div class="d-flex flex-column gap-3 text-secondary">
+                            <div class="d-flex gap-2 align-items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="lucide lucide-briefcase-icon lucide-briefcase">
+                                    <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                                    <rect width="20" height="14" x="2" y="6" rx="2" />
                                 </svg>
-                            </button>
-                            <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
-                                <li>
-                                    <a class="dropdown-item action-dropdown-item text-primary" href="#"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#person-edit-modal-<?= htmlspecialchars(aes_encrypt($pessoa->getId())) ?>">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round" class="lucide lucide-pencil">
-                                            <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                            <path d="m15 5 4 4" />
-                                        </svg>
-                                        Editar
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item action-dropdown-item text-error" href="#" data-bs-toggle="modal"
-                                        data-bs-target="#delete-confirm-modal-<?= htmlspecialchars(aes_encrypt($pessoa->getId())) ?>">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round" class="lucide lucide-archive">
-                                            <rect width="20" height="5" x="2" y="3" rx="1" />
-                                            <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
-                                            <path d="M10 12h4" />
-                                        </svg>
-                                        Mover para Reciclagem
-                                    </a>
-                                </li>
-                            </ul>
+                                <span
+                                    class="fw-400"><?= htmlspecialchars($pessoa->getDepartamento() ?? 'Sem Departamento') ?></span>
+                            </div>
+                            <div class="d-flex gap-2 align-items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="lucide lucide-mail-icon lucide-mail">
+                                    <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
+                                    <rect x="2" y="4" width="20" height="16" rx="2" />
+                                </svg>
+                                <span class="fw-400 person-email"><?= htmlspecialchars($pessoa->getEmail()) ?></span>
+                            </div>
+                            <div class="d-flex gap-2 align-items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="lucide lucide-phone-icon lucide-phone">
+                                    <path
+                                        d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" />
+                                </svg>
+                                <span class="fw-400"><?= htmlspecialchars($pessoa->getContactoTelefonico()) ?></span>
+                            </div>
+                        </div>
+
+                        <!-- Row 3: Detalhes Adicionais -->
+                        <div class="d-flex justify-content-between align-items-center text-muted additional-details">
+                            <span class="text-uppercase font-mono">NIF: <?= htmlspecialchars($pessoa->getNif()) ?></span>
+                            <div class="d-flex gap-1 align-items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="lucide lucide-calendar-icon lucide-calendar">
+                                    <path d="M8 2v4" />
+                                    <path d="M16 2v4" />
+                                    <rect width="18" height="18" x="3" y="4" rx="2" />
+                                    <path d="M3 10h18" />
+                                </svg>
+                                <span>Desde <?= htmlspecialchars($pessoa->getDataCriacao()->format('m/Y')) ?></span>
+                            </div>
                         </div>
                     </div>
-
-                    <!-- Row 2: Contacto -->
-                    <div class="d-flex flex-column gap-3 text-secondary">
-                        <div class="d-flex gap-2 align-items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                class="lucide lucide-briefcase-icon lucide-briefcase">
-                                <path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
-                                <rect width="20" height="14" x="2" y="6" rx="2" />
-                            </svg>
-                            <span
-                                class="fw-400"><?= htmlspecialchars($pessoa->getDepartamento() ?? 'Sem Departamento') ?></span>
-                        </div>
-                        <div class="d-flex gap-2 align-items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                class="lucide lucide-mail-icon lucide-mail">
-                                <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
-                                <rect x="2" y="4" width="20" height="16" rx="2" />
-                            </svg>
-                            <span class="fw-400 person-email"><?= htmlspecialchars($pessoa->getEmail()) ?></span>
-                        </div>
-                        <div class="d-flex gap-2 align-items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                class="lucide lucide-phone-icon lucide-phone">
-                                <path
-                                    d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" />
-                            </svg>
-                            <span class="fw-400"><?= htmlspecialchars($pessoa->getContactoTelefonico()) ?></span>
-                        </div>
-                    </div>
-
-                    <!-- Row 3: Detalhes Adicionais -->
-                    <div class="d-flex justify-content-between align-items-center text-muted additional-details">
-                        <span class="text-uppercase font-mono">NIF: <?= htmlspecialchars($pessoa->getNif()) ?></span>
-                        <div class="d-flex gap-1 align-items-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                class="lucide lucide-calendar-icon lucide-calendar">
-                                <path d="M8 2v4" />
-                                <path d="M16 2v4" />
-                                <rect width="18" height="18" x="3" y="4" rx="2" />
-                                <path d="M3 10h18" />
-                            </svg>
-                            <span>Desde <?= htmlspecialchars($pessoa->getDataCriacao()->format('m/Y')) ?></span>
-                        </div>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-
-            <div id="people-empty-state" class="bento-card padding-4 text-center text-muted w-100 d-none"
-                style="grid-column: 1 / -1;">
-                Não foram encontrados resultados consoante a pesquisa.
+                <?php endforeach; ?>
             </div>
 
-        </div>
+        <?php endif; ?>
 
     </section>
 </div>

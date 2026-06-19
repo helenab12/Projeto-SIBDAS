@@ -284,16 +284,24 @@ $quickAccessItems = [
                 <!-- Empty State (Sem Resultados) -->
                 <div class="d-flex flex-column align-items-center justify-content-center gap-2 py-5 text-center d-none"
                     id="search-empty">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-search-x text-muted opacity-50">
-                        <path d="m13.5 8.5-5 5" />
-                        <path d="m8.5 8.5 5 5" />
-                        <circle cx="11" cy="11" r="8" />
-                        <path d="m21 21-4.3-4.3" />
-                    </svg>
-                    <span class="text-secondary fw-500">Sem resultados para "<span
-                            id="search-empty-term"></span>"</span>
+                    <div
+                        class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4 w-100">
+                        <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="lucide lucide-search-x">
+                                <path d="m13.5 8.5-5 5" />
+                                <path d="m8.5 8.5 5 5" />
+                                <circle cx="11" cy="11" r="8" />
+                                <path d="m21 21-4.3-4.3" />
+                            </svg>
+                        </div>
+                        <div class="d-flex flex-column gap-2">
+                            <h3 class="fw-700 m-0">Sem resultados</h3>
+                            <p class="text-secondary m-0">Não foi encontrado nenhum resultado para "<span
+                                    id="search-empty-term" class="fw-700"></span>".</p>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Loading State -->
@@ -306,24 +314,3 @@ $quickAccessItems = [
         </div>
     </div>
 </div>
-
-<!-- Templates para os resultados da pesquisa (usados pelo JavaScript) -->
-<template id="search-section-template">
-    <div class="d-flex flex-column gap-2 search-section">
-        <span class="search-section-title fw-700 text-muted text-uppercase section-title-text"></span>
-        <div class="d-flex flex-column gap-1 section-items-container">
-        </div>
-    </div>
-</template>
-
-<template id="search-item-template">
-    <a href="#" class="search-item d-flex align-items-center gap-3 padding-3 text-decoration-none item-link">
-        <div class="d-flex align-items-center justify-content-center rounded padding-2 item-icon-wrapper">
-            <!-- svg injected here -->
-        </div>
-        <div class="d-flex flex-column gap-half">
-            <p class="fw-700 m-0 text-primary item-title"></p>
-            <span class="text-secondary item-subtitle"></span>
-        </div>
-    </a>
-</template>

@@ -112,25 +112,27 @@ $unreadCount = count(array_filter($notificacoes, function ($n) {
         <!-- Lista de Notificações -->
         <div class="d-flex flex-column gap-3">
             <?php if (empty($notificacoes)): ?>
-                <div class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4 py-5 mt-4">
+                <div
+                    class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
                     <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bell-off">
-                            <path d="M10.06 4.06A6 6 0 0 1 18 10c0 5.04 2.12 7.5 2.12 7.5"/>
-                            <path d="M2.38 2.38 21.62 21.62"/>
-                            <path d="M4.65 10.3A12.03 12.03 0 0 0 4 10c0-5.04-2.12-7.5-2.12-7.5S4 5 4 10c0 2.27-.5 4.34-1.2 6.09"/>
-                            <path d="M10.28 21a2 2 0 0 0 3.44 0"/>
-                            <path d="M21.5 17.5h-15"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-bell-off-icon lucide-bell-off">
+                            <path d="M9 10h.01" />
+                            <path d="M15 10h.01" />
+                            <path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z" />
                         </svg>
                     </div>
                     <div class="d-flex flex-column gap-2">
-                        <h3 class="fw-700 m-0">Sem notificações</h3>
-                        <p class="text-secondary m-0">De momento não tens nenhuma notificação nova. Fica atento!</p>
+                        <h3 class="fw-700 m-0">Sem Notificações</h3>
+                        <p class="text-secondary m-0">De momento não existe nenhuma notificação por ler.</p>
                     </div>
                 </div>
             <?php else: ?>
                 <?php foreach ($notificacoes as $notificacao): ?>
                     <?php $encryptedNotifId = aes_encrypt((string) $notificacao->idNotificacao); ?>
-                    <a href="<?php echo BASE_URL; ?>/private/read_notification.php?id=<?php echo urlencode($encryptedNotifId); ?>" class="text-decoration-none text-body">
+                    <a href="<?php echo BASE_URL; ?>/private/read_notification.php?id=<?php echo urlencode($encryptedNotifId); ?>"
+                        class="text-decoration-none text-body">
                         <div id="notification-<?= htmlspecialchars($encryptedNotifId) ?>"
                             class="bento-card <?php echo !$notificacao->lida ? '' : 'unread'; ?> d-flex flex-row align-items-center justify-content-between gap-4 padding-4 recycle-card"
                             style="cursor: pointer;">
@@ -153,12 +155,14 @@ $unreadCount = count(array_filter($notificacoes, function ($n) {
                                                 <?php endif; ?>
                                             </p>
                                         </div>
-                                        <span class="text-secondary"><?php echo htmlspecialchars($notificacao->mensagem); ?></span>
+                                        <span
+                                            class="text-secondary"><?php echo htmlspecialchars($notificacao->mensagem); ?></span>
                                         <div class="d-flex flex-row gap-2">
                                             <div class="d-flex gap-1 text-muted align-items-center">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                    stroke-linejoin="round" class="lucide lucide-clock-icon lucide-clock">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                    stroke-linecap="round" stroke-linejoin="round"
+                                                    class="lucide lucide-clock-icon lucide-clock">
                                                     <circle cx="12" cy="12" r="10" />
                                                     <path d="M12 6v6l4 2" />
                                                 </svg>

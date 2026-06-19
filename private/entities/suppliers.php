@@ -65,6 +65,10 @@ try {
 
     $whereSQL = implode(" AND ", $whereConditions);
 
+    // Contar total sem filtros
+    $stmtTotal = execute_query("SELECT COUNT(*) as total FROM Fornecedor WHERE ativo = 1", [], $ligacao);
+    $totalFornecedoresAll = (int) $stmtTotal->fetch(PDO::FETCH_ASSOC)['total'];
+
     // Contar total filtrado
     $countSql = "SELECT COUNT(f.idFornecedor) as total 
                  FROM Fornecedor f 
@@ -181,10 +185,11 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         <circle cx="11" cy="11" r="8" />
                     </svg>
                     <input type="text" class="form-item w-100 search-bar-input" name="search" id="search-input-field"
-                        placeholder="Pesquisar por nome, email ou pessoa de contacto..." value="<?= htmlspecialchars($search_query) ?>">
+                        placeholder="Pesquisar por nome, email ou pessoa de contacto..."
+                        value="<?= htmlspecialchars($search_query) ?>">
                     <?php if ($search_query !== ''): ?>
                         <script>
-                            document.addEventListener("DOMContentLoaded", function() {
+                            document.addEventListener("DOMContentLoaded", function () {
                                 const searchInput = document.getElementById('search-input-field');
                                 if (searchInput) {
                                     searchInput.focus();
@@ -199,233 +204,284 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <div class="d-flex gap-2 equipment-list-search-bar-filters">
                     <select class="form-select" name="tipo" aria-label="Filtro Tipo" onchange="this.form.submit()">
                         <option value="" <?= $tipo_filter === '' ? 'selected' : '' ?>>Todos os Tipos</option>
-                        <option value="Fabricante" <?= $tipo_filter === 'Fabricante' ? 'selected' : '' ?>>Fabricante</option>
-                        <option value="Distribuidor" <?= $tipo_filter === 'Distribuidor' ? 'selected' : '' ?>>Distribuidor</option>
+                        <option value="Fabricante" <?= $tipo_filter === 'Fabricante' ? 'selected' : '' ?>>Fabricante
+                        </option>
+                        <option value="Distribuidor" <?= $tipo_filter === 'Distribuidor' ? 'selected' : '' ?>>Distribuidor
+                        </option>
                         <option value="Assistência Técnica" <?= $tipo_filter === 'Assistência Técnica' ? 'selected' : '' ?>>Assistência Técnica</option>
-                        <option value="Consumíveis" <?= $tipo_filter === 'Consumíveis' ? 'selected' : '' ?>>Consumíveis</option>
+                        <option value="Consumíveis" <?= $tipo_filter === 'Consumíveis' ? 'selected' : '' ?>>Consumíveis
+                        </option>
                     </select>
                 </div>
             </form>
         </div>
 
-        <!-- Tabela -->
-        <div class="bento-card w-100 p-0 border-0" id="table-container">
-            <div class="datatable-wrapper no-footer sortable fixed-columns">
-                <div class="datatable-container">
-                    <?php
-                    // Função auxiliar para criar links de ordenação
-                    $buildSortUrl = function ($column) use ($search_query, $tipo_filter, $sort_param, $dir_param) {
-                        $params = [];
-                        if ($search_query !== '')
-                            $params['search'] = $search_query;
-                        if ($tipo_filter !== '')
-                            $params['tipo'] = $tipo_filter;
-
-                        $params['sort'] = $column;
-                        // Inverte a direção se estiver a clicar na mesma coluna, senão default para asc
-                        $params['dir'] = ($sort_param === $column && $dir_param === 'asc') ? 'desc' : 'asc';
-
-                        return '?' . http_build_query($params);
-                    };
-
-                    // Função auxiliar para mostrar o ícone/seta
-                    $getSortIcon = function ($column) use ($sort_param, $dir_param) {
-                        if ($sort_param !== $column)
-                            return '';
-                        return $dir_param === 'asc' ? ' ↑' : ' ↓';
-                    };
-                    ?>
-                    <table id="suppliersTable" class="sibdas-table w-100 display datatable-table">
-                        <thead>
-                            <tr>
-                                <th><a href="<?= $buildSortUrl('nome') ?>" class="datatable-sorter text-decoration-none text-inherit">FORNECEDOR<?= $getSortIcon('nome') ?></a></th>
-                                <th><a href="<?= $buildSortUrl('tipo') ?>" class="datatable-sorter text-decoration-none text-inherit">TIPO<?= $getSortIcon('tipo') ?></a></th>
-                                <th><a href="<?= $buildSortUrl('contacto') ?>" class="datatable-sorter text-decoration-none text-inherit">CONTACTO<?= $getSortIcon('contacto') ?></a></th>
-                                <th><a href="<?= $buildSortUrl('telefone') ?>" class="datatable-sorter text-decoration-none text-inherit">TELEFONE<?= $getSortIcon('telefone') ?></a></th>
-                                <th><a href="<?= $buildSortUrl('website') ?>" class="datatable-sorter text-decoration-none text-inherit">WEBSITE<?= $getSortIcon('website') ?></a></th>
-                                <th class="text-end">AÇÕES</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                    <?php if (empty($listaFornecedores)): ?>
-                        <tr>
-                            <td colspan="6" class="text-center text-muted py-4">Nenhum fornecedor encontrado.</td>
-                        </tr>
-                    <?php else: ?>
-                        <?php foreach ($listaFornecedores as $fornecedor):
-                            $encryptedId = aes_encrypt($fornecedor->getIdFornecedor());
-                            $tipoBadgeClass = '';
-                            switch ($fornecedor->getTipoFornecedor()->value) {
-                                case 'Fabricante':
-                                    $tipoBadgeClass = 'supplier-badge-supplier';
-                                    break;
-                                case 'Distribuidor':
-                                    $tipoBadgeClass = 'supplier-badge-distributor';
-                                    break;
-                                case 'Assistência Técnica':
-                                    $tipoBadgeClass = 'supplier-badge-tech-assistance';
-                                    break;
-                                case 'Consumíveis':
-                                    $tipoBadgeClass = 'supplier-badge-consumable-supplier';
-                                    break;
-                            }
-                            ?>
-                            <tr class="searchable-row"
-                                data-search="<?= htmlspecialchars(strtolower($fornecedor->getNome() . ' ' . $fornecedor->getNifFornecedor() . ' ' . $fornecedor->getEmail() . ' ' . $fornecedor->getTipoFornecedor()->value)) ?>">
-                                <td>
-                                    <div class="d-flex align-items-center gap-3">
-                                        <div class="table-icon-wrapper equipment-icon-wrapper">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round" class="lucide lucide-building2-icon lucide-building-2">
-                                                <path d="M10 12h4" />
-                                                <path d="M10 8h4" />
-                                                <path d="M14 21v-3a2 2 0 0 0-4 0v3" />
-                                                <path
-                                                    d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2" />
-                                                <path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16" />
-                                            </svg>
-                                        </div>
-                                        <div class="d-flex flex-column">
-                                            <p class="equipment-title fw-700 mb-0">
-                                                <?= htmlspecialchars($fornecedor->getNome()) ?>
-                                            </p>
-                                            <span
-                                                class="equipment-subtitle text-secondary fw-400"><?= htmlspecialchars($fornecedor->getEmail()) ?></span>
-                                            <span class="visually-hidden"><?= htmlspecialchars($encryptedId) ?></span>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <span class="equipment-badge <?= $tipoBadgeClass ?>">
-                                        <?= htmlspecialchars($fornecedor->getTipoFornecedor()->value) ?>
-                                    </span>
-                                </td>
-                                <td>
-                                    <?php if ($fornecedor->getPessoaResponsavel()): ?>
-                                        <?= htmlspecialchars($fornecedor->getPessoaResponsavel()->getNome()) ?>
-                                    <?php else: ?>
-                                        <span class="fst-italic text-muted">Sem contacto</span>
-                                    <?php endif; ?>
-                                </td>
-                                <td>
-                                    <a
-                                        href="tel:<?= htmlspecialchars($fornecedor->getContactoTelefonico()) ?>"><?= htmlspecialchars($fornecedor->getContactoTelefonico()) ?></a>
-                                </td>
-                                <td>
-                                    <?php if (!empty($fornecedor->getWebsite())): ?>
-                                        <a href="<?= htmlspecialchars($fornecedor->getWebsite()) ?>" target="_blank"
-                                            class="d-flex gap-1 align-items-center text-primary-500">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round"
-                                                class="lucide lucide-globe-icon lucide-globe stroke-primary-500">
-                                                <circle cx="12" cy="12" r="10" />
-                                                <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
-                                                <path d="M2 12h20" />
-                                            </svg>
-                                            <span>Website</span>
-                                        </a>
-                                    <?php else: ?>
-                                        <span class="text-muted">&mdash;</span>
-                                    <?php endif; ?>
-                                </td>
-                                <td class="text-end equipment-actions">
-                                    <div class="dropdown">
-                                        <button
-                                            class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
-                                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round">
-                                                <circle cx="12" cy="12" r="1" />
-                                                <circle cx="19" cy="12" r="1" />
-                                                <circle cx="5" cy="12" r="1" />
-                                            </svg>
-                                        </button>
-                                        <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
-                                            <li>
-                                                <a class="dropdown-item action-dropdown-item text-primary" href="#"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#supplier-edit-modal-<?= $encryptedId ?>">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                        stroke-linecap="round" stroke-linejoin="round"
-                                                        class="lucide lucide-pencil">
-                                                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                        <path d="m15 5 4 4" />
-                                                    </svg>
-                                                    Editar
-                                                </a>
-                                            </li>
-                                            <li>
-                                                <a class="dropdown-item action-dropdown-item text-error" href="#"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#delete-confirm-modal-<?= $encryptedId ?>">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                        stroke-linecap="round" stroke-linejoin="round"
-                                                        class="lucide lucide-archive">
-                                                        <rect width="20" height="5" x="2" y="3" rx="1" />
-                                                        <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
-                                                        <path d="M10 12h4" />
-                                                    </svg>
-                                                    Mover para Reciclagem
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-            </div>
-
-            <div class="d-flex justify-content-between align-items-center padding-4 datatable-bottom">
-                <div class="datatable-info">
-                    A mostrar
-                    <?= $totalFornecedoresFiltered > 0 ? $offset + 1 : 0 ?>–<?= min($offset + $items_per_page, $totalFornecedoresFiltered) ?>
-                    de <?= $totalFornecedoresFiltered ?> registos
+        <?php if ($totalFornecedoresAll === 0): ?>
+            <div
+                class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
+                <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-bell-off-icon lucide-bell-off">
+                        <path d="M9 10h.01" />
+                        <path d="M15 10h.01" />
+                        <path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z" />
+                    </svg>
                 </div>
-                <nav class="datatable-pagination">
-                    <ul class="datatable-pagination-list">
+                <div class="d-flex flex-column gap-2">
+                    <h3 class="fw-700 m-0">Sem Fornecedores</h3>
+                    <p class="text-secondary m-0">De momento não existe nenhum fornecedor.</p>
+                </div>
+            </div>
+        <?php elseif (empty($listaFornecedores)): ?>
+            <div
+                class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
+                <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-search-x">
+                        <path d="m13.5 8.5-5 5" />
+                        <path d="m8.5 8.5 5 5" />
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
+                    </svg>
+                </div>
+                <div class="d-flex flex-column gap-2">
+                    <h3 class="fw-700 m-0">Sem resultados</h3>
+                    <p class="text-secondary m-0">Nenhum registo encontrado correspondente à sua pesquisa.</p>
+                </div>
+            </div>
+        <?php else: ?>
+
+            <!-- Tabela -->
+            <div class="bento-card w-100 p-0 border-0" id="table-container">
+                <div class="datatable-wrapper no-footer sortable fixed-columns">
+                    <div class="datatable-container">
                         <?php
-                        // Função auxiliar para criar a query string mantendo os outros filtros
-                        $buildQueryString = function ($newPage) use ($search_query, $tipo_filter, $sort_param, $dir_param) {
-                            $params = ['page' => $newPage];
+                        // Função auxiliar para criar links de ordenação
+                        $buildSortUrl = function ($column) use ($search_query, $tipo_filter, $sort_param, $dir_param) {
+                            $params = [];
                             if ($search_query !== '')
                                 $params['search'] = $search_query;
                             if ($tipo_filter !== '')
                                 $params['tipo'] = $tipo_filter;
-                            if ($sort_param !== 'nome')
-                                $params['sort'] = $sort_param;
-                            if ($dir_param !== 'asc')
-                                $params['dir'] = $dir_param;
+
+                            $params['sort'] = $column;
+                            // Inverte a direção se estiver a clicar na mesma coluna, senão default para asc
+                            $params['dir'] = ($sort_param === $column && $dir_param === 'asc') ? 'desc' : 'asc';
+
                             return '?' . http_build_query($params);
                         };
+
+                        // Função auxiliar para mostrar o ícone/seta
+                        $getSortIcon = function ($column) use ($sort_param, $dir_param) {
+                            if ($sort_param !== $column)
+                                return '';
+                            return $dir_param === 'asc' ? ' ↑' : ' ↓';
+                        };
                         ?>
+                        <table id="suppliersTable" class="sibdas-table w-100 display datatable-table">
+                            <thead>
+                                <tr>
+                                    <th><a href="<?= $buildSortUrl('nome') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">FORNECEDOR<?= $getSortIcon('nome') ?></a>
+                                    </th>
+                                    <th><a href="<?= $buildSortUrl('tipo') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">TIPO<?= $getSortIcon('tipo') ?></a>
+                                    </th>
+                                    <th><a href="<?= $buildSortUrl('contacto') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">CONTACTO<?= $getSortIcon('contacto') ?></a>
+                                    </th>
+                                    <th><a href="<?= $buildSortUrl('telefone') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">TELEFONE<?= $getSortIcon('telefone') ?></a>
+                                    </th>
+                                    <th><a href="<?= $buildSortUrl('website') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">WEBSITE<?= $getSortIcon('website') ?></a>
+                                    </th>
+                                    <th class="text-end">AÇÕES</th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                        <?php if ($current_page > 1): ?>
-                            <li class="datatable-pagination-list-item pager"><a
-                                    href="<?= $buildQueryString($current_page - 1) ?>">‹</a></li>
-                        <?php endif; ?>
+                                <?php foreach ($listaFornecedores as $fornecedor):
+                                    $encryptedId = aes_encrypt($fornecedor->getIdFornecedor());
+                                    $tipoBadgeClass = '';
+                                    switch ($fornecedor->getTipoFornecedor()->value) {
+                                        case 'Fabricante':
+                                            $tipoBadgeClass = 'supplier-badge-supplier';
+                                            break;
+                                        case 'Distribuidor':
+                                            $tipoBadgeClass = 'supplier-badge-distributor';
+                                            break;
+                                        case 'Assistência Técnica':
+                                            $tipoBadgeClass = 'supplier-badge-tech-assistance';
+                                            break;
+                                        case 'Consumíveis':
+                                            $tipoBadgeClass = 'supplier-badge-consumable-supplier';
+                                            break;
+                                    }
+                                    ?>
+                                    <tr class="searchable-row"
+                                        data-search="<?= htmlspecialchars(strtolower($fornecedor->getNome() . ' ' . $fornecedor->getNifFornecedor() . ' ' . $fornecedor->getEmail() . ' ' . $fornecedor->getTipoFornecedor()->value)) ?>">
+                                        <td>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <div class="table-icon-wrapper equipment-icon-wrapper">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round"
+                                                        class="lucide lucide-building2-icon lucide-building-2">
+                                                        <path d="M10 12h4" />
+                                                        <path d="M10 8h4" />
+                                                        <path d="M14 21v-3a2 2 0 0 0-4 0v3" />
+                                                        <path
+                                                            d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2" />
+                                                        <path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16" />
+                                                    </svg>
+                                                </div>
+                                                <div class="d-flex flex-column">
+                                                    <p class="equipment-title fw-700 mb-0">
+                                                        <?= htmlspecialchars($fornecedor->getNome()) ?>
+                                                    </p>
+                                                    <span
+                                                        class="equipment-subtitle text-secondary fw-400"><?= htmlspecialchars($fornecedor->getEmail()) ?></span>
+                                                    <span class="visually-hidden"><?= htmlspecialchars($encryptedId) ?></span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="equipment-badge <?= $tipoBadgeClass ?>">
+                                                <?= htmlspecialchars($fornecedor->getTipoFornecedor()->value) ?>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <?php if ($fornecedor->getPessoaResponsavel()): ?>
+                                                <?= htmlspecialchars($fornecedor->getPessoaResponsavel()->getNome()) ?>
+                                            <?php else: ?>
+                                                <span class="fst-italic text-muted">Sem contacto</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <a
+                                                href="tel:<?= htmlspecialchars($fornecedor->getContactoTelefonico()) ?>"><?= htmlspecialchars($fornecedor->getContactoTelefonico()) ?></a>
+                                        </td>
+                                        <td>
+                                            <?php if (!empty($fornecedor->getWebsite())): ?>
+                                                <a href="<?= htmlspecialchars($fornecedor->getWebsite()) ?>" target="_blank"
+                                                    class="d-flex gap-1 align-items-center text-primary-500">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round"
+                                                        class="lucide lucide-globe-icon lucide-globe stroke-primary-500">
+                                                        <circle cx="12" cy="12" r="10" />
+                                                        <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+                                                        <path d="M2 12h20" />
+                                                    </svg>
+                                                    <span>Website</span>
+                                                </a>
+                                            <?php else: ?>
+                                                <span class="text-muted">&mdash;</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td class="text-end equipment-actions">
+                                            <div class="dropdown">
+                                                <button
+                                                    class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
+                                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round">
+                                                        <circle cx="12" cy="12" r="1" />
+                                                        <circle cx="19" cy="12" r="1" />
+                                                        <circle cx="5" cy="12" r="1" />
+                                                    </svg>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
+                                                    <li>
+                                                        <a class="dropdown-item action-dropdown-item text-primary" href="#"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#supplier-edit-modal-<?= $encryptedId ?>">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                class="lucide lucide-pencil">
+                                                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                                                <path d="m15 5 4 4" />
+                                                            </svg>
+                                                            Editar
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item action-dropdown-item text-error" href="#"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#delete-confirm-modal-<?= $encryptedId ?>">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                class="lucide lucide-archive">
+                                                                <rect width="20" height="5" x="2" y="3" rx="1" />
+                                                                <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
+                                                                <path d="M10 12h4" />
+                                                            </svg>
+                                                            Mover para Reciclagem
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
 
-                        <?php for ($i = max(1, $current_page - 2); $i <= min($totalPages, $current_page + 2); $i++): ?>
-                            <li class="datatable-pagination-list-item <?= $i === $current_page ? 'datatable-active' : '' ?>">
-                                <a href="<?= $buildQueryString($i) ?>"><?= $i ?></a>
-                            </li>
-                        <?php endfor; ?>
+                            </tbody>
+                        </table>
+                    </div>
 
-                        <?php if ($current_page < $totalPages): ?>
-                            <li class="datatable-pagination-list-item pager"><a
-                                    href="<?= $buildQueryString($current_page + 1) ?>">›</a></li>
-                        <?php endif; ?>
-                    </ul>
-                </nav>
+                    <div class="d-flex justify-content-between align-items-center padding-4 datatable-bottom">
+                        <div class="datatable-info">
+                            A mostrar
+                            <?= $totalFornecedoresFiltered > 0 ? $offset + 1 : 0 ?>–<?= min($offset + $items_per_page, $totalFornecedoresFiltered) ?>
+                            de <?= $totalFornecedoresFiltered ?> registos
+                        </div>
+                        <nav class="datatable-pagination">
+                            <ul class="datatable-pagination-list">
+                                <?php
+                                // Função auxiliar para criar a query string mantendo os outros filtros
+                                $buildQueryString = function ($newPage) use ($search_query, $tipo_filter, $sort_param, $dir_param) {
+                                    $params = ['page' => $newPage];
+                                    if ($search_query !== '')
+                                        $params['search'] = $search_query;
+                                    if ($tipo_filter !== '')
+                                        $params['tipo'] = $tipo_filter;
+                                    if ($sort_param !== 'nome')
+                                        $params['sort'] = $sort_param;
+                                    if ($dir_param !== 'asc')
+                                        $params['dir'] = $dir_param;
+                                    return '?' . http_build_query($params);
+                                };
+                                ?>
+
+                                <?php if ($current_page > 1): ?>
+                                    <li class="datatable-pagination-list-item pager"><a
+                                            href="<?= $buildQueryString($current_page - 1) ?>">‹</a></li>
+                                <?php endif; ?>
+
+                                <?php for ($i = max(1, $current_page - 2); $i <= min($totalPages, $current_page + 2); $i++): ?>
+                                    <li
+                                        class="datatable-pagination-list-item <?= $i === $current_page ? 'datatable-active' : '' ?>">
+                                        <a href="<?= $buildQueryString($i) ?>"><?= $i ?></a>
+                                    </li>
+                                <?php endfor; ?>
+
+                                <?php if ($current_page < $totalPages): ?>
+                                    <li class="datatable-pagination-list-item pager"><a
+                                            href="<?= $buildQueryString($current_page + 1) ?>">›</a></li>
+                                <?php endif; ?>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
             </div>
-        </div>
+
+        <?php endif; ?>
 
     </section>
 </div>

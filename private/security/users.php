@@ -41,13 +41,17 @@ try {
 
     $whereSQL = implode(" AND ", $whereConditions);
 
+    // Contar total sem filtros
+    $stmtTotal = execute_query("SELECT COUNT(*) as total FROM Utilizador WHERE ativo = 1", [], $ligacao);
+    $totalUtilizadoresAll = (int) $stmtTotal->fetch(PDO::FETCH_ASSOC)['total'];
+
     // Contar total
     $countSql = "SELECT COUNT(u.idUtilizador) as total
                  FROM Utilizador u
                  INNER JOIN Pessoa p ON u.idPessoa = p.idPessoa
                  LEFT JOIN Perfil pf ON u.idPerfil = pf.idPerfil
                  WHERE $whereSQL";
-    
+
     $stmtCount = execute_query($countSql, $params, $ligacao);
     $totalUtilizadoresFiltered = (int) $stmtCount->fetch(PDO::FETCH_ASSOC)['total'];
 
@@ -199,10 +203,11 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         <circle cx="11" cy="11" r="8" />
                     </svg>
                     <input type="text" class="form-item w-100 search-bar-input" name="search" id="search-input-field"
-                        placeholder="Pesquisar por nome, username ou email..." value="<?= htmlspecialchars($search_query) ?>">
+                        placeholder="Pesquisar por nome, username ou email..."
+                        value="<?= htmlspecialchars($search_query) ?>">
                     <?php if ($search_query !== ''): ?>
                         <script>
-                            document.addEventListener("DOMContentLoaded", function() {
+                            document.addEventListener("DOMContentLoaded", function () {
                                 const searchInput = document.getElementById('search-input-field');
                                 if (searchInput) {
                                     searchInput.focus();
@@ -217,10 +222,12 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <div class="d-flex gap-2 equipment-list-search-bar-filters">
                     <select class="form-select" name="perfil" aria-label="Filtro Perfil" onchange="this.form.submit()">
                         <option value="" <?= $perfil_filter === '' ? 'selected' : '' ?>>Todos os Perfis</option>
-                        <option value="Administrador" <?= $perfil_filter === 'Administrador' ? 'selected' : '' ?>>Administrador</option>
+                        <option value="Administrador" <?= $perfil_filter === 'Administrador' ? 'selected' : '' ?>>
+                            Administrador</option>
                         <option value="Engenheiro Biomédico" <?= $perfil_filter === 'Engenheiro Biomédico' ? 'selected' : '' ?>>Engenheiro Biomédico</option>
                         <option value="Técnico de Manutenção" <?= $perfil_filter === 'Técnico de Manutenção' ? 'selected' : '' ?>>Técnico de Manutenção</option>
-                        <option value="Aprovisionamento" <?= $perfil_filter === 'Aprovisionamento' ? 'selected' : '' ?>>Aprovisionamento</option>
+                        <option value="Aprovisionamento" <?= $perfil_filter === 'Aprovisionamento' ? 'selected' : '' ?>>
+                            Aprovisionamento</option>
                         <option value="Consulta" <?= $perfil_filter === 'Consulta' ? 'selected' : '' ?>>Consulta</option>
                     </select>
                 </div>
@@ -229,154 +236,201 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 
         <!-- Tabela -->
         <div class="bento-card w-100 p-0 border-0">
-            <div class="datatable-wrapper no-footer sortable fixed-columns">
-                <div class="datatable-container">
-                    <?php
-                    $buildSortUrl = function ($column) use ($search_query, $perfil_filter, $sort_param, $dir_param) {
-                        $params = [];
-                        if ($search_query !== '') $params['search'] = $search_query;
-                        if ($perfil_filter !== '') $params['perfil'] = $perfil_filter;
-                        $params['sort'] = $column;
-                        $params['dir'] = ($sort_param === $column && $dir_param === 'asc') ? 'desc' : 'asc';
-                        return '?' . http_build_query($params);
-                    };
-
-                    $getSortIcon = function ($column) use ($sort_param, $dir_param) {
-                        if ($sort_param !== $column) return '';
-                        return $dir_param === 'asc' ? ' ↑' : ' ↓';
-                    };
-                    ?>
-                    <table id="usersTable" class="sibdas-table w-100 display datatable-table">
-                        <thead>
-                            <tr>
-                                <th><a href="<?= $buildSortUrl('nome') ?>" class="datatable-sorter text-decoration-none text-inherit">UTILIZADOR<?= $getSortIcon('nome') ?></a></th>
-                                <th><a href="<?= $buildSortUrl('perfil') ?>" class="datatable-sorter text-decoration-none text-inherit">PERFIL<?= $getSortIcon('perfil') ?></a></th>
-                                <th class="text-end">AÇÕES</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (empty($listaUtilizadores)): ?>
-                                <tr>
-                                    <td colspan="3" class="text-center text-muted py-4">Nenhum utilizador encontrado.</td>
-                                </tr>
-                            <?php else: ?>
-                                <?php foreach ($listaUtilizadores as $item): ?>
-                        <?php
-                        $utilizador = $item['utilizador'];
-                        $pessoa = $item['pessoa'];
-                        $encryptedUserId = aes_encrypt($utilizador->getIdUtilizador());
-                        $badge = get_profile_badge($utilizador->getPerfil()->getNome(), $profileBadges);
-                        ?>
-                        <tr>
-                            <td>
-                                <div class="d-flex align-items-center gap-3">
-                                    <div
-                                        class="user-icon d-flex justify-content-center align-items-center text-secondary fw-700 position-relative">
-                                        <?= htmlspecialchars(get_user_initials($pessoa->getNome())) ?>
-                                    </div>
-                                    <div class="d-flex flex-column">
-                                        <p class="equipment-title fw-700 mb-0"><?= htmlspecialchars($pessoa->getNome()) ?>
-                                        </p>
-                                        <span class="visually-hidden"><?= htmlspecialchars($encryptedUserId) ?></span>
-                                        <span
-                                            class="equipment-subtitle text-secondary fw-400 font-mono"><?= htmlspecialchars($utilizador->getEmailAutenticacao()) ?></span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td>
-                                <span class="equipment-badge <?= $badge['class'] ?> gap-1 align-items-center">
-                                    <?= $badge['icon'] ?>
-                                    <?= htmlspecialchars($utilizador->getPerfil()->getNome()) ?>
-                                </span>
-                            </td>
-                            <td class="text-end equipment-actions">
-                                <div class="dropdown">
-                                    <button
-                                        class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
-                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <circle cx="12" cy="12" r="1" />
-                                            <circle cx="19" cy="12" r="1" />
-                                            <circle cx="5" cy="12" r="1" />
-                                        </svg>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
-                                        <li>
-                                            <a class="dropdown-item action-dropdown-item text-primary" href="#"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#user-edit-modal-<?= htmlspecialchars($encryptedUserId) ?>">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                    stroke-linecap="round" stroke-linejoin="round"
-                                                    class="lucide lucide-pencil">
-                                                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                    <path d="m15 5 4 4" />
-                                                </svg>
-                                                Editar
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item action-dropdown-item text-error" href="#"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#delete-confirm-modal-<?= htmlspecialchars($encryptedUserId) ?>">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                    stroke-linecap="round" stroke-linejoin="round"
-                                                    class="lucide lucide-archive">
-                                                    <rect width="20" height="5" x="2" y="3" rx="1" />
-                                                    <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
-                                                    <path d="M10 12h4" />
-                                                </svg>
-                                                Desativar (Reciclagem)
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
-                </div>
-
-                <div class="d-flex justify-content-between align-items-center padding-4 datatable-bottom">
-                    <div class="datatable-info">
-                        A mostrar
-                        <?= $totalUtilizadoresFiltered > 0 ? $offset + 1 : 0 ?>–<?= min($offset + $items_per_page, $totalUtilizadoresFiltered) ?>
-                        de <?= $totalUtilizadoresFiltered ?> registos
+            <?php if ($totalUtilizadoresAll === 0): ?>
+                <div
+                    class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
+                    <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-bell-off-icon lucide-bell-off">
+                            <path d="M9 10h.01" />
+                            <path d="M15 10h.01" />
+                            <path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z" />
+                        </svg>
                     </div>
-                    <nav class="datatable-pagination">
-                        <ul class="datatable-pagination-list">
-                            <?php
-                            $buildQueryString = function ($newPage) use ($search_query, $perfil_filter, $sort_param, $dir_param) {
-                                $params = ['page' => $newPage];
-                                if ($search_query !== '') $params['search'] = $search_query;
-                                if ($perfil_filter !== '') $params['perfil'] = $perfil_filter;
-                                if ($sort_param !== 'nome') $params['sort'] = $sort_param;
-                                if ($dir_param !== 'asc') $params['dir'] = $dir_param;
-                                return '?' . http_build_query($params);
-                            };
-                            ?>
-
-                            <?php if ($current_page > 1): ?>
-                                <li class="datatable-pagination-list-item pager"><a href="<?= $buildQueryString($current_page - 1) ?>">‹</a></li>
-                            <?php endif; ?>
-
-                            <?php for ($i = max(1, $current_page - 2); $i <= min($totalPages, $current_page + 2); $i++): ?>
-                                <li class="datatable-pagination-list-item <?= $i === $current_page ? 'datatable-active' : '' ?>">
-                                    <a href="<?= $buildQueryString($i) ?>"><?= $i ?></a>
-                                </li>
-                            <?php endfor; ?>
-
-                            <?php if ($current_page < $totalPages): ?>
-                                <li class="datatable-pagination-list-item pager"><a href="<?= $buildQueryString($current_page + 1) ?>">›</a></li>
-                            <?php endif; ?>
-                        </ul>
-                    </nav>
+                    <div class="d-flex flex-column gap-2">
+                        <h3 class="fw-700 m-0">Sem Utilizadores</h3>
+                        <p class="text-secondary m-0">De momento não existe nenhum utilizador registado.</p>
+                    </div>
                 </div>
+            <?php elseif (empty($listaUtilizadores)): ?>
+                <div
+                    class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
+                    <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-search-x">
+                            <path d="m13.5 8.5-5 5" />
+                            <path d="m8.5 8.5 5 5" />
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="m21 21-4.3-4.3" />
+                        </svg>
+                    </div>
+                    <div class="d-flex flex-column gap-2">
+                        <h3 class="fw-700 m-0">Sem resultados</h3>
+                        <p class="text-secondary m-0">Nenhum registo encontrado correspondente à sua pesquisa.</p>
+                    </div>
+                </div>
+            <?php else: ?>
+                <div class="datatable-wrapper no-footer sortable fixed-columns">
+                    <div class="datatable-container">
+                        <?php
+                        $buildSortUrl = function ($column) use ($search_query, $perfil_filter, $sort_param, $dir_param) {
+                            $params = [];
+                            if ($search_query !== '')
+                                $params['search'] = $search_query;
+                            if ($perfil_filter !== '')
+                                $params['perfil'] = $perfil_filter;
+                            $params['sort'] = $column;
+                            $params['dir'] = ($sort_param === $column && $dir_param === 'asc') ? 'desc' : 'asc';
+                            return '?' . http_build_query($params);
+                        };
+
+                        $getSortIcon = function ($column) use ($sort_param, $dir_param) {
+                            if ($sort_param !== $column)
+                                return '';
+                            return $dir_param === 'asc' ? ' ↑' : ' ↓';
+                        };
+                        ?>
+                        <table id="usersTable" class="sibdas-table w-100 display datatable-table">
+                            <thead>
+                                <tr>
+                                    <th><a href="<?= $buildSortUrl('nome') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">UTILIZADOR<?= $getSortIcon('nome') ?></a>
+                                    </th>
+                                    <th><a href="<?= $buildSortUrl('perfil') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">PERFIL<?= $getSortIcon('perfil') ?></a>
+                                    </th>
+                                    <th class="text-end">AÇÕES</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($listaUtilizadores as $item): ?>
+                                    <?php
+                                    $utilizador = $item['utilizador'];
+                                    $pessoa = $item['pessoa'];
+                                    $encryptedUserId = aes_encrypt($utilizador->getIdUtilizador());
+                                    $badge = get_profile_badge($utilizador->getPerfil()->getNome(), $profileBadges);
+                                    ?>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <div
+                                                    class="user-icon d-flex justify-content-center align-items-center text-secondary fw-700 position-relative">
+                                                    <?= htmlspecialchars(get_user_initials($pessoa->getNome())) ?>
+                                                </div>
+                                                <div class="d-flex flex-column">
+                                                    <p class="equipment-title fw-700 mb-0">
+                                                        <?= htmlspecialchars($pessoa->getNome()) ?>
+                                                    </p>
+                                                    <span
+                                                        class="visually-hidden"><?= htmlspecialchars($encryptedUserId) ?></span>
+                                                    <span
+                                                        class="equipment-subtitle text-secondary fw-400 font-mono"><?= htmlspecialchars($utilizador->getEmailAutenticacao()) ?></span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span class="equipment-badge <?= $badge['class'] ?> gap-1 align-items-center">
+                                                <?= $badge['icon'] ?>
+                                                <?= htmlspecialchars($utilizador->getPerfil()->getNome()) ?>
+                                            </span>
+                                        </td>
+                                        <td class="text-end equipment-actions">
+                                            <div class="dropdown">
+                                                <button
+                                                    class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
+                                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round">
+                                                        <circle cx="12" cy="12" r="1" />
+                                                        <circle cx="19" cy="12" r="1" />
+                                                        <circle cx="5" cy="12" r="1" />
+                                                    </svg>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
+                                                    <li>
+                                                        <a class="dropdown-item action-dropdown-item text-primary" href="#"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#user-edit-modal-<?= htmlspecialchars($encryptedUserId) ?>">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                class="lucide lucide-pencil">
+                                                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                                                <path d="m15 5 4 4" />
+                                                            </svg>
+                                                            Editar
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item action-dropdown-item text-error" href="#"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#delete-confirm-modal-<?= htmlspecialchars($encryptedUserId) ?>">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                class="lucide lucide-archive">
+                                                                <rect width="20" height="5" x="2" y="3" rx="1" />
+                                                                <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
+                                                                <path d="M10 12h4" />
+                                                            </svg>
+                                                            Desativar (Reciclagem)
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center padding-4 datatable-bottom">
+                        <div class="datatable-info">
+                            A mostrar
+                            <?= $totalUtilizadoresFiltered > 0 ? $offset + 1 : 0 ?>–<?= min($offset + $items_per_page, $totalUtilizadoresFiltered) ?>
+                            de <?= $totalUtilizadoresFiltered ?> registos
+                        </div>
+                        <nav class="datatable-pagination">
+                            <ul class="datatable-pagination-list">
+                                <?php
+                                $buildQueryString = function ($newPage) use ($search_query, $perfil_filter, $sort_param, $dir_param) {
+                                    $params = ['page' => $newPage];
+                                    if ($search_query !== '')
+                                        $params['search'] = $search_query;
+                                    if ($perfil_filter !== '')
+                                        $params['perfil'] = $perfil_filter;
+                                    if ($sort_param !== 'nome')
+                                        $params['sort'] = $sort_param;
+                                    if ($dir_param !== 'asc')
+                                        $params['dir'] = $dir_param;
+                                    return '?' . http_build_query($params);
+                                };
+                                ?>
+
+                                <?php if ($current_page > 1): ?>
+                                    <li class="datatable-pagination-list-item pager"><a
+                                            href="<?= $buildQueryString($current_page - 1) ?>">‹</a></li>
+                                <?php endif; ?>
+
+                                <?php for ($i = max(1, $current_page - 2); $i <= min($totalPages, $current_page + 2); $i++): ?>
+                                    <li
+                                        class="datatable-pagination-list-item <?= $i === $current_page ? 'datatable-active' : '' ?>">
+                                        <a href="<?= $buildQueryString($i) ?>"><?= $i ?></a>
+                                    </li>
+                                <?php endfor; ?>
+
+                                <?php if ($current_page < $totalPages): ?>
+                                    <li class="datatable-pagination-list-item pager"><a
+                                            href="<?= $buildQueryString($current_page + 1) ?>">›</a></li>
+                                <?php endif; ?>
+                            </ul>
+                        </nav>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
 

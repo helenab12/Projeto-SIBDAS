@@ -48,14 +48,20 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
         </div>
 
         <?php if (empty($listaManutencoes)): ?>
-            <div class="d-flex flex-column align-items-center justify-content-center gap-2 py-5 text-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-wrench text-muted opacity-50">
-                    <path
-                        d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
-                </svg>
-                <span class="text-secondary fw-500">Sem registos de manutenção</span>
+            <div
+                class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4 w-100">
+                <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-wrench">
+                        <path
+                            d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
+                    </svg>
+                </div>
+                <div class="d-flex flex-column gap-2">
+                    <h3 class="fw-700 m-0">Sem Manutenções</h3>
+                    <p class="text-secondary m-0">Ainda não existem manutenções associadas a este equipamento.</p>
+                </div>
             </div>
         <?php else: ?>
             <table id="maintenancesTable" class="sibdas-table w-100 display border-0">

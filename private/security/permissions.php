@@ -35,6 +35,10 @@ try {
 
     $whereSQL = implode(" AND ", $whereConditions);
 
+    // Contar total sem filtros
+    $stmtTotal = execute_query("SELECT COUNT(*) as total FROM Permissao WHERE ativo = 1", [], $ligacao);
+    $totalPermissoesAll = (int) $stmtTotal->fetch(PDO::FETCH_ASSOC)['total'];
+
     // Contar total
     $countSql = "SELECT COUNT(idPermissao) as total FROM Permissao WHERE $whereSQL";
     $stmtCount = execute_query($countSql, $params, $ligacao);
@@ -55,7 +59,7 @@ try {
     $sort_field = isset($allowed_sorts[$sort_param]) ? $allowed_sorts[$sort_param] : 'chave';
     $sort_dir = strtoupper($dir_param);
 
-    $dataSql = "SELECT idPermissao, chave, descricao FROM Permissao WHERE $whereSQL ORDER BY $sort_field $sort_dir LIMIT " . (int)$items_per_page . " OFFSET " . (int)$offset;
+    $dataSql = "SELECT idPermissao, chave, descricao FROM Permissao WHERE $whereSQL ORDER BY $sort_field $sort_dir LIMIT " . (int) $items_per_page . " OFFSET " . (int) $offset;
 
     $stmt = execute_query($dataSql, $params, $ligacao);
     $permissoesDb = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -110,7 +114,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         placeholder="Pesquisar por permissão..." value="<?= htmlspecialchars($search_query) ?>">
                     <?php if ($search_query !== ''): ?>
                         <script>
-                            document.addEventListener("DOMContentLoaded", function() {
+                            document.addEventListener("DOMContentLoaded", function () {
                                 const searchInput = document.getElementById('search-input-field');
                                 if (searchInput) {
                                     searchInput.focus();
@@ -125,139 +129,187 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
             </form>
         </div>
 
-        <!-- Tabela -->
-        <div class="bento-card w-100 p-0 border-0">
-            <div class="datatable-wrapper no-footer sortable fixed-columns">
-                <div class="datatable-container">
-                    <?php
-                    $buildSortUrl = function ($column) use ($search_query, $sort_param, $dir_param) {
-                        $params = [];
-                        if ($search_query !== '') $params['search'] = $search_query;
-                        $params['sort'] = $column;
-                        $params['dir'] = ($sort_param === $column && $dir_param === 'asc') ? 'desc' : 'asc';
-                        return '?' . http_build_query($params);
-                    };
-
-                    $getSortIcon = function ($column) use ($sort_param, $dir_param) {
-                        if ($sort_param !== $column) return '';
-                        return $dir_param === 'asc' ? ' ↑' : ' ↓';
-                    };
-                    ?>
-                    <table id="equipmentsTable" class="sibdas-table w-100 display datatable-table">
-                        <thead>
-                            <tr>
-                                <th><a href="<?= $buildSortUrl('chave') ?>" class="datatable-sorter text-decoration-none text-inherit">CHAVE<?= $getSortIcon('chave') ?></a></th>
-                                <th><a href="<?= $buildSortUrl('descricao') ?>" class="datatable-sorter text-decoration-none text-inherit">DESCRIÇÃO<?= $getSortIcon('descricao') ?></a></th>
-                                <th class="text-end">AÇÕES</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (empty($permissoes)): ?>
-                                <tr>
-                                    <td colspan="3" class="text-center text-muted py-4">Nenhuma permissão encontrada.</td>
-                                </tr>
-                            <?php else: ?>
-                                <?php foreach ($permissoes as $permissao): ?>
-                        <?php $encryptedPermId = aes_encrypt($permissao->getIdPermissao()); ?>
-                        <tr>
-                            <td>
-                                <span class="equipment-badge supplier-badge-supplier text-primary-500 font-mono fw-700">
-                                    <?= htmlspecialchars($permissao->getChave()) ?>
-                                </span>
-                                <span class="visually-hidden"><?= htmlspecialchars($encryptedPermId) ?></span>
-                            </td>
-                            <td>
-                                <p class="fw-400"><?= htmlspecialchars($permissao->getDescricao()) ?></p>
-                            </td>
-                            <td class="text-end equipment-actions">
-                                <div class="dropdown">
-                                    <button
-                                        class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
-                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round">
-                                            <circle cx="12" cy="12" r="1" />
-                                            <circle cx="19" cy="12" r="1" />
-                                            <circle cx="5" cy="12" r="1" />
-                                        </svg>
-                                    </button>
-                                    <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
-                                        <li>
-                                            <a class="dropdown-item action-dropdown-item text-primary" href="#"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#permission-edit-modal-<?= htmlspecialchars($encryptedPermId) ?>">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                    stroke-linecap="round" stroke-linejoin="round"
-                                                    class="lucide lucide-pencil">
-                                                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                    <path d="m15 5 4 4" />
-                                                </svg>
-                                                Editar
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a class="dropdown-item action-dropdown-item text-error" href="#"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#delete-confirm-modal-<?= htmlspecialchars($encryptedPermId) ?>">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                    stroke-linecap="round" stroke-linejoin="round"
-                                                    class="lucide lucide-trash-2">
-                                                    <path d="M3 6h18" />
-                                                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                                </svg>
-                                                Apagar
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </td>
-                        </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
+        <?php if ($totalPermissoesAll === 0): ?>
+            <div
+                class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
+                <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-bell-off-icon lucide-bell-off">
+                        <path d="M9 10h.01" />
+                        <path d="M15 10h.01" />
+                        <path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z" />
+                    </svg>
                 </div>
-
-                <div class="d-flex justify-content-between align-items-center padding-4 datatable-bottom">
-                    <div class="datatable-info">
-                        A mostrar
-                        <?= $totalPermissoesFiltered > 0 ? $offset + 1 : 0 ?>–<?= min($offset + $items_per_page, $totalPermissoesFiltered) ?>
-                        de <?= $totalPermissoesFiltered ?> registos
-                    </div>
-                    <nav class="datatable-pagination">
-                        <ul class="datatable-pagination-list">
-                            <?php
-                            $buildQueryString = function ($newPage) use ($search_query, $sort_param, $dir_param) {
-                                $params = ['page' => $newPage];
-                                if ($search_query !== '') $params['search'] = $search_query;
-                                if ($sort_param !== 'chave') $params['sort'] = $sort_param;
-                                if ($dir_param !== 'asc') $params['dir'] = $dir_param;
-                                return '?' . http_build_query($params);
-                            };
-                            ?>
-
-                            <?php if ($current_page > 1): ?>
-                                <li class="datatable-pagination-list-item pager"><a href="<?= $buildQueryString($current_page - 1) ?>">‹</a></li>
-                            <?php endif; ?>
-
-                            <?php for ($i = max(1, $current_page - 2); $i <= min($totalPages, $current_page + 2); $i++): ?>
-                                <li class="datatable-pagination-list-item <?= $i === $current_page ? 'datatable-active' : '' ?>">
-                                    <a href="<?= $buildQueryString($i) ?>"><?= $i ?></a>
-                                </li>
-                            <?php endfor; ?>
-
-                            <?php if ($current_page < $totalPages): ?>
-                                <li class="datatable-pagination-list-item pager"><a href="<?= $buildQueryString($current_page + 1) ?>">›</a></li>
-                            <?php endif; ?>
-                        </ul>
-                    </nav>
+                <div class="d-flex flex-column gap-2">
+                    <h3 class="fw-700 m-0">Sem Permissões</h3>
+                    <p class="text-secondary m-0">De momento não existe nenhuma permissão.</p>
                 </div>
             </div>
-        </div>
+        <?php elseif (empty($permissoes)): ?>
+            <div
+                class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
+                <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-search-x">
+                        <path d="m13.5 8.5-5 5" />
+                        <path d="m8.5 8.5 5 5" />
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
+                    </svg>
+                </div>
+                <div class="d-flex flex-column gap-2">
+                    <h3 class="fw-700 m-0">Sem resultados</h3>
+                    <p class="text-secondary m-0">Nenhum registo encontrado correspondente à sua pesquisa.</p>
+                </div>
+            </div>
+        <?php else: ?>
+
+            <!-- Tabela -->
+            <div class="bento-card w-100 p-0 border-0">
+                <div class="datatable-wrapper no-footer sortable fixed-columns">
+                    <div class="datatable-container">
+                        <?php
+                        $buildSortUrl = function ($column) use ($search_query, $sort_param, $dir_param) {
+                            $params = [];
+                            if ($search_query !== '')
+                                $params['search'] = $search_query;
+                            $params['sort'] = $column;
+                            $params['dir'] = ($sort_param === $column && $dir_param === 'asc') ? 'desc' : 'asc';
+                            return '?' . http_build_query($params);
+                        };
+
+                        $getSortIcon = function ($column) use ($sort_param, $dir_param) {
+                            if ($sort_param !== $column)
+                                return '';
+                            return $dir_param === 'asc' ? ' ↑' : ' ↓';
+                        };
+                        ?>
+                        <table id="equipmentsTable" class="sibdas-table w-100 display datatable-table">
+                            <thead>
+                                <tr>
+                                    <th><a href="<?= $buildSortUrl('chave') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">CHAVE<?= $getSortIcon('chave') ?></a>
+                                    </th>
+                                    <th><a href="<?= $buildSortUrl('descricao') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">DESCRIÇÃO<?= $getSortIcon('descricao') ?></a>
+                                    </th>
+                                    <th class="text-end">AÇÕES</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <?php foreach ($permissoes as $permissao): ?>
+                                    <?php $encryptedPermId = aes_encrypt($permissao->getIdPermissao()); ?>
+                                    <tr>
+                                        <td>
+                                            <span
+                                                class="equipment-badge supplier-badge-supplier text-primary-500 font-mono fw-700">
+                                                <?= htmlspecialchars($permissao->getChave()) ?>
+                                            </span>
+                                            <span class="visually-hidden"><?= htmlspecialchars($encryptedPermId) ?></span>
+                                        </td>
+                                        <td>
+                                            <p class="fw-400"><?= htmlspecialchars($permissao->getDescricao()) ?></p>
+                                        </td>
+                                        <td class="text-end equipment-actions">
+                                            <div class="dropdown">
+                                                <button
+                                                    class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
+                                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round">
+                                                        <circle cx="12" cy="12" r="1" />
+                                                        <circle cx="19" cy="12" r="1" />
+                                                        <circle cx="5" cy="12" r="1" />
+                                                    </svg>
+                                                </button>
+                                                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
+                                                    <li>
+                                                        <a class="dropdown-item action-dropdown-item text-primary" href="#"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#permission-edit-modal-<?= htmlspecialchars($encryptedPermId) ?>">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                class="lucide lucide-pencil">
+                                                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                                                <path d="m15 5 4 4" />
+                                                            </svg>
+                                                            Editar
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a class="dropdown-item action-dropdown-item text-error" href="#"
+                                                            data-bs-toggle="modal"
+                                                            data-bs-target="#delete-confirm-modal-<?= htmlspecialchars($encryptedPermId) ?>">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                class="lucide lucide-trash-2">
+                                                                <path d="M3 6h18" />
+                                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                                            </svg>
+                                                            Apagar
+                                                        </a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center padding-4 datatable-bottom">
+                        <div class="datatable-info">
+                            A mostrar
+                            <?= $totalPermissoesFiltered > 0 ? $offset + 1 : 0 ?>–<?= min($offset + $items_per_page, $totalPermissoesFiltered) ?>
+                            de <?= $totalPermissoesFiltered ?> registos
+                        </div>
+                        <nav class="datatable-pagination">
+                            <ul class="datatable-pagination-list">
+                                <?php
+                                $buildQueryString = function ($newPage) use ($search_query, $sort_param, $dir_param) {
+                                    $params = ['page' => $newPage];
+                                    if ($search_query !== '')
+                                        $params['search'] = $search_query;
+                                    if ($sort_param !== 'chave')
+                                        $params['sort'] = $sort_param;
+                                    if ($dir_param !== 'asc')
+                                        $params['dir'] = $dir_param;
+                                    return '?' . http_build_query($params);
+                                };
+                                ?>
+
+                                <?php if ($current_page > 1): ?>
+                                    <li class="datatable-pagination-list-item pager"><a
+                                            href="<?= $buildQueryString($current_page - 1) ?>">‹</a></li>
+                                <?php endif; ?>
+
+                                <?php for ($i = max(1, $current_page - 2); $i <= min($totalPages, $current_page + 2); $i++): ?>
+                                    <li
+                                        class="datatable-pagination-list-item <?= $i === $current_page ? 'datatable-active' : '' ?>">
+                                        <a href="<?= $buildQueryString($i) ?>"><?= $i ?></a>
+                                    </li>
+                                <?php endfor; ?>
+
+                                <?php if ($current_page < $totalPages): ?>
+                                    <li class="datatable-pagination-list-item pager"><a
+                                            href="<?= $buildQueryString($current_page + 1) ?>">›</a></li>
+                                <?php endif; ?>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+
+        <?php endif; ?>
 
     </section>
 </div>

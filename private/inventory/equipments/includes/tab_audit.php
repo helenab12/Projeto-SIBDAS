@@ -87,17 +87,21 @@ try {
         </div>
 
         <?php if (empty($auditoria)): ?>
-            <div class="d-flex flex-column align-items-center justify-content-center gap-2 py-5 text-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-file-text text-muted opacity-50">
-                    <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
-                    <path d="M14 2v4a2 2 0 0 0 2 2h4" />
-                    <path d="M10 9h8" />
-                    <path d="M10 13h8" />
-                    <path d="M10 17h8" />
-                </svg>
-                <span class="text-secondary fw-500">Sem registos de auditoria para este equipamento</span>
+            <div
+                class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4 w-100">
+                <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-history">
+                        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+                        <path d="M3 3v5h5" />
+                        <path d="M12 7v5l4 2" />
+                    </svg>
+                </div>
+                <div class="d-flex flex-column gap-2">
+                    <h3 class="fw-700 m-0">Sem Registos de Auditoria</h3>
+                    <p class="text-secondary m-0">Ainda não existem registos de auditoria associados a este equipamento.</p>
+                </div>
             </div>
         <?php else: ?>
             <table id="auditTable" class="sibdas-table w-100 display border-0">

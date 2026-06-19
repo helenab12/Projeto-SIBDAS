@@ -58,13 +58,22 @@ try {
         </div>
 
         <?php if (empty($listaGarantias)): ?>
-            <div class="d-flex flex-column align-items-center justify-content-center gap-2 py-5 text-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-shield text-muted opacity-50">
-                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
-                </svg>
-                <span class="text-secondary fw-500">Sem registos de garantia</span>
+            <div
+                class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4 w-100">
+                <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-shield-off">
+                        <path d="M19.69 14a6.9 6.9 0 0 0 .31-2V5l-8-3-3.16 1.18" />
+                        <path d="M4.73 4.73 4 5v8c0 5.6 4.52 9.22 8 11a28 28 0 0 0 5.68-4.22" />
+                        <line x1="2" y1="2" x2="22" y2="22" />
+                    </svg>
+                </div>
+                <div class="d-flex flex-column gap-2">
+                    <h3 class="fw-700 m-0">Sem Garantias ou Contratos</h3>
+                    <p class="text-secondary m-0">Ainda não existem garantias ou contratos associados a este equipamento.
+                    </p>
+                </div>
             </div>
         <?php else: ?>
             <table id="warrantiesTable" class="sibdas-table w-100 display border-0">
@@ -131,7 +140,8 @@ try {
                                     <button
                                         class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
                                         type="button" title="Editar" data-bs-toggle="modal"
-                                        data-bs-target="#edit-warranty-modal-<?= htmlspecialchars($encId) ?>" data-id="<?= htmlspecialchars($encId) ?>">
+                                        data-bs-target="#edit-warranty-modal-<?= htmlspecialchars($encId) ?>"
+                                        data-id="<?= htmlspecialchars($encId) ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                             stroke-linejoin="round" class="lucide lucide-pencil">
@@ -142,7 +152,8 @@ try {
                                     <button
                                         class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
                                         type="button" title="Eliminar" data-bs-toggle="modal"
-                                        data-bs-target="#delete-warranty-modal-<?= htmlspecialchars($encId) ?>" data-id="<?= htmlspecialchars($encId) ?>">
+                                        data-bs-target="#delete-warranty-modal-<?= htmlspecialchars($encId) ?>"
+                                        data-id="<?= htmlspecialchars($encId) ?>">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                             stroke-linejoin="round" class="lucide lucide-trash-2 text-secondary">
@@ -355,17 +366,23 @@ try {
     $startId = 'edit-warranty-start-date-' . $encId;
     $endId = 'edit-warranty-end-date-' . $encId;
     ?>
-    
+
     <!-- Modal de Editar Garantia / Contrato -->
-    <div class="modal fade" id="edit-warranty-modal-<?= htmlspecialchars($encId) ?>" tabindex="-1" aria-labelledby="editWarrantyModalLabel-<?= htmlspecialchars($encId) ?>" aria-hidden="true">
+    <div class="modal fade" id="edit-warranty-modal-<?= htmlspecialchars($encId) ?>" tabindex="-1"
+        aria-labelledby="editWarrantyModalLabel-<?= htmlspecialchars($encId) ?>" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
             <div class="modal-content custom-modal-content d-flex flex-column">
                 <!-- Header -->
-                <div class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
-                    <h2 class="equipment-creation-modal-title modal-title fw-700 text-primary" id="editWarrantyModalLabel-<?= htmlspecialchars($encId) ?>">
+                <div
+                    class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
+                    <h2 class="equipment-creation-modal-title modal-title fw-700 text-primary"
+                        id="editWarrantyModalLabel-<?= htmlspecialchars($encId) ?>">
                         Editar Garantia / Contrato</h2>
-                    <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent" data-bs-dismiss="modal" aria-label="Close">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x stroke-secondary">
+                    <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
+                        data-bs-dismiss="modal" aria-label="Close">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-x stroke-secondary">
                             <line x1="18" y1="6" x2="6" y2="18" />
                             <line x1="6" y1="6" x2="18" y2="18" />
                         </svg>
@@ -374,7 +391,9 @@ try {
 
                 <!-- Body -->
                 <div class="modal-body p-0">
-                    <form id="edit-warranty-form-<?= htmlspecialchars($encId) ?>" action="equipments-crud/edit-warranty.php" method="POST" enctype="multipart/form-data" class="edit-warranty-form equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
+                    <form id="edit-warranty-form-<?= htmlspecialchars($encId) ?>" action="equipments-crud/edit-warranty.php"
+                        method="POST" enctype="multipart/form-data"
+                        class="edit-warranty-form equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
                         <input type="hidden" name="equipment-id" value="<?= htmlspecialchars($encryptedId) ?>">
                         <input type="hidden" name="warranty-id" value="<?= htmlspecialchars($encId) ?>">
 
@@ -383,16 +402,21 @@ try {
                             <div class="d-flex flex-column form-item w-100 w-md-50">
                                 <label for="<?= $tipoId ?>" class="d-flex align-items-center gap-1">
                                     Tipo de Registo
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-asterisk-icon lucide-asterisk text-error">
                                         <path d="M12 6v12" />
                                         <path d="M17.196 9 6.804 15" />
                                         <path d="m6.804 9 10.392 6" />
                                     </svg>
                                 </label>
-                                <select id="<?= $tipoId ?>" name="warranty-type" class="form-select w-100 edit-warranty-type" required>
+                                <select id="<?= $tipoId ?>" name="warranty-type"
+                                    class="form-select w-100 edit-warranty-type" required>
                                     <option value="" disabled>Selecionar tipo...</option>
                                     <?php foreach (TipoRegisto::cases() as $t): ?>
-                                        <option value="<?= htmlspecialchars($t->value) ?>" <?= ($item->getTipoRegisto()->value === $t->value) ? 'selected' : '' ?>>
+                                        <option value="<?= htmlspecialchars($t->value) ?>"
+                                            <?= ($item->getTipoRegisto()->value === $t->value) ? 'selected' : '' ?>>
                                             <?= htmlspecialchars($t->value) ?>
                                         </option>
                                     <?php endforeach; ?>
@@ -401,16 +425,21 @@ try {
                             <div class="d-flex flex-column form-item w-100 w-md-50">
                                 <label for="<?= $periodId ?>" class="d-flex align-items-center gap-1">
                                     Periodicidade
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-asterisk-icon lucide-asterisk text-error">
                                         <path d="M12 6v12" />
                                         <path d="M17.196 9 6.804 15" />
                                         <path d="m6.804 9 10.392 6" />
                                     </svg>
                                 </label>
-                                <select id="<?= $periodId ?>" name="warranty-periodicity" class="form-select w-100 edit-warranty-periodicity" required>
+                                <select id="<?= $periodId ?>" name="warranty-periodicity"
+                                    class="form-select w-100 edit-warranty-periodicity" required>
                                     <option value="" disabled>Selecionar periodicidade...</option>
                                     <?php foreach (Periodicidade::cases() as $p): ?>
-                                        <option value="<?= htmlspecialchars($p->value) ?>" <?= ($item->getPeriodicidade()->value === $p->value) ? 'selected' : '' ?>>
+                                        <option value="<?= htmlspecialchars($p->value) ?>"
+                                            <?= ($item->getPeriodicidade()->value === $p->value) ? 'selected' : '' ?>>
                                             <?= htmlspecialchars($p->value) ?>
                                         </option>
                                     <?php endforeach; ?>
@@ -423,15 +452,24 @@ try {
                             <div class="d-flex flex-column form-item w-100 w-md-50">
                                 <label for="<?= $startId ?>" class="d-flex align-items-center gap-1">
                                     Data de Início
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-asterisk-icon lucide-asterisk text-error">
                                         <path d="M12 6v12" />
                                         <path d="M17.196 9 6.804 15" />
                                         <path d="m6.804 9 10.392 6" />
                                     </svg>
                                 </label>
                                 <div class="position-relative w-100 date-input">
-                                    <input type="text" id="<?= $startId ?>" name="warranty-start-date" class="w-100 edit-warranty-start-date" placeholder="dd/mm/yyyy" value="<?= $item->getDataInicio() ? $item->getDataInicio()->format('d/m/Y') : '' ?>" required>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar text-secondary position-absolute">
+                                    <input type="text" id="<?= $startId ?>" name="warranty-start-date"
+                                        class="w-100 edit-warranty-start-date" placeholder="dd/mm/yyyy"
+                                        value="<?= $item->getDataInicio() ? $item->getDataInicio()->format('d/m/Y') : '' ?>"
+                                        required>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-calendar text-secondary position-absolute">
                                         <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
                                         <line x1="16" x2="16" y1="2" y2="6" />
                                         <line x1="8" x2="8" y1="2" y2="6" />
@@ -442,15 +480,24 @@ try {
                             <div class="d-flex flex-column form-item w-100 w-md-50">
                                 <label for="<?= $endId ?>" class="d-flex align-items-center gap-1">
                                     Data de Fim
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-asterisk-icon lucide-asterisk text-error">
                                         <path d="M12 6v12" />
                                         <path d="M17.196 9 6.804 15" />
                                         <path d="m6.804 9 10.392 6" />
                                     </svg>
                                 </label>
                                 <div class="position-relative w-100 date-input">
-                                    <input type="text" id="<?= $endId ?>" name="warranty-end-date" class="w-100 edit-warranty-end-date" placeholder="dd/mm/yyyy" value="<?= $item->getDataFim() ? $item->getDataFim()->format('d/m/Y') : '' ?>" required>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-calendar text-secondary position-absolute">
+                                    <input type="text" id="<?= $endId ?>" name="warranty-end-date"
+                                        class="w-100 edit-warranty-end-date" placeholder="dd/mm/yyyy"
+                                        value="<?= $item->getDataFim() ? $item->getDataFim()->format('d/m/Y') : '' ?>"
+                                        required>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-calendar text-secondary position-absolute">
                                         <rect width="18" height="18" x="3" y="4" rx="2" ry="2" />
                                         <line x1="16" x2="16" y1="2" y2="6" />
                                         <line x1="8" x2="8" y1="2" y2="6" />
@@ -463,10 +510,13 @@ try {
                         <!-- Row 3: Fornecedor Associado -->
                         <div class="d-flex flex-column form-item w-100">
                             <label for="edit-warranty-supplier-<?= htmlspecialchars($encId) ?>">Fornecedor Associado</label>
-                            <select id="edit-warranty-supplier-<?= htmlspecialchars($encId) ?>" name="warranty-supplier" class="form-select w-100">
-                                <option value="" <?= ($item->getIdFornecedor() === null) ? 'selected' : '' ?>>Nenhum fornecedor</option>
+                            <select id="edit-warranty-supplier-<?= htmlspecialchars($encId) ?>" name="warranty-supplier"
+                                class="form-select w-100">
+                                <option value="" <?= ($item->getIdFornecedor() === null) ? 'selected' : '' ?>>Nenhum fornecedor
+                                </option>
                                 <?php foreach ($fornecedoresDisponiveis as $f): ?>
-                                    <option value="<?= htmlspecialchars($f['idFornecedor']) ?>" <?= ($item->getIdFornecedor() === (string)$f['idFornecedor']) ? 'selected' : '' ?>>
+                                    <option value="<?= htmlspecialchars($f['idFornecedor']) ?>"
+                                        <?= ($item->getIdFornecedor() === (string) $f['idFornecedor']) ? 'selected' : '' ?>>
                                         <?= htmlspecialchars($f['nome']) ?>
                                     </option>
                                 <?php endforeach; ?>
@@ -477,34 +527,45 @@ try {
                         <div class="d-flex flex-column form-item w-100 mt-2">
                             <label>Documento Adicional (Atualizar Ficheiro)</label>
                             <?php if ($item->getDocumentoCaminho()): ?>
-                                <p class="text-secondary text-sm mb-2">Já existe um ficheiro associado. Se fizer upload de um novo, o antigo será apagado.</p>
+                                <p class="text-secondary text-sm mb-2">Já existe um ficheiro associado. Se fizer upload de um
+                                    novo, o antigo será apagado.</p>
                             <?php endif; ?>
                             <div class="file-upload-zone d-flex flex-column align-items-center justify-content-center gap-2"
-                                id="edit-warranty-dropzone-<?= htmlspecialchars($encId) ?>" data-dropzone-target="edit-warranty-file-<?= htmlspecialchars($encId) ?>"
+                                id="edit-warranty-dropzone-<?= htmlspecialchars($encId) ?>"
+                                data-dropzone-target="edit-warranty-file-<?= htmlspecialchars($encId) ?>"
                                 data-text-target="edit-warranty-dropzone-text-<?= htmlspecialchars($encId) ?>">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-upload file-upload-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-upload file-upload-icon">
                                     <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                                     <polyline points="17 8 12 3 7 8" />
                                     <line x1="12" x2="12" y1="3" y2="15" />
                                 </svg>
-                                <p class="file-upload-text" id="edit-warranty-dropzone-text-<?= htmlspecialchars($encId) ?>">Arraste um ficheiro ou
+                                <p class="file-upload-text"
+                                    id="edit-warranty-dropzone-text-<?= htmlspecialchars($encId) ?>">Arraste um ficheiro ou
                                     <span class="file-upload-text-action text-primary-500">clique para selecionar</span>
                                 </p>
                                 <span class="m-0 text-muted">PDF, JPG, PNG — máx. 25MB</span>
                             </div>
-                            <input type="file" id="edit-warranty-file-<?= htmlspecialchars($encId) ?>" name="edit-warranty-file" class="d-none" accept=".pdf,.jpg,.jpeg,.png">
+                            <input type="file" id="edit-warranty-file-<?= htmlspecialchars($encId) ?>"
+                                name="edit-warranty-file" class="d-none" accept=".pdf,.jpg,.jpeg,.png">
                         </div>
 
                         <!-- Row 5: Observações -->
                         <div class="d-flex flex-column form-item w-100">
                             <label for="edit-warranty-notes-<?= htmlspecialchars($encId) ?>">Observações</label>
-                            <textarea id="edit-warranty-notes-<?= htmlspecialchars($encId) ?>" name="warranty-notes" class="w-100 no-resize" rows="3" placeholder="Observações da garantia ou contrato..."><?= htmlspecialchars($item->getObservacoes() ?? '') ?></textarea>
+                            <textarea id="edit-warranty-notes-<?= htmlspecialchars($encId) ?>" name="warranty-notes"
+                                class="w-100 no-resize" rows="3"
+                                placeholder="Observações da garantia ou contrato..."><?= htmlspecialchars($item->getObservacoes() ?? '') ?></textarea>
                         </div>
 
                         <!-- Footer -->
                         <div class="d-flex justify-content-end gap-3 align-items-center mt-3">
-                            <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-primary btn-glowing d-flex align-items-center gap-2 btn-submit-edit-warranty" disabled>
+                            <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
+                                data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit"
+                                class="btn btn-primary btn-glowing d-flex align-items-center gap-2 btn-submit-edit-warranty"
+                                disabled>
                                 Guardar Alterações
                             </button>
                         </div>
@@ -515,36 +576,56 @@ try {
     </div>
 
     <!-- Modal de Remoção de Garantia -->
-    <div class="modal fade" id="delete-warranty-modal-<?= htmlspecialchars($encId) ?>" tabindex="-1" aria-labelledby="deleteWarrantyModalLabel-<?= htmlspecialchars($encId) ?>" aria-hidden="true">
+    <div class="modal fade" id="delete-warranty-modal-<?= htmlspecialchars($encId) ?>" tabindex="-1"
+        aria-labelledby="deleteWarrantyModalLabel-<?= htmlspecialchars($encId) ?>" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
             <div class="modal-content custom-modal-content d-flex flex-column">
-                <div class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
+                <div
+                    class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
                     <div class="d-flex flex-column">
-                        <h2 class="equipment-creation-modal-title modal-title fw-700 text-primary" id="deleteWarrantyModalLabel-<?= htmlspecialchars($encId) ?>">Eliminar Registo</h2>
+                        <h2 class="equipment-creation-modal-title modal-title fw-700 text-primary"
+                            id="deleteWarrantyModalLabel-<?= htmlspecialchars($encId) ?>">Eliminar Registo</h2>
                         <span class="text-secondary fw-400">Esta ação moverá o registo para o arquivo.</span>
                     </div>
-                    <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent" data-bs-dismiss="modal" aria-label="Close">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-x stroke-secondary"><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
+                    <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
+                        data-bs-dismiss="modal" aria-label="Close">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-x stroke-secondary">
+                            <line x1="18" y1="6" x2="6" y2="18" />
+                            <line x1="6" y1="6" x2="18" y2="18" />
+                        </svg>
                     </button>
                 </div>
                 <div class="modal-body p-0">
                     <form method="POST" action="equipments-crud/delete-warranty.php">
                         <input type="hidden" name="equipment-id" value="<?= htmlspecialchars($encryptedId) ?>">
                         <input type="hidden" name="warranty-id" value="<?= htmlspecialchars($encId) ?>">
-                        <div class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
+                        <div
+                            class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
                             <div class="d-flex flex-column align-items-center gap-4">
                                 <div class="d-flex padding-3 danger-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-alert-triangle text-error"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" /><line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" /></svg>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-alert-triangle text-error">
+                                        <path
+                                            d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+                                        <line x1="12" y1="9" x2="12" y2="13" />
+                                        <line x1="12" y1="17" x2="12.01" y2="17" />
+                                    </svg>
                                 </div>
                                 <div class="d-flex flex-column align-items-center justify-content-center gap-3">
-                                    <div class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
+                                    <div
+                                        class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
                                         <p class="text-secondary m-0">Tem a certeza que deseja remover o registo de</p>
-                                        <h2 class="fw-700 text-primary m-0">"<?= htmlspecialchars($item->getTipoRegisto()->value) ?>"</h2>
+                                        <h2 class="fw-700 text-primary m-0">
+                                            "<?= htmlspecialchars($item->getTipoRegisto()->value) ?>"</h2>
                                     </div>
                                 </div>
                             </div>
                             <div class="d-flex w-100 justify-content-end gap-4 button-row">
-                                <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
+                                    data-bs-dismiss="modal">Cancelar</button>
                                 <button type="submit" class="btn btn-danger btn-glowing text-white">Sim, Eliminar</button>
                             </div>
                         </div>

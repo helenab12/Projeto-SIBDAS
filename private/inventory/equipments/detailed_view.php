@@ -642,3 +642,18 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 include_once BASE_PATH . 'private/includes/footer.php';
 ?>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Save tab state to URL
+    var tabElements = document.querySelectorAll('button[data-bs-toggle="tab"]');
+    tabElements.forEach(function(tab) {
+        tab.addEventListener('shown.bs.tab', function (event) {
+            var targetId = event.target.getAttribute('data-bs-target').replace('#nav-', '');
+            var url = new URL(window.location);
+            url.searchParams.set('nav', targetId);
+            window.history.replaceState({}, '', url);
+        });
+    });
+});
+</script>

@@ -82,6 +82,10 @@ try {
 
     $whereSQL = implode(" AND ", $whereConditions);
 
+    // Contar total de componentes (sem filtros)
+    $stmtTotal = execute_query("SELECT COUNT(*) as total FROM Componente WHERE ativo = 1", [], $ligacao);
+    $totalComponentesAll = (int) $stmtTotal->fetch(PDO::FETCH_ASSOC)['total'];
+
     // Contar total filtrado
     $countSql = "SELECT COUNT(DISTINCT c.idComponente) as total 
                  FROM Componente c 
@@ -197,6 +201,35 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 </div>
             </form>
         </div>
+
+        <?php if ($totalComponentesAll === 0): ?>
+            <div
+                class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
+                <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-bell-off-icon lucide-bell-off">
+                        <path d="M9 10h.01" />
+                        <path d="M15 10h.01" />
+                        <path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z" />
+                    </svg>
+                </div>
+                <div class="d-flex flex-column gap-2">
+                    <h3 class="fw-700 m-0">Sem Componentes</h3>
+                    <p class="text-secondary m-0">De momento não existe nenhum componente.</p>
+                </div>
+            </div>
+        <?php elseif (empty($listaComponentes)): ?>
+            <div class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
+                <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-x"><path d="m13.5 8.5-5 5"/><path d="m8.5 8.5 5 5"/><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                </div>
+                <div class="d-flex flex-column gap-2">
+                    <h3 class="fw-700 m-0">Sem resultados</h3>
+                    <p class="text-secondary m-0">Nenhum registo encontrado correspondente à sua pesquisa.</p>
+                </div>
+            </div>
+        <?php else: ?>
 
         <!-- Tabela -->
         <div class="bento-card w-100 p-0 border-0">
@@ -338,13 +371,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         </tr>
 
                     <?php endforeach; ?>
-                        <?php if (empty($listaComponentes)): ?>
-                            <tr>
-                                <td colspan="6" class="text-center py-4 text-secondary">
-                                    Nenhum componente encontrado.
-                                </td>
-                            </tr>
-                        <?php endif; ?>
+                                
                     </tbody>
                 </table>
             </div>
@@ -390,6 +417,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 </nav>
             </div>
         </div>
+        
+        <?php endif; ?>
 
     </section>
 </div>

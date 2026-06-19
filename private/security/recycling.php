@@ -139,6 +139,10 @@ try {
         $params['search'] = '%' . $search_query . '%';
     }
 
+    $countSqlTotal = "SELECT COUNT(*) as total FROM ($unionQuery) as combined";
+    $stmtCountTotal = execute_query($countSqlTotal, [], $ligacao);
+    $totalRecicladosAll = (int) $stmtCountTotal->fetch(PDO::FETCH_ASSOC)['total'];
+
     $countSql = "SELECT COUNT(*) as total FROM ($unionQuery) as combined WHERE $outerWhere";
     $stmtCount = execute_query($countSql, $params, $ligacao);
     $totalReciclados = (int) $stmtCount->fetch(PDO::FETCH_ASSOC)['total'];
@@ -222,8 +226,8 @@ try {
                         <path d="m21 21-4.34-4.34" />
                         <circle cx="11" cy="11" r="8" />
                     </svg>
-                    <input type="text" class="form-item w-100 search-bar-input" name="search" id="search-input-field"
-                        placeholder="Pesquisar na reciclagem..." value="<?= htmlspecialchars($search_query) ?>">
+                    <input type="search" class="form-item w-100 search-bar-input" name="search" id="search-input-field"
+                        placeholder="Pesquisar..." value="<?= htmlspecialchars($search_query) ?>">
                     <?php if ($search_query !== ''): ?>
                         <script>
                             document.addEventListener("DOMContentLoaded", function () {
@@ -255,149 +259,177 @@ try {
             </form>
         </div>
 
-        <!-- Tabela de Reciclagem -->
-        <div class="bento-card w-100 p-0 border-0">
-            <div class="datatable-wrapper no-footer fixed-columns">
-                <div class="datatable-container">
-                    <?php
-                    $buildSortUrl = function ($column) use ($search_query, $tipo_filter, $sort_param, $dir_param) {
-                        $params = [];
-                        if ($search_query !== '')
-                            $params['search'] = $search_query;
-                        if ($tipo_filter !== '')
-                            $params['tipo'] = $tipo_filter;
-                        $params['sort'] = $column;
-                        $params['dir'] = ($sort_param === $column && $dir_param === 'desc') ? 'asc' : 'desc';
-                        return '?' . http_build_query($params);
-                    };
-
-                    $getSortIcon = function ($column) use ($sort_param, $dir_param) {
-                        if ($sort_param !== $column)
-                            return '';
-                        return $dir_param === 'asc' ? ' ↑' : ' ↓';
-                    };
-                    ?>
-                    <table id="recyclingTable" class="sibdas-table w-100 display datatable-table">
-                        <thead>
-                            <tr>
-                                <th><a href="<?= $buildSortUrl('nome') ?>"
-                                        class="datatable-sorter text-decoration-none text-inherit">Entidade<?= $getSortIcon('nome') ?></a>
-                                </th>
-                                <th><a href="<?= $buildSortUrl('nomeTabela') ?>"
-                                        class="datatable-sorter text-decoration-none text-inherit">Tipo<?= $getSortIcon('nomeTabela') ?></a>
-                                </th>
-                                <th><a href="<?= $buildSortUrl('descricao') ?>"
-                                        class="datatable-sorter text-decoration-none text-inherit">Descrição<?= $getSortIcon('descricao') ?></a>
-                                </th>
-                                <th><a href="<?= $buildSortUrl('removidoA') ?>"
-                                        class="datatable-sorter text-decoration-none text-inherit">Removido
-                                        a<?= $getSortIcon('removidoA') ?></a></th>
-                                <th>Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (empty($objetosReciclados)): ?>
-                                <tr>
-                                    <td colspan="5" class="text-center text-muted py-4">Nenhum registo encontrado.</td>
-                                </tr>
-                            <?php else: ?>
-                                <?php foreach ($objetosReciclados as $object): ?>
-                                    <tr>
-                                        <td>
-                                            <div class="d-flex align-items-center gap-3">
-                                                <div class="recycle-type-icon d-flex align-items-center justify-content-center padding-2"
-                                                    style="background-color: color-mix(in srgb, <?php echo $object->tipo->cor; ?> 10%, transparent); color: <?php echo $object->tipo->cor; ?>; width: 36px; height: 36px; border-radius: 8px;">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                        stroke-linecap="round" stroke-linejoin="round" class="lucide">
-                                                        <?php echo $object->tipo->caminhoSvg; ?>
-                                                    </svg>
-                                                </div>
-                                                <div class="d-flex flex-column">
-                                                    <span
-                                                        class="fw-600 item-name"><?php echo htmlspecialchars($object->nome); ?></span>
-                                                    <span
-                                                        class="visually-hidden item-hidden-id"><?php echo htmlspecialchars($object->idEncriptado); ?></span>
-                                                </div>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <span
-                                                class="text-secondary fw-500"><?php echo htmlspecialchars($object->tipo->nome); ?></span>
-                                        </td>
-                                        <td>
-                                            <span
-                                                class="text-secondary"><?php echo htmlspecialchars($object->descricao); ?></span>
-                                        </td>
-                                        <td>
-                                            <span
-                                                class="text-secondary"><?php echo $object->removidoA->format('Y-m-d H:i'); ?></span>
-                                        </td>
-                                        <td>
-                                            <button type="button" data-bs-toggle="modal"
-                                                data-bs-target="#restore-modal-<?php echo htmlspecialchars($object->idEncriptado); ?>"
-                                                class="btn btn-small text-success d-flex align-items-center gap-2 restore badge badge-success">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                    stroke-linecap="round" stroke-linejoin="round"
-                                                    class="lucide lucide-undo2-icon lucide-undo-2">
-                                                    <path d="M9 14 4 9l5-5" />
-                                                    <path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" />
-                                                </svg>
-                                                <span class="fw-700 ">Restaurar</span>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
+        <?php if ($totalRecicladosAll === 0): ?>
+            <div
+                class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
+                <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-bell-off-icon lucide-bell-off">
+                        <path d="M9 10h.01" />
+                        <path d="M15 10h.01" />
+                        <path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z" />
+                    </svg>
                 </div>
-
-                <div class="d-flex justify-content-between align-items-center padding-4 datatable-bottom">
-                    <div class="datatable-info">
-                        A mostrar
-                        <?= $totalReciclados > 0 ? $offset + 1 : 0 ?>–<?= min($offset + $items_per_page, $totalReciclados) ?>
-                        de <?= $totalReciclados ?> registos
-                    </div>
-                    <nav class="datatable-pagination">
-                        <ul class="datatable-pagination-list">
-                            <?php
-                            $buildQueryString = function ($newPage) use ($search_query, $tipo_filter, $sort_param, $dir_param) {
-                                $params = ['page' => $newPage];
-                                if ($search_query !== '')
-                                    $params['search'] = $search_query;
-                                if ($tipo_filter !== '')
-                                    $params['tipo'] = $tipo_filter;
-                                if ($sort_param !== 'removidoA')
-                                    $params['sort'] = $sort_param;
-                                if ($dir_param !== 'desc')
-                                    $params['dir'] = $dir_param;
-                                return '?' . http_build_query($params);
-                            };
-                            ?>
-
-                            <?php if ($current_page > 1): ?>
-                                <li class="datatable-pagination-list-item pager"><a
-                                        href="<?= $buildQueryString($current_page - 1) ?>">‹</a></li>
-                            <?php endif; ?>
-
-                            <?php for ($i = max(1, $current_page - 2); $i <= min($totalPages, $current_page + 2); $i++): ?>
-                                <li
-                                    class="datatable-pagination-list-item <?= $i === $current_page ? 'datatable-active' : '' ?>">
-                                    <a href="<?= $buildQueryString($i) ?>"><?= $i ?></a>
-                                </li>
-                            <?php endfor; ?>
-
-                            <?php if ($current_page < $totalPages): ?>
-                                <li class="datatable-pagination-list-item pager"><a
-                                        href="<?= $buildQueryString($current_page + 1) ?>">›</a></li>
-                            <?php endif; ?>
-                        </ul>
-                    </nav>
+                <div class="d-flex flex-column gap-2">
+                    <h3 class="fw-700 m-0">Sem objetos reciclados</h3>
+                    <p class="text-secondary m-0">De momento não existe nenhum objeto reciclado.</p>
                 </div>
             </div>
-        </div>
+        <?php elseif (empty($objetosReciclados)): ?>
+            <div class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
+                <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-x"><path d="m13.5 8.5-5 5"/><path d="m8.5 8.5 5 5"/><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                </div>
+                <div class="d-flex flex-column gap-2">
+                    <h3 class="fw-700 m-0">Sem resultados</h3>
+                    <p class="text-secondary m-0">Nenhum registo encontrado correspondente à sua pesquisa.</p>
+                </div>
+            </div>
+        <?php else: ?>
+
+            <!-- Tabela de Reciclagem -->
+            <div class="bento-card w-100 p-0 border-0">
+                <div class="datatable-wrapper no-footer fixed-columns">
+                    <div class="datatable-container">
+                        <?php
+                        $buildSortUrl = function ($column) use ($search_query, $tipo_filter, $sort_param, $dir_param) {
+                            $params = [];
+                            if ($search_query !== '')
+                                $params['search'] = $search_query;
+                            if ($tipo_filter !== '')
+                                $params['tipo'] = $tipo_filter;
+                            $params['sort'] = $column;
+                            $params['dir'] = ($sort_param === $column && $dir_param === 'desc') ? 'asc' : 'desc';
+                            return '?' . http_build_query($params);
+                        };
+
+                        $getSortIcon = function ($column) use ($sort_param, $dir_param) {
+                            if ($sort_param !== $column)
+                                return '';
+                            return $dir_param === 'asc' ? ' ↑' : ' ↓';
+                        };
+                        ?>
+                        <table id="recyclingTable" class="sibdas-table w-100 display datatable-table">
+                            <thead>
+                                <tr>
+                                    <th><a href="<?= $buildSortUrl('nome') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">Entidade<?= $getSortIcon('nome') ?></a>
+                                    </th>
+                                    <th><a href="<?= $buildSortUrl('nomeTabela') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">Tipo<?= $getSortIcon('nomeTabela') ?></a>
+                                    </th>
+                                    <th><a href="<?= $buildSortUrl('descricao') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">Descrição<?= $getSortIcon('descricao') ?></a>
+                                    </th>
+                                    <th><a href="<?= $buildSortUrl('removidoA') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">Removido
+                                            a<?= $getSortIcon('removidoA') ?></a></th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                
+                                    <?php foreach ($objetosReciclados as $object): ?>
+                                        <tr>
+                                            <td>
+                                                <div class="d-flex align-items-center gap-3">
+                                                    <div class="recycle-type-icon d-flex align-items-center justify-content-center padding-2"
+                                                        style="background-color: color-mix(in srgb, <?php echo $object->tipo->cor; ?> 10%, transparent); color: <?php echo $object->tipo->cor; ?>; width: 36px; height: 36px; border-radius: 8px;">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round" class="lucide">
+                                                            <?php echo $object->tipo->caminhoSvg; ?>
+                                                        </svg>
+                                                    </div>
+                                                    <div class="d-flex flex-column">
+                                                        <span
+                                                            class="fw-600 item-name"><?php echo htmlspecialchars($object->nome); ?></span>
+                                                        <span
+                                                            class="visually-hidden item-hidden-id"><?php echo htmlspecialchars($object->idEncriptado); ?></span>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td>
+                                                <span
+                                                    class="text-secondary fw-500"><?php echo htmlspecialchars($object->tipo->nome); ?></span>
+                                            </td>
+                                            <td>
+                                                <span
+                                                    class="text-secondary"><?php echo htmlspecialchars($object->descricao); ?></span>
+                                            </td>
+                                            <td>
+                                                <span
+                                                    class="text-secondary"><?php echo $object->removidoA->format('Y-m-d H:i'); ?></span>
+                                            </td>
+                                            <td>
+                                                <button type="button" data-bs-toggle="modal"
+                                                    data-bs-target="#restore-modal-<?php echo htmlspecialchars($object->idEncriptado); ?>"
+                                                    class="btn btn-small text-success d-flex align-items-center gap-2 restore badge badge-success">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round"
+                                                        class="lucide lucide-undo2-icon lucide-undo-2">
+                                                        <path d="M9 14 4 9l5-5" />
+                                                        <path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" />
+                                                    </svg>
+                                                    <span class="fw-700 ">Restaurar</span>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center padding-4 datatable-bottom">
+                        <div class="datatable-info">
+                            A mostrar
+                            <?= $totalReciclados > 0 ? $offset + 1 : 0 ?>–<?= min($offset + $items_per_page, $totalReciclados) ?>
+                            de <?= $totalReciclados ?> registos
+                        </div>
+                        <nav class="datatable-pagination">
+                            <ul class="datatable-pagination-list">
+                                <?php
+                                $buildQueryString = function ($newPage) use ($search_query, $tipo_filter, $sort_param, $dir_param) {
+                                    $params = ['page' => $newPage];
+                                    if ($search_query !== '')
+                                        $params['search'] = $search_query;
+                                    if ($tipo_filter !== '')
+                                        $params['tipo'] = $tipo_filter;
+                                    if ($sort_param !== 'removidoA')
+                                        $params['sort'] = $sort_param;
+                                    if ($dir_param !== 'desc')
+                                        $params['dir'] = $dir_param;
+                                    return '?' . http_build_query($params);
+                                };
+                                ?>
+
+                                <?php if ($current_page > 1): ?>
+                                    <li class="datatable-pagination-list-item pager"><a
+                                            href="<?= $buildQueryString($current_page - 1) ?>">‹</a></li>
+                                <?php endif; ?>
+
+                                <?php for ($i = max(1, $current_page - 2); $i <= min($totalPages, $current_page + 2); $i++): ?>
+                                    <li
+                                        class="datatable-pagination-list-item <?= $i === $current_page ? 'datatable-active' : '' ?>">
+                                        <a href="<?= $buildQueryString($i) ?>"><?= $i ?></a>
+                                    </li>
+                                <?php endfor; ?>
+
+                                <?php if ($current_page < $totalPages): ?>
+                                    <li class="datatable-pagination-list-item pager"><a
+                                            href="<?= $buildQueryString($current_page + 1) ?>">›</a></li>
+                                <?php endif; ?>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+
+        <?php endif; ?>
+
 
     </section>
 </div>

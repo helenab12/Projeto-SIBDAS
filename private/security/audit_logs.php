@@ -39,13 +39,17 @@ try {
 
     $whereSQL = implode(" AND ", $whereConditions);
 
+    // Contar total sem filtros
+    $stmtTotal = execute_query("SELECT COUNT(*) as total FROM HistoricoAuditoria", [], $ligacao);
+    $totalLogsAll = (int) $stmtTotal->fetch(PDO::FETCH_ASSOC)['total'];
+
     // Contar total
     $countSql = "SELECT COUNT(ha.idAuditoria) as total
                  FROM HistoricoAuditoria ha
                  LEFT JOIN Utilizador u ON ha.idUtilizador = u.idUtilizador
                  LEFT JOIN Pessoa p ON u.idPessoa = p.idPessoa
                  WHERE $whereSQL";
-    
+
     $stmtCount = execute_query($countSql, $params, $ligacao);
     $totalLogsFiltered = (int) $stmtCount->fetch(PDO::FETCH_ASSOC)['total'];
 
@@ -72,7 +76,7 @@ try {
          LEFT JOIN Pessoa p ON u.idPessoa = p.idPessoa
          WHERE $whereSQL
          ORDER BY $sort_field $sort_dir
-         LIMIT " . (int)$items_per_page . " OFFSET " . (int)$offset;
+         LIMIT " . (int) $items_per_page . " OFFSET " . (int) $offset;
 
     $stmt = execute_query($dataSql, $params, $ligacao);
 
@@ -139,7 +143,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
         <div class="d-flex justify-content-between align-items-center w-100 dashboard-title">
             <div class="d-flex flex-column gap-1">
                 <h1>Logs de Auditoria</h1>
-                <p class="text-secondary fw-400"><?= htmlspecialchars($totalLogsFiltered ?? count($auditoria)) ?> registos encontrados</p>
+                <p class="text-secondary fw-400"><?= htmlspecialchars($totalLogsFiltered ?? count($auditoria)) ?>
+                    registos encontrados</p>
             </div>
             <div class="d-flex gap-2">
                 <button class="btn btn-primary-outline gap-2">
@@ -166,10 +171,11 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         <circle cx="11" cy="11" r="8" />
                     </svg>
                     <input type="text" class="form-item w-100 search-bar-input" name="search" id="search-input-field"
-                        placeholder="Pesquisar por ação, utilizador ou detalhes..." value="<?= htmlspecialchars($search_query) ?>">
+                        placeholder="Pesquisar por ação, utilizador ou detalhes..."
+                        value="<?= htmlspecialchars($search_query) ?>">
                     <?php if ($search_query !== ''): ?>
                         <script>
-                            document.addEventListener("DOMContentLoaded", function() {
+                            document.addEventListener("DOMContentLoaded", function () {
                                 const searchInput = document.getElementById('search-input-field');
                                 if (searchInput) {
                                     searchInput.focus();
@@ -192,116 +198,173 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
             </form>
         </div>
 
-        <!-- Lista de Logs de Auditoria -->
-        <div class="bento-card w-100 p-0 border-0">
-            <div class="datatable-wrapper no-footer sortable fixed-columns">
-                <div class="datatable-container">
-                    <?php
-                    $buildSortUrl = function ($column) use ($search_query, $acao_filter, $sort_param, $dir_param) {
-                        $params = [];
-                        if ($search_query !== '') $params['search'] = $search_query;
-                        if ($acao_filter !== '') $params['acao'] = $acao_filter;
-                        $params['sort'] = $column;
-                        $params['dir'] = ($sort_param === $column && $dir_param === 'asc') ? 'desc' : 'asc';
-                        return '?' . http_build_query($params);
-                    };
-
-                    $getSortIcon = function ($column) use ($sort_param, $dir_param) {
-                        if ($sort_param !== $column) return '';
-                        return $dir_param === 'asc' ? ' ↑' : ' ↓';
-                    };
-                    ?>
-                    <table id="globalAuditTable" class="sibdas-table w-100 display datatable-table">
-                        <thead>
-                            <tr>
-                                <th><a href="<?= $buildSortUrl('dataCriacao') ?>" class="datatable-sorter text-decoration-none text-inherit">DATA<?= $getSortIcon('dataCriacao') ?></a></th>
-                                <th><a href="<?= $buildSortUrl('acao') ?>" class="datatable-sorter text-decoration-none text-inherit">AÇÃO<?= $getSortIcon('acao') ?></a></th>
-                                <th><a href="<?= $buildSortUrl('utilizador') ?>" class="datatable-sorter text-decoration-none text-inherit">UTILIZADOR<?= $getSortIcon('utilizador') ?></a></th>
-                                <th><a href="<?= $buildSortUrl('tabela') ?>" class="datatable-sorter text-decoration-none text-inherit">TABELA<?= $getSortIcon('tabela') ?></a></th>
-                                <th>ID REGISTO</th>
-                                <th>CAMPO</th>
-                                <th>VALOR ANTIGO</th>
-                                <th>VALOR NOVO</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php if (empty($auditoria)): ?>
-                                <tr>
-                                    <td colspan="8" class="text-center text-muted py-4">Nenhum log encontrado.</td>
-                                </tr>
-                            <?php else: ?>
-                                <?php foreach ($auditoria as $item): ?>
-                        <tr>
-                            <td>
-                                <span class="text-secondary fw-400"><?= htmlspecialchars($item['data']) ?></span>
-                            </td>
-                            <td>
-                                <span
-                                    class="badge <?= htmlspecialchars($item['badgeClass']) ?>"><?= htmlspecialchars($item['acao']) ?></span>
-                            </td>
-                            <td>
-                                <span class="text-secondary fw-400"><?= htmlspecialchars($item['utilizador']) ?></span>
-                            </td>
-                            <td>
-                                <span
-                                    class="text-secondary fw-400 text-capitalize"><?= htmlspecialchars($item['tabela']) ?></span>
-                            </td>
-                            <td>
-                                <span class="text-secondary fw-400"><?= $item['idRegisto'] ?></span>
-                            </td>
-                            <td>
-                                <span class="text-secondary fw-400"><?= htmlspecialchars($item['campo']) ?></span>
-                            </td>
-                            <td>
-                                <span class="text-secondary fw-400"><?= htmlspecialchars($item['valorAntigo']) ?></span>
-                            </td>
-                            <td>
-                                <span class="text-secondary fw-400"><?= htmlspecialchars($item['valorNovo']) ?></span>
-                            </td>
-                        </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </tbody>
-                    </table>
+        <?php if ($totalLogsAll === 0): ?>
+            <div
+                class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
+                <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-bell-off-icon lucide-bell-off">
+                        <path d="M9 10h.01" />
+                        <path d="M15 10h.01" />
+                        <path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z" />
+                    </svg>
                 </div>
-
-                <div class="d-flex justify-content-between align-items-center padding-4 datatable-bottom">
-                    <div class="datatable-info">
-                        A mostrar
-                        <?= $totalLogsFiltered > 0 ? $offset + 1 : 0 ?>–<?= min($offset + $items_per_page, $totalLogsFiltered) ?>
-                        de <?= $totalLogsFiltered ?> registos
-                    </div>
-                    <nav class="datatable-pagination">
-                        <ul class="datatable-pagination-list">
-                            <?php
-                            $buildQueryString = function ($newPage) use ($search_query, $acao_filter, $sort_param, $dir_param) {
-                                $params = ['page' => $newPage];
-                                if ($search_query !== '') $params['search'] = $search_query;
-                                if ($acao_filter !== '') $params['acao'] = $acao_filter;
-                                if ($sort_param !== 'dataCriacao') $params['sort'] = $sort_param;
-                                if ($dir_param !== 'desc') $params['dir'] = $dir_param;
-                                return '?' . http_build_query($params);
-                            };
-                            ?>
-
-                            <?php if ($current_page > 1): ?>
-                                <li class="datatable-pagination-list-item pager"><a href="<?= $buildQueryString($current_page - 1) ?>">‹</a></li>
-                            <?php endif; ?>
-
-                            <?php for ($i = max(1, $current_page - 2); $i <= min($totalPages, $current_page + 2); $i++): ?>
-                                <li class="datatable-pagination-list-item <?= $i === $current_page ? 'datatable-active' : '' ?>">
-                                    <a href="<?= $buildQueryString($i) ?>"><?= $i ?></a>
-                                </li>
-                            <?php endfor; ?>
-
-                            <?php if ($current_page < $totalPages): ?>
-                                <li class="datatable-pagination-list-item pager"><a href="<?= $buildQueryString($current_page + 1) ?>">›</a></li>
-                            <?php endif; ?>
-                        </ul>
-                    </nav>
+                <div class="d-flex flex-column gap-2">
+                    <h3 class="fw-700 m-0">Sem Registos</h3>
+                    <p class="text-secondary m-0">De momento não existe nenhum registo de auditoria.</p>
                 </div>
             </div>
-        </div>
+        <?php elseif (empty($auditoria)): ?>
+            <div
+                class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
+                <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-search-x">
+                        <path d="m13.5 8.5-5 5" />
+                        <path d="m8.5 8.5 5 5" />
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
+                    </svg>
+                </div>
+                <div class="d-flex flex-column gap-2">
+                    <h3 class="fw-700 m-0">Sem resultados</h3>
+                    <p class="text-secondary m-0">Nenhum registo encontrado correspondente à sua pesquisa.</p>
+                </div>
+            </div>
+        <?php else: ?>
+
+            <!-- Lista de Logs de Auditoria -->
+            <div class="bento-card w-100 p-0 border-0">
+                <div class="datatable-wrapper no-footer sortable fixed-columns">
+                    <div class="datatable-container">
+                        <?php
+                        $buildSortUrl = function ($column) use ($search_query, $acao_filter, $sort_param, $dir_param) {
+                            $params = [];
+                            if ($search_query !== '')
+                                $params['search'] = $search_query;
+                            if ($acao_filter !== '')
+                                $params['acao'] = $acao_filter;
+                            $params['sort'] = $column;
+                            $params['dir'] = ($sort_param === $column && $dir_param === 'asc') ? 'desc' : 'asc';
+                            return '?' . http_build_query($params);
+                        };
+
+                        $getSortIcon = function ($column) use ($sort_param, $dir_param) {
+                            if ($sort_param !== $column)
+                                return '';
+                            return $dir_param === 'asc' ? ' ↑' : ' ↓';
+                        };
+                        ?>
+                        <table id="globalAuditTable" class="sibdas-table w-100 display datatable-table">
+                            <thead>
+                                <tr>
+                                    <th><a href="<?= $buildSortUrl('dataCriacao') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">DATA<?= $getSortIcon('dataCriacao') ?></a>
+                                    </th>
+                                    <th><a href="<?= $buildSortUrl('acao') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">AÇÃO<?= $getSortIcon('acao') ?></a>
+                                    </th>
+                                    <th><a href="<?= $buildSortUrl('utilizador') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">UTILIZADOR<?= $getSortIcon('utilizador') ?></a>
+                                    </th>
+                                    <th><a href="<?= $buildSortUrl('tabela') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">TABELA<?= $getSortIcon('tabela') ?></a>
+                                    </th>
+                                    <th>ID REGISTO</th>
+                                    <th>CAMPO</th>
+                                    <th>VALOR ANTIGO</th>
+                                    <th>VALOR NOVO</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                <?php foreach ($auditoria as $item): ?>
+                                    <tr>
+                                        <td>
+                                            <span class="text-secondary fw-400"><?= htmlspecialchars($item['data']) ?></span>
+                                        </td>
+                                        <td>
+                                            <span
+                                                class="badge <?= htmlspecialchars($item['badgeClass']) ?>"><?= htmlspecialchars($item['acao']) ?></span>
+                                        </td>
+                                        <td>
+                                            <span
+                                                class="text-secondary fw-400"><?= htmlspecialchars($item['utilizador']) ?></span>
+                                        </td>
+                                        <td>
+                                            <span
+                                                class="text-secondary fw-400 text-capitalize"><?= htmlspecialchars($item['tabela']) ?></span>
+                                        </td>
+                                        <td>
+                                            <span class="text-secondary fw-400"><?= $item['idRegisto'] ?></span>
+                                        </td>
+                                        <td>
+                                            <span class="text-secondary fw-400"><?= htmlspecialchars($item['campo']) ?></span>
+                                        </td>
+                                        <td>
+                                            <span
+                                                class="text-secondary fw-400"><?= htmlspecialchars($item['valorAntigo']) ?></span>
+                                        </td>
+                                        <td>
+                                            <span
+                                                class="text-secondary fw-400"><?= htmlspecialchars($item['valorNovo']) ?></span>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center padding-4 datatable-bottom">
+                        <div class="datatable-info">
+                            A mostrar
+                            <?= $totalLogsFiltered > 0 ? $offset + 1 : 0 ?>–<?= min($offset + $items_per_page, $totalLogsFiltered) ?>
+                            de <?= $totalLogsFiltered ?> registos
+                        </div>
+                        <nav class="datatable-pagination">
+                            <ul class="datatable-pagination-list">
+                                <?php
+                                $buildQueryString = function ($newPage) use ($search_query, $acao_filter, $sort_param, $dir_param) {
+                                    $params = ['page' => $newPage];
+                                    if ($search_query !== '')
+                                        $params['search'] = $search_query;
+                                    if ($acao_filter !== '')
+                                        $params['acao'] = $acao_filter;
+                                    if ($sort_param !== 'dataCriacao')
+                                        $params['sort'] = $sort_param;
+                                    if ($dir_param !== 'desc')
+                                        $params['dir'] = $dir_param;
+                                    return '?' . http_build_query($params);
+                                };
+                                ?>
+
+                                <?php if ($current_page > 1): ?>
+                                    <li class="datatable-pagination-list-item pager"><a
+                                            href="<?= $buildQueryString($current_page - 1) ?>">‹</a></li>
+                                <?php endif; ?>
+
+                                <?php for ($i = max(1, $current_page - 2); $i <= min($totalPages, $current_page + 2); $i++): ?>
+                                    <li
+                                        class="datatable-pagination-list-item <?= $i === $current_page ? 'datatable-active' : '' ?>">
+                                        <a href="<?= $buildQueryString($i) ?>"><?= $i ?></a>
+                                    </li>
+                                <?php endfor; ?>
+
+                                <?php if ($current_page < $totalPages): ?>
+                                    <li class="datatable-pagination-list-item pager"><a
+                                            href="<?= $buildQueryString($current_page + 1) ?>">›</a></li>
+                                <?php endif; ?>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+
+        <?php endif; ?>
+
 
     </section>
 </div>

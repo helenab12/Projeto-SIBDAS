@@ -39,6 +39,10 @@ try {
 
     $whereSQL = implode(" AND ", $whereConditions);
 
+    // Contar total sem filtros
+    $stmtTotal = execute_query("SELECT COUNT(*) as total FROM Permissao WHERE ativo = 1", [], $ligacao);
+    $totalPermissoesAll = (int) $stmtTotal->fetch(PDO::FETCH_ASSOC)['total'];
+
     // Contar total
     $countSql = "SELECT COUNT(idPermissao) as total FROM Permissao WHERE $whereSQL";
     $stmtCount = execute_query($countSql, $params, $ligacao);
@@ -51,7 +55,7 @@ try {
 
     $offset = ($current_page - 1) * $items_per_page;
 
-    $dataSql = "SELECT idPermissao, chave, descricao FROM Permissao WHERE $whereSQL ORDER BY idPermissao ASC LIMIT " . (int)$items_per_page . " OFFSET " . (int)$offset;
+    $dataSql = "SELECT idPermissao, chave, descricao FROM Permissao WHERE $whereSQL ORDER BY idPermissao ASC LIMIT " . (int) $items_per_page . " OFFSET " . (int) $offset;
     $stmt = execute_query($dataSql, $params, $ligacao);
     $permissoes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -92,18 +96,18 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
             <div class="bento-card padding-4 gap-4 equipment-list-search-bar">
                 <form action="" method="GET" style="display: contents;">
                     <div class="form-item position-relative flex-grow-1">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                            stroke-linejoin="round"
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="lucide lucide-search-icon lucide-search search-bar-icon position-absolute text-secondary">
                             <path d="m21 21-4.34-4.34" />
                             <circle cx="11" cy="11" r="8" />
                         </svg>
-                        <input type="text" class="form-item w-100 search-bar-input" name="search" id="search-input-field"
-                            placeholder="Pesquisar por permissão..." value="<?= htmlspecialchars($search_query) ?>">
+                        <input type="search" class="form-item w-100 search-bar-input" name="search"
+                            id="search-input-field" placeholder="Pesquisar..."
+                            value="<?= htmlspecialchars($search_query) ?>">
                         <?php if ($search_query !== ''): ?>
                             <script>
-                                document.addEventListener("DOMContentLoaded", function() {
+                                document.addEventListener("DOMContentLoaded", function () {
                                     const searchInput = document.getElementById('search-input-field');
                                     if (searchInput) {
                                         searchInput.focus();
@@ -118,140 +122,184 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 </form>
             </div>
 
-            <!-- Tabela form -->
-            <form method="POST" action="profiles-crud/update-profiles.php" class="flex-grow-1 d-flex flex-column gap-6">
-                <div class="bento-card w-100 p-0 border-0">
-                    <div class="datatable-wrapper no-footer sortable fixed-columns">
-                        <div class="datatable-container">
-                            <table class="sibdas-table w-100 display datatable-table">
-                        <thead>
-                            <tr>
-                                <th class="text-center align-middle">
-                                    <div class="d-flex flex-column align-items-start justify-content-center">
-                                        PERMISSÃO
-                                    </div>
-                                </th>
-                                <?php foreach ($perfis as $perfil): ?>
-                                    <?php
-                                    $contagem = 0;
-                                    if (isset($possuiPermissao[$perfil['idPerfil']])) {
-                                        foreach ($possuiPermissao[$perfil['idPerfil']] as $permId => $possui) {
-                                            if ($possui)
-                                                $contagem++;
-                                        }
-                                    }
-                                    ?>
-                                    <th class="text-center align-middle">
-                                        <div class="d-flex flex-column gap-1 align-items-center justify-content-center">
-                                            <?= htmlspecialchars(mb_strtoupper($perfil['nome'])) ?>
-                                            <span class="text-muted m-0">
-                                                <?= $contagem ?> perms.
-                                            </span>
-                                        </div>
-                                    </th>
-                                <?php endforeach; ?>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($permissoes as $permission): ?>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex flex-column align-items-start gap-1">
-                                            <p class="font-mono fw-700">
-                                                <?= htmlspecialchars($permission['chave']) ?>
-                                            </p>
-                                            <span class="visually-hidden"><?= htmlspecialchars(aes_encrypt($permission['idPermissao'])) ?></span>
-                                            <span class="text-muted">
-                                                <?= htmlspecialchars($permission['descricao']) ?>
-                                            </span>
-                                        </div>
-                                    </td>
-                                    <?php foreach ($perfis as $perfil): ?>
-                                        <?php
-                                        $hasPerm = isset($possuiPermissao[$perfil['idPerfil']][$permission['idPermissao']]) && $possuiPermissao[$perfil['idPerfil']][$permission['idPermissao']];
-                                        $badgeId = "permission-badge-" . $perfil['idPerfil'] . "-" . $permission['idPermissao'];
-                                        ?>
-                                        <td class="text-center align-middle">
-                                            <input type="hidden"
-                                                name="permissions[<?= aes_encrypt($perfil['idPerfil']) ?>][<?= aes_encrypt($permission['idPermissao']) ?>]"
-                                                id="permission-input-<?= $perfil['idPerfil'] ?>-<?= $permission['idPermissao'] ?>"
-                                                value="<?= $hasPerm ? '1' : '0' ?>">
-                                            <button type="button" class="check-badge <?= $hasPerm ? 'has-permission' : '' ?>"
-                                                id="<?= $badgeId ?>"
-                                                onclick="togglePermission('<?= $perfil['idPerfil'] . '-' . $permission['idPermissao'] ?>')">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                    stroke-linecap="round" stroke-linejoin="round"
-                                                    class="lucide lucide-check-icon lucide-check padding-2">
-                                                    <path d="M20 6 9 17l-5-5" />
-                                                </svg>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                    stroke-linecap="round" stroke-linejoin="round"
-                                                    class="lucide lucide-x-icon lucide-x padding-2">
-                                                    <path d="M18 6 6 18" />
-                                                    <path d="m6 6 12 12" />
-                                                </svg>
-                                            </button>
-                                        </td>
-                                    <?php endforeach; ?>
-                                </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="d-flex justify-content-between align-items-center padding-4 datatable-bottom">
-                        <div class="datatable-info">
-                            A mostrar
-                            <?= $totalPermissoesFiltered > 0 ? $offset + 1 : 0 ?>–<?= min($offset + $items_per_page, $totalPermissoesFiltered) ?>
-                            de <?= $totalPermissoesFiltered ?> registos
-                        </div>
-                        <nav class="datatable-pagination">
-                            <ul class="datatable-pagination-list">
-                                <?php
-                                $buildQueryString = function ($newPage) use ($search_query) {
-                                    $params = ['page' => $newPage];
-                                    if ($search_query !== '') $params['search'] = $search_query;
-                                    return '?' . http_build_query($params);
-                                };
-                                ?>
-
-                                <?php if ($current_page > 1): ?>
-                                    <li class="datatable-pagination-list-item pager"><a href="<?= $buildQueryString($current_page - 1) ?>">‹</a></li>
-                                <?php endif; ?>
-
-                                <?php for ($i = max(1, $current_page - 2); $i <= min($totalPages, $current_page + 2); $i++): ?>
-                                    <li class="datatable-pagination-list-item <?= $i === $current_page ? 'datatable-active' : '' ?>">
-                                        <a href="<?= $buildQueryString($i) ?>"><?= $i ?></a>
-                                    </li>
-                                <?php endfor; ?>
-
-                                <?php if ($current_page < $totalPages): ?>
-                                    <li class="datatable-pagination-list-item pager"><a href="<?= $buildQueryString($current_page + 1) ?>">›</a></li>
-                                <?php endif; ?>
-                            </ul>
-                        </nav>
-                    </div>
-                </div>
-
-                <!-- Alterações pendentes -->
-                <div class="inbox-changes-container justify-content-between align-items-center padding-6"
-                    style="display: none;">
-                    <p class="text-muted m-0">Existem alterações pendentes</p>
-                    <button type="submit" class="btn btn-primary btn-glowing gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            <?php if ($totalPermissoesAll === 0): ?>
+                <div
+                    class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
+                    <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-save-icon lucide-save">
-                            <path
-                                d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
-                            <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" />
-                            <path d="M7 3v4a1 1 0 0 0 1 1h7" />
+                            class="lucide lucide-bell-off-icon lucide-bell-off">
+                            <path d="M9 10h.01" />
+                            <path d="M15 10h.01" />
+                            <path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z" />
                         </svg>
-                        Guardar Alterações
-                    </button>
+                    </div>
+                    <div class="d-flex flex-column gap-2">
+                        <h3 class="fw-700 m-0">Sem Permissões</h3>
+                        <p class="text-secondary m-0">De momento não existe nenhuma permissão.</p>
+                    </div>
                 </div>
-            </form>
+            <?php elseif (empty($permissoes)): ?>
+                <div
+                    class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
+                    <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-search-x">
+                            <path d="m13.5 8.5-5 5" />
+                            <path d="m8.5 8.5 5 5" />
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="m21 21-4.3-4.3" />
+                        </svg>
+                    </div>
+                    <div class="d-flex flex-column gap-2">
+                        <h3 class="fw-700 m-0">Sem resultados</h3>
+                        <p class="text-secondary m-0">Nenhum registo encontrado correspondente à sua pesquisa.</p>
+                    </div>
+                </div>
+            <?php else: ?>
+                <!-- Tabela form -->
+                <form method="POST" action="profiles-crud/update-profiles.php" class="flex-grow-1 d-flex flex-column gap-6">
+                    <div class="bento-card w-100 p-0 border-0">
+                        <div class="datatable-wrapper no-footer sortable fixed-columns">
+                            <div class="datatable-container">
+                                <table class="sibdas-table w-100 display datatable-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="text-center align-middle">
+                                                <div class="d-flex flex-column align-items-start justify-content-center">
+                                                    PERMISSÃO
+                                                </div>
+                                            </th>
+                                            <?php foreach ($perfis as $perfil): ?>
+                                                <?php
+                                                $contagem = 0;
+                                                if (isset($possuiPermissao[$perfil['idPerfil']])) {
+                                                    foreach ($possuiPermissao[$perfil['idPerfil']] as $permId => $possui) {
+                                                        if ($possui)
+                                                            $contagem++;
+                                                    }
+                                                }
+                                                ?>
+                                                <th class="text-center align-middle">
+                                                    <div
+                                                        class="d-flex flex-column gap-1 align-items-center justify-content-center">
+                                                        <?= htmlspecialchars(mb_strtoupper($perfil['nome'])) ?>
+                                                        <span class="text-muted m-0">
+                                                            <?= $contagem ?> perms.
+                                                        </span>
+                                                    </div>
+                                                </th>
+                                            <?php endforeach; ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php foreach ($permissoes as $permission): ?>
+                                            <tr>
+                                                <td>
+                                                    <div class="d-flex flex-column align-items-start gap-1">
+                                                        <p class="font-mono fw-700">
+                                                            <?= htmlspecialchars($permission['chave']) ?>
+                                                        </p>
+                                                        <span
+                                                            class="visually-hidden"><?= htmlspecialchars(aes_encrypt($permission['idPermissao'])) ?></span>
+                                                        <span class="text-muted">
+                                                            <?= htmlspecialchars($permission['descricao']) ?>
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                                <?php foreach ($perfis as $perfil): ?>
+                                                    <?php
+                                                    $hasPerm = isset($possuiPermissao[$perfil['idPerfil']][$permission['idPermissao']]) && $possuiPermissao[$perfil['idPerfil']][$permission['idPermissao']];
+                                                    $badgeId = "permission-badge-" . $perfil['idPerfil'] . "-" . $permission['idPermissao'];
+                                                    ?>
+                                                    <td class="text-center align-middle">
+                                                        <input type="hidden"
+                                                            name="permissions[<?= aes_encrypt($perfil['idPerfil']) ?>][<?= aes_encrypt($permission['idPermissao']) ?>]"
+                                                            id="permission-input-<?= $perfil['idPerfil'] ?>-<?= $permission['idPermissao'] ?>"
+                                                            value="<?= $hasPerm ? '1' : '0' ?>">
+                                                        <button type="button"
+                                                            class="check-badge <?= $hasPerm ? 'has-permission' : '' ?>"
+                                                            id="<?= $badgeId ?>"
+                                                            onclick="togglePermission('<?= $perfil['idPerfil'] . '-' . $permission['idPermissao'] ?>')">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                class="lucide lucide-check-icon lucide-check padding-2">
+                                                                <path d="M20 6 9 17l-5-5" />
+                                                            </svg>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                class="lucide lucide-x-icon lucide-x padding-2">
+                                                                <path d="M18 6 6 18" />
+                                                                <path d="m6 6 12 12" />
+                                                            </svg>
+                                                        </button>
+                                                    </td>
+                                                <?php endforeach; ?>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="d-flex justify-content-between align-items-center padding-4 datatable-bottom">
+                                <div class="datatable-info">
+                                    A mostrar
+                                    <?= $totalPermissoesFiltered > 0 ? $offset + 1 : 0 ?>–<?= min($offset + $items_per_page, $totalPermissoesFiltered) ?>
+                                    de <?= $totalPermissoesFiltered ?> registos
+                                </div>
+                                <nav class="datatable-pagination">
+                                    <ul class="datatable-pagination-list">
+                                        <?php
+                                        $buildQueryString = function ($newPage) use ($search_query) {
+                                            $params = ['page' => $newPage];
+                                            if ($search_query !== '')
+                                                $params['search'] = $search_query;
+                                            return '?' . http_build_query($params);
+                                        };
+                                        ?>
+
+                                        <?php if ($current_page > 1): ?>
+                                            <li class="datatable-pagination-list-item pager"><a
+                                                    href="<?= $buildQueryString($current_page - 1) ?>">‹</a></li>
+                                        <?php endif; ?>
+
+                                        <?php for ($i = max(1, $current_page - 2); $i <= min($totalPages, $current_page + 2); $i++): ?>
+                                            <li
+                                                class="datatable-pagination-list-item <?= $i === $current_page ? 'datatable-active' : '' ?>">
+                                                <a href="<?= $buildQueryString($i) ?>"><?= $i ?></a>
+                                            </li>
+                                        <?php endfor; ?>
+
+                                        <?php if ($current_page < $totalPages): ?>
+                                            <li class="datatable-pagination-list-item pager"><a
+                                                    href="<?= $buildQueryString($current_page + 1) ?>">›</a></li>
+                                        <?php endif; ?>
+                                    </ul>
+                                </nav>
+                            </div>
+                        </div>
+
+                        <!-- Alterações pendentes -->
+                        <div class="inbox-changes-container justify-content-between align-items-center padding-6"
+                            style="display: none;">
+                            <p class="text-muted m-0">Existem alterações pendentes</p>
+                            <button type="submit" class="btn btn-primary btn-glowing gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-save-icon lucide-save">
+                                    <path
+                                        d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
+                                    <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" />
+                                    <path d="M7 3v4a1 1 0 0 0 1 1h7" />
+                                </svg>
+                                Guardar Alterações
+                            </button>
+                        </div>
+                </form>
+            <?php endif; ?>
         </div>
     </section>
 </div>

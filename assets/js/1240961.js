@@ -1499,8 +1499,8 @@ if (locationsSearchInput) {
         }
     }
 
-    locationsSearchInput.addEventListener("input", applyLocationsFilter);
-}
+        applyLocationsFilter();
+    }
 
 // Campos obrigatórios do Utilizador (Nome Completo, Username, Email, Password)
 const userFullnameInput = document.getElementById("user-fullname");
@@ -1763,7 +1763,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
 
                 if (data.length === 0) {
-                    searchEmptyTerm.textContent = term;
+                    if (searchEmptyTerm) searchEmptyTerm.textContent = term;
                     searchEmpty.classList.remove("d-none");
                     searchResults.classList.add("d-none");
                 } else {
@@ -1775,7 +1775,7 @@ document.addEventListener("DOMContentLoaded", () => {
             } catch (error) {
                 console.error("Erro na pesquisa:", error);
                 searchLoading.classList.add("d-none");
-                searchEmptyTerm.textContent = term + " (Ocorreu um erro)";
+                if (searchEmptyTerm) searchEmptyTerm.textContent = term + " (Ocorreu um erro)";
                 searchEmpty.classList.remove("d-none");
             }
         }
@@ -2219,10 +2219,10 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
 
-        if (personSearchInput) personSearchInput.addEventListener("input", applyPersonFilters);
         if (personRoleFilter) {
             personRoleFilter.addEventListener("change", applyPersonFilters);
         }
+        applyPersonFilters();
     }
 });
 

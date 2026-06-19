@@ -47,6 +47,10 @@ try {
 
     $whereSQL = implode(" AND ", $whereConditions);
 
+    // Contar total sem filtros
+    $stmtTotal = execute_query("SELECT COUNT(*) as total FROM PedidoDemonstracao WHERE ativo = 1", [], $ligacao);
+    $totalPedidosAll = (int) $stmtTotal->fetch(PDO::FETCH_ASSOC)['total'];
+
     // Contar total
     $countSql = "SELECT COUNT(idPedido) as total FROM PedidoDemonstracao WHERE $whereSQL";
     $stmtCount = execute_query($countSql, $params, $ligacao);
@@ -70,7 +74,7 @@ try {
     $sort_field = isset($allowed_sorts[$sort_param]) ? $allowed_sorts[$sort_param] : 'dataCriacao';
     $sort_dir = strtoupper($dir_param);
 
-    $dataSql = "SELECT * FROM PedidoDemonstracao WHERE $whereSQL ORDER BY $sort_field $sort_dir LIMIT " . (int)$items_per_page . " OFFSET " . (int)$offset;
+    $dataSql = "SELECT * FROM PedidoDemonstracao WHERE $whereSQL ORDER BY $sort_field $sort_dir LIMIT " . (int) $items_per_page . " OFFSET " . (int) $offset;
     $stmt = execute_query($dataSql, $params, $ligacao);
     $requests = $stmt->fetchAll(PDO::FETCH_OBJ);
 
@@ -143,11 +147,12 @@ try {
                                 <path d="m21 21-4.34-4.34" />
                                 <circle cx="11" cy="11" r="8" />
                             </svg>
-                            <input type="text" class="form-item w-100 search-bar-input" name="search" id="search-input-field"
-                                placeholder="Pesquisar por nome ou organização..." value="<?= htmlspecialchars($search_query) ?>">
+                            <input type="text" class="form-item w-100 search-bar-input" name="search"
+                                id="search-input-field" placeholder="Pesquisar por nome ou organização..."
+                                value="<?= htmlspecialchars($search_query) ?>">
                             <?php if ($search_query !== ''): ?>
                                 <script>
-                                    document.addEventListener("DOMContentLoaded", function() {
+                                    document.addEventListener("DOMContentLoaded", function () {
                                         const searchInput = document.getElementById('search-input-field');
                                         if (searchInput) {
                                             searchInput.focus();
@@ -163,148 +168,198 @@ try {
                 </form>
             </div>
 
-            <form method="POST" action="inbox-crud/update-inbox.php" class="d-flex flex-column flex-grow-1 mw-0">
-                <!-- Tabela -->
-                <div class="bento-card w-100 p-0 border-0">
-                    <div class="datatable-wrapper no-footer sortable fixed-columns">
-                        <div class="datatable-container">
-                            <?php
-                            $buildSortUrl = function ($column) use ($search_query, $sort_param, $dir_param) {
-                                $params = [];
-                                if ($search_query !== '') $params['search'] = $search_query;
-                                $params['sort'] = $column;
-                                $params['dir'] = ($sort_param === $column && $dir_param === 'asc') ? 'desc' : 'asc';
-                                return '?' . http_build_query($params);
-                            };
+            <?php if ($totalPedidosAll === 0): ?>
+                <div
+                    class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4 w-100 shadow-none">
+                    <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-ghost">
+                            <path d="M9 10h.01" />
+                            <path d="M15 10h.01" />
+                            <path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z" />
+                        </svg>
+                    </div>
+                    <div class="d-flex flex-column gap-2">
+                        <h3 class="fw-700 m-0">Sem Pedidos de Demonstração</h3>
+                        <p class="text-secondary m-0">De momento não existe nenhum pedido pendente.</p>
+                    </div>
+                </div>
+            <?php elseif (empty($PedidoDemonstracaos)): ?>
+                <div
+                    class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4 w-100 shadow-none">
+                    <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-search-x">
+                            <path d="m13.5 8.5-5 5" />
+                            <path d="m8.5 8.5 5 5" />
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="m21 21-4.3-4.3" />
+                        </svg>
+                    </div>
+                    <div class="d-flex flex-column gap-2">
+                        <h3 class="fw-700 m-0">Sem resultados</h3>
+                        <p class="text-secondary m-0">Nenhum registo encontrado correspondente à sua pesquisa.</p>
+                    </div>
+                </div>
 
-                            $getSortIcon = function ($column) use ($sort_param, $dir_param) {
-                                if ($sort_param !== $column) return '';
-                                return $dir_param === 'asc' ? ' ↑' : ' ↓';
-                            };
-                            ?>
-                            <table id="equipmentsTable" class="sibdas-table w-100 display datatable-table">
-                                <thead>
-                                    <tr>
-                                        <th><a href="<?= $buildSortUrl('estado') ?>" class="datatable-sorter text-decoration-none text-inherit">ESTADO<?= $getSortIcon('estado') ?></a></th>
-                                        <th><a href="<?= $buildSortUrl('dataCriacao') ?>" class="datatable-sorter text-decoration-none text-inherit">DATA<?= $getSortIcon('dataCriacao') ?></a></th>
-                                        <th><a href="<?= $buildSortUrl('nomeContacto') ?>" class="datatable-sorter text-decoration-none text-inherit">NOME CONTACTO<?= $getSortIcon('nomeContacto') ?></a></th>
-                                        <th><a href="<?= $buildSortUrl('organizacao') ?>" class="datatable-sorter text-decoration-none text-inherit">INSTITUIÇÃO<?= $getSortIcon('organizacao') ?></a></th>
-                                        <th><a href="<?= $buildSortUrl('emailContacto') ?>" class="datatable-sorter text-decoration-none text-inherit">EMAIL<?= $getSortIcon('emailContacto') ?></a></th>
-                                        <th class="text-end">AÇÕES</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <?php if (empty($PedidoDemonstracaos)): ?>
+            <?php else: ?>
+
+                <form method="POST" action="inbox-crud/update-inbox.php" class="d-flex flex-column flex-grow-1 mw-0">
+                    <!-- Tabela -->
+                    <div class="bento-card w-100 p-0 border-0">
+                        <div class="datatable-wrapper no-footer sortable fixed-columns">
+                            <div class="datatable-container">
+                                <?php
+                                $buildSortUrl = function ($column) use ($search_query, $sort_param, $dir_param) {
+                                    $params = [];
+                                    if ($search_query !== '')
+                                        $params['search'] = $search_query;
+                                    $params['sort'] = $column;
+                                    $params['dir'] = ($sort_param === $column && $dir_param === 'asc') ? 'desc' : 'asc';
+                                    return '?' . http_build_query($params);
+                                };
+
+                                $getSortIcon = function ($column) use ($sort_param, $dir_param) {
+                                    if ($sort_param !== $column)
+                                        return '';
+                                    return $dir_param === 'asc' ? ' ↑' : ' ↓';
+                                };
+                                ?>
+
+                                <table id="equipmentsTable" class="sibdas-table w-100 display datatable-table">
+                                    <thead>
                                         <tr>
-                                            <td colspan="6" class="text-center text-muted py-4">Nenhum pedido de demonstração encontrado.</td>
+                                            <th><a href="<?= $buildSortUrl('estado') ?>"
+                                                    class="datatable-sorter text-decoration-none text-inherit">ESTADO<?= $getSortIcon('estado') ?></a>
+                                            </th>
+                                            <th><a href="<?= $buildSortUrl('dataCriacao') ?>"
+                                                    class="datatable-sorter text-decoration-none text-inherit">DATA<?= $getSortIcon('dataCriacao') ?></a>
+                                            </th>
+                                            <th><a href="<?= $buildSortUrl('nomeContacto') ?>"
+                                                    class="datatable-sorter text-decoration-none text-inherit">NOME
+                                                    CONTACTO<?= $getSortIcon('nomeContacto') ?></a></th>
+                                            <th><a href="<?= $buildSortUrl('organizacao') ?>"
+                                                    class="datatable-sorter text-decoration-none text-inherit">INSTITUIÇÃO<?= $getSortIcon('organizacao') ?></a>
+                                            </th>
+                                            <th><a href="<?= $buildSortUrl('emailContacto') ?>"
+                                                    class="datatable-sorter text-decoration-none text-inherit">EMAIL<?= $getSortIcon('emailContacto') ?></a>
+                                            </th>
+                                            <th class="text-end">AÇÕES</th>
                                         </tr>
-                                    <?php else: ?>
+                                    </thead>
+                                    <tbody>
                                         <?php foreach ($PedidoDemonstracaos as $request):
                                             $encryptedId = aes_encrypt($request->id);
                                             ?>
-                                <tr>
-                                    <td>
-                                        <input type="hidden" name="states[<?php echo $encryptedId; ?>]"
-                                            value="<?php echo $request->state->name; ?>"
-                                            id="inbox-state-input-<?php echo $encryptedId; ?>">
-                                        <div class="dropdown">
-                                            <button id="inbox-state-btn-<?php echo $encryptedId; ?>"
-                                                class="d-inline-flex align-items-center equipment-badge <?php echo $request->state->class; ?> gap-1 mw-0 border-0"
-                                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <span><?php echo $request->state->name; ?></span>
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                    stroke-linecap="round" stroke-linejoin="round"
-                                                    class="lucide lucide-chevron-down-icon lucide-chevron-down">
-                                                    <path d="m6 9 6 6 6-6" />
-                                                </svg>
-                                            </button>
-                                            <ul class="dropdown-menu action-dropdown-menu">
-                                                <li>
-                                                    <a class="dropdown-item action-dropdown-item" href="#"
-                                                        onclick="changeEstadoPedidoDemonstracao('<?php echo $encryptedId; ?>', 'Novo', 'new')">Novo</a>
-                                                </li>
-                                                <li>
-                                                    <a class="dropdown-item action-dropdown-item" href="#"
-                                                        onclick="changeEstadoPedidoDemonstracao('<?php echo $encryptedId; ?>', 'Em Contacto', 'in-contact')">Em
-                                                        Contacto</a>
-                                                </li>
-                                                <li>
-                                                    <a class="dropdown-item action-dropdown-item" href="#"
-                                                        onclick="changeEstadoPedidoDemonstracao('<?php echo $encryptedId; ?>', 'Fechado', 'concluded')">Fechado</a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex gap-2 text-secondary align-items-center">
-                                            <p><?php echo $request->date; ?></p>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div class="d-flex align-items-center gap-3">
-                                            <div class="d-flex flex-column">
-                                                <p class="equipment-title fw-700 mb-0"><?php echo $request->name; ?></p>
-                                                <span class="visually-hidden"><?php echo $encryptedId; ?></span>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <span class="text-secondary fw-400"><?php echo $request->institution; ?></span>
-                                    </td>
-                                    <td>
-                                        <span class="text-secondary fw-400"><?php echo $request->email; ?></span>
-                                    </td>
-                                    <td class="text-end equipment-actions">
-                                        <div class="dropdown">
-                                            <button
-                                                class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
-                                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                    stroke-linecap="round" stroke-linejoin="round">
-                                                    <circle cx="12" cy="12" r="1" />
-                                                    <circle cx="19" cy="12" r="1" />
-                                                    <circle cx="5" cy="12" r="1" />
-                                                </svg>
-                                            </button>
-                                            <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
-                                                <li>
-                                                    <a class="dropdown-item action-dropdown-item text-primary" href="#"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#inbox-detail-modal-<?php echo $encryptedId; ?>">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                            class="lucide lucide-eye">
-                                                            <path
-                                                                d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
-                                                            <circle cx="12" cy="12" r="3" />
-                                                        </svg>
-                                                        Ver Detalhes
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <a class="dropdown-item action-dropdown-item text-error" href="#"
-                                                        data-bs-toggle="modal"
-                                                        data-bs-target="#delete-confirm-modal-<?php echo $encryptedId; ?>">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                            class="lucide lucide-trash-2">
-                                                            <path d="M3 6h18" />
-                                                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                                            <line x1="10" x2="10" y1="11" y2="17" />
-                                                            <line x1="14" x2="14" y1="11" y2="17" />
-                                                        </svg>
-                                                        Apagar
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                </tr>
+                                            <tr>
+                                                <td>
+                                                    <input type="hidden" name="states[<?php echo $encryptedId; ?>]"
+                                                        value="<?php echo $request->state->name; ?>"
+                                                        id="inbox-state-input-<?php echo $encryptedId; ?>">
+                                                    <div class="dropdown">
+                                                        <button id="inbox-state-btn-<?php echo $encryptedId; ?>"
+                                                            class="d-inline-flex align-items-center equipment-badge <?php echo $request->state->class; ?> gap-1 mw-0 border-0"
+                                                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            <span><?php echo $request->state->name; ?></span>
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                class="lucide lucide-chevron-down-icon lucide-chevron-down">
+                                                                <path d="m6 9 6 6 6-6" />
+                                                            </svg>
+                                                        </button>
+                                                        <ul class="dropdown-menu action-dropdown-menu">
+                                                            <li>
+                                                                <a class="dropdown-item action-dropdown-item" href="#"
+                                                                    onclick="changeInboxState('<?php echo $encryptedId; ?>', 'Novo', 'new')">Novo</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item action-dropdown-item" href="#"
+                                                                    onclick="changeInboxState('<?php echo $encryptedId; ?>', 'Em Contacto', 'in-contact')">Em
+                                                                    Contacto</a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item action-dropdown-item" href="#"
+                                                                    onclick="changeInboxState('<?php echo $encryptedId; ?>', 'Fechado', 'concluded')">Fechado</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex gap-2 text-secondary align-items-center">
+                                                        <p><?php echo $request->date; ?></p>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex align-items-center gap-3">
+                                                        <div class="d-flex flex-column">
+                                                            <p class="equipment-title fw-700 mb-0"><?php echo $request->name; ?>
+                                                            </p>
+                                                            <span class="visually-hidden"><?php echo $encryptedId; ?></span>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span
+                                                        class="text-secondary fw-400"><?php echo $request->institution; ?></span>
+                                                </td>
+                                                <td>
+                                                    <span class="text-secondary fw-400"><?php echo $request->email; ?></span>
+                                                </td>
+                                                <td class="text-end equipment-actions">
+                                                    <div class="dropdown">
+                                                        <button
+                                                            class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
+                                                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                                <circle cx="12" cy="12" r="1" />
+                                                                <circle cx="19" cy="12" r="1" />
+                                                                <circle cx="5" cy="12" r="1" />
+                                                            </svg>
+                                                        </button>
+                                                        <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
+                                                            <li>
+                                                                <a class="dropdown-item action-dropdown-item text-primary"
+                                                                    href="#" data-bs-toggle="modal"
+                                                                    data-bs-target="#inbox-detail-modal-<?php echo $encryptedId; ?>">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                                        height="16" viewBox="0 0 24 24" fill="none"
+                                                                        stroke="currentColor" stroke-width="2"
+                                                                        stroke-linecap="round" stroke-linejoin="round"
+                                                                        class="lucide lucide-eye">
+                                                                        <path
+                                                                            d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" />
+                                                                        <circle cx="12" cy="12" r="3" />
+                                                                    </svg>
+                                                                    Ver Detalhes
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <a class="dropdown-item action-dropdown-item text-error"
+                                                                    href="#" data-bs-toggle="modal"
+                                                                    data-bs-target="#delete-confirm-modal-<?php echo $encryptedId; ?>">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                                        height="16" viewBox="0 0 24 24" fill="none"
+                                                                        stroke="currentColor" stroke-width="2"
+                                                                        stroke-linecap="round" stroke-linejoin="round"
+                                                                        class="lucide lucide-trash-2">
+                                                                        <path d="M3 6h18" />
+                                                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                                                        <line x1="10" x2="10" y1="11" y2="17" />
+                                                                        <line x1="14" x2="14" y1="11" y2="17" />
+                                                                    </svg>
+                                                                    Apagar
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </td>
+                                            </tr>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
                                 </tbody>
@@ -322,53 +377,57 @@ try {
                                     <?php
                                     $buildQueryString = function ($newPage) use ($search_query, $sort_param, $dir_param) {
                                         $params = ['page' => $newPage];
-                                        if ($search_query !== '') $params['search'] = $search_query;
-                                        if ($sort_param !== 'dataCriacao') $params['sort'] = $sort_param;
-                                        if ($dir_param !== 'desc') $params['dir'] = $dir_param;
+                                        if ($search_query !== '')
+                                            $params['search'] = $search_query;
+                                        if ($sort_param !== 'dataCriacao')
+                                            $params['sort'] = $sort_param;
+                                        if ($dir_param !== 'desc')
+                                            $params['dir'] = $dir_param;
                                         return '?' . http_build_query($params);
                                     };
                                     ?>
 
                                     <?php if ($current_page > 1): ?>
-                                        <li class="datatable-pagination-list-item pager"><a href="<?= $buildQueryString($current_page - 1) ?>">‹</a></li>
+                                        <li class="datatable-pagination-list-item pager"><a
+                                                href="<?= $buildQueryString($current_page - 1) ?>">‹</a></li>
                                     <?php endif; ?>
 
                                     <?php for ($i = max(1, $current_page - 2); $i <= min($totalPages, $current_page + 2); $i++): ?>
-                                        <li class="datatable-pagination-list-item <?= $i === $current_page ? 'datatable-active' : '' ?>">
+                                        <li
+                                            class="datatable-pagination-list-item <?= $i === $current_page ? 'datatable-active' : '' ?>">
                                             <a href="<?= $buildQueryString($i) ?>"><?= $i ?></a>
                                         </li>
                                     <?php endfor; ?>
 
                                     <?php if ($current_page < $totalPages): ?>
-                                        <li class="datatable-pagination-list-item pager"><a href="<?= $buildQueryString($current_page + 1) ?>">›</a></li>
+                                        <li class="datatable-pagination-list-item pager"><a
+                                                href="<?= $buildQueryString($current_page + 1) ?>">›</a></li>
                                     <?php endif; ?>
                                 </ul>
                             </nav>
                         </div>
                     </div>
                 </div>
+        </div>
 
-
-            </div>
-
-            <!-- Alterações pendentes -->
-            <div class="inbox-changes-container justify-content-between align-items-center padding-6"
-                style="display: none;">
-                <p class="text-muted">Existem alterações pendentes</p>
-                <button type="submit" class="btn btn-primary btn-glowing gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-save-icon lucide-save">
-                        <path
-                            d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
-                        <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" />
-                        <path d="M7 3v4a1 1 0 0 0 1 1h7" />
-                    </svg>
-                    Guardar alterações
-                </button>
-            </div>
-            </form>
-        </section>
+        <!-- Alterações pendentes -->
+        <div class="inbox-changes-container justify-content-between align-items-center padding-6"
+            style="display: none;">
+            <p class="text-muted">Existem alterações pendentes</p>
+            <button type="submit" class="btn btn-primary btn-glowing gap-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-save-icon lucide-save">
+                    <path
+                        d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
+                    <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" />
+                    <path d="M7 3v4a1 1 0 0 0 1 1h7" />
+                </svg>
+                Guardar alterações
+            </button>
+        </div>
+        </form>
+    </section>
 
     <!-- Modais de Detalhes dos Pedidos de Demonstração -->
     <?php foreach ($PedidoDemonstracaos as $request):
