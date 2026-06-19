@@ -82,18 +82,26 @@ if (!empty($_SESSION['server_error'])) {
                         <path d="m7.5 4.27 9 5.15" />
                     </svg>
                     <?php if ($dashboardStats['totalEquipamentos']['growth']): ?>
-                    <div class="d-flex flex-row dashboard-bento-trend <?php echo $dashboardStats['totalEquipamentos']['growth']['isPositive'] ? 'dashboard-bento-trend-up' : 'dashboard-bento-trend-down'; ?> gap-1 align-items-center">
-                        <?php if ($dashboardStats['totalEquipamentos']['growth']['isPositive']): ?>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up-icon lucide-trending-up ">
-                                <path d="M16 7h6v6" /><path d="m22 7-8.5 8.5-5-5L2 17" />
-                            </svg>
-                        <?php else: ?>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-down-icon lucide-trending-down">
-                                <path d="M16 17h6v-6" /><path d="m22 17-8.5-8.5-5 5L2 7" />
-                            </svg>
-                        <?php endif; ?>
-                        <span class="fw-600"><?php echo ($dashboardStats['totalEquipamentos']['growth']['isPositive'] ? '+' : '') . $dashboardStats['totalEquipamentos']['growth']['value']; ?></span>
-                    </div>
+                        <div
+                            class="d-flex flex-row dashboard-bento-trend <?php echo $dashboardStats['totalEquipamentos']['growth']['isPositive'] ? 'dashboard-bento-trend-up' : 'dashboard-bento-trend-down'; ?> gap-1 align-items-center">
+                            <?php if ($dashboardStats['totalEquipamentos']['growth']['isPositive']): ?>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="lucide lucide-trending-up-icon lucide-trending-up ">
+                                    <path d="M16 7h6v6" />
+                                    <path d="m22 7-8.5 8.5-5-5L2 17" />
+                                </svg>
+                            <?php else: ?>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="lucide lucide-trending-down-icon lucide-trending-down">
+                                    <path d="M16 17h6v-6" />
+                                    <path d="m22 17-8.5-8.5-5 5L2 7" />
+                                </svg>
+                            <?php endif; ?>
+                            <span
+                                class="fw-600"><?php echo ($dashboardStats['totalEquipamentos']['growth']['isPositive'] ? '+' : '') . $dashboardStats['totalEquipamentos']['growth']['value']; ?></span>
+                        </div>
                     <?php endif; ?>
                 </div>
                 <div class="d-flex flex-column gap-1">
@@ -112,18 +120,26 @@ if (!empty($_SESSION['server_error'])) {
                             d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2" />
                     </svg>
                     <?php if ($dashboardStats['equipamentosAtivos']['growth']): ?>
-                    <div class="d-flex flex-row dashboard-bento-trend <?php echo $dashboardStats['equipamentosAtivos']['growth']['isPositive'] ? 'dashboard-bento-trend-up' : 'dashboard-bento-trend-down'; ?> gap-1 align-items-center">
-                        <?php if ($dashboardStats['equipamentosAtivos']['growth']['isPositive']): ?>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up-icon lucide-trending-up ">
-                                <path d="M16 7h6v6" /><path d="m22 7-8.5 8.5-5-5L2 17" />
-                            </svg>
-                        <?php else: ?>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-down-icon lucide-trending-down">
-                                <path d="M16 17h6v-6" /><path d="m22 17-8.5-8.5-5 5L2 7" />
-                            </svg>
-                        <?php endif; ?>
-                        <span class="fw-600"><?php echo ($dashboardStats['equipamentosAtivos']['growth']['isPositive'] ? '+' : '') . $dashboardStats['equipamentosAtivos']['growth']['value']; ?></span>
-                    </div>
+                        <div
+                            class="d-flex flex-row dashboard-bento-trend <?php echo $dashboardStats['equipamentosAtivos']['growth']['isPositive'] ? 'dashboard-bento-trend-up' : 'dashboard-bento-trend-down'; ?> gap-1 align-items-center">
+                            <?php if ($dashboardStats['equipamentosAtivos']['growth']['isPositive']): ?>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="lucide lucide-trending-up-icon lucide-trending-up ">
+                                    <path d="M16 7h6v6" />
+                                    <path d="m22 7-8.5 8.5-5-5L2 17" />
+                                </svg>
+                            <?php else: ?>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="lucide lucide-trending-down-icon lucide-trending-down">
+                                    <path d="M16 17h6v-6" />
+                                    <path d="m22 17-8.5-8.5-5 5L2 7" />
+                                </svg>
+                            <?php endif; ?>
+                            <span
+                                class="fw-600"><?php echo ($dashboardStats['equipamentosAtivos']['growth']['isPositive'] ? '+' : '') . $dashboardStats['equipamentosAtivos']['growth']['value']; ?></span>
+                        </div>
                     <?php endif; ?>
                 </div>
                 <div class="d-flex flex-column gap-1">
@@ -142,18 +158,26 @@ if (!empty($_SESSION['server_error'])) {
                             d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z" />
                     </svg>
                     <?php if ($dashboardStats['emManutencao']['growth']): ?>
-                    <div class="d-flex flex-row dashboard-bento-trend <?php echo $dashboardStats['emManutencao']['growth']['isPositive'] ? 'dashboard-bento-trend-up' : 'dashboard-bento-trend-down'; ?> gap-1 align-items-center">
-                        <?php if ($dashboardStats['emManutencao']['growth']['isPositive']): ?>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up-icon lucide-trending-up ">
-                                <path d="M16 7h6v6" /><path d="m22 7-8.5 8.5-5-5L2 17" />
-                            </svg>
-                        <?php else: ?>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-down-icon lucide-trending-down">
-                                <path d="M16 17h6v-6" /><path d="m22 17-8.5-8.5-5 5L2 7" />
-                            </svg>
-                        <?php endif; ?>
-                        <span class="fw-600"><?php echo ($dashboardStats['emManutencao']['growth']['isPositive'] ? '+' : '') . $dashboardStats['emManutencao']['growth']['value']; ?></span>
-                    </div>
+                        <div
+                            class="d-flex flex-row dashboard-bento-trend <?php echo $dashboardStats['emManutencao']['growth']['isPositive'] ? 'dashboard-bento-trend-up' : 'dashboard-bento-trend-down'; ?> gap-1 align-items-center">
+                            <?php if ($dashboardStats['emManutencao']['growth']['isPositive']): ?>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="lucide lucide-trending-up-icon lucide-trending-up ">
+                                    <path d="M16 7h6v6" />
+                                    <path d="m22 7-8.5 8.5-5-5L2 17" />
+                                </svg>
+                            <?php else: ?>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="lucide lucide-trending-down-icon lucide-trending-down">
+                                    <path d="M16 17h6v-6" />
+                                    <path d="m22 17-8.5-8.5-5 5L2 7" />
+                                </svg>
+                            <?php endif; ?>
+                            <span
+                                class="fw-600"><?php echo ($dashboardStats['emManutencao']['growth']['isPositive'] ? '+' : '') . $dashboardStats['emManutencao']['growth']['value']; ?></span>
+                        </div>
                     <?php endif; ?>
                 </div>
                 <div class="d-flex flex-column gap-1">
@@ -174,18 +198,26 @@ if (!empty($_SESSION['server_error'])) {
                         <path d="M12 16h.01" />
                     </svg>
                     <?php if ($dashboardStats['garantiasAExpirar']['growth']): ?>
-                    <div class="d-flex flex-row dashboard-bento-trend <?php echo $dashboardStats['garantiasAExpirar']['growth']['isPositive'] ? 'dashboard-bento-trend-up' : 'dashboard-bento-trend-down'; ?> gap-1 align-items-center">
-                        <?php if ($dashboardStats['garantiasAExpirar']['growth']['isPositive']): ?>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-up-icon lucide-trending-up ">
-                                <path d="M16 7h6v6" /><path d="m22 7-8.5 8.5-5-5L2 17" />
-                            </svg>
-                        <?php else: ?>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-trending-down-icon lucide-trending-down">
-                                <path d="M16 17h6v-6" /><path d="m22 17-8.5-8.5-5 5L2 7" />
-                            </svg>
-                        <?php endif; ?>
-                        <span class="fw-600"><?php echo ($dashboardStats['garantiasAExpirar']['growth']['isPositive'] ? '+' : '') . $dashboardStats['garantiasAExpirar']['growth']['value']; ?></span>
-                    </div>
+                        <div
+                            class="d-flex flex-row dashboard-bento-trend <?php echo $dashboardStats['garantiasAExpirar']['growth']['isPositive'] ? 'dashboard-bento-trend-up' : 'dashboard-bento-trend-down'; ?> gap-1 align-items-center">
+                            <?php if ($dashboardStats['garantiasAExpirar']['growth']['isPositive']): ?>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="lucide lucide-trending-up-icon lucide-trending-up ">
+                                    <path d="M16 7h6v6" />
+                                    <path d="m22 7-8.5 8.5-5-5L2 17" />
+                                </svg>
+                            <?php else: ?>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="lucide lucide-trending-down-icon lucide-trending-down">
+                                    <path d="M16 17h6v-6" />
+                                    <path d="m22 17-8.5-8.5-5 5L2 7" />
+                                </svg>
+                            <?php endif; ?>
+                            <span
+                                class="fw-600"><?php echo ($dashboardStats['garantiasAExpirar']['growth']['isPositive'] ? '+' : '') . $dashboardStats['garantiasAExpirar']['growth']['value']; ?></span>
+                        </div>
                     <?php endif; ?>
                 </div>
                 <div class="d-flex flex-column gap-1">
@@ -304,108 +336,77 @@ if (!empty($_SESSION['server_error'])) {
                         <canvas id="maintenanceTrendChart"></canvas>
                     </div>
                 </div>
-                <div class="bento-card bento-card-move-up d-flex flex-column padding-6 gap-6 ai-section">
+                <div
+                    class="bento-card bento-card-move-up d-flex flex-column padding-6 gap-6 maintenance-calendar-section">
                     <div class="d-flex flex-row gap-3">
-                        <div class="ai-chat d-flex align-items-center justify-content-center">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="lucide lucide-bot-icon lucide-bot text-white">
-                                <path d="M12 8V4H8" />
-                                <rect width="16" height="12" x="4" y="8" rx="2" />
-                                <path d="M2 14h2" />
-                                <path d="M20 14h2" />
-                                <path d="M15 13v2" />
-                                <path d="M9 13v2" />
-                            </svg>
-                        </div>
                         <div class="d-flex flex-column gap-1">
-                            <h3>BioMedical AI Assistant</h3>
-                            <p class="text-secondary fw-400">Análise inteligente do inventário</p>
+                            <h3>Próximas Manutenções</h3>
+                            <p class="text-secondary fw-400">Manutenções agendadas</p>
                         </div>
                     </div>
 
-                    <div class="d-flex flex-column gap-2 w-100">
-                        <div
-                            class="ai-card ai-card-warning d-flex flex-row gap-2 align-items-start justify-items-start padding-3 w-100">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="lucide lucide-triangle-alert-icon lucide-triangle-alert">
-                                <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
-                                <path d="M12 9v4" />
-                                <path d="M12 17h.01" />
-                            </svg>
-                            <div class="d-flex flex-column gap-1">
-                                <span class="fw-700">Manutenção Atrasada</span>
-                                <label class="fw-400 ai-description text-lowercase">3 equipamentos críticos com
-                                    manutenção
-                                    próxima.</label>
-                            </div>
-                        </div>
-                        <div
-                            class="ai-card ai-card-success d-flex flex-row gap-2 align-items-start justify-items-start padding-3 w-100">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="lucide lucide-circle-check-icon lucide-circle-check">
-                                <circle cx="12" cy="12" r="10" />
-                                <path d="m9 12 2 2 4-4" />
-                            </svg>
-                            <div class="d-flex flex-column gap-1">
-                                <span class="fw-700">Calibrações OK</span>
-                                <label class="fw-400 ai-description text-lowercase">Todos os ventiladores com
-                                    calibração
-                                    em dia.</label>
-                            </div>
-                        </div>
-                        <div
-                            class="ai-card ai-card-info d-flex flex-row gap-2 align-items-start justify-items-start padding-3 w-100">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="lucide lucide-info-icon lucide-info">
-                                <circle cx="12" cy="12" r="10" />
-                                <path d="M12 16v-4" />
-                                <path d="M12 8h.01" />
-                            </svg>
-                            <div class="d-flex flex-column gap-1">
-                                <span class="fw-700">Stock Baixo</span>
-                                <label class="fw-400 ai-description text-lowercase">Baterias Li-Ion abaixo do
-                                    stock
-                                    mínimo (6/4).</label>
-                            </div>
-                        </div>
+                    <div class="d-flex flex-column gap-3 w-100 mt-2 h-100">
+                        <?php
+                        $diasSemana = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+                        $meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+                        $proximasManutencoes = $dashboardStats['proximasManutencoes'] ?? [];
 
-                        <div
-                            class="ai-card ai-card-error d-flex flex-row gap-2 align-items-start justify-items-start padding-3 w-100">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="lucide lucide-lightbulb-icon lucide-lightbulb">
-                                <path
-                                    d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
-                                <path d="M9 18h6" />
-                                <path d="M10 22h4" />
-                            </svg>
-                            <div class="d-flex flex-column gap-1">
-                                <span class="fw-700">Equipamentos sem Garantia</span>
-                                <label class="fw-400 ai-description text-lowercase">3 equipamentos sem garantia.
-                                    Recomendado
-                                    contratar garantia.</label>
+                        if (empty($proximasManutencoes)): ?>
+                            <div
+                                class="d-flex flex-column align-items-center justify-content-center text-center padding-4 gap-3 h-100">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    class="lucide lucide-calendar-check-2-icon lucide-calendar-check-2 text-secondary">
+                                    <path d="M8 2v4" />
+                                    <path d="M16 2v4" />
+                                    <path d="M21 14V6a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h8" />
+                                    <path d="M3 10h18" />
+                                    <path d="m16 20 2 2 4-4" />
+                                </svg>
+                                <span class="text-secondary fw-400">Nenhuma manutenção agendada.</span>
                             </div>
-                        </div>
+                        <?php else: ?>
+                            <?php foreach ($proximasManutencoes as $manutencao):
+                                $dataInicio = strtotime($manutencao['dataInicio']);
+                                $diaSemana = $diasSemana[date('w', $dataInicio)];
+                                $diaMes = date('d', $dataInicio);
+                                $mes = $meses[date('n', $dataInicio) - 1];
+                                $encryptedId = aes_encrypt((string) $manutencao['idEquipamento']);
+                                $url = "inventory/equipments/detailed_view.php?id=" . urlencode($encryptedId) . "&nav=manutencoes";
+                                $servicoDesc = $manutencao['nomeServico'] ?: 'Geral';
+                                ?>
+                                <a href="<?= $url ?>"
+                                    class="maintenance-widget-item d-flex flex-row align-items-stretch w-100 text-decoration-none">
+                                    <!-- Bloco de Data -->
+                                    <div
+                                        class="maintenance-widget-date d-flex flex-column align-items-center justify-content-center padding-2">
+                                        <span class="text-uppercase fw-600 text-secondary"><?= $diaSemana ?></span>
+                                        <h2 class="fw-700 text-primary"><?= $diaMes ?></h2>
+                                        <span class="text-secondary fw-500"><?= $mes ?></span>
+                                    </div>
+                                    <!-- Bloco de Informação -->
+                                    <div
+                                        class="maintenance-widget-info d-flex flex-column justify-content-center flex-grow-1 padding-3 gap-1">
+                                        <span
+                                            class="fw-600 text-primary-900"><?= htmlspecialchars($manutencao['designacao']) ?></span>
+                                        <span
+                                            class="fw-400 text-secondary fs-sm text-truncate"><?= htmlspecialchars($manutencao['tipoManutencao']) ?>
+                                            · <?= htmlspecialchars($servicoDesc) ?></span>
+                                    </div>
+                                    <!-- Seta -->
+                                    <div class="d-flex align-items-center justify-content-center padding-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="lucide lucide-chevron-right-icon lucide-chevron-right text-secondary">
+                                            <path d="m9 18 6-6-6-6" />
+                                        </svg>
+                                    </div>
+                                </a>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </div>
-                    <form action="" class="d-flex flex-row w-100">
-                        <div class="form-item w-100 flex-row d-flex align-items-center gap-2">
-                            <input type="search" id="search" name="search" placeholder="Perguntar ao assistente..."
-                                required class="w-100 input-small">
-
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="lucide lucide-send-icon lucide-send">
-                                <path
-                                    d="M14.536 21.686a.5.5 0 0 0 .937-.024l6.5-19a.496.496 0 0 0-.635-.635l-19 6.5a.5.5 0 0 0-.024.937l7.93 3.18a2 2 0 0 1 1.112 1.11z" />
-                                <path d="m21.854 2.147-10.94 10.939" />
-                            </svg>
-                        </div>
-                    </form>
-
                 </div>
             </div>
         </div>
@@ -454,11 +455,11 @@ include_once 'includes/sidebar-mobile.php';
 
 <!-- Passar Dados para o Javascript dos Gráficos -->
 <script>
-window.DashboardData = {
-    graficoCategoria: <?php echo json_encode($dashboardStats['graficoCategoria']); ?>,
-    graficoServico: <?php echo json_encode($dashboardStats['graficoServico']); ?>,
-    graficoManutencao: <?php echo json_encode($dashboardStats['graficoManutencao']); ?>
-};
+    window.DashboardData = {
+        graficoCategoria: <?php echo json_encode($dashboardStats['graficoCategoria']); ?>,
+        graficoServico: <?php echo json_encode($dashboardStats['graficoServico']); ?>,
+        graficoManutencao: <?php echo json_encode($dashboardStats['graficoManutencao']); ?>
+    };
 </script>
 
 <?php

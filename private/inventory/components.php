@@ -69,7 +69,7 @@ try {
 
     // Obter Componentes
     $stmtComponentes = execute_query(
-        "SELECT c.*, cc.idCategoria as idCategoria
+        "SELECT c.*, MIN(cc.idCategoria) as idCategoria
          FROM Componente c 
          LEFT JOIN ComponenteCategoria cc ON c.idComponente = cc.idComponente
          WHERE c.ativo = 1 

@@ -150,6 +150,27 @@ try {
         'corretiva' => array_values($corretivaDataDict)
     ];
 
+    // Próximas 4 manutenções agendadas (dataInicio >= hoje)
+    $stmt = execute_query("
+        SELECT 
+            m.idManutencao,
+            m.idEquipamento,
+            m.tipoManutencao,
+            m.dataInicio,
+            e.designacao,
+            s.nome as nomeServico
+        FROM Manutencao m
+        JOIN Equipamento e ON m.idEquipamento = e.idEquipamento
+        LEFT JOIN Localizacao l ON e.idLocalizacao = l.idLocalizacao
+        LEFT JOIN Servico s ON l.idServico = s.idServico
+        WHERE m.ativo = 1 
+          AND e.ativo = 1 
+          AND m.dataInicio >= CURDATE()
+        ORDER BY m.dataInicio ASC
+        LIMIT 4
+    ", [], $ligacaoStats);
+    $dashboardStats['proximasManutencoes'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 } catch (Exception $e) {
     error_log("Erro ao calcular estatísticas do dashboard: " . $e->getMessage());
     $dashboardStats = [];

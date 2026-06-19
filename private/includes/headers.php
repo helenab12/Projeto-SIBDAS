@@ -68,7 +68,8 @@ if (isset($_SESSION['id_utilizador'])) {
                     d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
             </svg>
             <?php if ($numeroNotificacoesNaoLidas > 0): ?>
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-flex align-items-center justify-content-center"
+                <span
+                    class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-flex align-items-center justify-content-center"
                     style="min-width: 18px; height: 18px; font-size: 0.65rem; padding: 0 4px; transform: translate(-30%, -30%) !important;">
                     <?php echo $numeroNotificacoesNaoLidas > 99 ? '99+' : $numeroNotificacoesNaoLidas; ?>
                     <span class="visually-hidden">notificações não lidas</span>
@@ -166,7 +167,8 @@ if (isset($_SESSION['id_utilizador'])) {
                         d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
                 </svg>
                 <?php if ($numeroNotificacoesNaoLidas > 0): ?>
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-flex align-items-center justify-content-center"
+                    <span
+                        class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-flex align-items-center justify-content-center"
                         style="min-width: 18px; height: 18px; font-size: 0.65rem; padding: 0 4px; transform: translate(-30%, -30%) !important;">
                         <?php echo $numeroNotificacoesNaoLidas > 99 ? '99+' : $numeroNotificacoesNaoLidas; ?>
                         <span class="visually-hidden">notificações não lidas</span>
@@ -234,54 +236,10 @@ $quickAccessItems = [
         'icon' => '<path d="M20 10a1 1 0 0 0 1-1V6a1 1 0 0 0-1-1h-2.5a1 1 0 0 1-.8-.4l-.9-1.2A1 1 0 0 0 15 3h-2a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1Z" /><path d="M20 21a1 1 0 0 0 1-1v-3a1 1 0 0 0-1-1h-2.9a1 1 0 0 1-.88-.55l-.42-.85a1 1 0 0 0-.92-.6H13a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1Z" /><path d="M3 5a2 2 0 0 0 2 2h3" /><path d="M3 3v13a2 2 0 0 0 2 2h3" />'
     ]
 ];
-
-$searchResults = [
-    [
-        'title' => 'Equipamentos (3)',
-        'icon' => '<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" /><polyline points="3.27 6.96 12 12.01 20.73 6.96" /><line x1="12" y1="22.08" x2="12" y2="12" />',
-        'bg' => 'var(--primary-50)',
-        'color' => 'var(--primary-500)',
-        'items' => [
-            [
-                'title' => 'Tomógrafo Computorizado',
-                'subtitle' => 'EQ-2024-005 &bull; Siemens &bull; Equipamento de Imagiologia',
-                'url' => '#'
-            ],
-            [
-                'title' => 'Analisador Bioquímico',
-                'subtitle' => 'EQ-2024-007 &bull; Beckman Coulter &bull; Equipamento Laboratorial',
-                'url' => '#'
-            ],
-            [
-                'title' => 'Oxímetro de Pulso',
-                'subtitle' => 'EQ-2023-051 &bull; Masimo &bull; Monitores de Sinais Vitais',
-                'url' => '#'
-            ]
-        ]
-    ],
-    [
-        'title' => 'Pessoas (2)',
-        'icon' => '<path d="m14.305 19.53.923-.382" /><path d="m15.228 16.852-.923-.383" /><path d="m16.852 15.228-.383-.923" /><path d="m16.852 20.772-.383.924" /><path d="m19.148 15.228.383-.923" /><path d="m19.53 21.696-.382-.924" /><path d="M2 21a8 8 0 0 1 10.434-7.62" /><path d="m20.772 16.852.924-.383" /><path d="m20.772 19.148.924.383" /><circle cx="10" cy="8" r="5" /><circle cx="18" cy="18" r="3" />',
-        'bg' => 'color-mix(in srgb, var(--success) 10%, transparent)',
-        'color' => 'var(--success)',
-        'items' => [
-            [
-                'title' => 'Dr. Manuel Costa',
-                'subtitle' => 'Médico',
-                'url' => '#'
-            ],
-            [
-                'title' => 'Eng. Carlos Mendes',
-                'subtitle' => 'Técnico de Manutenção',
-                'url' => '#'
-            ]
-        ]
-    ]
-];
 ?>
 
 <div class="modal fade global-search-modal" id="search-modal" tabindex="-1" aria-labelledby="searchModalLabel"
-    aria-hidden="true">
+    aria-hidden="true" data-search-url="<?= BASE_URL ?>private/searchbar.php">
     <div class="modal-dialog modal-dialog-centered modal-lg overflow-hidden">
         <div class="modal-content">
             <!-- Header Search Bar -->
@@ -299,7 +257,7 @@ $searchResults = [
             </div>
 
             <!-- Body Container -->
-            <div class="modal-body padding-6" style="min-height: 100px;">
+            <div class="modal-body padding-6" style="min-height: 100px;max-height: 80vh;overflow-y: scroll;">
                 <!-- Quick Access Content -->
                 <div class="d-flex flex-column gap-2" id="search-quick-access">
                     <span class="search-section-title fw-700 text-muted text-uppercase">Acesso Rápido</span>
@@ -320,33 +278,52 @@ $searchResults = [
 
                 <!-- Search Results Content -->
                 <div class="d-flex flex-column gap-4 d-none" id="search-results">
-                    <?php foreach ($searchResults as $section): ?>
-                        <div class="d-flex flex-column gap-2">
-                            <span
-                                class="search-section-title fw-700 text-muted text-uppercase"><?= htmlspecialchars($section['title']) ?></span>
-                            <div class="d-flex flex-column gap-1">
-                                <?php foreach ($section['items'] as $item): ?>
-                                    <a href="<?= htmlspecialchars($item['url']) ?>"
-                                        class="search-item d-flex align-items-center gap-3 padding-3 text-decoration-none">
-                                        <div class="d-flex align-items-center justify-content-center rounded padding-2"
-                                            style="background-color: <?= $section['bg'] ?>; color: <?= $section['color'] ?>;">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round">
-                                                <?= $section['icon'] ?>
-                                            </svg>
-                                        </div>
-                                        <div class="d-flex flex-column gap-half">
-                                            <p class="fw-700 m-0 text-primary"><?= htmlspecialchars($item['title']) ?></p>
-                                            <span class="text-secondary"><?= $item['subtitle'] ?></span>
-                                        </div>
-                                    </a>
-                                <?php endforeach; ?>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
+                    <!-- Populado por JavaScript -->
+                </div>
+
+                <!-- Empty State (Sem Resultados) -->
+                <div class="d-flex flex-column align-items-center justify-content-center gap-2 py-5 text-center d-none"
+                    id="search-empty">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-search-x text-muted opacity-50">
+                        <path d="m13.5 8.5-5 5" />
+                        <path d="m8.5 8.5 5 5" />
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
+                    </svg>
+                    <span class="text-secondary fw-500">Sem resultados para "<span
+                            id="search-empty-term"></span>"</span>
+                </div>
+
+                <!-- Loading State -->
+                <div class="d-flex justify-content-center align-items-center py-5 d-none" id="search-loading">
+                    <div class="spinner-border text-primary" role="status" style="width: 2rem; height: 2rem;">
+                        <span class="visually-hidden">A carregar...</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<!-- Templates para os resultados da pesquisa (usados pelo JavaScript) -->
+<template id="search-section-template">
+    <div class="d-flex flex-column gap-2 search-section">
+        <span class="search-section-title fw-700 text-muted text-uppercase section-title-text"></span>
+        <div class="d-flex flex-column gap-1 section-items-container">
+        </div>
+    </div>
+</template>
+
+<template id="search-item-template">
+    <a href="#" class="search-item d-flex align-items-center gap-3 padding-3 text-decoration-none item-link">
+        <div class="d-flex align-items-center justify-content-center rounded padding-2 item-icon-wrapper">
+            <!-- svg injected here -->
+        </div>
+        <div class="d-flex flex-column gap-half">
+            <p class="fw-700 m-0 text-primary item-title"></p>
+            <span class="text-secondary item-subtitle"></span>
+        </div>
+    </a>
+</template>

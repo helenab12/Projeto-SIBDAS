@@ -1727,30 +1727,118 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// Lógica do Modal de Pesquisa Global (Foco automático e alternância de estado)
+// Lógica do Modal de Pesquisa Global (AJAX)
 document.addEventListener("DOMContentLoaded", () => {
     const searchModal = document.getElementById("search-modal");
     if (searchModal) {
         const searchInput = document.getElementById("global-search-input");
         const quickAccess = document.getElementById("search-quick-access");
         const searchResults = document.getElementById("search-results");
+        const searchEmpty = document.getElementById("search-empty");
+        const searchLoading = document.getElementById("search-loading");
+        const searchEmptyTerm = document.getElementById("search-empty-term");
+        const searchUrl = searchModal.getAttribute("data-search-url");
 
+        let debounceTimeout = null;
+
+        // Foco automático ao abrir o modal
         searchModal.addEventListener("shown.bs.modal", () => {
             if (searchInput) {
                 searchInput.focus();
             }
         });
 
-        // Alternar estados ao escrever no input
+        // Alternar estados e fazer fetch ao escrever no input
         if (searchInput && quickAccess && searchResults) {
             searchInput.addEventListener("input", () => {
-                if (searchInput.value.trim().length > 0) {
+                const term = searchInput.value.trim();
+
+                clearTimeout(debounceTimeout);
+
+                if (term.length > 0) {
                     quickAccess.classList.add("d-none");
-                    searchResults.classList.remove("d-none");
+                    searchResults.classList.add("d-none");
+                    searchEmpty.classList.add("d-none");
+                    searchLoading.classList.remove("d-none");
+
+                    // Debounce: esperar 300ms antes de pesquisar
+                    debounceTimeout = setTimeout(() => {
+                        performSearch(term);
+                    }, 300);
                 } else {
                     quickAccess.classList.remove("d-none");
                     searchResults.classList.add("d-none");
+                    searchEmpty.classList.add("d-none");
+                    searchLoading.classList.add("d-none");
+                    searchResults.innerHTML = "";
                 }
+            });
+        }
+
+        async function performSearch(term) {
+            try {
+                const response = await fetch(`${searchUrl}?q=${encodeURIComponent(term)}`);
+                if (!response.ok) throw new Error("Erro de rede ao pesquisar");
+                
+                const data = await response.json();
+                
+                searchLoading.classList.add("d-none");
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                if (data.length === 0) {
+                    searchEmptyTerm.textContent = term;
+                    searchEmpty.classList.remove("d-none");
+                    searchResults.classList.add("d-none");
+                } else {
+                    renderSearchResults(data);
+                    searchResults.classList.remove("d-none");
+                    searchEmpty.classList.add("d-none");
+                }
+
+            } catch (error) {
+                console.error("Erro na pesquisa:", error);
+                searchLoading.classList.add("d-none");
+                searchEmptyTerm.textContent = term + " (Ocorreu um erro)";
+                searchEmpty.classList.remove("d-none");
+            }
+        }
+
+        function renderSearchResults(sections) {
+            searchResults.innerHTML = "";
+            const sectionTemplate = document.getElementById("search-section-template");
+            const itemTemplate = document.getElementById("search-item-template");
+
+            if (!sectionTemplate || !itemTemplate) {
+                console.error("Templates de pesquisa não encontrados");
+                return;
+            }
+
+            sections.forEach(section => {
+                const sectionClone = sectionTemplate.content.cloneNode(true);
+                sectionClone.querySelector(".section-title-text").textContent = section.title;
+                const itemsContainer = sectionClone.querySelector(".section-items-container");
+
+                section.items.forEach(item => {
+                    const itemClone = itemTemplate.content.cloneNode(true);
+                    
+                    const link = itemClone.querySelector(".item-link");
+                    link.href = item.url;
+                    
+                    const iconWrapper = itemClone.querySelector(".item-icon-wrapper");
+                    iconWrapper.style.backgroundColor = section.bg;
+                    iconWrapper.style.color = section.color;
+                    iconWrapper.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${section.icon}</svg>`;
+                    
+                    itemClone.querySelector(".item-title").textContent = item.title;
+                    itemClone.querySelector(".item-subtitle").textContent = item.subtitle;
+
+                    itemsContainer.appendChild(itemClone);
+                });
+
+                searchResults.appendChild(sectionClone);
             });
         }
 
@@ -1762,7 +1850,11 @@ document.addEventListener("DOMContentLoaded", () => {
             if (quickAccess && searchResults) {
                 quickAccess.classList.remove("d-none");
                 searchResults.classList.add("d-none");
+                searchEmpty.classList.add("d-none");
+                searchLoading.classList.add("d-none");
+                searchResults.innerHTML = "";
             }
+            clearTimeout(debounceTimeout);
         });
     }
 });
