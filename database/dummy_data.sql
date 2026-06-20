@@ -111,7 +111,7 @@ INSERT INTO `Localizacao` (`idServico`, `nomeSala`, `ativo`, `dataCriacao`, `dat
 (9, 'Sala 101', true, '2024-02-01 08:40:00', '2024-02-01 08:40:00'),
 (10, 'Sala 201', false,'2024-02-01 08:45:00', '2024-02-01 08:45:00');
 
--- 4. Permissao (62 permissões no total)
+-- 4. Permissao (64 permissões no total)
 INSERT INTO `Permissao` (`chave`, `descricao`, `ativo`) VALUES
 ('reports.generate',     'Gerar relatórios e exportar dados', false), 
 ('view.searchbar', 'Aceder à barra de pesquisa', true), 
@@ -174,7 +174,9 @@ INSERT INTO `Permissao` (`chave`, `descricao`, `ativo`) VALUES
 ('content.edit', 'Editar conteúdos do front office', true), 
 ('content.cards.create', 'Criar cartões', true), 
 ('content.cards.edit', 'Editar cartões', true), 
-('content.cards.delete', 'Eliminar cartões', true);
+('content.cards.delete', 'Eliminar cartões', true),
+('security.backups', 'Acesso à gestão de backups', 1),
+('inventory.view.transfers', 'Acesso às transferências', 1);
 
 
 -- 5. Perfil (5 — conforme profiles.php)
@@ -274,18 +276,18 @@ INSERT INTO `Pessoa` (`nome`, `email`, `contactoTelefonico`, `nif`, `funcao`, `d
 ('Beatriz Lopes',           'beatriz.lopes@hospital.pt',      '+351912000010', '198765432', 'Médico',         'Consultas',          true, '2024-03-01 09:45:00', '2024-03-01 09:45:00'),
 ('Helena Teste',            'helena.teste@hospital.pt',       '+351912000011', '123123123', 'Administrador',  'Sistemas',           true, '2024-03-01 09:50:00', '2024-03-01 09:50:00');
 
--- 9. PerfilPermissao (5 perfis × 62 permissões = 310 registos)
+-- 9. PerfilPermissao (5 perfis × 64 permissões = 320 registos)
 INSERT INTO `PerfilPermissao` (`idPerfil`, `idPermissao`, `possui`) VALUES
 -- Administrador (idPerfil=1) — TODAS true
-(1,1,true),(1,2,true),(1,3,true),(1,4,true),(1,5,true),(1,6,true),(1,7,true),(1,8,true),(1,9,true),(1,10,true),(1,11,true),(1,12,true),(1,13,true),(1,14,true),(1,15,true),(1,16,true),(1,17,true),(1,18,true),(1,19,true),(1,20,true),(1,21,true),(1,22,true),(1,23,true),(1,24,true),(1,25,true),(1,26,true),(1,27,true),(1,28,true),(1,29,true),(1,30,true),(1,31,true),(1,32,true),(1,33,true),(1,34,true),(1,35,true),(1,36,true),(1,37,true),(1,38,true),(1,39,true),(1,40,true),(1,41,true),(1,42,true),(1,43,true),(1,44,true),(1,45,true),(1,46,true),(1,47,true),(1,48,true),(1,49,true),(1,50,true),(1,51,true),(1,52,true),(1,53,true),(1,54,true),(1,55,true),(1,56,true),(1,57,true),(1,58,true),(1,59,true),(1,60,true),(1,61,true),(1,62,true),
+(1,1,true),(1,2,true),(1,3,true),(1,4,true),(1,5,true),(1,6,true),(1,7,true),(1,8,true),(1,9,true),(1,10,true),(1,11,true),(1,12,true),(1,13,true),(1,14,true),(1,15,true),(1,16,true),(1,17,true),(1,18,true),(1,19,true),(1,20,true),(1,21,true),(1,22,true),(1,23,true),(1,24,true),(1,25,true),(1,26,true),(1,27,true),(1,28,true),(1,29,true),(1,30,true),(1,31,true),(1,32,true),(1,33,true),(1,34,true),(1,35,true),(1,36,true),(1,37,true),(1,38,true),(1,39,true),(1,40,true),(1,41,true),(1,42,true),(1,43,true),(1,44,true),(1,45,true),(1,46,true),(1,47,true),(1,48,true),(1,49,true),(1,50,true),(1,51,true),(1,52,true),(1,53,true),(1,54,true),(1,55,true),(1,56,true),(1,57,true),(1,58,true),(1,59,true),(1,60,true),(1,61,true),(1,62,true),(1,63,true),(1,64,true),
 -- Engenheiro Biomédico (idPerfil=2)
-(2,1,true),(2,2,true),(2,3,true),(2,4,true),(2,5,true),(2,6,true),(2,7,true),(2,8,true),(2,9,false),(2,10,false),(2,11,false),(2,12,false),(2,13,false),(2,14,false),(2,15,false),(2,16,false),(2,17,false),(2,18,true),(2,19,true),(2,20,true),(2,21,true),(2,22,false),(2,23,true),(2,24,true),(2,25,true),(2,26,true),(2,27,true),(2,28,true),(2,29,true),(2,30,true),(2,31,true),(2,32,true),(2,33,true),(2,34,true),(2,35,true),(2,36,true),(2,37,true),(2,38,true),(2,39,false),(2,40,true),(2,41,true),(2,42,false),(2,43,true),(2,44,true),(2,45,false),(2,46,true),(2,47,true),(2,48,false),(2,49,false),(2,50,false),(2,51,false),(2,52,false),(2,53,false),(2,54,false),(2,55,false),(2,56,false),(2,57,true),(2,58,false),(2,59,false),(2,60,false),(2,61,false),(2,62,false),
+(2,1,true),(2,2,true),(2,3,true),(2,4,true),(2,5,true),(2,6,true),(2,7,true),(2,8,true),(2,9,false),(2,10,false),(2,11,false),(2,12,false),(2,13,false),(2,14,false),(2,15,false),(2,16,false),(2,17,false),(2,18,true),(2,19,true),(2,20,true),(2,21,true),(2,22,false),(2,23,true),(2,24,true),(2,25,true),(2,26,true),(2,27,true),(2,28,true),(2,29,true),(2,30,true),(2,31,true),(2,32,true),(2,33,true),(2,34,true),(2,35,true),(2,36,true),(2,37,true),(2,38,true),(2,39,false),(2,40,true),(2,41,true),(2,42,false),(2,43,true),(2,44,true),(2,45,false),(2,46,true),(2,47,true),(2,48,false),(2,49,false),(2,50,false),(2,51,false),(2,52,false),(2,53,false),(2,54,false),(2,55,false),(2,56,false),(2,57,true),(2,58,false),(2,59,false),(2,60,false),(2,61,false),(2,62,false),(2,63,false),(2,64,true),
 -- Técnico de Manutenção (idPerfil=3)
-(3,1,false),(3,2,true),(3,3,true),(3,4,false),(3,5,true),(3,6,false),(3,7,false),(3,8,false),(3,9,false),(3,10,false),(3,11,false),(3,12,false),(3,13,false),(3,14,false),(3,15,false),(3,16,false),(3,17,false),(3,18,true),(3,19,false),(3,20,false),(3,21,false),(3,22,false),(3,23,false),(3,24,false),(3,25,true),(3,26,true),(3,27,false),(3,28,true),(3,29,true),(3,30,false),(3,31,false),(3,32,false),(3,33,false),(3,34,true),(3,35,true),(3,36,false),(3,37,false),(3,38,false),(3,39,false),(3,40,false),(3,41,false),(3,42,false),(3,43,false),(3,44,false),(3,45,false),(3,46,false),(3,47,false),(3,48,false),(3,49,false),(3,50,false),(3,51,false),(3,52,false),(3,53,false),(3,54,false),(3,55,false),(3,56,false),(3,57,false),(3,58,false),(3,59,false),(3,60,false),(3,61,false),(3,62,false),
+(3,1,false),(3,2,true),(3,3,true),(3,4,false),(3,5,true),(3,6,false),(3,7,false),(3,8,false),(3,9,false),(3,10,false),(3,11,false),(3,12,false),(3,13,false),(3,14,false),(3,15,false),(3,16,false),(3,17,false),(3,18,true),(3,19,false),(3,20,false),(3,21,false),(3,22,false),(3,23,false),(3,24,false),(3,25,true),(3,26,true),(3,27,false),(3,28,true),(3,29,true),(3,30,false),(3,31,false),(3,32,false),(3,33,false),(3,34,true),(3,35,true),(3,36,false),(3,37,false),(3,38,false),(3,39,false),(3,40,false),(3,41,false),(3,42,false),(3,43,false),(3,44,false),(3,45,false),(3,46,false),(3,47,false),(3,48,false),(3,49,false),(3,50,false),(3,51,false),(3,52,false),(3,53,false),(3,54,false),(3,55,false),(3,56,false),(3,57,false),(3,58,false),(3,59,false),(3,60,false),(3,61,false),(3,62,false),(3,63,false),(3,64,true),
 -- Aprovisionamento (idPerfil=4)
-(4,1,true),(4,2,true),(4,3,true),(4,4,false),(4,5,true),(4,6,true),(4,7,true),(4,8,false),(4,9,false),(4,10,false),(4,11,false),(4,12,false),(4,13,false),(4,14,false),(4,15,false),(4,16,false),(4,17,false),(4,18,true),(4,19,false),(4,20,true),(4,21,true),(4,22,false),(4,23,false),(4,24,false),(4,25,false),(4,26,false),(4,27,false),(4,28,false),(4,29,false),(4,30,false),(4,31,true),(4,32,true),(4,33,false),(4,34,true),(4,35,true),(4,36,false),(4,37,false),(4,38,false),(4,39,false),(4,40,true),(4,41,true),(4,42,false),(4,43,false),(4,44,false),(4,45,false),(4,46,false),(4,47,false),(4,48,false),(4,49,false),(4,50,false),(4,51,false),(4,52,false),(4,53,false),(4,54,false),(4,55,false),(4,56,false),(4,57,false),(4,58,false),(4,59,false),(4,60,false),(4,61,false),(4,62,false),
+(4,1,true),(4,2,true),(4,3,true),(4,4,false),(4,5,true),(4,6,true),(4,7,true),(4,8,false),(4,9,false),(4,10,false),(4,11,false),(4,12,false),(4,13,false),(4,14,false),(4,15,false),(4,16,false),(4,17,false),(4,18,true),(4,19,false),(4,20,true),(4,21,true),(4,22,false),(4,23,false),(4,24,false),(4,25,false),(4,26,false),(4,27,false),(4,28,false),(4,29,false),(4,30,false),(4,31,true),(4,32,true),(4,33,false),(4,34,true),(4,35,true),(4,36,false),(4,37,false),(4,38,false),(4,39,false),(4,40,true),(4,41,true),(4,42,false),(4,43,false),(4,44,false),(4,45,false),(4,46,false),(4,47,false),(4,48,false),(4,49,false),(4,50,false),(4,51,false),(4,52,false),(4,53,false),(4,54,false),(4,55,false),(4,56,false),(4,57,false),(4,58,false),(4,59,false),(4,60,false),(4,61,false),(4,62,false),(4,63,false),(4,64,false),
 -- Consulta (idPerfil=5)
-(5,1,false),(5,2,true),(5,3,true),(5,4,false),(5,5,false),(5,6,false),(5,7,false),(5,8,false),(5,9,false),(5,10,false),(5,11,false),(5,12,false),(5,13,false),(5,14,false),(5,15,false),(5,16,false),(5,17,false),(5,18,true),(5,19,false),(5,20,false),(5,21,false),(5,22,false),(5,23,false),(5,24,false),(5,25,false),(5,26,false),(5,27,false),(5,28,false),(5,29,false),(5,30,false),(5,31,false),(5,32,false),(5,33,false),(5,34,false),(5,35,false),(5,36,false),(5,37,false),(5,38,false),(5,39,false),(5,40,false),(5,41,false),(5,42,false),(5,43,false),(5,44,false),(5,45,false),(5,46,false),(5,47,false),(5,48,false),(5,49,false),(5,50,false),(5,51,false),(5,52,false),(5,53,false),(5,54,false),(5,55,false),(5,56,false),(5,57,false),(5,58,false),(5,59,false),(5,60,false),(5,61,false),(5,62,false);
+(5,1,false),(5,2,true),(5,3,true),(5,4,false),(5,5,false),(5,6,false),(5,7,false),(5,8,false),(5,9,false),(5,10,false),(5,11,false),(5,12,false),(5,13,false),(5,14,false),(5,15,false),(5,16,false),(5,17,false),(5,18,true),(5,19,false),(5,20,false),(5,21,false),(5,22,false),(5,23,false),(5,24,false),(5,25,false),(5,26,false),(5,27,false),(5,28,false),(5,29,false),(5,30,false),(5,31,false),(5,32,false),(5,33,false),(5,34,false),(5,35,false),(5,36,false),(5,37,false),(5,38,false),(5,39,false),(5,40,false),(5,41,false),(5,42,false),(5,43,false),(5,44,false),(5,45,false),(5,46,false),(5,47,false),(5,48,false),(5,49,false),(5,50,false),(5,51,false),(5,52,false),(5,53,false),(5,54,false),(5,55,false),(5,56,false),(5,57,false),(5,58,false),(5,59,false),(5,60,false),(5,61,false),(5,62,false),(5,63,false),(5,64,false);
 
 
 -- 10. Fornecedor (10)
@@ -3249,10 +3251,3 @@ INSERT INTO `NotificacaoUtilizador` (`idNotificacao`, `idUtilizador`, `lida`, `d
 (40, 8, true, '2025-09-12 18:00:00'),
 (40, 9, false, NULL),
 (40, 10, false, NULL);
-
--- 11. Permissões de Backup
-INSERT INTO `Permissao` (`chave`, `descricao`, `ativo`) VALUES
-('security.backups', 'Acesso à gestão de backups', 1);
-
-INSERT INTO `PerfilPermissao` (`idPerfil`, `idPermissao`, `possui`) 
-SELECT 1, idPermissao, 1 FROM `Permissao` WHERE `chave` = 'security.backups';

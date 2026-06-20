@@ -40,9 +40,9 @@ if (!function_exists('isDropdownActive')) {
             <!-- Inventário (dropdown) -->
             <li class="nav-dropdown">
                 <a href="#collapseInventario"
-                    class="nav-dropdown-toggle <?php echo !isDropdownActive(['equipment_list.php', 'equipment_archive.php', 'detailed_view.php', 'components.php', 'categories.php']) ? 'collapsed' : ''; ?>"
+                    class="nav-dropdown-toggle <?php echo !isDropdownActive(['equipment_list.php', 'equipment_archive.php', 'detailed_view.php', 'components.php', 'categories.php', 'transfers.php']) ? 'collapsed' : ''; ?>"
                     data-bs-toggle="collapse" role="button"
-                    aria-expanded="<?php echo isDropdownActive(['equipment_list.php', 'equipment_archive.php', 'detailed_view.php', 'components.php', 'categories.php']) ? 'true' : 'false'; ?>"
+                    aria-expanded="<?php echo isDropdownActive(['equipment_list.php', 'equipment_archive.php', 'detailed_view.php', 'components.php', 'categories.php', 'transfers.php']) ? 'true' : 'false'; ?>"
                     aria-controls="collapseInventario">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -59,7 +59,7 @@ if (!function_exists('isDropdownActive')) {
                         <path d="m6 9 6 6 6-6" />
                     </svg>
                 </a>
-                <div class="collapse <?php echo isDropdownActive(['equipment_list.php', 'equipment_archive.php', 'detailed_view.php', 'components.php', 'categories.php']) ? 'show' : ''; ?>"
+                <div class="collapse <?php echo isDropdownActive(['equipment_list.php', 'equipment_archive.php', 'detailed_view.php', 'components.php', 'categories.php', 'transfers.php']) ? 'show' : ''; ?>"
                     id="collapseInventario">
                     <ul class="nav-dropdown-menu d-flex flex-column gap-1">
                         <?php if (tem_permissao('view.equipments') || tem_permissao('view.equipment_archive')): ?>
@@ -156,6 +156,19 @@ if (!function_exists('isDropdownActive')) {
                                     <path d="M3 5a2 2 0 0 0 2 2h3" />
                                     <path d="M3 3v13a2 2 0 0 0 2 2h3" />
                                 </svg>Categorias</a>
+                        </li>
+                        <?php endif; ?>
+                        <?php if (tem_permissao('inventory.view.transfers')): ?>
+                        <li class="<?php echo ($currentPage == 'transfers.php') ? 'active' : ''; ?>"><a
+                                href="<?= BASE_URL ?>private/inventory/transfers.php">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-arrow-right-left">
+                                    <path d="m16 3 4 4-4 4"/>
+                                    <path d="M20 7H4"/>
+                                    <path d="m8 21-4-4 4-4"/>
+                                    <path d="M4 17h16"/>
+                                </svg>Transferências</a>
                         </li>
                         <?php endif; ?>
                     </ul>
