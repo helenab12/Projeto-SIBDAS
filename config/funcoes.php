@@ -224,7 +224,7 @@ function registar_auditoria(
     $valorAntigo = null,
     $valorNovo = null
 ) {
-    $idUtilizador = $_SESSION['idUtilizador'] ?? null;
+    $idUtilizador = $_SESSION['id_utilizador'] ?? null;
 
     execute_query(
         "INSERT INTO HistoricoAuditoria 

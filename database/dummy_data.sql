@@ -3249,3 +3249,10 @@ INSERT INTO `NotificacaoUtilizador` (`idNotificacao`, `idUtilizador`, `lida`, `d
 (40, 8, true, '2025-09-12 18:00:00'),
 (40, 9, false, NULL),
 (40, 10, false, NULL);
+
+-- 11. Permissões de Backup
+INSERT INTO `Permissao` (`chave`, `descricao`, `ativo`) VALUES
+('security.backups', 'Acesso à gestão de backups', 1);
+
+INSERT INTO `PerfilPermissao` (`idPerfil`, `idPermissao`, `possui`) 
+SELECT 1, idPermissao, 1 FROM `Permissao` WHERE `chave` = 'security.backups';

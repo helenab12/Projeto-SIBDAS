@@ -242,9 +242,9 @@ if (!function_exists('isDropdownActive')) {
             <?php if (tem_permissao('view.safety')): ?>
             <li class="nav-dropdown">
                 <a href="#mobileCollapseSeguranca"
-                    class="nav-dropdown-toggle <?php echo !isDropdownActive(['users.php', 'profiles.php', 'permissions.php', 'recycling.php', 'audit_logs.php']) ? 'collapsed' : ''; ?>"
+                    class="nav-dropdown-toggle <?php echo !isDropdownActive(['users.php', 'profiles.php', 'permissions.php', 'recycling.php', 'backups.php', 'audit_logs.php']) ? 'collapsed' : ''; ?>"
                     data-bs-toggle="collapse" role="button"
-                    aria-expanded="<?php echo isDropdownActive(['users.php', 'profiles.php', 'permissions.php', 'recycling.php', 'audit_logs.php']) ? 'true' : 'false'; ?>"
+                    aria-expanded="<?php echo isDropdownActive(['users.php', 'profiles.php', 'permissions.php', 'recycling.php', 'backups.php', 'audit_logs.php']) ? 'true' : 'false'; ?>"
                     aria-controls="mobileCollapseSeguranca">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -258,7 +258,7 @@ if (!function_exists('isDropdownActive')) {
                         <path d="m6 9 6 6 6-6" />
                     </svg>
                 </a>
-                <div class="collapse <?php echo isDropdownActive(['users.php', 'profiles.php', 'permissions.php', 'recycling.php', 'audit_logs.php']) ? 'show' : ''; ?>"
+                <div class="collapse <?php echo isDropdownActive(['users.php', 'profiles.php', 'permissions.php', 'recycling.php', 'backups.php', 'audit_logs.php']) ? 'show' : ''; ?>"
                     id="mobileCollapseSeguranca">
                     <ul class="nav-dropdown-menu d-flex flex-column gap-1">
                         <?php if (tem_permissao('view.users')): ?>
@@ -309,6 +309,20 @@ if (!function_exists('isDropdownActive')) {
                                         d="m9.344 5.811 1.093-1.892A1.83 1.83 0 0 1 11.985 3a1.784 1.784 0 0 1 1.546.888l3.943 6.843" />
                                     <path d="m13.378 9.633 4.096 1.098 1.097-4.096" />
                                 </svg>Reciclagem</a></li>
+                        <?php endif; ?>
+                        <?php if (tem_permissao('security.backups')): ?>
+                        <li class="<?php echo ($currentPage == 'backups.php') ? 'active' : ''; ?>"><a
+                                href="<?= BASE_URL ?>private/security/backups.php">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-database-backup-icon lucide-database-backup">
+                                    <ellipse cx="12" cy="5" rx="9" ry="3" />
+                                    <path d="M3 12a9 3 0 0 0 5 2.69" />
+                                    <path d="M21 9.3V5" />
+                                    <path d="M3 5v14a9 3 0 0 0 6.47 2.88" />
+                                    <path d="M12 12v4h4" />
+                                    <path d="M13 20a5 5 0 0 0 9-3 4.5 4.5 0 0 0-4.5-4.5c-1.33 0-2.54.54-3.41 1.41L12 16" />
+                                </svg>Backups</a></li>
                         <?php endif; ?>
                         <?php if (tem_permissao('view.audit.logs')): ?>
                         <li class="<?php echo ($currentPage == 'audit_logs.php') ? 'active' : ''; ?>"><a
