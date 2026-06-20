@@ -29,8 +29,18 @@ try {
     $params = [];
 
     if ($search_query !== '') {
-        $whereConditions[] = "(chave LIKE :search OR descricao LIKE :search)";
-        $params['search'] = '%' . $search_query . '%';
+        $decryptedId = aes_decrypt($search_query);
+        if ($decryptedId !== false && is_numeric($decryptedId)) {
+            $whereConditions[] = "idPermissao = :searchId";
+            $params['searchId'] = (int)$decryptedId;
+        } elseif (is_numeric($search_query)) {
+            $whereConditions[] = "(idPermissao = :searchExact OR chave LIKE :search OR descricao LIKE :search)";
+            $params['searchExact'] = (int)$search_query;
+            $params['search'] = '%' . $search_query . '%';
+        } else {
+            $whereConditions[] = "(chave LIKE :search OR descricao LIKE :search)";
+            $params['search'] = '%' . $search_query . '%';
+        }
     }
 
     $whereSQL = implode(" AND ", $whereConditions);

@@ -22,6 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ligacao
         );
 
+        registar_auditoria($ligacao, 'Equipamento', $id, 'Edição', 'arquivado', '0', '1');
+
         $_SESSION['success_message'] = "Equipamento arquivado com sucesso!";
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro ao arquivar equipamento: " . $e->getMessage();

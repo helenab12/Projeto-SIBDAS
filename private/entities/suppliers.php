@@ -54,8 +54,18 @@ try {
     $params = [];
 
     if ($search_query !== '') {
-        $whereConditions[] = "(f.nome LIKE :search OR f.nifFornecedor LIKE :search OR f.email LIKE :search OR p.nome LIKE :search)";
-        $params['search'] = '%' . $search_query . '%';
+        $decryptedId = aes_decrypt($search_query);
+        if ($decryptedId !== false && is_numeric($decryptedId)) {
+            $whereConditions[] = "f.idFornecedor = :searchId";
+            $params['searchId'] = (int)$decryptedId;
+        } elseif (is_numeric($search_query)) {
+            $whereConditions[] = "(f.idFornecedor = :searchExact OR f.nome LIKE :search OR f.nifFornecedor LIKE :search OR f.email LIKE :search OR p.nome LIKE :search)";
+            $params['searchExact'] = (int)$search_query;
+            $params['search'] = '%' . $search_query . '%';
+        } else {
+            $whereConditions[] = "(f.nome LIKE :search OR f.nifFornecedor LIKE :search OR f.email LIKE :search OR p.nome LIKE :search)";
+            $params['search'] = '%' . $search_query . '%';
+        }
     }
 
     if ($tipo_filter !== '') {

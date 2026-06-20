@@ -22,6 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ligacao
         );
 
+        // Registar auditoria
+        registar_auditoria($ligacao, 'Permissao', $id, 'Remoção', 'ativo', '1', '0');
+
         $_SESSION['success_message'] = "Permissão eliminada com sucesso!";
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro ao eliminar permissão: " . $e->getMessage();

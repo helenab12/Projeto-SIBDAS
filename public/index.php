@@ -59,6 +59,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $ligacao
             );
 
+            $idPedido = $ligacao->lastInsertId();
+
+            registar_auditoria(
+                $ligacao,
+                'PedidoDemonstracao',
+                $idPedido,
+                'Criação',
+                null,
+                null,
+                null
+            );
+
             $_SESSION['success_message'] = "Pedido de demonstração enviado com sucesso! Entraremos em contacto brevemente.";
 
             // Para limpar o POST data e evitar resubmissão, fazemos redirect

@@ -30,8 +30,18 @@ try {
     $params = [];
 
     if ($search_query !== '') {
-        $whereConditions[] = "(nome LIKE :search OR codigoPrefix LIKE :search OR descricao LIKE :search)";
-        $params['search'] = '%' . $search_query . '%';
+        $decryptedId = aes_decrypt($search_query);
+        if ($decryptedId !== false && is_numeric($decryptedId)) {
+            $whereConditions[] = "idCategoria = :searchId";
+            $params['searchId'] = (int)$decryptedId;
+        } elseif (is_numeric($search_query)) {
+            $whereConditions[] = "(idCategoria = :searchExact OR nome LIKE :search OR codigoPrefix LIKE :search OR descricao LIKE :search)";
+            $params['searchExact'] = (int)$search_query;
+            $params['search'] = '%' . $search_query . '%';
+        } else {
+            $whereConditions[] = "(nome LIKE :search OR codigoPrefix LIKE :search OR descricao LIKE :search)";
+            $params['search'] = '%' . $search_query . '%';
+        }
     }
 
     $whereSQL = implode(" AND ", $whereConditions);

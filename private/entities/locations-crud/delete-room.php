@@ -16,6 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ligacao
         );
 
+        registar_auditoria($ligacao, 'Localizacao', $idLocalizacao, 'Remoção', 'ativo', '1', '0');
+
         $_SESSION['success_message'] = "Sala removida (desativada) com sucesso!";
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro ao apagar sala: " . $e->getMessage();

@@ -36,6 +36,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ligacao
         );
 
+        $novoId = $ligacao->lastInsertId();
+        registar_auditoria($ligacao, 'Piso', $novoId, 'Criação');
+
         $_SESSION['success_message'] = "Piso criado com sucesso!";
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro ao criar piso: " . $e->getMessage();

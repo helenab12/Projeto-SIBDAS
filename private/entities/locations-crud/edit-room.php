@@ -43,12 +43,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception("Já existe uma sala (ativa ou inativa) com este nome neste serviço.");
         }
 
+        // Ler o estado antigo antes do Update para Auditoria
+        $stmtAntigo = execute_query(
+            "SELECT nomeSala FROM Localizacao WHERE idLocalizacao = :id",
+            ['id' => $idLocalizacao],
+            $ligacao
+        );
+        $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
+
         // Fazer o update
         execute_query(
             "UPDATE Localizacao SET nomeSala = :nome WHERE idLocalizacao = :id",
             ['nome' => $nomeSala, 'id' => $idLocalizacao],
             $ligacao
         );
+
+        // Registar auditoria
+        registar_auditoria_edicao($ligacao, 'Localizacao', $idLocalizacao, $antigo, [
+            'nomeSala' => $nomeSala
+        ]);
 
         $_SESSION['success_message'] = "Sala editada com sucesso!";
     } catch (Exception $e) {

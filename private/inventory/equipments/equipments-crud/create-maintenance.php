@@ -72,6 +72,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ligacao
         );
 
+        $novoId = $ligacao->lastInsertId();
+        registar_auditoria($ligacao, 'Manutencao', $novoId, 'Criação');
+
         $_SESSION['success_message'] = "Registo de manutenção adicionado com sucesso!";
 
     } catch (Exception $e) {

@@ -5,27 +5,42 @@ try {
         $ligacao = connect_to_db();
     }
 
+    // Pre-fetch IDs para evitar consultas MySQL IN (SELECT) lentas
+    $stmtM = execute_query("SELECT idManutencao FROM Manutencao WHERE idEquipamento = :id", ['id' => $id], $ligacao);
+    $idManutencoes = array_column($stmtM->fetchAll(PDO::FETCH_ASSOC), 'idManutencao');
+
+    $stmtG = execute_query("SELECT idGarantiaContrato FROM GarantiaContrato WHERE idEquipamento = :id", ['id' => $id], $ligacao);
+    $idGarantias = array_column($stmtG->fetchAll(PDO::FETCH_ASSOC), 'idGarantiaContrato');
+
+    $stmtD = execute_query("SELECT idDocumento FROM Documento WHERE idEquipamento = :id", ['id' => $id], $ligacao);
+    $idDocumentos = array_column($stmtD->fetchAll(PDO::FETCH_ASSOC), 'idDocumento');
+
+    $whereConditions = ["(ha.tabelaAfetada = 'Equipamento' AND ha.idRegistoAfetado = :id)"];
+    $params = ['id' => $id];
+
+    if (!empty($idManutencoes)) {
+        $whereConditions[] = "(ha.tabelaAfetada = 'Manutencao' AND ha.idRegistoAfetado IN (" . implode(',', array_map('intval', $idManutencoes)) . "))";
+    }
+    if (!empty($idGarantias)) {
+        $whereConditions[] = "(ha.tabelaAfetada = 'GarantiaContrato' AND ha.idRegistoAfetado IN (" . implode(',', array_map('intval', $idGarantias)) . "))";
+    }
+    if (!empty($idDocumentos)) {
+        $whereConditions[] = "(ha.tabelaAfetada = 'Documento' AND ha.idRegistoAfetado IN (" . implode(',', array_map('intval', $idDocumentos)) . "))";
+    }
+
+    $whereConditions[] = "(ha.tabelaAfetada = 'FornecedorEquipamento' AND ha.idRegistoAfetado = :id)";
+    $whereConditions[] = "(ha.tabelaAfetada = 'ComponenteEquipamento' AND ha.idRegistoAfetado = :id)";
+
+    $whereSQL = implode(" OR ", $whereConditions);
+
     $stmtAuditoria = execute_query(
         "SELECT ha.*, p.nome AS nomeUtilizador 
          FROM HistoricoAuditoria ha
          LEFT JOIN Utilizador u ON ha.idUtilizador = u.idUtilizador
          LEFT JOIN Pessoa p ON u.idPessoa = p.idPessoa
-         WHERE 
-            (ha.tabelaAfetada = 'Equipamento' AND ha.idRegistoAfetado = :id1)
-            OR (ha.tabelaAfetada = 'Manutencao' AND ha.idRegistoAfetado IN (SELECT idManutencao FROM Manutencao WHERE idEquipamento = :id2))
-            OR (ha.tabelaAfetada = 'GarantiaContrato' AND ha.idRegistoAfetado IN (SELECT idGarantiaContrato FROM GarantiaContrato WHERE idEquipamento = :id3))
-            OR (ha.tabelaAfetada = 'Documento' AND ha.idRegistoAfetado IN (SELECT idDocumento FROM Documento WHERE idEquipamento = :id4))
-            OR (ha.tabelaAfetada = 'FornecedorEquipamento' AND ha.idRegistoAfetado = :id5)
-            OR (ha.tabelaAfetada = 'ComponenteEquipamento' AND ha.idRegistoAfetado = :id6)
+         WHERE $whereSQL
          ORDER BY ha.dataCriacao DESC",
-        [
-            'id1' => $id,
-            'id2' => $id,
-            'id3' => $id,
-            'id4' => $id,
-            'id5' => $id,
-            'id6' => $id
-        ],
+        $params,
         $ligacao
     );
 
@@ -87,8 +102,7 @@ try {
         </div>
 
         <?php if (empty($auditoria)): ?>
-            <div
-                class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4 w-100">
+            <div class="padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4 w-100">
                 <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"

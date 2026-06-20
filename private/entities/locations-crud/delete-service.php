@@ -16,6 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ligacao
         );
 
+        registar_auditoria($ligacao, 'Servico', $idServico, 'Remoção', 'ativo', '1', '0');
+
         $_SESSION['success_message'] = "Serviço removido (desativado) com sucesso!";
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro ao apagar serviço: " . $e->getMessage();

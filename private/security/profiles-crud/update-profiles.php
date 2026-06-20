@@ -18,6 +18,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
             $idPerfil = (int) $idPerfil;
 
+            $stmtPerfil = execute_query("SELECT nome FROM Perfil WHERE idPerfil = :id", ['id' => $idPerfil], $ligacao);
+            $nomePerfil = $stmtPerfil->fetchColumn() ?: "Perfil $idPerfil";
+
             foreach ($perms as $encPermId => $value) {
                 $idPermissao = aes_decrypt($encPermId);
                 if ($idPermissao === false) {
@@ -31,17 +34,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 }
                 $possui = (int) $value;
 
-                execute_query(
-                    "INSERT INTO PerfilPermissao (idPerfil, idPermissao, possui) 
-                     VALUES (:idPerfil, :idPermissao, :possui) 
-                     ON DUPLICATE KEY UPDATE possui = :possui",
-                    [
-                        'idPerfil' => $idPerfil,
-                        'idPermissao' => $idPermissao,
-                        'possui' => $possui
-                    ],
+                $stmtOld = execute_query(
+                    "SELECT possui FROM PerfilPermissao WHERE idPerfil = :idPerfil AND idPermissao = :idPermissao",
+                    ['idPerfil' => $idPerfil, 'idPermissao' => $idPermissao],
                     $ligacao
                 );
+                $oldRow = $stmtOld->fetch(PDO::FETCH_ASSOC);
+                $oldPossui = $oldRow ? (int)$oldRow['possui'] : null;
+
+                if ($oldPossui !== $possui) {
+                    execute_query(
+                        "INSERT INTO PerfilPermissao (idPerfil, idPermissao, possui) 
+                         VALUES (:idPerfil, :idPermissao, :possui) 
+                         ON DUPLICATE KEY UPDATE possui = :possui",
+                        [
+                            'idPerfil' => $idPerfil,
+                            'idPermissao' => $idPermissao,
+                            'possui' => $possui
+                        ],
+                        $ligacao
+                    );
+                    
+                    registar_auditoria($ligacao, 'Perfil', $idPermissao, 'Edição', $nomePerfil, $oldPossui === null ? 'N/A' : (string)$oldPossui, (string)$possui);
+                }
             }
         }
 

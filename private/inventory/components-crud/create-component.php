@@ -74,6 +74,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ligacao
         );
 
+        registar_auditoria($ligacao, 'Componente', $idComponente, 'Criação');
+
         $_SESSION['success_message'] = "Componente criado com sucesso!";
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro ao criar componente: " . $e->getMessage();

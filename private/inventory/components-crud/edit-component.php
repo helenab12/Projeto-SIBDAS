@@ -58,6 +58,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception("O SKU inserido já existe noutro registo.");
         }
 
+        // Ler o estado antigo antes do Update para Auditoria
+        $stmtAntigo = execute_query(
+            "SELECT codigoInterno, descricao, stock, stockMinimo, preco, idLocalizacao FROM Componente WHERE idComponente = :id",
+            ['id' => $idComponente],
+            $ligacao
+        );
+        $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
+
         // Atualizar Componente
         execute_query(
             "UPDATE Componente 
@@ -90,6 +98,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $ligacao
             );
         }
+
+        // Registar auditoria
+        registar_auditoria_edicao($ligacao, 'Componente', $idComponente, $antigo, [
+            'codigoInterno' => $sku,
+            'descricao' => $nome,
+            'stock' => $stock,
+            'stockMinimo' => $stockMin,
+            'preco' => $preco,
+            'idLocalizacao' => $idLocalizacao
+        ]);
 
         $_SESSION['success_message'] = "Componente editado com sucesso!";
     } catch (Exception $e) {

@@ -46,11 +46,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception("O código ou nome da categoria já existe noutro registo.");
         }
 
+        // Ler o estado antigo antes do Update para Auditoria
+        $stmtAntigo = execute_query(
+            "SELECT codigoPrefix, nome, descricao FROM CategoriaEquipamento WHERE idCategoria = :id",
+            ['id' => $id],
+            $ligacao
+        );
+        $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
+
         execute_query(
             "UPDATE CategoriaEquipamento SET codigoPrefix = :codigo, nome = :nome, descricao = :descricao WHERE idCategoria = :id",
             ['codigo' => $codigo, 'nome' => $nome, 'descricao' => $descricao, 'id' => $id],
             $ligacao
         );
+
+        // Registar auditoria
+        registar_auditoria_edicao($ligacao, 'CategoriaEquipamento', $id, $antigo, [
+            'codigoPrefix' => $codigo,
+            'nome' => $nome,
+            'descricao' => $descricao
+        ]);
 
         $_SESSION['success_message'] = "Categoria editada com sucesso!";
     } catch (Exception $e) {

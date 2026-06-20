@@ -36,6 +36,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ligacao
         );
 
+        $novoId = $ligacao->lastInsertId();
+        registar_auditoria($ligacao, 'Localizacao', $novoId, 'Criação');
+
         $_SESSION['success_message'] = "Sala criada com sucesso!";
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro ao criar sala: " . $e->getMessage();

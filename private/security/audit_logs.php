@@ -28,8 +28,18 @@ try {
     $params = [];
 
     if ($search_query !== '') {
-        $whereConditions[] = "(ha.acao LIKE :search OR p.nome LIKE :search OR ha.campoAfetado LIKE :search OR ha.valorAntigo LIKE :search OR ha.valorNovo LIKE :search OR ha.tabelaAfetada LIKE :search)";
-        $params['search'] = '%' . $search_query . '%';
+        $decryptedId = aes_decrypt($search_query);
+        if ($decryptedId !== false && is_numeric($decryptedId)) {
+            $whereConditions[] = "ha.idAuditoria = :searchId OR ha.idRegistoAfetado = :searchId";
+            $params['searchId'] = (int)$decryptedId;
+        } elseif (is_numeric($search_query)) {
+            $whereConditions[] = "(ha.idAuditoria = :searchExact OR ha.idRegistoAfetado = :searchExact OR ha.acao LIKE :search OR p.nome LIKE :search OR ha.campoAfetado LIKE :search OR ha.valorAntigo LIKE :search OR ha.valorNovo LIKE :search OR ha.tabelaAfetada LIKE :search)";
+            $params['searchExact'] = (int)$search_query;
+            $params['search'] = '%' . $search_query . '%';
+        } else {
+            $whereConditions[] = "(ha.acao LIKE :search OR p.nome LIKE :search OR ha.campoAfetado LIKE :search OR ha.valorAntigo LIKE :search OR ha.valorNovo LIKE :search OR ha.tabelaAfetada LIKE :search)";
+            $params['search'] = '%' . $search_query . '%';
+        }
     }
 
     if ($acao_filter !== '') {
@@ -106,6 +116,38 @@ try {
             'Edificio', 'Piso', 'Servico', 'Localizacao' => BASE_URL . "/private/entities/locations.php?search=" . urlencode($encryptedId),
             default => null
         };
+
+        if (!$searchUrl && in_array($row['tabelaAfetada'], ['Documento', 'Manutencao', 'GarantiaContrato'])) {
+            $idEquipamento = null;
+            $nav = '';
+            $tabelaSub = $row['tabelaAfetada'];
+            $idSub = $row['idRegistoAfetado'];
+            
+            try {
+                $stmtSub = null;
+                if ($tabelaSub === 'Documento') {
+                    $stmtSub = execute_query("SELECT idEquipamento FROM Documento WHERE idDocumento = :id", ['id' => $idSub], $ligacao);
+                    $nav = 'documentos';
+                } elseif ($tabelaSub === 'Manutencao') {
+                    $stmtSub = execute_query("SELECT idEquipamento FROM Manutencao WHERE idManutencao = :id", ['id' => $idSub], $ligacao);
+                    $nav = 'manutencoes';
+                } elseif ($tabelaSub === 'GarantiaContrato') {
+                    $stmtSub = execute_query("SELECT idEquipamento FROM GarantiaContrato WHERE idGarantiaContrato = :id", ['id' => $idSub], $ligacao);
+                    $nav = 'garantias';
+                }
+                
+                if ($stmtSub) {
+                    $rowSub = $stmtSub->fetch(PDO::FETCH_ASSOC);
+                    if ($rowSub && !empty($rowSub['idEquipamento'])) {
+                        $idEquipamento = $rowSub['idEquipamento'];
+                        $encEqId = aes_encrypt((string)$idEquipamento);
+                        $searchUrl = BASE_URL . "/private/inventory/equipments/detailed_view.php?id=" . urlencode($encEqId) . "&nav=" . $nav;
+                    }
+                }
+            } catch (Exception $e) {
+                // Silently handle if record doesn't exist or other error
+            }
+        }
 
         $idRender = htmlspecialchars($truncatedId);
         if ($searchUrl) {

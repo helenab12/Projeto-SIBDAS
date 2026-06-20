@@ -22,6 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ligacao
         );
 
+        registar_auditoria($ligacao, 'CategoriaEquipamento', $id, 'Remoção', 'ativo', '1', '0');
+
         $_SESSION['success_message'] = "Categoria eliminada com sucesso!";
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro ao eliminar categoria: " . $e->getMessage();

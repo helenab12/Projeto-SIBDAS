@@ -118,6 +118,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ligacao
         );
 
+        $novoId = $ligacao->lastInsertId();
+        registar_auditoria($ligacao, 'GarantiaContrato', $novoId, 'Criação');
+
         $_SESSION['success_message'] = "Registo adicionado com sucesso!";
 
     } catch (Exception $e) {

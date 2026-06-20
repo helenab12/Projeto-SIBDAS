@@ -30,8 +30,18 @@ try {
     $params = [];
 
     if ($search_query !== '') {
-        $whereConditions[] = "(p.nome LIKE :search OR u.emailAutenticacao LIKE :search OR p.email LIKE :search)";
-        $params['search'] = '%' . $search_query . '%';
+        $decryptedId = aes_decrypt($search_query);
+        if ($decryptedId !== false && is_numeric($decryptedId)) {
+            $whereConditions[] = "u.idUtilizador = :searchId OR p.idPessoa = :searchId";
+            $params['searchId'] = (int)$decryptedId;
+        } elseif (is_numeric($search_query)) {
+            $whereConditions[] = "(u.idUtilizador = :searchExact OR p.idPessoa = :searchExact OR p.nome LIKE :search OR u.emailAutenticacao LIKE :search OR p.email LIKE :search)";
+            $params['searchExact'] = (int)$search_query;
+            $params['search'] = '%' . $search_query . '%';
+        } else {
+            $whereConditions[] = "(p.nome LIKE :search OR u.emailAutenticacao LIKE :search OR p.email LIKE :search)";
+            $params['search'] = '%' . $search_query . '%';
+        }
     }
 
     if ($perfil_filter !== '') {

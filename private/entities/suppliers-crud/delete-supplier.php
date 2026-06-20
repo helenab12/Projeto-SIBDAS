@@ -22,6 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['apagar_fornecedor']))
             $ligacao
         );
 
+        registar_auditoria($ligacao, 'Fornecedor', $id, 'Remoção', 'ativo', '1', '0');
+
         $_SESSION['success_message'] = "Fornecedor movido para a reciclagem com sucesso!";
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro ao apagar fornecedor: " . $e->getMessage();

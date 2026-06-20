@@ -22,11 +22,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 throw new Exception("Dados de alteração inválidos.");
             }
 
-            execute_query(
-                "UPDATE PedidoDemonstracao SET estado = :estado, dataAtualizacao = NOW() WHERE idPedido = :id AND estado != :estado_check AND ativo = 1",
-                ['estado' => $state, 'id' => $id, 'estado_check' => $state],
-                $ligacao
-            );
+            // Obter estado antigo
+            $stmtSelect = execute_query("SELECT estado FROM PedidoDemonstracao WHERE idPedido = :id", ['id' => $id], $ligacao);
+            $antigo = $stmtSelect->fetch(PDO::FETCH_ASSOC);
+
+            if ($antigo && $antigo['estado'] !== $state) {
+                execute_query(
+                    "UPDATE PedidoDemonstracao SET estado = :estado, dataAtualizacao = NOW() WHERE idPedido = :id AND ativo = 1",
+                    ['estado' => $state, 'id' => $id],
+                    $ligacao
+                );
+
+                registar_auditoria_edicao(
+                    $ligacao,
+                    'PedidoDemonstracao',
+                    $id,
+                    ['estado' => $antigo['estado']],
+                    ['estado' => $state]
+                );
+            }
         }
 
         $ligacao->commit();

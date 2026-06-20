@@ -41,8 +41,22 @@ try {
     $params = [];
 
     if ($search_query !== '') {
-        $whereConditions[] = "(nomeContacto LIKE :search OR emailContacto LIKE :search OR organizacao LIKE :search)";
-        $params['search'] = '%' . $search_query . '%';
+        $decryptedId = aes_decrypt($search_query);
+        
+        if ($decryptedId !== false && is_numeric($decryptedId)) {
+            // É um ID encriptado válido
+            $whereConditions[] = "idPedido = :searchId";
+            $params['searchId'] = (int)$decryptedId;
+        } elseif (is_numeric($search_query)) {
+            // Pode ser um ID numérico direto ou texto
+            $whereConditions[] = "(idPedido = :searchExact OR nomeContacto LIKE :search OR emailContacto LIKE :search OR organizacao LIKE :search)";
+            $params['searchExact'] = (int)$search_query;
+            $params['search'] = '%' . $search_query . '%';
+        } else {
+            // Pesquisa normal por texto
+            $whereConditions[] = "(nomeContacto LIKE :search OR emailContacto LIKE :search OR organizacao LIKE :search)";
+            $params['search'] = '%' . $search_query . '%';
+        }
     }
 
     $whereSQL = implode(" AND ", $whereConditions);
@@ -262,32 +276,34 @@ try {
                                                         <button id="inbox-state-btn-<?php echo $encryptedId; ?>"
                                                             class="d-inline-flex align-items-center equipment-badge <?php echo $request->state->class; ?> gap-1 mw-0 border-0 <?= tem_permissao('inbox.manage') ? '' : 'pe-none' ?>"
                                                             type="button" <?= tem_permissao('inbox.manage') ? 'data-bs-toggle="dropdown"' : '' ?> aria-expanded="false">
-                                                            <span><?php echo $request->state->name; ?></span>
+                                                            <span><?php echo $request->state->name; ?>
+                                                                <span
+                                                                    class="visually-hidden"><?= htmlspecialchars($encryptedId) ?></span></span>
                                                             <?php if (tem_permissao('inbox.manage')): ?>
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
-                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                                class="lucide lucide-chevron-down-icon lucide-chevron-down">
-                                                                <path d="m6 9 6 6 6-6" />
-                                                            </svg>
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
+                                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                    class="lucide lucide-chevron-down-icon lucide-chevron-down">
+                                                                    <path d="m6 9 6 6 6-6" />
+                                                                </svg>
                                                             <?php endif; ?>
                                                         </button>
                                                         <?php if (tem_permissao('inbox.manage')): ?>
-                                                        <ul class="dropdown-menu action-dropdown-menu">
-                                                            <li>
-                                                                <a class="dropdown-item action-dropdown-item" href="#"
-                                                                    onclick="changeInboxState('<?php echo $encryptedId; ?>', 'Novo', 'new')">Novo</a>
-                                                            </li>
-                                                            <li>
-                                                                <a class="dropdown-item action-dropdown-item" href="#"
-                                                                    onclick="changeInboxState('<?php echo $encryptedId; ?>', 'Em Contacto', 'in-contact')">Em
-                                                                    Contacto</a>
-                                                            </li>
-                                                            <li>
-                                                                <a class="dropdown-item action-dropdown-item" href="#"
-                                                                    onclick="changeInboxState('<?php echo $encryptedId; ?>', 'Fechado', 'concluded')">Fechado</a>
-                                                            </li>
-                                                        </ul>
+                                                            <ul class="dropdown-menu action-dropdown-menu">
+                                                                <li>
+                                                                    <a class="dropdown-item action-dropdown-item" href="#"
+                                                                        onclick="changeInboxState('<?php echo $encryptedId; ?>', 'Novo', 'new')">Novo</a>
+                                                                </li>
+                                                                <li>
+                                                                    <a class="dropdown-item action-dropdown-item" href="#"
+                                                                        onclick="changeInboxState('<?php echo $encryptedId; ?>', 'Em Contacto', 'in-contact')">Em
+                                                                        Contacto</a>
+                                                                </li>
+                                                                <li>
+                                                                    <a class="dropdown-item action-dropdown-item" href="#"
+                                                                        onclick="changeInboxState('<?php echo $encryptedId; ?>', 'Fechado', 'concluded')">Fechado</a>
+                                                                </li>
+                                                            </ul>
                                                         <?php endif; ?>
                                                     </div>
                                                 </td>
@@ -343,24 +359,24 @@ try {
                                                                 </a>
                                                             </li>
                                                             <?php if (tem_permissao('inbox.delete')): ?>
-                                                            <li>
-                                                                <a class="dropdown-item action-dropdown-item text-error"
-                                                                    href="#" data-bs-toggle="modal"
-                                                                    data-bs-target="#delete-confirm-modal-<?php echo $encryptedId; ?>">
-                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16"
-                                                                        height="16" viewBox="0 0 24 24" fill="none"
-                                                                        stroke="currentColor" stroke-width="2"
-                                                                        stroke-linecap="round" stroke-linejoin="round"
-                                                                        class="lucide lucide-trash-2">
-                                                                        <path d="M3 6h18" />
-                                                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                                                        <line x1="10" x2="10" y1="11" y2="17" />
-                                                                        <line x1="14" x2="14" y1="11" y2="17" />
-                                                                    </svg>
-                                                                    Apagar
-                                                                </a>
-                                                            </li>
+                                                                <li>
+                                                                    <a class="dropdown-item action-dropdown-item text-error"
+                                                                        href="#" data-bs-toggle="modal"
+                                                                        data-bs-target="#delete-confirm-modal-<?php echo $encryptedId; ?>">
+                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16"
+                                                                            height="16" viewBox="0 0 24 24" fill="none"
+                                                                            stroke="currentColor" stroke-width="2"
+                                                                            stroke-linecap="round" stroke-linejoin="round"
+                                                                            class="lucide lucide-trash-2">
+                                                                            <path d="M3 6h18" />
+                                                                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                                                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                                                            <line x1="10" x2="10" y1="11" y2="17" />
+                                                                            <line x1="14" x2="14" y1="11" y2="17" />
+                                                                        </svg>
+                                                                        Apagar
+                                                                    </a>
+                                                                </li>
                                                             <?php endif; ?>
                                                         </ul>
                                                     </div>
@@ -417,22 +433,22 @@ try {
         </div>
 
         <?php if (tem_permissao('inbox.manage')): ?>
-        <!-- Alterações pendentes -->
-        <div class="inbox-changes-container justify-content-between align-items-center padding-6"
-            style="display: none;">
-            <p class="text-muted">Existem alterações pendentes</p>
-            <button type="submit" class="btn btn-primary btn-glowing gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-save-icon lucide-save">
-                    <path
-                        d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
-                    <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" />
-                    <path d="M7 3v4a1 1 0 0 0 1 1h7" />
-                </svg>
-                Guardar alterações
-            </button>
-        </div>
+            <!-- Alterações pendentes -->
+            <div class="inbox-changes-container justify-content-between align-items-center padding-6"
+                style="display: none;">
+                <p class="text-muted">Existem alterações pendentes</p>
+                <button type="submit" class="btn btn-primary btn-glowing gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-save-icon lucide-save">
+                        <path
+                            d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
+                        <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" />
+                        <path d="M7 3v4a1 1 0 0 0 1 1h7" />
+                    </svg>
+                    Guardar alterações
+                </button>
+            </div>
         <?php endif; ?>
         </form>
     </section>
@@ -558,74 +574,74 @@ try {
         </div>
 
         <?php if (tem_permissao('inbox.delete')): ?>
-        <!-- Modal de Confirmação de Remoção -->
-        <div class="modal fade" id="delete-confirm-modal-<?php echo $encryptedId; ?>" tabindex="-1"
-            aria-labelledby="deleteModalLabel-<?php echo $encryptedId; ?>" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
-                <div class="modal-content custom-modal-content d-flex flex-column">
-                    <!-- Titulo -->
-                    <div
-                        class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
-                        <div class="d-flex flex-column">
-                            <h2 class="equipment-creation-modal-title modal-title"
-                                id="deleteModalLabel-<?php echo $encryptedId; ?>">Apagar Definitivamente</h2>
-                            <span class="text-secondary fw-400">Esta ação não pode ser revertida.</span>
-                        </div>
-                        <button type="button" class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
-                            data-bs-dismiss="modal" aria-label="Close">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                class="lucide lucide-x-icon lucide-x stroke-secondary">
-                                <path d="M18 6 6 18" />
-                                <path d="m6 6 12 12" />
-                            </svg>
-                        </button>
-                    </div>
-
-                    <!-- Body do Modal -->
-                    <div class="modal-body p-0">
+            <!-- Modal de Confirmação de Remoção -->
+            <div class="modal fade" id="delete-confirm-modal-<?php echo $encryptedId; ?>" tabindex="-1"
+                aria-labelledby="deleteModalLabel-<?php echo $encryptedId; ?>" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
+                    <div class="modal-content custom-modal-content d-flex flex-column">
+                        <!-- Titulo -->
                         <div
-                            class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
-                            <div class="d-flex flex-column align-items-center gap-4">
-                                <div class="d-flex padding-3 danger-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        class="lucide lucide-triangle-alert-icon lucide-triangle-alert">
-                                        <path
-                                            d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
-                                        <path d="M12 9v4" />
-                                        <path d="M12 17h.01" />
-                                    </svg>
-                                </div>
-                                <div class="d-flex flex-column align-items-center justify-content-center gap-3">
-                                    <div
-                                        class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
-                                        <p class="text-secondary">Tem a certeza que deseja apagar
-                                            permanentemente</p>
-                                        <h2 class="fw-700">"<?php echo htmlspecialchars($request->name); ?>"?
-                                        </h2>
-                                        <span class="text-muted">Tipo: Pedido de Demonstração</span>
+                            class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
+                            <div class="d-flex flex-column">
+                                <h2 class="equipment-creation-modal-title modal-title"
+                                    id="deleteModalLabel-<?php echo $encryptedId; ?>">Apagar Definitivamente</h2>
+                                <span class="text-secondary fw-400">Esta ação não pode ser revertida.</span>
+                            </div>
+                            <button type="button" class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
+                                data-bs-dismiss="modal" aria-label="Close">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                    class="lucide lucide-x-icon lucide-x stroke-secondary">
+                                    <path d="M18 6 6 18" />
+                                    <path d="m6 6 12 12" />
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- Body do Modal -->
+                        <div class="modal-body p-0">
+                            <div
+                                class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
+                                <div class="d-flex flex-column align-items-center gap-4">
+                                    <div class="d-flex padding-3 danger-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="lucide lucide-triangle-alert-icon lucide-triangle-alert">
+                                            <path
+                                                d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+                                            <path d="M12 9v4" />
+                                            <path d="M12 17h.01" />
+                                        </svg>
+                                    </div>
+                                    <div class="d-flex flex-column align-items-center justify-content-center gap-3">
+                                        <div
+                                            class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
+                                            <p class="text-secondary">Tem a certeza que deseja apagar
+                                                permanentemente</p>
+                                            <h2 class="fw-700">"<?php echo htmlspecialchars($request->name); ?>"?
+                                            </h2>
+                                            <span class="text-muted">Tipo: Pedido de Demonstração</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- Botoes -->
-                            <div class="d-flex w-100 justify-content-end gap-4 button-row">
-                                <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
-                                    data-bs-dismiss="modal">Cancelar</button>
-                                <form action="inbox-crud/delete-inbox.php" method="POST" class="m-0 p-0">
-                                    <input type="hidden" name="id" value="<?php echo $encryptedId; ?>">
-                                    <button type="submit" class="btn btn-danger btn-glowing text-white">
-                                        Sim, Apagar.
-                                    </button>
-                                </form>
+                                <!-- Botoes -->
+                                <div class="d-flex w-100 justify-content-end gap-4 button-row">
+                                    <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <form action="inbox-crud/delete-inbox.php" method="POST" class="m-0 p-0">
+                                        <input type="hidden" name="id" value="<?php echo $encryptedId; ?>">
+                                        <button type="submit" class="btn btn-danger btn-glowing text-white">
+                                            Sim, Apagar.
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
         <?php endif; ?>
     <?php endforeach; ?>
 

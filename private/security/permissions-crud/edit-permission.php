@@ -41,11 +41,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception("A chave da permissão já existe noutro registo.");
         }
 
+        // Ler o estado antigo antes do Update para Auditoria
+        $stmtAntigo = execute_query(
+            "SELECT chave, descricao FROM Permissao WHERE idPermissao = :id",
+            ['id' => $id],
+            $ligacao
+        );
+        $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
+
         execute_query(
             "UPDATE Permissao SET chave = :chave, descricao = :descricao WHERE idPermissao = :id",
             ['chave' => $chave, 'descricao' => $descricao, 'id' => $id],
             $ligacao
         );
+
+        // Registar auditoria
+        registar_auditoria_edicao($ligacao, 'Permissao', $id, $antigo, [
+            'chave' => $chave,
+            'descricao' => $descricao
+        ]);
 
         $_SESSION['success_message'] = "Permissão editada com sucesso!";
     } catch (Exception $e) {

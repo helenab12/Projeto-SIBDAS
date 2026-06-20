@@ -38,8 +38,7 @@ try {
         </div>
 
         <?php if (empty($componentes_associados)): ?>
-            <div
-                class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4 w-100">
+            <div class="padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4 w-100">
                 <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"

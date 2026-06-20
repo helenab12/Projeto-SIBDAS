@@ -36,6 +36,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ligacao
         );
 
+        $novoId = $ligacao->lastInsertId();
+        registar_auditoria($ligacao, 'Servico', $novoId, 'Criação');
+
         $_SESSION['success_message'] = "Serviço criado com sucesso!";
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro ao criar serviço: " . $e->getMessage();

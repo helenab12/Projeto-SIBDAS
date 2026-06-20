@@ -29,6 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ligacao
         );
 
+        registar_auditoria($ligacao, 'GarantiaContrato', $idGarantia, 'Remoção', 'ativo', '1', '0');
+
         $_SESSION['success_message'] = "Registo movido para o arquivo com sucesso!";
 
     } catch (Exception $e) {

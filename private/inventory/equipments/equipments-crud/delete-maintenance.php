@@ -30,6 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ligacao
         );
 
+        registar_auditoria($ligacao, 'Manutencao', $idManutencao, 'Remoção', 'ativo', '1', '0');
+
         $_SESSION['success_message'] = "Registo de manutenção eliminado com sucesso!";
 
     } catch (Exception $e) {

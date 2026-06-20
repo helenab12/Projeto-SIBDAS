@@ -15,6 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Validação básica
+        $perfilFicticio = new Perfil('-1', 'Temporário', new DateTime(), new DateTime());
         $erros = Utilizador::validarDados([
             'idUtilizador' => '-1', // ID fictício
             'idPessoa' => '-1', // ID fictício
@@ -22,7 +23,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'password' => $password,
             'idPerfil' => $idPerfil,
             'dataCriacao' => new DateTime(),
-            'dataAtualizacao' => new DateTime()
+            'dataAtualizacao' => new DateTime(),
+            'perfil' => $perfilFicticio
         ]);
 
         if (!empty($erros)) {
@@ -47,18 +49,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // 2. Verificar se já existe um Utilizador para esta Pessoa
         $stmtUtilizador = execute_query(
-            "SELECT idUtilizador FROM Utilizador WHERE idPessoa = :idPessoa AND ativo = 1",
+            "SELECT idUtilizador, ativo FROM Utilizador WHERE idPessoa = :idPessoa",
             ['idPessoa' => $idPessoa],
             $ligacao
         );
 
-        if ($stmtUtilizador->fetch()) {
-            throw new Exception("Esta pessoa já tem um utilizador ativo associado.");
+        $utilizadorExistente = $stmtUtilizador->fetch(PDO::FETCH_ASSOC);
+        if ($utilizadorExistente) {
+            if ($utilizadorExistente['ativo'] == 1) {
+                throw new Exception("Esta pessoa já tem um utilizador ativo associado.");
+            } else {
+                throw new Exception("Esta pessoa já tem um utilizador associado, mas encontra-se inativo. Por favor, reative o utilizador existente em vez de criar um novo.");
+            }
         }
 
         // 3. Verificar se o email de autenticação já existe
         $stmtAuth = execute_query(
-            "SELECT idUtilizador FROM Utilizador WHERE emailAutenticacao = :email AND ativo = 1",
+            "SELECT idUtilizador FROM Utilizador WHERE emailAutenticacao = :email",
             ['email' => $emailAutenticacao],
             $ligacao
         );
@@ -94,6 +101,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ],
             $ligacao
         );
+
+        // Registar auditoria
+        $novoId = $ligacao->lastInsertId();
+        registar_auditoria($ligacao, 'Utilizador', $novoId, 'Criação');
 
         $_SESSION['success_message'] = "Utilizador criado com sucesso!";
     } catch (Exception $e) {

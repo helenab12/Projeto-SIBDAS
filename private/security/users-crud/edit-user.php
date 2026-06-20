@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_utilizador'])) {
 
         // 2. Verificar se o email de autenticação já está em uso por OUTRO utilizador
         $stmtAuth = execute_query(
-            "SELECT idUtilizador FROM Utilizador WHERE emailAutenticacao = :email AND idUtilizador != :id AND ativo = 1",
+            "SELECT idUtilizador FROM Utilizador WHERE emailAutenticacao = :email AND idUtilizador != :id",
             ['email' => $emailAutenticacao, 'id' => $idUtilizador],
             $ligacao
         );
@@ -51,13 +51,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_utilizador'])) {
             throw new Exception("O perfil selecionado não é válido.");
         }
 
-        // 4. Update Utilizador
+        // 4. Ler o estado antigo antes do Update para Auditoria
+        $stmtAntigo = execute_query(
+            "SELECT emailAutenticacao, idPerfil FROM Utilizador WHERE idUtilizador = :id",
+            ['id' => $idUtilizador],
+            $ligacao
+        );
+        $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
+
+        // 5. Update Utilizador
         if (!empty($password)) {
             if (strlen($password) < 8) {
                 throw new Exception("A password deve ter pelo menos 8 caracteres.");
             }
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-            
+
             execute_query(
                 "UPDATE Utilizador 
                  SET emailAutenticacao = :email, 
@@ -88,6 +96,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_utilizador'])) {
                 ],
                 $ligacao
             );
+        }
+
+        // Registar auditoria
+        registar_auditoria_edicao($ligacao, 'Utilizador', $idUtilizador, $antigo, [
+            'emailAutenticacao' => $emailAutenticacao,
+            'idPerfil' => $idPerfil
+        ]);
+
+        if (!empty($password)) {
+            registar_auditoria($ligacao, 'Utilizador', $idUtilizador, 'Edição', 'password', '***', '***');
         }
 
         $_SESSION['success_message'] = "Utilizador atualizado com sucesso!";

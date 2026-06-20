@@ -79,6 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         );
 
         $idEquipamento = $ligacao->lastInsertId();
+        registar_auditoria($ligacao, 'Equipamento', $idEquipamento, 'Criação');
 
         // 2. Fornecedores (Fabricante, Distribuidor, Assistentes, Consumíveis)
         $fornecedoresIds = [];

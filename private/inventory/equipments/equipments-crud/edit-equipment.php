@@ -64,6 +64,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception("O código interno $codigoInterno já se encontra registado noutro equipamento.");
         }
 
+        // Ler o estado antigo antes do Update para Auditoria
+        $stmtAntigo = execute_query(
+            "SELECT idCategoria, codigoInterno, designacao, idMarca, modelo, numeroSerie, dataAquisicao, dataFabrico, custoAquisicao, tipoEntrada, estadoAtual, criticidade, idLocalizacao, observacoes FROM Equipamento WHERE idEquipamento = :id",
+            ['id' => $idEquipamento],
+            $ligacao
+        );
+        $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
+
         // Atualizar Equipamento
         execute_query(
             "UPDATE Equipamento SET
@@ -102,6 +110,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ],
             $ligacao
         );
+
+        // Registar auditoria
+        registar_auditoria_edicao($ligacao, 'Equipamento', $idEquipamento, $antigo, [
+            'idCategoria' => $idCategoria,
+            'codigoInterno' => $codigoInterno,
+            'designacao' => $nome,
+            'idMarca' => $idMarca,
+            'modelo' => $modelo,
+            'numeroSerie' => $numeroSerie,
+            'dataAquisicao' => $dataAquisicao,
+            'dataFabrico' => $dataFabrico,
+            'custoAquisicao' => $custo,
+            'tipoEntrada' => $tipoEntrada,
+            'estadoAtual' => $estadoAtual,
+            'criticidade' => $criticidade,
+            'idLocalizacao' => $idLocalizacao,
+            'observacoes' => $observacoes
+        ]);
 
         // 2. Fornecedores (Fabricante, Distribuidor, Assistentes, Consumíveis)
         $fornecedoresIds = [];

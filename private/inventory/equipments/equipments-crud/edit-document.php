@@ -39,6 +39,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception(implode(", ", $erros));
         }
 
+        // Ler o estado antigo antes do Update para Auditoria
+        $stmtAntigo = execute_query(
+            "SELECT nome, tipo, idFornecedor FROM Documento WHERE idDocumento = :idDoc AND ativo = 1",
+            ['idDoc' => $idDocumento],
+            $ligacao
+        );
+        $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
+
         execute_query(
             "UPDATE Documento SET
                 nome = :nome,
@@ -54,6 +62,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ],
             $ligacao
         );
+
+        // Registar auditoria
+        registar_auditoria_edicao($ligacao, 'Documento', $idDocumento, $antigo, [
+            'nome' => $nome,
+            'tipo' => $tipo,
+            'idFornecedor' => $idFornecedor
+        ]);
 
         $_SESSION['success_message'] = "Documento '$nome' editado com sucesso!";
 

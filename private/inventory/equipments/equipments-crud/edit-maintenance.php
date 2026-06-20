@@ -61,6 +61,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception(implode("<br>", $erros));
         }
 
+        // Ler o estado antigo antes do Update para Auditoria
+        $stmtAntigo = execute_query(
+            "SELECT tipoManutencao, dataInicio, dataFim, idPessoaResponsavel, idFornecedor, custoManutencao, observacoes FROM Manutencao WHERE idManutencao = :idMan AND idEquipamento = :idEq",
+            ['idMan' => $idManutencao, 'idEq' => $idEquipamento],
+            $ligacao
+        );
+        $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
+
         // 4. Atualizar DB
         execute_query(
             "UPDATE Manutencao SET 
@@ -86,6 +94,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ],
             $ligacao
         );
+
+        // Registar auditoria
+        registar_auditoria_edicao($ligacao, 'Manutencao', $idManutencao, $antigo, [
+            'tipoManutencao' => $tipoManutencaoRaw,
+            'dataInicio' => $dataInicio,
+            'dataFim' => !empty($dataFim) ? $dataFim : null,
+            'idPessoaResponsavel' => $idPessoaResponsavel,
+            'idFornecedor' => $idFornecedor,
+            'custoManutencao' => $custoManutencao,
+            'observacoes' => !empty($observacoes) ? $observacoes : null
+        ]);
 
         $_SESSION['success_message'] = "Registo de manutenção atualizado com sucesso!";
 

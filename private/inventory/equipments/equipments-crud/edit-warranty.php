@@ -153,6 +153,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
+        // Ler o estado antigo antes do Update para Auditoria
+        $stmtAntigo = execute_query(
+            "SELECT tipoRegisto, dataInicio, dataFim, periodicidade, observacoes, idFornecedor, idDocumento FROM GarantiaContrato WHERE idGarantiaContrato = :id",
+            ['id' => $idGarantia],
+            $ligacao
+        );
+        $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
+
         // 4. Inserir na tabela GarantiaContrato
         execute_query(
             "UPDATE GarantiaContrato
@@ -170,6 +178,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ],
             $ligacao
         );
+
+        // Registar auditoria
+        registar_auditoria_edicao($ligacao, 'GarantiaContrato', $idGarantia, $antigo, [
+            'tipoRegisto' => $tipoRegisto,
+            'dataInicio' => $dataInicio,
+            'dataFim' => $dataFim ?: null,
+            'periodicidade' => $periodicidade,
+            'observacoes' => empty($observacoes) ? null : $observacoes,
+            'idFornecedor' => $idFornecedor,
+            'idDocumento' => $idDocumentoNovo
+        ]);
 
         $_SESSION['success_message'] = "Registo atualizado com sucesso!";
 

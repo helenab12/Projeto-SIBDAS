@@ -85,6 +85,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ligacao
         );
 
+        $novoId = $ligacao->lastInsertId();
+        registar_auditoria($ligacao, 'Documento', $novoId, 'Criação');
+
         $_SESSION['success_message'] = "Documento '$nome' adicionado com sucesso!";
 
     } catch (Exception $e) {

@@ -25,6 +25,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ligacao
         );
 
+        // Registar auditoria
+        registar_auditoria($ligacao, 'Utilizador', $idUtilizador, 'Remoção', 'ativo', '1', '0');
+
         $_SESSION['success_message'] = "Utilizador desativado com sucesso (movido para a reciclagem).";
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro ao desativar utilizador: " . $e->getMessage();

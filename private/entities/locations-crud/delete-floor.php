@@ -16,6 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ligacao
         );
 
+        registar_auditoria($ligacao, 'Piso', $idPiso, 'Remoção', 'ativo', '1', '0');
+
         $_SESSION['success_message'] = "Piso removido (desativado) com sucesso!";
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro ao apagar piso: " . $e->getMessage();

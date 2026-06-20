@@ -57,6 +57,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
+        // Ler o estado antigo antes do Update para Auditoria
+        $stmtAntigo = execute_query(
+            "SELECT nome, email, contactoTelefonico, nif, funcao, departamento FROM Pessoa WHERE idPessoa = :id",
+            ['id' => $id],
+            $ligacao
+        );
+        $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
+
         execute_query(
             "UPDATE Pessoa 
              SET nome = :nome, email = :email, contactoTelefonico = :telefone, nif = :nif, funcao = :funcao, departamento = :departamento, dataAtualizacao = NOW() 
@@ -72,6 +80,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ],
             $ligacao
         );
+
+        // Registar auditoria
+        registar_auditoria_edicao($ligacao, 'Pessoa', $id, $antigo, [
+            'nome' => $nome,
+            'email' => $email,
+            'contactoTelefonico' => $telefone,
+            'nif' => $nif,
+            'funcao' => $funcao,
+            'departamento' => $departamento
+        ]);
 
         $_SESSION['success_message'] = "Pessoa editada com sucesso!";
     } catch (Exception $e) {

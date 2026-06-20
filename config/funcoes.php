@@ -209,3 +209,60 @@ function tem_permissao(string $chave): bool
 {
     return isset($_SESSION['permissoes'][$chave]) && $_SESSION['permissoes'][$chave] === true;
 }
+
+// ============================================================
+// Funções de Auditoria
+// ============================================================
+
+// Regista uma entrada no histórico de auditoria.
+function registar_auditoria(
+    $ligacao,
+    $tabelaAfetada,
+    $idRegistoAfetado,
+    $acao,
+    $campoAfetado = null,
+    $valorAntigo = null,
+    $valorNovo = null
+) {
+    $idUtilizador = $_SESSION['idUtilizador'] ?? null;
+
+    execute_query(
+        "INSERT INTO HistoricoAuditoria 
+         (idUtilizador, tabelaAfetada, idRegistoAfetado, acao, campoAfetado, valorAntigo, valorNovo)
+         VALUES (:idUtilizador, :tabela, :idRegisto, :acao, :campo, :antigo, :novo)",
+        [
+            'idUtilizador' => $idUtilizador,
+            'tabela' => $tabelaAfetada,
+            'idRegisto' => $idRegistoAfetado,
+            'acao' => $acao,
+            'campo' => $campoAfetado,
+            'antigo' => $valorAntigo,
+            'novo' => $valorNovo
+        ],
+        $ligacao
+    );
+}
+
+// Compara valores antigos com novos e regista uma entrada de auditoria por cada campo alterado
+function registar_auditoria_edicao(
+    $ligacao,
+    $tabelaAfetada,
+    $idRegistoAfetado,
+    $valoresAntigos,
+    $valoresNovos
+) {
+    foreach ($valoresNovos as $campo => $valorNovo) {
+        $valorAntigo = $valoresAntigos[$campo] ?? null;
+        if ((string) $valorAntigo !== (string) $valorNovo) {
+            registar_auditoria(
+                $ligacao,
+                $tabelaAfetada,
+                $idRegistoAfetado,
+                'Edição',
+                $campo,
+                $valorAntigo,
+                $valorNovo
+            );
+        }
+    }
+}

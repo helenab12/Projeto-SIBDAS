@@ -45,6 +45,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         execute_query($sql, ['id' => $id], $ligacao);
 
+        // Registar auditoria
+        registar_auditoria($ligacao, $tableName, $id, 'Edição', 'ativo', '0', '1');
+
         $_SESSION['success_message'] = "Registo de $tableName restaurado com sucesso!";
 
     } catch (Exception $e) {

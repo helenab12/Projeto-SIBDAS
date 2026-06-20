@@ -80,8 +80,18 @@ try {
     $params = [];
 
     if ($search_query !== '') {
-        $whereConditions[] = "(e.designacao LIKE :search OR e.numeroSerie LIKE :search OR m.nome LIKE :search OR e.modelo LIKE :search)";
-        $params['search'] = '%' . $search_query . '%';
+        $decryptedId = aes_decrypt($search_query);
+        if ($decryptedId !== false && is_numeric($decryptedId)) {
+            $whereConditions[] = "e.idEquipamento = :searchId";
+            $params['searchId'] = (int)$decryptedId;
+        } elseif (is_numeric($search_query)) {
+            $whereConditions[] = "(e.idEquipamento = :searchExact OR e.designacao LIKE :search OR e.numeroSerie LIKE :search OR m.nome LIKE :search OR e.modelo LIKE :search)";
+            $params['searchExact'] = (int)$search_query;
+            $params['search'] = '%' . $search_query . '%';
+        } else {
+            $whereConditions[] = "(e.designacao LIKE :search OR e.numeroSerie LIKE :search OR m.nome LIKE :search OR e.modelo LIKE :search)";
+            $params['search'] = '%' . $search_query . '%';
+        }
     }
     if ($estado_filter !== '') {
         $whereConditions[] = "e.estadoAtual = :estado";

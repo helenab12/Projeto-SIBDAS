@@ -29,6 +29,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ligacao
         );
 
+        registar_auditoria($ligacao, 'Documento', $idDocumento, 'Remoção', 'ativo', '1', '0');
+
         $_SESSION['success_message'] = "Documento movido para o arquivo com sucesso!";
 
     } catch (Exception $e) {

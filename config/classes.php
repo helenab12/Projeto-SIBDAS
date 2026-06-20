@@ -2353,7 +2353,7 @@ class Manutencao implements Validavel
     private TipoManutencao $tipoManutencao;
     private DateTime $dataInicio;
     private ?DateTime $dataFim;
-    private string $idPessoaResponsavel;
+    private ?string $idPessoaResponsavel;
     private ?string $idFornecedor;
     private ?float $custoManutencao;
     private ?string $observacoes;
@@ -2369,7 +2369,7 @@ class Manutencao implements Validavel
         TipoManutencao $tipoManutencao,
         DateTime $dataInicio,
         ?DateTime $dataFim,
-        string $idPessoaResponsavel,
+        ?string $idPessoaResponsavel,
         ?string $idFornecedor,
         ?float $custoManutencao,
         ?string $observacoes,
@@ -2415,7 +2415,7 @@ class Manutencao implements Validavel
     public function getTipoManutencao(): TipoManutencao { return $this->tipoManutencao; }
     public function getDataInicio(): DateTime { return $this->dataInicio; }
     public function getDataFim(): ?DateTime { return $this->dataFim; }
-    public function getIdPessoaResponsavel(): string { return $this->idPessoaResponsavel; }
+    public function getIdPessoaResponsavel(): ?string { return $this->idPessoaResponsavel; }
     public function getIdFornecedor(): ?string { return $this->idFornecedor; }
     public function getCustoManutencao(): ?float { return $this->custoManutencao; }
     public function getObservacoes(): ?string { return $this->observacoes; }
@@ -2478,9 +2478,7 @@ class Manutencao implements Validavel
             $erros[] = "A Data de Fim não pode ser anterior à Data de Início.";
         }
 
-        if (empty(trim($dados['idPessoaResponsavel'] ?? ''))) {
-            $erros[] = "A Pessoa Responsável é obrigatória.";
-        }
+        // Removido: A Pessoa Responsável pode ser nula na manutenção inicial automática
 
         if (!empty($dados['custoManutencao']) && !is_numeric($dados['custoManutencao'])) {
             $erros[] = "O Custo da Manutenção tem de ser um valor numérico.";

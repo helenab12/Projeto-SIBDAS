@@ -22,6 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ligacao
         );
 
+        registar_auditoria($ligacao, 'Equipamento', $id, 'Edição', 'arquivado', '1', '0');
+
         $_SESSION['success_message'] = "Equipamento desarquivado com sucesso!";
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro ao desarquivar equipamento: " . $e->getMessage();

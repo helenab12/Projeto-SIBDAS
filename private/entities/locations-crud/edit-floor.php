@@ -43,12 +43,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception("Já existe um piso (ativo ou inativo) com este nome neste edifício.");
         }
 
+        // Ler o estado antigo antes do Update para Auditoria
+        $stmtAntigo = execute_query(
+            "SELECT nome FROM Piso WHERE idPiso = :id",
+            ['id' => $idPiso],
+            $ligacao
+        );
+        $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
+
         // Fazer o update
         execute_query(
             "UPDATE Piso SET nome = :nome WHERE idPiso = :id",
             ['nome' => $nomePiso, 'id' => $idPiso],
             $ligacao
         );
+
+        // Registar auditoria
+        registar_auditoria_edicao($ligacao, 'Piso', $idPiso, $antigo, [
+            'nome' => $nomePiso
+        ]);
 
         $_SESSION['success_message'] = "Piso editado com sucesso!";
     } catch (Exception $e) {

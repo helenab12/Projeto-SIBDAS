@@ -74,6 +74,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_fornecedor']))
             }
         }
 
+        // Ler o estado antigo antes do Update para Auditoria
+        $stmtAntigo = execute_query(
+            "SELECT nome, nifFornecedor, contactoTelefonico, email, website, idPessoaResponsavel, tipoFornecedor FROM Fornecedor WHERE idFornecedor = :id",
+            ['id' => $id],
+            $ligacao
+        );
+        $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
+
         // Atualizar na base de dados
         execute_query(
             "UPDATE Fornecedor 
@@ -92,6 +100,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_fornecedor']))
             ],
             $ligacao
         );
+
+        // Registar auditoria
+        registar_auditoria_edicao($ligacao, 'Fornecedor', $id, $antigo, [
+            'nome' => $nome,
+            'nifFornecedor' => $nif,
+            'contactoTelefonico' => $telefone,
+            'email' => $email,
+            'website' => empty($website) ? null : $website,
+            'idPessoaResponsavel' => $idPessoa,
+            'tipoFornecedor' => $tipoEnum->value
+        ]);
 
         $_SESSION['success_message'] = "Fornecedor editado com sucesso!";
     } catch (Exception $e) {

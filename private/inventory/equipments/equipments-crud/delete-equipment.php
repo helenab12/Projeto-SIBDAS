@@ -22,6 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ligacao
         );
 
+        registar_auditoria($ligacao, 'Equipamento', $id, 'Remoção', 'ativo', '1', '0');
+
         $_SESSION['success_message'] = "Equipamento eliminado com sucesso!";
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro ao eliminar equipamento: " . $e->getMessage();

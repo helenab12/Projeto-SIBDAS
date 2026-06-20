@@ -15,9 +15,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception("ID inválido.");
         }
 
+        $ligacao = connect_to_db();
         execute_query(
             "UPDATE PedidoDemonstracao SET ativo = 0 WHERE idPedido = :id",
-            ['id' => $id]
+            ['id' => $id],
+            $ligacao
+        );
+
+        registar_auditoria(
+            $ligacao,
+            'PedidoDemonstracao',
+            $id,
+            'Remoção',
+            'ativo',
+            1,
+            0
         );
 
         $_SESSION['success_message'] = "Pedido de demonstração apagado com sucesso!";

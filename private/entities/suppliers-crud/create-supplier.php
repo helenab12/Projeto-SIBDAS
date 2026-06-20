@@ -80,6 +80,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['criar_fornecedor'])) 
             $ligacao
         );
 
+        $novoId = $ligacao->lastInsertId();
+        registar_auditoria($ligacao, 'Fornecedor', $novoId, 'Criação');
+
         $_SESSION['success_message'] = "Fornecedor criado com sucesso!";
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro ao criar fornecedor: " . $e->getMessage();
