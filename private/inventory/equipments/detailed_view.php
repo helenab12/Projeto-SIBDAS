@@ -347,7 +347,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         title="<?= htmlspecialchars($criticidadeTooltip) ?>"><?= htmlspecialchars($criticidade) ?></span>
 
                     <!-- QR Code Badge -->
-                    <button class="equipment-badge equipment-badge-status-inactive btn-qr-code border-0 gap-1">
+                    <button class="equipment-badge equipment-badge-status-inactive btn-qr-code border-0 gap-1" onclick="openQRPrintModal('<?= htmlspecialchars(aes_encrypt((string)$equipamento->getIdEquipamento()), ENT_QUOTES) ?>', '<?= htmlspecialchars($equipamento->getCodigoInterno(), ENT_QUOTES) ?>', '<?= htmlspecialchars($equipamento->getDesignacao(), ENT_QUOTES) ?>')">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="lucide lucide-qr-code">
@@ -640,7 +640,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 
 <?php
 include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
-include_once BASE_PATH . 'private/includes/footer.php';
+include_once __DIR__ . '/../../includes/modals/qr_print_modal.php';
+include_once __DIR__ . '/../../includes/footer.php';
 ?>
 
 <script>

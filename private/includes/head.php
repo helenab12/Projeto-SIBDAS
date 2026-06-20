@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>node_modules/flatpickr/dist/flatpickr.min.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/1240961.css">
+    <script>
+        window.SITE_BASE_URL = "<?= BASE_URL ?>";
+    </script>
 </head>
 
 <body class="private-area overflow-hidden">

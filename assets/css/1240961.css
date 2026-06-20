@@ -1,7 +1,7 @@
 /* 
-    CriaÃ§Ã£o de variÃ¡veis CSS para o design system criado.
-    Estas variÃ¡veis podem ser usadas em todo o projeto para garantir consistÃªncia e facilitar a manutenÃ§Ã£o do cÃ³digo.
-    Usamos a funÃ§Ã£o light-dark() para criar variaÃ§Ãµes de cor para light mode e dark mode.
+    Criação de variáveis CSS para o design system criado.
+    Estas variáveis podem ser usadas em todo o projeto para garantir consistência e facilitar a manutenção do código.
+    Usamos a função light-dark() para criar variações de cor para light mode e dark mode.
 */
 
 /* Fontes */
@@ -13,7 +13,7 @@
     /* Indicar que o site suporta ambos os temas de cor. */
     color-scheme: light dark;
 
-    /* Cores primÃ¡rias */
+    /* Cores primárias */
     --primary-50: light-dark(#EFF6FF, rgba(239, 246, 255, 0.2));
     --primary-500: light-dark(#3B82F6, #3B82F6);
     --primary-600: light-dark(#2563EB, #2563EB);
@@ -32,7 +32,7 @@
     --text-secondary: light-dark(#475569, #CBD5E1);
     --text-muted: light-dark(#BBCCE9, #BBCCE9);
 
-    /* Cores SemÃ¢nticas */
+    /* Cores Semânticas */
     --success: light-dark(#10B981, #10B981);
     --error: light-dark(#EF4444, #EF4444);
     --warning: light-dark(#F59E0B, #F59E0B);
@@ -44,11 +44,11 @@
     --font-sans: 'Plus Jakarta Sans', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
 
-    /* EspaÃ§amentos */
+    /* Espaçamentos */
     --space-1: 4px;
     --space-2: 8px;
     --space-2-5: 10px;
-    /* (ExceÃ§Ã£o para botÃµes) */
+    /* (Exceção para botões) */
     --space-3: 12px;
     --space-4: 16px;
     --space-5: 20px;
@@ -73,7 +73,7 @@
 
 /* 
 =================
-  ESTILOS PADRÃƒO
+  ESTILOS PADRÃO
 ================= 
 */
 * {
@@ -311,7 +311,7 @@ h2 {
     margin: 0;
 }
 
-/* TÃ­tulos de SecÃ§Ãµes */
+/* Títulos de Secções */
 h3 {
     font-size: 16px;
     line-height: 24px;
@@ -319,7 +319,7 @@ h3 {
     margin: 0;
 }
 
-/* TÃ­tulos de Cards */
+/* Títulos de Cards */
 p {
     font-size: 14px;
     line-height: 20px;
@@ -346,7 +346,7 @@ label {
 
 /* Captions / Badges */
 
-/* TABLETS (apenas mudanÃ§as necessÃ¡rias) */
+/* TABLETS (apenas mudanças necessárias) */
 @media (max-width: 1024px) {
     h1 {
         font-size: 22px;
@@ -354,7 +354,7 @@ label {
     }
 }
 
-/* MOBILE (apenas mudanÃ§as necessÃ¡rias) */
+/* MOBILE (apenas mudanças necessárias) */
 @media (max-width: 768px) {
     h1 {
         font-size: 20px;
@@ -366,7 +366,7 @@ label {
     }
 }
 
-/* TÃ­tulos de SecÃ§Ã£o */
+/* Títulos de Secção */
 .section-title {
     font-size: 36px;
     line-height: 40px;
@@ -658,7 +658,7 @@ label {
     color: var(--text-secondary);
 }
 
-/* Ãcones do tema â€” moon visÃ­vel por defeito, sun quando dark mode */
+/* Ícones do tema â€” moon visível por defeito, sun quando dark mode */
 .icon-sun {
     display: none;
 }
@@ -667,7 +667,7 @@ label {
     display: inline-block;
 }
 
-/* Quando o tema for dark, mostrar o Ã­cone do sol e esconder o da lua */
+/* Quando o tema for dark, mostrar o ícone do sol e esconder o da lua */
 [data-theme="dark"] .icon-sun {
     display: inline-block;
 }
@@ -676,7 +676,7 @@ label {
     display: none;
 }
 
-/* HambÃºrguer */
+/* Hambúrguer */
 .pa-hamburger {
     background: none;
     border: none;
@@ -709,7 +709,7 @@ label {
     display: none;
 }
 
-/* DESKTOPS â€” conteÃºdo centrado com max-width */
+/* DESKTOPS â€” conteúdo centrado com max-width */
 @media (min-width: 1025px) {
     .pa-navbar {
         padding: var(--space-3) 0;
@@ -728,7 +728,7 @@ label {
     }
 }
 
-/* MOBILES â€” trocar links desktop por hambÃºrguer */
+/* MOBILES â€” trocar links desktop por hambúrguer */
 @media (max-width: 768px) {
     .pa-navbar {
         padding: var(--space-4) 0;
@@ -876,7 +876,7 @@ label {
 
 .pa-advantages .pa-page-container>* {
     flex: 1 1 0;
-    /* forÃ§a a divisÃ£o do espaÃ§o por igual a 50% */
+    /* força a divisão do espaço por igual a 50% */
     min-width: 0;
 }
 
@@ -2110,7 +2110,7 @@ ul.action-dropdown-menu.show {
         gap: var(--space-4) !important;
     }
 
-    /* Ajuste da Row de BotÃµes no Mobile */
+    /* Ajuste da Row de Botões no Mobile */
     .equipment-creation-modal-content .button-row {
         flex-direction: column !important;
         align-items: stretch !important;
@@ -2226,7 +2226,7 @@ ul.action-dropdown-menu.show {
     background-color: var(--bento-bg) !important;
 }
 
-/* Responsividade da SecÃ§Ã£o de Componentes */
+/* Responsividade da Secção de Componentes */
 @media (max-width: 768px) {
     .components-header {
         flex-direction: column !important;
@@ -2705,7 +2705,7 @@ ul.action-dropdown-menu.show {
     }
 }
 
-/* NotificaÃ§Ãµes */
+/* Notificações */
 .bento-card.unread {
     opacity: 0.5;
     transition: opacity 0.3s ease;
@@ -2782,7 +2782,7 @@ ul.action-dropdown-menu.show {
     border-radius: var(--radius-sm);
 }
 
-/* GestÃ£o de ConteÃºdos */
+/* Gestão de Conteúdos */
 .content-management .content-icon-wrapper {
     background-color: color-mix(in srgb, var(--text-muted) 10%, transparent) !important;
 }
@@ -2838,7 +2838,7 @@ ul.action-dropdown-menu.show {
     padding: var(--space-5) 0;
 }
 
-/* VisÃ£o Geral Bento Layout */
+/* Visão Geral Bento Layout */
 .equipment-detailed-view .visao-geral-container {
     flex-direction: column;
 }
@@ -3136,4 +3136,91 @@ section.inbox {
 .search-item-template {
     border-radius: var(--radius-md);
     border: var(--border-base);
+}
+
+/* ==========================================================================
+   Print Styles para QR Codes
+   ========================================================================== */
+/* HTML5 QR Code Scanner Overrides */
+#reader button {
+    display: inline-block;
+    font-weight: 500;
+    line-height: 1.5;
+    text-align: center;
+    text-decoration: none;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    background-color: transparent;
+    border: 1px solid transparent;
+    padding: var(--space-2) var(--space-3);
+    font-size: 14px;
+    border-radius: var(--radius-md);
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+#html5-qrcode-button-camera-start,
+#html5-qrcode-button-camera-permission {
+    color: #fff !important;
+    background-color: var(--primary-600) !important;
+    border-color: var(--primary-600) !important;
+    margin-top: var(--space-2-5);
+    margin-bottom: var(--space-2-5);
+}
+
+#html5-qrcode-button-camera-start:hover,
+#html5-qrcode-button-camera-permission:hover {
+    background-color: var(--primary-700) !important;
+}
+
+#html5-qrcode-button-camera-stop {
+    color: var(--text-secondary) !important;
+    background-color: transparent !important;
+    border-color: var(--border-light) !important;
+    margin-top: var(--space-2-5);
+    margin-bottom: var(--space-2-5);
+}
+
+#html5-qrcode-button-camera-stop:hover {
+    background-color: var(--input-field-bg) !important;
+}
+
+#html5-qrcode-anchor-scan-type-change {
+    color: var(--primary-600) !important;
+    text-decoration: none !important;
+    font-weight: 600;
+    margin-top: var(--space-2-5);
+    display: inline-block;
+}
+
+#reader select {
+    display: block;
+    width: 100%;
+    padding: var(--space-2) var(--space-5) var(--space-2) var(--space-3);
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.5;
+    color: var(--text-secondary);
+    background-color: var(--input-field-bg);
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right var(--space-3) center;
+    background-size: 16px 12px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--radius-md);
+    appearance: none;
+    margin-top: var(--space-2-5);
+    margin-bottom: var(--space-2-5);
+}
+
+#reader select:focus {
+    border-color: var(--primary-500);
+    outline: 0;
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary-500) 25%, transparent);
+}
+
+#reader__dashboard_section_csr span {
+    color: var(--text-secondary);
+    font-size: 14px;
+    margin-right: var(--space-1);
 }

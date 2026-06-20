@@ -2632,3 +2632,129 @@ window.addEventListener("DOMContentLoaded", () => {
         document.body.classList.remove("overflow-hidden");
     }
 });
+
+// ==========================================
+// Funcionalidades de QR Code
+// ==========================================
+
+// Modal de visualização de QR Code para impressão
+function openQRPrintModal(encryptedId, code, designation) {
+    const codeElement = document.getElementById('qrEquipCode');
+    const designationElement = document.getElementById('qrEquipDesignation');
+
+    codeElement.textContent = code;
+    designationElement.textContent = designation;
+
+    // Use SITE_BASE_URL se estiver definido, senao default
+    const base = window.SITE_BASE_URL || '/Projeto-SIBDAS/';
+    const urlBase = window.location.origin + base + 'private/inventory/equipments/detailed_view.php?id=';
+    const finalUrl = urlBase + encodeURIComponent(encryptedId);
+
+    if (typeof QRCode !== 'undefined') {
+        QRCode.toDataURL(finalUrl, {
+            width: 200,
+            margin: 2,
+            color: {
+                dark: '#0F172A',
+                light: '#FFFFFF'
+            }
+        }, function (error, url) {
+            if (error) {
+                console.error("Erro a gerar QR Code: ", error);
+                alert("Ocorreu um erro ao gerar o QR Code.");
+                return;
+            }
+            const img = document.getElementById('qrImage');
+            if(img) {
+                img.src = url;
+            }
+            const modal = new bootstrap.Modal(document.getElementById('qrPrintModal'));
+            modal.show();
+        });
+    } else {
+        console.error("QRCode library not loaded.");
+    }
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Botão de download do QR Code
+    const btnDownloadQR = document.getElementById('btnDownloadQR');
+    if (btnDownloadQR) {
+        btnDownloadQR.addEventListener('click', () => {
+            const img = document.getElementById('qrImage');
+            const equipCode = document.getElementById('qrEquipCode').textContent;
+            if (img && img.src) {
+                const a = document.createElement('a');
+                a.href = img.src;
+                a.download = `QR_${equipCode}.png`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+            }
+        });
+    }
+
+    // Selecionar equipamento para gerar QR Code
+    const btnProceedQRPrint = document.getElementById('btnProceedQRPrint');
+    if (btnProceedQRPrint) {
+        btnProceedQRPrint.addEventListener('click', () => {
+            const sel = document.getElementById('qrEquipamentoSelect');
+            if(!sel.value) {
+                alert('Selecione um equipamento primeiro.');
+                return;
+            }
+            const opt = sel.options[sel.selectedIndex];
+            
+            const selectModalEl = document.getElementById('qrSelectModal');
+            const selectModal = bootstrap.Modal.getOrCreateInstance(selectModalEl);
+            selectModal.hide();
+            
+            setTimeout(() => {
+                openQRPrintModal(sel.value, opt.getAttribute('data-code'), opt.getAttribute('data-desc'));
+            }, 400);
+        });
+    }
+
+    // Scanner de QR Code pela câmara
+    let html5QrcodeScanner = null;
+    const scanModalEl = document.getElementById('qrScanModal');
+    
+    if (scanModalEl) {
+        scanModalEl.addEventListener('shown.bs.modal', function () {
+            if(!html5QrcodeScanner) {
+                if (typeof Html5QrcodeScanner !== 'undefined') {
+                    html5QrcodeScanner = new Html5QrcodeScanner(
+                        "reader",
+                        { fps: 10, qrbox: {width: 250, height: 250} },
+                        false);
+                    html5QrcodeScanner.render(
+                        (decodedText, decodedResult) => {
+                            if(decodedText.includes('detailed_view.php?id=')) {
+                                if(html5QrcodeScanner) html5QrcodeScanner.pause(true);
+                                window.location.href = decodedText;
+                            } else {
+                                alert('Código QR não reconhecido ou inválido para este sistema.');
+                                if(html5QrcodeScanner) {
+                                    html5QrcodeScanner.pause(true);
+                                    setTimeout(() => html5QrcodeScanner.resume(), 3000);
+                                }
+                            }
+                        }, 
+                        (error) => { /* ignora frames vazios */ }
+                    );
+                } else {
+                    console.error("Html5QrcodeScanner library not loaded.");
+                }
+            }
+        });
+
+        scanModalEl.addEventListener('hidden.bs.modal', function () {
+            if(html5QrcodeScanner) {
+                html5QrcodeScanner.clear().catch(error => {
+                    console.error("Failed to clear html5QrcodeScanner. ", error);
+                });
+                html5QrcodeScanner = null;
+            }
+        });
+    }
+});
