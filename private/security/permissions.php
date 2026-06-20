@@ -1,6 +1,6 @@
 <?php
 require_once(__DIR__ . "/../../config/funcoes.php");
-redirect_if_not_logged();
+redirect_if_not_logged('private/login/login.php', ['view.permissions']);
 
 // Mensagens de sucesso ou erro no caso do POST
 $success_message = null;
@@ -87,6 +87,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <p class="text-secondary fw-400">Gestão de permissões de utilizadores</p>
             </div>
             <div class="d-flex gap-2">
+                <?php if (tem_permissao('permissions.create')): ?>
                 <button id="btn-open-create-permission-modal" class="btn btn-primary btn-glowing gap-2"
                     data-bs-toggle="modal" data-bs-target="#permission-creation-modal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -97,6 +98,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                     </svg>
                     Nova Permissão
                 </button>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -195,7 +197,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                     <th><a href="<?= $buildSortUrl('descricao') ?>"
                                             class="datatable-sorter text-decoration-none text-inherit">DESCRIÇÃO<?= $getSortIcon('descricao') ?></a>
                                     </th>
+                                    <?php if (tem_permissao('permissions.edit') || tem_permissao('permissions.delete')): ?>
                                     <th class="text-end">AÇÕES</th>
+                                    <?php endif; ?>
                                 </tr>
                             </thead>
                             <tbody>
@@ -213,6 +217,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                         <td>
                                             <p class="fw-400"><?= htmlspecialchars($permissao->getDescricao()) ?></p>
                                         </td>
+                                        <?php if (tem_permissao('permissions.edit') || tem_permissao('permissions.delete')): ?>
                                         <td class="text-end equipment-actions">
                                             <div class="dropdown">
                                                 <button
@@ -227,6 +232,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                     </svg>
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
+                                                    <?php if (tem_permissao('permissions.edit')): ?>
                                                     <li>
                                                         <a class="dropdown-item action-dropdown-item text-primary" href="#"
                                                             data-bs-toggle="modal"
@@ -241,6 +247,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                             Editar
                                                         </a>
                                                     </li>
+                                                    <?php endif; ?>
+                                                    <?php if (tem_permissao('permissions.delete')): ?>
                                                     <li>
                                                         <a class="dropdown-item action-dropdown-item text-error" href="#"
                                                             data-bs-toggle="modal"
@@ -256,9 +264,11 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                             Apagar
                                                         </a>
                                                     </li>
+                                                    <?php endif; ?>
                                                 </ul>
                                             </div>
                                         </td>
+                                        <?php endif; ?>
                                     </tr>
                                 <?php endforeach; ?>
 
@@ -318,6 +328,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 ?>
 
+<?php if (tem_permissao('permissions.create')): ?>
 <!-- Modal de Criação de Permissão -->
 <div class="modal fade" id="permission-creation-modal" tabindex="-1" aria-labelledby="permissionModalLabel"
     aria-hidden="true">
@@ -379,10 +390,12 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
         </div>
     </div>
 </div>
+<?php endif; ?>
 
 <?php foreach ($permissoes as $permissao): ?>
     <?php $encryptedPermId = aes_encrypt($permissao->getIdPermissao()); ?>
 
+    <?php if (tem_permissao('permissions.edit')): ?>
     <!-- Modal de Edição de Permissão para <?= htmlspecialchars($permissao->getChave()) ?> -->
     <div class="modal fade" id="permission-edit-modal-<?= htmlspecialchars($encryptedPermId) ?>" tabindex="-1"
         aria-labelledby="permissionEditModalLabel-<?= htmlspecialchars($encryptedPermId) ?>" aria-hidden="true">
@@ -454,7 +467,9 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
             </div>
         </div>
     </div>
+    <?php endif; ?>
 
+    <?php if (tem_permissao('permissions.delete')): ?>
     <!-- Modal de Eliminação de Permissão para <?= htmlspecialchars($permissao->getChave()) ?> -->
     <div class="modal fade" id="delete-confirm-modal-<?= htmlspecialchars($encryptedPermId) ?>" tabindex="-1"
         aria-labelledby="deleteModalLabel-<?= htmlspecialchars($encryptedPermId) ?>" aria-hidden="true">
@@ -529,6 +544,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
             </div>
         </div>
     </div>
+    <?php endif; ?>
 <?php endforeach; ?>
 
 <!-- Toast Container -->

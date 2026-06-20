@@ -38,6 +38,7 @@
                                     <span class="fw-600 text-warning">Pendente</span>
                                 </div>
                             </div>
+                            <?php if (tem_permissao('documents.create')): ?>
                             <button
                                 class="btn p-0 border-0 bg-transparent text-warning opacity-75 hover-opacity-100 transition-opacity"
                                 data-bs-toggle="modal" data-bs-target="#add-document-modal-<?= $index ?>"
@@ -50,12 +51,14 @@
                                     <line x1="12" y1="3" x2="12" y2="15" />
                                 </svg>
                             </button>
+                            <?php endif; ?>
                         </div>
                     <?php endforeach; ?>
                 </div>
             </div>
 
             <!-- Modais de Adicionar (Em Falta) gerados logo a seguir ao cartão para manter a organização -->
+            <?php if (tem_permissao('documents.create')): ?>
             <?php foreach ($tiposEmFalta as $index => $tipoFalta): ?>
                 <div class="modal fade" id="add-document-modal-<?= $index ?>" tabindex="-1"
                     aria-labelledby="addDocumentModalLabel<?= $index ?>" aria-hidden="true">
@@ -167,6 +170,7 @@
                     </div>
                 </div>
             <?php endforeach; ?>
+            <?php endif; ?>
 
         <?php endif; ?>
 
@@ -174,6 +178,7 @@
         <div class="card bento-card padding-6 d-flex flex-column gap-4">
             <div class="d-flex justify-content-between align-items-center">
                 <h2 class="fw-700 m-0 text-primary">Documentos Associados</h2>
+                <?php if (tem_permissao('documents.create')): ?>
                 <button class="btn btn-primary-outline d-flex align-items-center gap-2" data-bs-toggle="modal"
                     data-bs-target="#add-document-modal-generic">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
@@ -184,6 +189,7 @@
                     </svg>
                     <span>Adicionar</span>
                 </button>
+                <?php endif; ?>
             </div>
 
             <?php if (count($documentos) === 0): ?>
@@ -248,6 +254,7 @@
                                             </a>
                                         <?php endif; ?>
 
+                                        <?php if (tem_permissao('documents.edit')): ?>
                                         <button
                                             class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
                                             type="button" title="Editar" data-bs-toggle="modal"
@@ -259,7 +266,9 @@
                                                 <path d="m15 5 4 4" />
                                             </svg>
                                         </button>
+                                        <?php endif; ?>
 
+                                        <?php if (tem_permissao('documents.delete')): ?>
                                         <button
                                             class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
                                             type="button" title="Eliminar" data-bs-toggle="modal"
@@ -272,6 +281,7 @@
                                                 <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
                                             </svg>
                                         </button>
+                                        <?php endif; ?>
                                     </div>
                                 </td>
                             </tr>
@@ -285,6 +295,7 @@
 </div>
 
 <!-- Modal Adicionar Genérico -->
+<?php if (tem_permissao('documents.create')): ?>
 <div class="modal fade" id="add-document-modal-generic" tabindex="-1" aria-labelledby="addDocumentModalLabelGeneric"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
@@ -392,10 +403,12 @@
         </div>
     </div>
 </div>
+<?php endif; ?>
 
 <?php foreach ($documentos as $doc): ?>
     <?php $encDocId = htmlspecialchars(aes_encrypt($doc->getIdDocumento())); ?>
 
+    <?php if (tem_permissao('documents.edit')): ?>
     <!-- Modal Editar Documento -->
     <div class="modal fade" id="edit-document-modal-<?= $encDocId ?>" tabindex="-1"
         aria-labelledby="editDocumentModalLabel<?= $encDocId ?>" aria-hidden="true">
@@ -488,6 +501,9 @@
         </div>
     </div>
 
+    <?php endif; ?>
+
+    <?php if (tem_permissao('documents.delete')): ?>
     <!-- Modal Eliminar Documento -->
     <div class="modal fade" id="delete-document-modal-<?= $encDocId ?>" tabindex="-1"
         aria-labelledby="deleteDocumentModalLabel<?= $encDocId ?>" aria-hidden="true">
@@ -546,4 +562,5 @@
             </div>
         </div>
     </div>
+    <?php endif; ?>
 <?php endforeach; ?>

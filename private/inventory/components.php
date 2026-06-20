@@ -1,6 +1,6 @@
 <?php
 require_once(__DIR__ . "/../../config/funcoes.php");
-redirect_if_not_logged();
+redirect_if_not_logged('private/login/login.php', ['view.components']);
 $success_message = null;
 $server_error = null;
 
@@ -160,6 +160,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <h1>Componentes</h1>
                 <p class="text-secondary fw-400">Gestão de componentes em stock</p>
             </div>
+            <?php if (tem_permissao('components.create')): ?>
             <div class="d-flex gap-2">
                 <button id="btn-open-create-equipment-modal" class="btn btn-primary btn-glowing gap-2"
                     data-bs-toggle="modal" data-bs-target="#equipment-creation-modal">
@@ -172,6 +173,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                     Criar Componente
                 </button>
             </div>
+            <?php endif; ?>
         </div>
 
         <!-- Barra de Pesquisa -->
@@ -264,7 +266,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                 <th><a href="<?= $buildSortUrl('categoria') ?>" class="datatable-sorter text-decoration-none text-inherit">CATEGORIA<?= $getSortIcon('categoria') ?></a></th>
                                 <th><a href="<?= $buildSortUrl('stock') ?>" class="datatable-sorter text-decoration-none text-inherit">STOCK/MIN<?= $getSortIcon('stock') ?></a></th>
                                 <th><a href="<?= $buildSortUrl('preco') ?>" class="datatable-sorter text-decoration-none text-inherit">PREÇO UNIT.<?= $getSortIcon('preco') ?></a></th>
+                                <?php if (tem_permissao('components.edit') || tem_permissao('components.delete')): ?>
                                 <th class="text-end">AÇÕES</th>
+                                <?php endif; ?>
                             </tr>
                         </thead>
                         <tbody>
@@ -320,6 +324,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                             <td class="fw-700">
                                 €<?= htmlspecialchars(number_format($componente->getPreco(), 2, '.', '')) ?>
                             </td>
+                            <?php if (tem_permissao('components.edit') || tem_permissao('components.delete')): ?>
                             <td class="text-end equipment-actions">
                                 <div class="dropdown">
                                     <button
@@ -334,6 +339,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                         </svg>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
+                                        <?php if (tem_permissao('components.edit')): ?>
                                         <li>
                                             <a class="dropdown-item action-dropdown-item text-primary" href="#"
                                                 data-bs-toggle="modal"
@@ -348,6 +354,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                 Editar
                                             </a>
                                         </li>
+                                        <?php endif; ?>
+                                        <?php if (tem_permissao('components.delete')): ?>
                                         <li>
                                             <a class="dropdown-item action-dropdown-item text-error" href="#"
                                                 data-bs-toggle="modal"
@@ -365,9 +373,11 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                 Eliminar
                                             </a>
                                         </li>
+                                        <?php endif; ?>
                                     </ul>
                                 </div>
                             </td>
+                            <?php endif; ?>
                         </tr>
 
                     <?php endforeach; ?>
@@ -428,6 +438,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 ?>
 
 <!-- Modal de Criação de Componente -->
+<?php if (tem_permissao('components.create')): ?>
 <div class="modal fade" id="equipment-creation-modal" tabindex="-1" aria-labelledby="componentModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
@@ -594,10 +605,12 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
         </div>
     </div>
 </div>
+<?php endif; ?>
 
 <?php foreach ($listaComponentes as $componente): ?>
     <?php $encryptedCompId = aes_encrypt($componente->getIdComponente()); ?>
 
+    <?php if (tem_permissao('components.edit')): ?>
     <!-- Modal de Edição de Componente para <?= htmlspecialchars($componente->getDescricao()) ?> -->
     <div class="modal fade" id="component-edit-modal-<?= htmlspecialchars($encryptedCompId) ?>" tabindex="-1"
         aria-labelledby="componentEditModalLabel-<?= htmlspecialchars($encryptedCompId) ?>" aria-hidden="true">
@@ -786,7 +799,9 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
             </div>
         </div>
     </div>
+    <?php endif; ?>
 
+    <?php if (tem_permissao('components.delete')): ?>
     <!-- Modal de Eliminação de Componente para <?= htmlspecialchars($componente->getDescricao()) ?> -->
     <div class="modal fade" id="component-delete-modal-<?= htmlspecialchars($encryptedCompId) ?>" tabindex="-1"
         aria-labelledby="componentDeleteModalLabel-<?= htmlspecialchars($encryptedCompId) ?>" aria-hidden="true">
@@ -860,6 +875,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
             </div>
         </div>
     </div>
+    <?php endif; ?>
 <?php endforeach; ?>
 
 <!-- Toast Container -->

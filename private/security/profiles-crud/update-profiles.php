@@ -2,7 +2,7 @@
 require_once(__DIR__ . "/../../../config/funcoes.php");
 
 start_session();
-redirect_if_not_logged();
+redirect_if_not_logged('private/login/login.php', ['profiles.edit']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {

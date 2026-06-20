@@ -35,6 +35,7 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
     <div class="card bento-card padding-6 d-flex flex-column gap-4">
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="fw-700 m-0 text-primary">Manutenções</h2>
+            <?php if (tem_permissao('maintenances.create')): ?>
             <button class="btn btn-primary-outline d-flex align-items-center gap-2" data-bs-toggle="modal"
                 data-bs-target="#add-maintenance-modal">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
@@ -45,6 +46,7 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                 </svg>
                 <span>Nova Manutenção</span>
             </button>
+            <?php endif; ?>
         </div>
 
         <?php if (empty($listaManutencoes)): ?>
@@ -74,7 +76,9 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                         <th>FORNECEDOR</th>
                         <th>CUSTO</th>
                         <th>OBSERVAÇÕES</th>
+                        <?php if (tem_permissao('maintenances.edit') || tem_permissao('maintenances.delete')): ?>
                         <th class="text-end">AÇÕES</th>
+                        <?php endif; ?>
                     </tr>
                 </thead>
                 <tbody>
@@ -116,8 +120,10 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                                     <?= htmlspecialchars($shortObs ?: '—') ?>
                                 </span>
                             </td>
+                            <?php if (tem_permissao('maintenances.edit') || tem_permissao('maintenances.delete')): ?>
                             <td class="text-end">
                                 <div class="d-flex justify-content-end gap-3 align-items-center">
+                                    <?php if (tem_permissao('maintenances.edit')): ?>
                                     <button
                                         class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
                                         type="button" title="Editar" data-bs-toggle="modal"
@@ -129,6 +135,8 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                                             <path d="m15 5 4 4" />
                                         </svg>
                                     </button>
+                                    <?php endif; ?>
+                                    <?php if (tem_permissao('maintenances.delete')): ?>
                                     <button
                                         class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
                                         type="button" title="Eliminar" data-bs-toggle="modal"
@@ -141,8 +149,10 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                                             <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
                                         </svg>
                                     </button>
+                                    <?php endif; ?>
                                 </div>
                             </td>
+                            <?php endif; ?>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
@@ -152,6 +162,7 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
 </div>
 
 <!-- Modal de Nova Manutenção -->
+<?php if (tem_permissao('maintenances.create')): ?>
 <div class="modal fade" id="add-maintenance-modal" tabindex="-1" aria-labelledby="addMaintenanceModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
@@ -357,11 +368,13 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
         </div>
     </div>
 </div>
+<?php endif; ?>
 
 <?php foreach ($listaManutencoes as $item): ?>
     <?php
     $encId = aes_encrypt($item->getIdManutencao());
     ?>
+    <?php if (tem_permissao('maintenances.edit')): ?>
     <!-- Modal de Editar Manutenção -->
     <div class="modal fade" id="edit-maintenance-modal-<?= $encId ?>" tabindex="-1"
         aria-labelledby="editMaintenanceModalLabel-<?= $encId ?>" aria-hidden="true">
@@ -542,7 +555,9 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
             </div>
         </div>
     </div>
+    <?php endif; ?>
 
+    <?php if (tem_permissao('maintenances.delete')): ?>
     <!-- Modal de Remoção de Manutenção -->
     <div class="modal fade" id="delete-maintenance-modal-<?= htmlspecialchars($encId) ?>" tabindex="-1"
         aria-labelledby="deleteMaintenanceModalLabel-<?= htmlspecialchars($encId) ?>" aria-hidden="true">
@@ -603,4 +618,5 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
             </div>
         </div>
     </div>
+    <?php endif; ?>
 <?php endforeach; ?>

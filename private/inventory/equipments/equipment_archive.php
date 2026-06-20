@@ -1,6 +1,6 @@
 <?php
 require_once(__DIR__ . "/../../../config/funcoes.php");
-redirect_if_not_logged();
+redirect_if_not_logged('private/login/login.php', ['view.equipment_archive']);
 
 $success_message = null;
 $server_error = null;
@@ -339,7 +339,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                     <th><a href="<?= $buildSortUrl('criticidade') ?>"
                                             class="datatable-sorter text-decoration-none text-inherit">CRITICIDADE<?= $getSortIcon('criticidade') ?></a>
                                     </th>
-                                    <th class="text-end">AÇÕES</th>
+                                    <?php if (tem_permissao('equipments.unarchive')): ?>
+                                        <th class="text-end">AÇÕES</th>
+                                    <?php endif; ?>
                                 </tr>
                             </thead>
                             <tbody>
@@ -460,40 +462,42 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                 <?= htmlspecialchars($criticidade) ?>
                                             </span>
                                         </td>
-                                        <td class="text-end equipment-actions">
-                                            <div class="dropdown">
-                                                <button
-                                                    class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
-                                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                        stroke-linecap="round" stroke-linejoin="round">
-                                                        <circle cx="12" cy="12" r="1" />
-                                                        <circle cx="19" cy="12" r="1" />
-                                                        <circle cx="5" cy="12" r="1" />
-                                                    </svg>
-                                                </button>
-                                                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
-                                                    <li>
-                                                        <a class="dropdown-item action-dropdown-item text-primary" href="#"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#equipment-unarchive-modal-<?= htmlspecialchars($encryptedEqId) ?>">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                                class="lucide lucide-archive-restore">
-                                                                <rect width="20" height="5" x="2" y="3" rx="1" />
-                                                                <path d="M4 8v11a2 2 0 0 0 2 2h2" />
-                                                                <path d="M20 8v11a2 2 0 0 1-2 2h-2" />
-                                                                <path d="m9 15 3-3 3 3" />
-                                                                <path d="M12 12v9" />
-                                                            </svg>
-                                                            Desarquivar
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </td>
+                                        <?php if (tem_permissao('equipments.unarchive')): ?>
+                                            <td class="text-end equipment-actions">
+                                                <div class="dropdown">
+                                                    <button
+                                                        class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
+                                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round">
+                                                            <circle cx="12" cy="12" r="1" />
+                                                            <circle cx="19" cy="12" r="1" />
+                                                            <circle cx="5" cy="12" r="1" />
+                                                        </svg>
+                                                    </button>
+                                                    <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
+                                                        <li>
+                                                            <a class="dropdown-item action-dropdown-item text-primary" href="#"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#equipment-unarchive-modal-<?= htmlspecialchars($encryptedEqId) ?>">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                    class="lucide lucide-archive-restore">
+                                                                    <rect width="20" height="5" x="2" y="3" rx="1" />
+                                                                    <path d="M4 8v11a2 2 0 0 0 2 2h2" />
+                                                                    <path d="M20 8v11a2 2 0 0 1-2 2h-2" />
+                                                                    <path d="m9 15 3-3 3 3" />
+                                                                    <path d="M12 12v9" />
+                                                                </svg>
+                                                                Desarquivar
+                                                            </a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        <?php endif; ?>
                                     </tr>
                                 <?php endforeach; ?>
 
@@ -562,6 +566,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 
 <?php foreach ($listaEquipamentos as $equipamento): ?>
     <?php $encryptedEqId = aes_encrypt((string) $equipamento->getIdEquipamento()); ?>
+    <?php if (tem_permissao('equipments.unarchive')): ?>
     <!-- Modal de Desarquivo de Equipamento -->
     <div class="modal fade" id="equipment-unarchive-modal-<?= htmlspecialchars($encryptedEqId) ?>" tabindex="-1"
         aria-labelledby="equipmentUnarchiveModalLabel-<?= htmlspecialchars($encryptedEqId) ?>" aria-hidden="true">
@@ -625,6 +630,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
             </div>
         </div>
     </div>
+    <?php endif; ?>
 <?php endforeach; ?>
 
 <!-- Toast Container -->

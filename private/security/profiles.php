@@ -18,7 +18,7 @@ $search_query = isset($_GET['search']) ? trim($_GET['search']) : '';
 $current_page = isset($_GET['page']) ? max(1, (int) $_GET['page']) : 1;
 $items_per_page = 8;
 
-redirect_if_not_logged();
+redirect_if_not_logged('private/login/login.php', ['view.profiles']);
 
 // Obter perfis e permissões da base de dados
 try {
@@ -219,9 +219,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                             id="permission-input-<?= $perfil['idPerfil'] ?>-<?= $permission['idPermissao'] ?>"
                                                             value="<?= $hasPerm ? '1' : '0' ?>">
                                                         <button type="button"
-                                                            class="check-badge <?= $hasPerm ? 'has-permission' : '' ?>"
+                                                            class="check-badge <?= $hasPerm ? 'has-permission' : '' ?> <?= tem_permissao('profiles.edit') ? '' : 'pe-none' ?>"
                                                             id="<?= $badgeId ?>"
-                                                            onclick="togglePermission('<?= $perfil['idPerfil'] . '-' . $permission['idPermissao'] ?>')">
+                                                            <?= tem_permissao('profiles.edit') ? "onclick=\"togglePermission('{$perfil['idPerfil']}-{$permission['idPermissao']}')\"" : '' ?>>
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -282,6 +282,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                             </div>
                         </div>
 
+                        <?php if (tem_permissao('profiles.edit')): ?>
                         <!-- Alterações pendentes -->
                         <div class="inbox-changes-container justify-content-between align-items-center padding-6"
                             style="display: none;">
@@ -298,6 +299,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                 Guardar Alterações
                             </button>
                         </div>
+                        <?php endif; ?>
                 </form>
             <?php endif; ?>
         </div>

@@ -1,6 +1,6 @@
 <?php
 require_once(__DIR__ . "/../../config/funcoes.php");
-redirect_if_not_logged();
+redirect_if_not_logged('private/login/login.php', ['view.fornecedores']);
 
 $success_message = null;
 $server_error = null;
@@ -161,6 +161,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <p class="text-secondary fw-400">Gestão de fornecedores</p>
             </div>
             <div class="d-flex gap-2">
+                <?php if (tem_permissao('suppliers.create')): ?>
                 <button id="btn-open-create-supplier-modal" class="btn btn-primary btn-glowing gap-2"
                     data-bs-toggle="modal" data-bs-target="#supplier-creation-modal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -171,6 +172,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                     </svg>
                     Criar Fornecedor
                 </button>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -298,7 +300,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                     <th><a href="<?= $buildSortUrl('website') ?>"
                                             class="datatable-sorter text-decoration-none text-inherit">WEBSITE<?= $getSortIcon('website') ?></a>
                                     </th>
+                                    <?php if (tem_permissao('suppliers.edit') || tem_permissao('suppliers.delete')): ?>
                                     <th class="text-end">AÇÕES</th>
+                                    <?php endif; ?>
                                 </tr>
                             </thead>
                             <tbody>
@@ -382,6 +386,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                 <span class="text-muted">&mdash;</span>
                                             <?php endif; ?>
                                         </td>
+                                        <?php if (tem_permissao('suppliers.edit') || tem_permissao('suppliers.delete')): ?>
                                         <td class="text-end equipment-actions">
                                             <div class="dropdown">
                                                 <button
@@ -396,6 +401,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                     </svg>
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
+                                                    <?php if (tem_permissao('suppliers.edit')): ?>
                                                     <li>
                                                         <a class="dropdown-item action-dropdown-item text-primary" href="#"
                                                             data-bs-toggle="modal"
@@ -410,6 +416,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                             Editar
                                                         </a>
                                                     </li>
+                                                    <?php endif; ?>
+                                                    <?php if (tem_permissao('suppliers.delete')): ?>
                                                     <li>
                                                         <a class="dropdown-item action-dropdown-item text-error" href="#"
                                                             data-bs-toggle="modal"
@@ -425,9 +433,11 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                             Mover para Reciclagem
                                                         </a>
                                                     </li>
+                                                    <?php endif; ?>
                                                 </ul>
                                             </div>
                                         </td>
+                                        <?php endif; ?>
                                     </tr>
                                 <?php endforeach; ?>
 
@@ -489,6 +499,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 <?php include_once BASE_PATH . 'private/includes/sidebar-mobile.php'; ?>
 
 <!-- Modal de Criação de Fornecedor -->
+<?php if (tem_permissao('suppliers.create')): ?>
 <div class="modal fade" id="supplier-creation-modal" tabindex="-1" aria-labelledby="supplierModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
@@ -640,10 +651,12 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
         </div>
     </div>
 </div>
+<?php endif; ?>
 
 <?php foreach ($listaFornecedores as $fornecedor):
     $encryptedId = aes_encrypt($fornecedor->getIdFornecedor());
     ?>
+    <?php if (tem_permissao('suppliers.edit')): ?>
     <!-- Modal de Edição para <?= htmlspecialchars($fornecedor->getNome()) ?> -->
     <div class="modal fade" id="supplier-edit-modal-<?= $encryptedId ?>" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
@@ -790,8 +803,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
             </div>
         </div>
     </div>
+    <?php endif; ?>
 
-
+    <?php if (tem_permissao('suppliers.delete')): ?>
     <!-- Modal de Eliminação de Fornecedor para <?= htmlspecialchars($fornecedor->getNome()) ?> -->
     <div class="modal fade" id="delete-confirm-modal-<?= $encryptedId ?>" tabindex="-1"
         aria-labelledby="deleteModalLabel-<?= $encryptedId ?>" aria-hidden="true">
@@ -864,6 +878,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
             </div>
         </div>
     </div>
+    <?php endif; ?>
 <?php endforeach; ?>
 
 <!-- Toast Container -->

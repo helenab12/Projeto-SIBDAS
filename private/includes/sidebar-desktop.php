@@ -62,6 +62,7 @@ if (!function_exists('isDropdownActive')) {
                 <div class="collapse <?php echo isDropdownActive(['equipment_list.php', 'equipment_archive.php', 'detailed_view.php', 'components.php', 'categories.php']) ? 'show' : ''; ?>"
                     id="collapseInventario">
                     <ul class="nav-dropdown-menu d-flex flex-column gap-1">
+                        <?php if (tem_permissao('view.equipments') || tem_permissao('view.equipment_archive')): ?>
                         <!-- Equipamentos (dropdown) -->
                         <li class="nav-dropdown">
                             <a href="#collapseEquipamentos"
@@ -97,6 +98,7 @@ if (!function_exists('isDropdownActive')) {
                             <div class="collapse <?php echo isDropdownActive(['equipment_list.php', 'equipment_archive.php', 'detailed_view.php']) ? 'show' : ''; ?>"
                                 id="collapseEquipamentos">
                                 <ul class="nav-dropdown-menu d-flex flex-column gap-1">
+                                    <?php if (tem_permissao('view.equipments')): ?>
                                     <li
                                         class="<?php echo ($currentPage == 'equipment_list.php' || $currentPage == 'detailed_view.php') ? 'active' : ''; ?>">
                                         <a href="<?= BASE_URL ?>private/inventory/equipments/equipment_list.php">
@@ -111,6 +113,8 @@ if (!function_exists('isDropdownActive')) {
                                                 <path d="M8 19h13" />
                                             </svg>Lista Geral</a>
                                     </li>
+                                    <?php endif; ?>
+                                    <?php if (tem_permissao('view.equipment_archive')): ?>
                                     <li
                                         class="<?php echo ($currentPage == 'equipment_archive.php') ? 'active' : ''; ?>">
                                         <a href="<?= BASE_URL ?>private/inventory/equipments/equipment_archive.php">
@@ -124,9 +128,12 @@ if (!function_exists('isDropdownActive')) {
                                                     d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3" />
                                             </svg>Equipamentos Arquivados</a>
                                     </li>
+                                    <?php endif; ?>
                                 </ul>
                             </div>
                         </li>
+                        <?php endif; ?>
+                        <?php if (tem_permissao('view.components')): ?>
                         <li class="<?php echo ($currentPage == 'components.php') ? 'active' : ''; ?>"><a
                                 href="<?= BASE_URL ?>private/inventory/components.php">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -135,6 +142,8 @@ if (!function_exists('isDropdownActive')) {
                                     <path
                                         d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z" />
                                 </svg>Componentes</a></li>
+                        <?php endif; ?>
+                        <?php if (tem_permissao('view.categorias')): ?>
                         <li class="<?php echo ($currentPage == 'categories.php') ? 'active' : ''; ?>"><a
                                 href="<?= BASE_URL ?>private/inventory/categories.php">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -148,10 +157,12 @@ if (!function_exists('isDropdownActive')) {
                                     <path d="M3 3v13a2 2 0 0 0 2 2h3" />
                                 </svg>Categorias</a>
                         </li>
+                        <?php endif; ?>
                     </ul>
                 </div>
             </li>
 
+            <?php if (tem_permissao('view.fornecedores') || tem_permissao('view.pessoas')): ?>
             <!-- Entidades (dropdown) -->
             <li class="nav-dropdown">
                 <a href="#collapseEntidades"
@@ -177,6 +188,7 @@ if (!function_exists('isDropdownActive')) {
                 <div class="collapse <?php echo isDropdownActive(['suppliers.php', 'people_management.php', 'locations.php']) ? 'show' : ''; ?>"
                     id="collapseEntidades">
                     <ul class="nav-dropdown-menu d-flex flex-column gap-1">
+                        <?php if (tem_permissao('view.fornecedores')): ?>
                         <li class="<?php echo ($currentPage == 'suppliers.php') ? 'active' : ''; ?>"><a
                                 href="<?= BASE_URL ?>private/entities/suppliers.php">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -187,6 +199,8 @@ if (!function_exists('isDropdownActive')) {
                                     <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
                                     <circle cx="9" cy="7" r="4" />
                                 </svg>Fornecedores</a></li>
+                        <?php endif; ?>
+                        <?php if (tem_permissao('view.pessoas')): ?>
                         <li class="<?php echo ($currentPage == 'people_management.php') ? 'active' : ''; ?>"><a
                                 href="<?= BASE_URL ?>private/entities/people_management.php">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -205,6 +219,8 @@ if (!function_exists('isDropdownActive')) {
                                     <circle cx="10" cy="8" r="5" />
                                     <circle cx="18" cy="18" r="3" />
                                 </svg>Gestão de Pessoas</a></li>
+                        <?php endif; ?>
+                        <?php if (tem_permissao('locations.view')): ?>
                         <li class="<?php echo ($currentPage == 'locations.php') ? 'active' : ''; ?>"><a
                                 href="<?= BASE_URL ?>private/entities/locations.php">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -214,11 +230,14 @@ if (!function_exists('isDropdownActive')) {
                                         d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
                                     <circle cx="12" cy="10" r="3" />
                                 </svg>Localizações</a></li>
+                        <?php endif; ?>
                     </ul>
                 </div>
             </li>
+            <?php endif; ?>
 
             <!-- Segurança (dropdown) -->
+            <?php if (tem_permissao('view.safety')): ?>
             <li class="nav-dropdown">
                 <a href="#collapseSeguranca"
                     class="nav-dropdown-toggle <?php echo !isDropdownActive(['users.php', 'profiles.php', 'permissions.php', 'recycling.php', 'audit_logs.php']) ? 'collapsed' : ''; ?>"
@@ -240,6 +259,7 @@ if (!function_exists('isDropdownActive')) {
                 <div class="collapse <?php echo isDropdownActive(['users.php', 'profiles.php', 'permissions.php', 'recycling.php', 'audit_logs.php']) ? 'show' : ''; ?>"
                     id="collapseSeguranca">
                     <ul class="nav-dropdown-menu d-flex flex-column gap-1">
+                        <?php if (tem_permissao('view.users')): ?>
                         <li class="<?php echo ($currentPage == 'users.php') ? 'active' : ''; ?>"><a
                                 href="<?= BASE_URL ?>private/security/users.php">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -250,6 +270,8 @@ if (!function_exists('isDropdownActive')) {
                                     <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
                                     <circle cx="9" cy="7" r="4" />
                                 </svg>Utilizadores</a></li>
+                        <?php endif; ?>
+                        <?php if (tem_permissao('view.profiles')): ?>
                         <li class="<?php echo ($currentPage == 'profiles.php') ? 'active' : ''; ?>"><a
                                 href="<?= BASE_URL ?>private/security/profiles.php">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -258,6 +280,8 @@ if (!function_exists('isDropdownActive')) {
                                     <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
                                     <circle cx="12" cy="7" r="4" />
                                 </svg>Perfis</a></li>
+                        <?php endif; ?>
+                        <?php if (tem_permissao('view.permissions')): ?>
                         <li class="<?php echo ($currentPage == 'permissions.php') ? 'active' : ''; ?>"><a
                                 href="<?= BASE_URL ?>private/security/permissions.php">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -266,6 +290,8 @@ if (!function_exists('isDropdownActive')) {
                                     <rect width="18" height="11" x="3" y="11" rx="2" ry="2" />
                                     <path d="M7 11V7a5 5 0 0 1 10 0v4" />
                                 </svg>Permissões</a></li>
+                        <?php endif; ?>
+                        <?php if (tem_permissao('view.recycling')): ?>
                         <li class="<?php echo ($currentPage == 'recycling.php') ? 'active' : ''; ?>"><a
                                 href="<?= BASE_URL ?>private/security/recycling.php">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -281,6 +307,8 @@ if (!function_exists('isDropdownActive')) {
                                         d="m9.344 5.811 1.093-1.892A1.83 1.83 0 0 1 11.985 3a1.784 1.784 0 0 1 1.546.888l3.943 6.843" />
                                     <path d="m13.378 9.633 4.096 1.098 1.097-4.096" />
                                 </svg>Reciclagem</a></li>
+                        <?php endif; ?>
+                        <?php if (tem_permissao('view.audit.logs')): ?>
                         <li class="<?php echo ($currentPage == 'audit_logs.php') ? 'active' : ''; ?>"><a
                                 href="<?= BASE_URL ?>private/security/audit_logs.php">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -292,11 +320,14 @@ if (!function_exists('isDropdownActive')) {
                                     <path
                                         d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3" />
                                 </svg>Logs de Auditoria</a></li>
+                        <?php endif; ?>
                     </ul>
                 </div>
             </li>
+            <?php endif; ?>
 
             <!-- Gestão do Front-Office (dropdown) -->
+            <?php if (tem_permissao('view.front.office.management')): ?>
             <li class="nav-dropdown">
                 <a href="#collapseGestao"
                     class="nav-dropdown-toggle <?php echo !isDropdownActive(['content_management.php', 'inbox.php']) ? 'collapsed' : ''; ?>"
@@ -319,6 +350,7 @@ if (!function_exists('isDropdownActive')) {
                 <div class="collapse <?php echo isDropdownActive(['content_management.php', 'inbox.php']) ? 'show' : ''; ?>"
                     id="collapseGestao">
                     <ul class="nav-dropdown-menu d-flex flex-column gap-1">
+                        <?php if (tem_permissao('view.content.management')): ?>
                         <li class="<?php echo ($currentPage == 'content_management.php') ? 'active' : ''; ?>"><a
                                 href="<?= BASE_URL ?>private/front_office/content_management.php">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -328,6 +360,8 @@ if (!function_exists('isDropdownActive')) {
                                     <path d="M4 7V5a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v2" />
                                     <path d="M9 20h6" />
                                 </svg>Gestão de Conteúdos</a></li>
+                        <?php endif; ?>
+                        <?php if (tem_permissao('view.inbox')): ?>
                         <li class="<?php echo ($currentPage == 'inbox.php') ? 'active' : ''; ?>"><a
                                 href="<?= BASE_URL ?>private/front_office/inbox.php">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -337,9 +371,12 @@ if (!function_exists('isDropdownActive')) {
                                     <path
                                         d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" />
                                 </svg>Caixa de Entrada</a></li>
+                        <?php endif; ?>
                     </ul>
                 </div>
             </li>
+            <?php endif; ?>
+            <?php if (tem_permissao('view.notifications')): ?>
             <li class="<?php echo ($currentPage == 'notifications.php') ? 'active' : ''; ?>"><a
                     href="<?= BASE_URL ?>private/notifications.php">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -348,6 +385,7 @@ if (!function_exists('isDropdownActive')) {
                         <path
                             d="M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326" />
                     </svg>Notificações</a></li>
+            <?php endif; ?>
         </ul>
     </nav>
 

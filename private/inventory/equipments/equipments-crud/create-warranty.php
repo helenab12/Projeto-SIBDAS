@@ -1,7 +1,7 @@
 <?php
 require_once(__DIR__ . "/../../../../config/funcoes.php");
 
-redirect_if_not_logged();
+redirect_if_not_logged('private/login/login.php', ['warranties.create']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {

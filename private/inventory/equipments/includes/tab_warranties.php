@@ -45,6 +45,7 @@ try {
     <div class="card bento-card padding-6 d-flex flex-column gap-4">
         <div class="d-flex justify-content-between align-items-center">
             <h2 class="fw-700 m-0 text-primary">Garantias & Contratos</h2>
+            <?php if (tem_permissao('warranties.create')): ?>
             <button class="btn btn-primary-outline d-flex align-items-center gap-2" data-bs-toggle="modal"
                 data-bs-target="#add-warranty-modal">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
@@ -55,6 +56,7 @@ try {
                 </svg>
                 <span>Adicionar</span>
             </button>
+            <?php endif; ?>
         </div>
 
         <?php if (empty($listaGarantias)): ?>
@@ -137,6 +139,7 @@ try {
                                             </svg>
                                         </a>
                                     <?php endif; ?>
+                                    <?php if (tem_permissao('warranties.edit')): ?>
                                     <button
                                         class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
                                         type="button" title="Editar" data-bs-toggle="modal"
@@ -149,6 +152,8 @@ try {
                                             <path d="m15 5 4 4" />
                                         </svg>
                                     </button>
+                                    <?php endif; ?>
+                                    <?php if (tem_permissao('warranties.delete')): ?>
                                     <button
                                         class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
                                         type="button" title="Eliminar" data-bs-toggle="modal"
@@ -162,6 +167,7 @@ try {
                                             <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
                                         </svg>
                                     </button>
+                                    <?php endif; ?>
                                 </div>
                             </td>
                         </tr>
@@ -173,6 +179,7 @@ try {
 </div>
 
 <!-- Modal de Nova Garantia / Contrato -->
+<?php if (tem_permissao('warranties.create')): ?>
 <div class="modal fade" id="add-warranty-modal" tabindex="-1" aria-labelledby="addWarrantyModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
@@ -357,6 +364,7 @@ try {
         </div>
     </div>
 </div>
+<?php endif; ?>
 
 <?php foreach ($listaGarantias as $item): ?>
     <?php
@@ -367,6 +375,7 @@ try {
     $endId = 'edit-warranty-end-date-' . $encId;
     ?>
 
+    <?php if (tem_permissao('warranties.edit')): ?>
     <!-- Modal de Editar Garantia / Contrato -->
     <div class="modal fade" id="edit-warranty-modal-<?= htmlspecialchars($encId) ?>" tabindex="-1"
         aria-labelledby="editWarrantyModalLabel-<?= htmlspecialchars($encId) ?>" aria-hidden="true">
@@ -574,7 +583,9 @@ try {
             </div>
         </div>
     </div>
+    <?php endif; ?>
 
+    <?php if (tem_permissao('warranties.delete')): ?>
     <!-- Modal de Remoção de Garantia -->
     <div class="modal fade" id="delete-warranty-modal-<?= htmlspecialchars($encId) ?>" tabindex="-1"
         aria-labelledby="deleteWarrantyModalLabel-<?= htmlspecialchars($encId) ?>" aria-hidden="true">
@@ -634,4 +645,5 @@ try {
             </div>
         </div>
     </div>
+    <?php endif; ?>
 <?php endforeach; ?>

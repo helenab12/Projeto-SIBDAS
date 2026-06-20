@@ -50,6 +50,21 @@ try {
     $_SESSION['utilizador'] = $utilizador->emailAutenticacao;
     $_SESSION['id_utilizador'] = $utilizador->idUtilizador;
 
+    // Carregar permissões do perfil
+    $stmtPerms = execute_query(
+        "SELECT pm.chave, pp.possui
+         FROM PerfilPermissao pp
+         INNER JOIN Permissao pm ON pp.idPermissao = pm.idPermissao
+         WHERE pp.idPerfil = :idPerfil AND pm.ativo = 1",
+        ['idPerfil' => $utilizador->idPerfil],
+        $ligacao
+    );
+    $permissoes = [];
+    while ($row = $stmtPerms->fetch(PDO::FETCH_OBJ)) {
+        $permissoes[$row->chave] = (bool) $row->possui;
+    }
+    $_SESSION['permissoes'] = $permissoes;
+
     header('Location: ' . BASE_URL . 'private/index.php');
     exit;
 } catch (PDOException $err) {

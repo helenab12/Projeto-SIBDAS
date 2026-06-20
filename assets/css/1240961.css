@@ -3132,3 +3132,8 @@ section.inbox {
         transform: rotate(360deg);
     }
 }
+
+.search-item-template {
+    border-radius: var(--radius-md);
+    border: var(--border-base);
+}

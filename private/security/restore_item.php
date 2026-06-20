@@ -1,6 +1,6 @@
 <?php
 require_once(__DIR__ . "/../../config/funcoes.php");
-redirect_if_not_logged();
+redirect_if_not_logged('private/login/login.php', ['recycling.restore']);
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $idStr = $_POST['id'] ?? '';

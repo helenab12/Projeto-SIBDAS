@@ -1,6 +1,6 @@
 <?php
 require_once(__DIR__ . "/../../config/funcoes.php");
-redirect_if_not_logged();
+redirect_if_not_logged('private/login/login.php', ['view.categorias']);
 
 $success_message = null;
 $server_error = null;
@@ -104,6 +104,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <h1>Categorias</h1>
                 <p class="text-secondary fw-400">Gestão de categorias</p>
             </div>
+            <?php if (tem_permissao('categories.create')): ?>
             <div class="d-flex gap-2">
                 <button id="btn-open-create-category-modal" class="btn btn-primary btn-glowing gap-2"
                     data-bs-toggle="modal" data-bs-target="#category-creation-modal">
@@ -116,6 +117,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                     Nova Categoria
                 </button>
             </div>
+            <?php endif; ?>
         </div>
 
         <!-- Barra de Pesquisa -->
@@ -223,7 +225,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                             class="datatable-sorter text-decoration-none text-inherit">DESCRIÇÃO<?= $getSortIcon('descricao') ?></a>
                                     </th>
                                     <th>EQUIPAMENTOS</th>
+                                    <?php if (tem_permissao('categories.edit') || tem_permissao('categories.delete')): ?>
                                     <th class="text-end">AÇÕES</th>
+                                    <?php endif; ?>
                                 </tr>
                             </thead>
                             <tbody>
@@ -264,6 +268,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                         <td class="fw-700">
                                             <?= $categoria->getEquipamentosCount() ?>
                                         </td>
+                                        <?php if (tem_permissao('categories.edit') || tem_permissao('categories.delete')): ?>
                                         <td class="text-end equipment-actions">
                                             <div class="dropdown">
                                                 <button
@@ -278,6 +283,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                     </svg>
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
+                                                    <?php if (tem_permissao('categories.edit')): ?>
                                                     <li>
                                                         <a class="dropdown-item action-dropdown-item text-primary" href="#"
                                                             data-bs-toggle="modal"
@@ -292,6 +298,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                             Editar
                                                         </a>
                                                     </li>
+                                                    <?php endif; ?>
+                                                    <?php if (tem_permissao('categories.delete')): ?>
                                                     <li>
                                                         <a class="dropdown-item action-dropdown-item text-error" href="#"
                                                             data-bs-toggle="modal"
@@ -309,9 +317,11 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                             Apagar
                                                         </a>
                                                     </li>
+                                                    <?php endif; ?>
                                                 </ul>
                                             </div>
                                         </td>
+                                        <?php endif; ?>
                                     </tr>
 
                                 <?php endforeach; ?>
@@ -373,6 +383,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 ?>
 
 <!-- Modal de Criação de Categoria -->
+<?php if (tem_permissao('categories.create')): ?>
 <div class="modal fade" id="category-creation-modal" tabindex="-1" aria-labelledby="categoryModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
@@ -467,6 +478,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
         </div>
     </div>
 </div>
+<?php endif; ?>
 
 
 <!-- Toast Container -->
@@ -515,6 +527,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 <?php foreach ($listaCategorias as $categoria): ?>
     <?php $encryptedCatId = aes_encrypt($categoria->getIdCategoria()); ?>
 
+    <?php if (tem_permissao('categories.edit')): ?>
     <!-- Modal de Edição de Categoria para <?= htmlspecialchars($categoria->getNome()) ?> -->
     <div class="modal fade" id="category-edit-modal-<?= htmlspecialchars($encryptedCatId) ?>" tabindex="-1"
         aria-labelledby="categoryEditModalLabel-<?= htmlspecialchars($encryptedCatId) ?>" aria-hidden="true">
@@ -616,7 +629,9 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
             </div>
         </div>
     </div>
+    <?php endif; ?>
 
+    <?php if (tem_permissao('categories.delete')): ?>
     <!-- Modal de Eliminação de Categoria para <?= htmlspecialchars($categoria->getNome()) ?> -->
     <div class="modal fade" id="category-delete-modal-<?= htmlspecialchars($encryptedCatId) ?>" tabindex="-1"
         aria-labelledby="categoryDeleteModalLabel-<?= htmlspecialchars($encryptedCatId) ?>" aria-hidden="true">
@@ -689,6 +704,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
             </div>
         </div>
     </div>
+    <?php endif; ?>
 <?php endforeach; ?>
 
 <?php

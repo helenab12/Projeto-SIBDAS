@@ -1,6 +1,6 @@
 <?php
 require_once(__DIR__ . "/../../../config/funcoes.php");
-redirect_if_not_logged();
+redirect_if_not_logged('private/login/login.php', ['view.equipments']);
 
 $success_message = null;
 $server_error = null;
@@ -215,6 +215,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <h1>Lista de Equipamentos</h1>
                 <p class="text-secondary fw-400"><?= $totalEquipamentosAll ?> equipamentos cadastrados</p>
             </div>
+            <?php if (tem_permissao('equipments.create')): ?>
             <div class="d-flex gap-2">
                 <button id="btn-open-create-equipment-modal" class="btn btn-primary btn-glowing gap-2"
                     data-bs-toggle="modal" data-bs-target="#equipment-creation-modal">
@@ -227,6 +228,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                     Criar Equipamento
                 </button>
             </div>
+            <?php endif; ?>
         </div>
 
         <!-- Barra de Pesquisa -->
@@ -364,7 +366,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                     <th><a href="<?= $buildSortUrl('criticidade') ?>"
                                             class="datatable-sorter text-decoration-none text-inherit">CRITICIDADE<?= $getSortIcon('criticidade') ?></a>
                                     </th>
-                                    <th class="text-end">AÇÕES</th>
+                                    <?php if (tem_permissao('equipments.edit') || tem_permissao('equipments.delete') || tem_permissao('equipments.archive')): ?>
+                                        <th class="text-end">AÇÕES</th>
+                                    <?php endif; ?>
                                 </tr>
                             </thead>
                             <tbody>
@@ -487,6 +491,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                 <?= htmlspecialchars($criticidade) ?>
                                             </span>
                                         </td>
+                                        <?php if (tem_permissao('equipments.edit') || tem_permissao('equipments.delete') || tem_permissao('equipments.archive')): ?>
                                         <td class="text-end equipment-actions">
                                             <div class="dropdown">
                                                 <button
@@ -501,6 +506,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                     </svg>
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
+                                                    <?php if (tem_permissao('equipments.edit')): ?>
                                                     <li>
                                                         <a class="dropdown-item action-dropdown-item text-primary" href="#"
                                                             data-bs-toggle="modal"
@@ -515,6 +521,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                             Editar
                                                         </a>
                                                     </li>
+                                                    <?php endif; ?>
+                                                    <?php if (tem_permissao('equipments.archive')): ?>
                                                     <li>
                                                         <a class="dropdown-item action-dropdown-item text-error" href="#"
                                                             data-bs-toggle="modal"
@@ -530,6 +538,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                             Arquivar
                                                         </a>
                                                     </li>
+                                                    <?php endif; ?>
+                                                    <?php if (tem_permissao('equipments.delete')): ?>
                                                     <li>
                                                         <a class="dropdown-item action-dropdown-item text-error" href="#"
                                                             data-bs-toggle="modal"
@@ -547,9 +557,11 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                             Apagar
                                                         </a>
                                                     </li>
+                                                    <?php endif; ?>
                                                 </ul>
                                             </div>
                                         </td>
+                                        <?php endif; ?>
                                     </tr>
                                 <?php endforeach; ?>
 
@@ -1471,6 +1483,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
     }
     ?>
 
+    <?php if (tem_permissao('equipments.edit')): ?>
     <!-- Modal de Edição de Equipamento para <?= htmlspecialchars($equipamento->getDesignacao()) ?> -->
     <div class="modal fade" id="equipment-edit-modal-<?= htmlspecialchars($encryptedEqId) ?>" tabindex="-1"
         aria-labelledby="equipmentEditModalLabel-<?= htmlspecialchars($encryptedEqId) ?>" aria-hidden="true">
@@ -2057,6 +2070,9 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
         </div>
     </div>
 
+    <?php endif; ?>
+
+    <?php if (tem_permissao('equipments.delete')): ?>
     <!-- Modal de Eliminação de Equipamento -->
     <div class="modal fade" id="equipment-delete-modal-<?= htmlspecialchars($encryptedEqId) ?>" tabindex="-1"
         aria-labelledby="equipmentDeleteModalLabel-<?= htmlspecialchars($encryptedEqId) ?>" aria-hidden="true">
@@ -2117,6 +2133,9 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
         </div>
     </div>
 
+    <?php endif; ?>
+
+    <?php if (tem_permissao('equipments.archive')): ?>
     <!-- Modal de Arquivo de Equipamento -->
     <div class="modal fade" id="equipment-archive-modal-<?= htmlspecialchars($encryptedEqId) ?>" tabindex="-1"
         aria-labelledby="equipmentArchiveModalLabel-<?= htmlspecialchars($encryptedEqId) ?>" aria-hidden="true">
@@ -2175,6 +2194,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
             </div>
         </div>
     </div>
+    <?php endif; ?>
 <?php endforeach; ?>
 
 <!-- Toast Container -->

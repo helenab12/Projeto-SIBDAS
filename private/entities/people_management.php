@@ -1,6 +1,6 @@
 <?php
 require_once(__DIR__ . "/../../config/funcoes.php");
-redirect_if_not_logged();
+redirect_if_not_logged('private/login/login.php', ['view.pessoas']);
 
 $success_message = null;
 $server_error = null;
@@ -58,6 +58,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <p class="text-secondary fw-400"><?= count($listaPessoas) ?> pessoas ativas</p>
             </div>
             <div class="d-flex gap-2">
+                <?php if (tem_permissao('people.create')): ?>
                 <button id="btn-open-create-equipment-modal" class="btn btn-primary btn-glowing gap-2"
                     data-bs-toggle="modal" data-bs-target="#equipment-creation-modal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -68,6 +69,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                     </svg>
                     Nova Pessoa
                 </button>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -159,6 +161,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                         class="text-secondary person-role"><?= htmlspecialchars($pessoa->getFuncao()?->value ?? 'Sem Função') ?></span>
                                 </div>
                             </div>
+                            <?php if (tem_permissao('people.edit') || tem_permissao('people.delete')): ?>
                             <div class="dropdown">
                                 <button
                                     class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-primary"
@@ -172,6 +175,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                     </svg>
                                 </button>
                                 <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
+                                    <?php if (tem_permissao('people.edit')): ?>
                                     <li>
                                         <a class="dropdown-item action-dropdown-item text-primary" href="#"
                                             data-bs-toggle="modal"
@@ -185,6 +189,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                             Editar
                                         </a>
                                     </li>
+                                    <?php endif; ?>
+                                    <?php if (tem_permissao('people.delete')): ?>
                                     <li>
                                         <a class="dropdown-item action-dropdown-item text-error" href="#" data-bs-toggle="modal"
                                             data-bs-target="#delete-confirm-modal-<?= htmlspecialchars(aes_encrypt($pessoa->getId())) ?>">
@@ -198,8 +204,10 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                             Mover para Reciclagem
                                         </a>
                                     </li>
+                                    <?php endif; ?>
                                 </ul>
                             </div>
+                            <?php endif; ?>
                         </div>
 
                         <!-- Row 2: Contacto -->
@@ -263,6 +271,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 ?>
 
 <!-- Modal de Criação de Pessoa -->
+<?php if (tem_permissao('people.create')): ?>
 <div class="modal fade" id="equipment-creation-modal" tabindex="-1" aria-labelledby="equipmentModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
@@ -361,7 +370,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                 </svg>
                             </div>
                             <input type="text" id="person-department" name="person-department"
-                                placeholder="Ex: Serviço de Eng. Biomédica" required>
+                                placeholder="Ex: Servicio de Eng. Biomédica" required>
                         </div>
                     </div>
 
@@ -414,10 +423,12 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
         </div>
     </div>
 </div>
+<?php endif; ?>
 
 <?php foreach ($listaPessoas as $pessoa): ?>
     <?php $encryptedPersonId = aes_encrypt($pessoa->getId()); ?>
 
+    <?php if (tem_permissao('people.edit')): ?>
     <!-- Modal de Edição de Pessoa para <?= htmlspecialchars($pessoa->getNome()) ?> -->
     <div class="modal fade" id="person-edit-modal-<?= htmlspecialchars($encryptedPersonId) ?>" tabindex="-1"
         aria-labelledby="personEditModalLabel-<?= htmlspecialchars($encryptedPersonId) ?>" aria-hidden="true">
@@ -581,7 +592,9 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
             </div>
         </div>
     </div>
+    <?php endif; ?>
 
+    <?php if (tem_permissao('people.delete')): ?>
     <!-- Modal de Eliminação de Pessoa para <?= htmlspecialchars($pessoa->getNome()) ?> -->
     <div class="modal fade" id="delete-confirm-modal-<?= htmlspecialchars($encryptedPersonId) ?>" tabindex="-1"
         aria-labelledby="deleteModalLabel-<?= htmlspecialchars($encryptedPersonId) ?>" aria-hidden="true">
@@ -656,6 +669,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
             </div>
         </div>
     </div>
+    <?php endif; ?>
 <?php endforeach; ?>
 
 <!-- Toast Container -->

@@ -1,6 +1,6 @@
 <?php
 require_once(__DIR__ . "/../../config/funcoes.php");
-redirect_if_not_logged();
+redirect_if_not_logged('private/login/login.php', ['view.inbox']);
 include_once BASE_PATH . 'private/includes/head.php';
 include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 
@@ -260,16 +260,19 @@ try {
                                                         id="inbox-state-input-<?php echo $encryptedId; ?>">
                                                     <div class="dropdown">
                                                         <button id="inbox-state-btn-<?php echo $encryptedId; ?>"
-                                                            class="d-inline-flex align-items-center equipment-badge <?php echo $request->state->class; ?> gap-1 mw-0 border-0"
-                                                            type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                            class="d-inline-flex align-items-center equipment-badge <?php echo $request->state->class; ?> gap-1 mw-0 border-0 <?= tem_permissao('inbox.manage') ? '' : 'pe-none' ?>"
+                                                            type="button" <?= tem_permissao('inbox.manage') ? 'data-bs-toggle="dropdown"' : '' ?> aria-expanded="false">
                                                             <span><?php echo $request->state->name; ?></span>
+                                                            <?php if (tem_permissao('inbox.manage')): ?>
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12"
                                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                                                                 class="lucide lucide-chevron-down-icon lucide-chevron-down">
                                                                 <path d="m6 9 6 6 6-6" />
                                                             </svg>
+                                                            <?php endif; ?>
                                                         </button>
+                                                        <?php if (tem_permissao('inbox.manage')): ?>
                                                         <ul class="dropdown-menu action-dropdown-menu">
                                                             <li>
                                                                 <a class="dropdown-item action-dropdown-item" href="#"
@@ -285,6 +288,7 @@ try {
                                                                     onclick="changeInboxState('<?php echo $encryptedId; ?>', 'Fechado', 'concluded')">Fechado</a>
                                                             </li>
                                                         </ul>
+                                                        <?php endif; ?>
                                                     </div>
                                                 </td>
                                                 <td>
@@ -338,6 +342,7 @@ try {
                                                                     Ver Detalhes
                                                                 </a>
                                                             </li>
+                                                            <?php if (tem_permissao('inbox.delete')): ?>
                                                             <li>
                                                                 <a class="dropdown-item action-dropdown-item text-error"
                                                                     href="#" data-bs-toggle="modal"
@@ -356,6 +361,7 @@ try {
                                                                     Apagar
                                                                 </a>
                                                             </li>
+                                                            <?php endif; ?>
                                                         </ul>
                                                     </div>
                                                 </td>
@@ -410,6 +416,7 @@ try {
                 </div>
         </div>
 
+        <?php if (tem_permissao('inbox.manage')): ?>
         <!-- Alterações pendentes -->
         <div class="inbox-changes-container justify-content-between align-items-center padding-6"
             style="display: none;">
@@ -426,6 +433,7 @@ try {
                 Guardar alterações
             </button>
         </div>
+        <?php endif; ?>
         </form>
     </section>
 
@@ -549,6 +557,7 @@ try {
             </div>
         </div>
 
+        <?php if (tem_permissao('inbox.delete')): ?>
         <!-- Modal de Confirmação de Remoção -->
         <div class="modal fade" id="delete-confirm-modal-<?php echo $encryptedId; ?>" tabindex="-1"
             aria-labelledby="deleteModalLabel-<?php echo $encryptedId; ?>" aria-hidden="true">
@@ -617,6 +626,7 @@ try {
                 </div>
             </div>
         </div>
+        <?php endif; ?>
     <?php endforeach; ?>
 
 </div>

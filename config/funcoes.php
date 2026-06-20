@@ -19,7 +19,7 @@ function check_session()
     return isset($_SESSION['utilizador']);
 }
 
-function redirect_if_not_logged($redirect_to = 'private/login/login.php')
+function redirect_if_not_logged($redirect_to = 'private/login/login.php', ?array $required_permissions = null)
 {
     start_session();
     if (!check_session()) {
@@ -77,6 +77,40 @@ function redirect_if_not_logged($redirect_to = 'private/login/login.php')
             }
         } catch (Exception $e) {
             // Ignorar silenciosamente
+        }
+    }
+
+    // Carregar permissões se não existirem (ex: sessão antiga ou login feito antes da feature)
+    if (!isset($_SESSION['permissoes']) && isset($_SESSION['userAtual'])) {
+        try {
+            $ligacao = connect_to_db();
+            $stmtPerms = execute_query(
+                "SELECT pm.chave, pp.possui
+                 FROM PerfilPermissao pp
+                 INNER JOIN Permissao pm ON pp.idPermissao = pm.idPermissao
+                 WHERE pp.idPerfil = :idPerfil AND pm.ativo = 1",
+                ['idPerfil' => $_SESSION['userAtual']->getIdPerfil()],
+                $ligacao
+            );
+            $permissoes = [];
+            while ($row = $stmtPerms->fetch(PDO::FETCH_OBJ)) {
+                $permissoes[$row->chave] = (bool) $row->possui;
+            }
+            $_SESSION['permissoes'] = $permissoes;
+        } catch (Exception $e) {
+            $_SESSION['permissoes'] = [];
+        }
+    }
+
+    // Verificar permissões obrigatórias, se fornecidas
+    if ($required_permissions !== null) {
+        foreach ($required_permissions as $perm) {
+            if (!tem_permissao($perm)) {
+                // Se falhar alguma permissão, redireciona para a dashboard
+                $_SESSION['server_error'] = "Não tem permissão para aceder a esta página.";
+                header("Location: " . BASE_URL . "private/index.php");
+                exit;
+            }
         }
     }
 }
@@ -169,4 +203,9 @@ function capitalize_name(string $str): string
     if ($str === '')
         return '';
     return ucwords(strtolower($str));
+}
+
+function tem_permissao(string $chave): bool
+{
+    return isset($_SESSION['permissoes'][$chave]) && $_SESSION['permissoes'][$chave] === true;
 }

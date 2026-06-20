@@ -1,6 +1,6 @@
 <?php
 require_once(__DIR__ . "/../../config/funcoes.php");
-redirect_if_not_logged();
+redirect_if_not_logged('private/login/login.php', ['view.users']);
 
 // Mensagens de sucesso ou erro no caso do POST
 $success_message = null;
@@ -179,6 +179,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <p class="text-secondary fw-400"><?= count($listaUtilizadores) ?> utilizadores ativos</p>
             </div>
             <div class="d-flex gap-2">
+                <?php if (tem_permissao('users.create')): ?>
                 <button id="btn-open-create-user-modal" class="btn btn-primary btn-glowing gap-2" data-bs-toggle="modal"
                     data-bs-target="#user-creation-modal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -189,6 +190,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                     </svg>
                     Novo Utilizador
                 </button>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -301,7 +303,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                     <th><a href="<?= $buildSortUrl('perfil') ?>"
                                             class="datatable-sorter text-decoration-none text-inherit">PERFIL<?= $getSortIcon('perfil') ?></a>
                                     </th>
+                                    <?php if (tem_permissao('users.edit') || tem_permissao('users.delete')): ?>
                                     <th class="text-end">AÇÕES</th>
+                                    <?php endif; ?>
                                 </tr>
                             </thead>
                             <tbody>
@@ -336,6 +340,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                 <?= htmlspecialchars($utilizador->getPerfil()->getNome()) ?>
                                             </span>
                                         </td>
+                                        <?php if (tem_permissao('users.edit') || tem_permissao('users.delete')): ?>
                                         <td class="text-end equipment-actions">
                                             <div class="dropdown">
                                                 <button
@@ -350,38 +355,43 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                     </svg>
                                                 </button>
                                                 <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
+                                                    <?php if (tem_permissao('users.edit')): ?>
                                                     <li>
-                                                        <a class="dropdown-item action-dropdown-item text-primary" href="#"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#user-edit-modal-<?= htmlspecialchars($encryptedUserId) ?>">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                                class="lucide lucide-pencil">
-                                                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                                <path d="m15 5 4 4" />
-                                                            </svg>
-                                                            Editar
-                                                        </a>
+                                                         <a class="dropdown-item action-dropdown-item text-primary" href="#"
+                                                             data-bs-toggle="modal"
+                                                             data-bs-target="#user-edit-modal-<?= htmlspecialchars($encryptedUserId) ?>">
+                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                 class="lucide lucide-pencil">
+                                                                 <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                                                 <path d="m15 5 4 4" />
+                                                             </svg>
+                                                             Editar
+                                                         </a>
                                                     </li>
+                                                    <?php endif; ?>
+                                                    <?php if (tem_permissao('users.delete')): ?>
                                                     <li>
-                                                        <a class="dropdown-item action-dropdown-item text-error" href="#"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#delete-confirm-modal-<?= htmlspecialchars($encryptedUserId) ?>">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                                class="lucide lucide-archive">
-                                                                <rect width="20" height="5" x="2" y="3" rx="1" />
-                                                                <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
-                                                                <path d="M10 12h4" />
-                                                            </svg>
-                                                            Desativar (Reciclagem)
-                                                        </a>
+                                                         <a class="dropdown-item action-dropdown-item text-error" href="#"
+                                                             data-bs-toggle="modal"
+                                                             data-bs-target="#delete-confirm-modal-<?= htmlspecialchars($encryptedUserId) ?>">
+                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                 class="lucide lucide-archive">
+                                                                 <rect width="20" height="5" x="2" y="3" rx="1" />
+                                                                 <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
+                                                                 <path d="M10 12h4" />
+                                                             </svg>
+                                                             Desativar (Reciclagem)
+                                                         </a>
                                                     </li>
+                                                    <?php endif; ?>
                                                 </ul>
                                             </div>
                                         </td>
+                                        <?php endif; ?>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
@@ -441,6 +451,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 ?>
 
+<?php if (tem_permissao('users.create')): ?>
 <!-- Modal de Criação de Utilizador -->
 <div class="modal fade" id="user-creation-modal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
@@ -553,6 +564,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
         </div>
     </div>
 </div>
+<?php endif; ?>
 
 <?php foreach ($listaUtilizadores as $item): ?>
     <?php
@@ -561,6 +573,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
     $encryptedUserId = aes_encrypt($utilizador->getIdUtilizador());
     ?>
 
+    <?php if (tem_permissao('users.edit')): ?>
     <!-- Modal de Edição de Utilizador para <?= htmlspecialchars($pessoa->getNome()) ?> -->
     <div class="modal fade" id="user-edit-modal-<?= htmlspecialchars($encryptedUserId) ?>" tabindex="-1"
         aria-labelledby="userEditModalLabel-<?= htmlspecialchars($encryptedUserId) ?>" aria-hidden="true">
@@ -646,7 +659,9 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
             </div>
         </div>
     </div>
+    <?php endif; ?>
 
+    <?php if (tem_permissao('users.delete')): ?>
     <!-- Modal de Desativação de Utilizador para <?= htmlspecialchars($pessoa->getNome()) ?> -->
     <div class="modal fade" id="delete-confirm-modal-<?= htmlspecialchars($encryptedUserId) ?>" tabindex="-1"
         aria-labelledby="deleteUserModalLabel-<?= htmlspecialchars($encryptedUserId) ?>" aria-hidden="true">
@@ -721,6 +736,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
             </div>
         </div>
     </div>
+    <?php endif; ?>
 <?php endforeach; ?>
 
 <!-- Toast Container -->

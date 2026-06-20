@@ -1,6 +1,6 @@
 <?php
 require_once(__DIR__ . "/../../config/funcoes.php");
-redirect_if_not_logged();
+redirect_if_not_logged('private/login/login.php', ['view.recycling']);
 include_once BASE_PATH . 'private/includes/head.php';
 include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 
@@ -325,7 +325,9 @@ try {
                                     <th><a href="<?= $buildSortUrl('removidoA') ?>"
                                             class="datatable-sorter text-decoration-none text-inherit">Removido
                                             a<?= $getSortIcon('removidoA') ?></a></th>
+                                    <?php if (tem_permissao('recycling.restore')): ?>
                                     <th>Ações</th>
+                                    <?php endif; ?>
                                 </tr>
                             </thead>
                             <tbody>
@@ -362,6 +364,7 @@ try {
                                                 <span
                                                     class="text-secondary"><?php echo $object->removidoA->format('Y-m-d H:i'); ?></span>
                                             </td>
+                                            <?php if (tem_permissao('recycling.restore')): ?>
                                             <td>
                                                 <button type="button" data-bs-toggle="modal"
                                                     data-bs-target="#restore-modal-<?php echo htmlspecialchars($object->idEncriptado); ?>"
@@ -376,6 +379,7 @@ try {
                                                     <span class="fw-700 ">Restaurar</span>
                                                 </button>
                                             </td>
+                                            <?php endif; ?>
                                         </tr>
                                     <?php endforeach; ?>
                                 
@@ -434,6 +438,7 @@ try {
     </section>
 </div>
 
+<?php if (tem_permissao('recycling.restore')): ?>
 <?php foreach ($objetosReciclados as $object): ?>
     <!-- Modal de Restauro de Registo -->
     <div class="modal fade" id="restore-modal-<?= htmlspecialchars($object->idEncriptado) ?>" tabindex="-1"
@@ -498,6 +503,7 @@ try {
         </div>
     </div>
 <?php endforeach; ?>
+<?php endif; ?>
 
 
 <!-- Toast Container -->

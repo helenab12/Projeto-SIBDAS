@@ -1,6 +1,6 @@
 <?php
 require_once(__DIR__ . "/../../config/funcoes.php");
-redirect_if_not_logged();
+redirect_if_not_logged('private/login/login.php', ['locations.view']);
 include_once BASE_PATH . 'private/includes/head.php';
 include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 
@@ -108,6 +108,7 @@ try {
                 <p class="text-secondary fw-400">Gestão de edifícios, pisos, serviços e salas</p>
             </div>
             <div class="d-flex gap-2">
+                <?php if (tem_permissao('locations.create')): ?>
                 <button id="btn-open-create-building-modal" class="btn btn-primary btn-glowing gap-2"
                     data-bs-toggle="modal" data-bs-target="#equipment-creation-modal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -118,6 +119,7 @@ try {
                     </svg>
                     Novo Edifício
                 </button>
+                <?php endif; ?>
             </div>
         </div>
 
@@ -226,6 +228,7 @@ try {
                                     </div>
                                 </div>
                                 <div class="d-flex gap-2 text-muted align-items-center action-buttons z-3 position-relative">
+                                    <?php if (tem_permissao('locations.create')): ?>
                                     <a href="#" data-bs-toggle="modal"
                                         data-bs-target="#create-floor-modal-<?= htmlspecialchars($encryptedEdificioId) ?>"
                                         class="text-muted d-flex">
@@ -236,6 +239,8 @@ try {
                                             <path d="M12 5v14"></path>
                                         </svg>
                                     </a>
+                                    <?php endif; ?>
+                                    <?php if (tem_permissao('locations.edit')): ?>
                                     <a href="#" data-bs-toggle="modal"
                                         data-bs-target="#building-edit-modal-<?= htmlspecialchars($encryptedEdificioId) ?>"
                                         class="text-muted d-flex">
@@ -248,6 +253,8 @@ try {
                                             <path d="m15 5 4 4"></path>
                                         </svg>
                                     </a>
+                                    <?php endif; ?>
+                                    <?php if (tem_permissao('locations.delete')): ?>
                                     <a href="#" data-bs-toggle="modal"
                                         data-bs-target="#delete-confirm-modal-<?= htmlspecialchars($encryptedEdificioId) ?>"
                                         class="text-danger d-flex">
@@ -262,6 +269,7 @@ try {
                                             <line x1="14" x2="14" y1="11" y2="17"></line>
                                         </svg>
                                     </a>
+                                    <?php endif; ?>
                                 </div>
                             </div>
 
@@ -314,6 +322,7 @@ try {
                                                 </div>
                                                 <div
                                                     class="d-flex gap-2 text-muted align-items-center action-buttons z-3 position-relative">
+                                                    <?php if (tem_permissao('locations.create')): ?>
                                                     <a href="#" data-bs-toggle="modal"
                                                         data-bs-target="#create-service-modal-<?= htmlspecialchars($encryptedPisoId) ?>"
                                                         class="text-muted d-flex">
@@ -325,6 +334,8 @@ try {
                                                             <path d="M12 5v14"></path>
                                                         </svg>
                                                     </a>
+                                                    <?php endif; ?>
+                                                    <?php if (tem_permissao('locations.edit')): ?>
                                                     <a href="#" data-bs-toggle="modal"
                                                         data-bs-target="#edit-floor-modal-<?= htmlspecialchars($encryptedPisoId) ?>"
                                                         class="text-muted d-flex">
@@ -338,6 +349,8 @@ try {
                                                             <path d="m15 5 4 4"></path>
                                                         </svg>
                                                     </a>
+                                                    <?php endif; ?>
+                                                    <?php if (tem_permissao('locations.delete')): ?>
                                                     <a href="#" data-bs-toggle="modal"
                                                         data-bs-target="#delete-floor-modal-<?= htmlspecialchars($encryptedPisoId) ?>"
                                                         class="text-danger d-flex">
@@ -353,6 +366,7 @@ try {
                                                             <line x1="14" x2="14" y1="11" y2="17"></line>
                                                         </svg>
                                                     </a>
+                                                    <?php endif; ?>
                                                 </div>
                                             </div>
 
@@ -410,6 +424,7 @@ try {
                                                                 </div>
                                                                 <div
                                                                     class="d-flex gap-2 text-muted align-items-center action-buttons z-3 position-relative">
+                                                                    <?php if (tem_permissao('locations.create')): ?>
                                                                     <a href="#" data-bs-toggle="modal"
                                                                         data-bs-target="#create-room-modal-<?= htmlspecialchars($encryptedServicoId) ?>"
                                                                         class="text-muted d-flex">
@@ -422,6 +437,8 @@ try {
                                                                             <path d="M12 5v14"></path>
                                                                         </svg>
                                                                     </a>
+                                                                    <?php endif; ?>
+                                                                    <?php if (tem_permissao('locations.edit')): ?>
                                                                     <a href="#" data-bs-toggle="modal"
                                                                         data-bs-target="#edit-service-modal-<?= htmlspecialchars($encryptedServicoId) ?>"
                                                                         class="text-muted d-flex">
@@ -436,6 +453,8 @@ try {
                                                                             <path d="m15 5 4 4"></path>
                                                                         </svg>
                                                                     </a>
+                                                                    <?php endif; ?>
+                                                                    <?php if (tem_permissao('locations.delete')): ?>
                                                                     <a href="#" data-bs-toggle="modal"
                                                                         data-bs-target="#delete-service-modal-<?= htmlspecialchars($encryptedServicoId) ?>"
                                                                         class="text-danger d-flex">
@@ -452,6 +471,7 @@ try {
                                                                             <line x1="14" x2="14" y1="11" y2="17"></line>
                                                                         </svg>
                                                                     </a>
+                                                                    <?php endif; ?>
                                                                 </div>
                                                             </div>
 
@@ -488,6 +508,7 @@ try {
                                                                             </div>
                                                                             <div class="d-flex gap-2 text-muted align-items-center action-buttons"
                                                                                 onclick="event.stopPropagation();">
+                                                                                <?php if (tem_permissao('locations.edit')): ?>
                                                                                 <a href="#" data-bs-toggle="modal"
                                                                                     data-bs-target="#edit-room-modal-<?= htmlspecialchars($encryptedSalaId) ?>"
                                                                                     class="text-muted d-flex">
@@ -502,6 +523,8 @@ try {
                                                                                         <path d="m15 5 4 4"></path>
                                                                                     </svg>
                                                                                 </a>
+                                                                                <?php endif; ?>
+                                                                                <?php if (tem_permissao('locations.delete')): ?>
                                                                                 <a href="#" data-bs-toggle="modal"
                                                                                     data-bs-target="#delete-room-modal-<?= htmlspecialchars($encryptedSalaId) ?>"
                                                                                     class="text-danger d-flex">
@@ -519,6 +542,7 @@ try {
                                                                                         <line x1="14" x2="14" y1="11" y2="17"></line>
                                                                                     </svg>
                                                                                 </a>
+                                                                                <?php endif; ?>
                                                                             </div>
                                                                         </div>
                                                                     <?php endforeach; ?>
@@ -549,6 +573,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 ?>
 
 <!-- Modal de Criação de Edifício -->
+<?php if (tem_permissao('locations.create')): ?>
 <div class="modal fade" id="equipment-creation-modal" tabindex="-1" aria-labelledby="equipmentModalLabel"
     aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
@@ -606,10 +631,12 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
         </div>
     </div>
 </div>
+<?php endif; ?>
 
 <?php foreach ($edificios as $edificio): ?>
     <?php $encryptedEdificioId = aes_encrypt($edificio->getIdEdificio()); ?>
 
+    <?php if (tem_permissao('locations.edit')): ?>
     <!-- Modal de Edição de Edifício para <?= htmlspecialchars($edificio->getNome()) ?> -->
     <div class="modal fade" id="building-edit-modal-<?= htmlspecialchars($encryptedEdificioId) ?>" tabindex="-1"
         aria-labelledby="buildingEditModalLabel-<?= htmlspecialchars($encryptedEdificioId) ?>" aria-hidden="true">
@@ -677,7 +704,9 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
             </div>
         </div>
     </div>
+    <?php endif; ?>
 
+    <?php if (tem_permissao('locations.delete')): ?>
     <!-- Modal de Eliminação de Edifício para <?= htmlspecialchars($edificio->getNome()) ?> -->
     <div class="modal fade" id="delete-confirm-modal-<?= htmlspecialchars($encryptedEdificioId) ?>" tabindex="-1"
         aria-labelledby="deleteModalLabel-<?= htmlspecialchars($encryptedEdificioId) ?>" aria-hidden="true">
@@ -752,8 +781,10 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
             </div>
         </div>
     </div>
+    <?php endif; ?>
 <?php endforeach; ?>
 
+<?php if (tem_permissao('locations.create')): ?>
 <?php foreach ($edificios as $edificio): ?>
     <?php $encryptedEdificioId = aes_encrypt($edificio->getIdEdificio()); ?>
 
@@ -821,8 +852,8 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
             </div>
         </div>
     </div>
-
 <?php endforeach; ?>
+<?php endif; ?>
 
 <?php foreach ($edificios as $edificio): ?>
     <?php foreach ($edificio->getPisos() as $piso): ?>
@@ -830,6 +861,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
         $encryptedPisoId = aes_encrypt($piso->getIdPiso());
         ?>
 
+        <?php if (tem_permissao('locations.edit')): ?>
         <!-- Modal de Edição de Piso para <?= htmlspecialchars($piso->getNome()) ?> -->
         <div class="modal fade" id="edit-floor-modal-<?= htmlspecialchars($encryptedPisoId) ?>" tabindex="-1"
             aria-labelledby="editFloorModalLabel-<?= htmlspecialchars($encryptedPisoId) ?>" aria-hidden="true">
@@ -897,7 +929,9 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                 </div>
             </div>
         </div>
+        <?php endif; ?>
 
+        <?php if (tem_permissao('locations.delete')): ?>
         <!-- Modal de Eliminação de Piso para <?= htmlspecialchars($piso->getNome()) ?> -->
         <div class="modal fade" id="delete-floor-modal-<?= htmlspecialchars($encryptedPisoId) ?>" tabindex="-1"
             aria-labelledby="deleteFloorModalLabel-<?= htmlspecialchars($encryptedPisoId) ?>" aria-hidden="true">
@@ -971,14 +1005,14 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                 </div>
             </div>
         </div>
-
+        <?php endif; ?>
+        <?php endforeach; ?>
     <?php endforeach; ?>
-<?php endforeach; ?>
-
 <?php foreach ($edificios as $edificio): ?>
     <?php foreach ($edificio->getPisos() as $piso): ?>
         <?php $encryptedPisoId = aes_encrypt($piso->getIdPiso()); ?>
 
+        <?php if (tem_permissao('locations.create')): ?>
         <!-- Modal de Criação de Serviço para <?= htmlspecialchars($piso->getNome()) ?> -->
         <div class="modal fade" id="create-service-modal-<?= htmlspecialchars($encryptedPisoId) ?>" tabindex="-1"
             aria-labelledby="createServiceModalLabel-<?= htmlspecialchars($encryptedPisoId) ?>" aria-hidden="true">
@@ -1034,10 +1068,12 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                 </div>
             </div>
         </div>
+        <?php endif; ?>
 
         <?php foreach ($piso->getServicos() as $servico): ?>
             <?php $encryptedServicoId = aes_encrypt($servico->getIdServico()); ?>
 
+            <?php if (tem_permissao('locations.edit')): ?>
             <!-- Modal de Edição de Serviço para <?= htmlspecialchars($servico->getNome()) ?> -->
             <div class="modal fade" id="edit-service-modal-<?= htmlspecialchars($encryptedServicoId) ?>" tabindex="-1"
                 aria-labelledby="editServiceModalLabel-<?= htmlspecialchars($encryptedServicoId) ?>" aria-hidden="true">
@@ -1096,7 +1132,9 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                     </div>
                 </div>
             </div>
+            <?php endif; ?>
 
+            <?php if (tem_permissao('locations.delete')): ?>
             <!-- Modal de Eliminação de Serviço para <?= htmlspecialchars($servico->getNome()) ?> -->
             <div class="modal fade" id="delete-service-modal-<?= htmlspecialchars($encryptedServicoId) ?>" tabindex="-1"
                 aria-labelledby="deleteServiceModalLabel-<?= htmlspecialchars($encryptedServicoId) ?>" aria-hidden="true">
@@ -1155,7 +1193,9 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                     </div>
                 </div>
             </div>
+            <?php endif; ?>
 
+            <?php if (tem_permissao('locations.create')): ?>
             <!-- Modal de Criação de Sala para <?= htmlspecialchars($servico->getNome()) ?> -->
             <div class="modal fade" id="create-room-modal-<?= htmlspecialchars($encryptedServicoId) ?>" tabindex="-1"
                 aria-labelledby="createRoomModalLabel-<?= htmlspecialchars($encryptedServicoId) ?>" aria-hidden="true">
@@ -1211,10 +1251,12 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                     </div>
                 </div>
             </div>
+            <?php endif; ?>
 
             <?php foreach ($servico->getSalas() as $sala): ?>
                 <?php $encryptedSalaId = aes_encrypt($sala->getIdLocalizacao()); ?>
 
+                <?php if (tem_permissao('locations.edit')): ?>
                 <!-- Modal de Edição de Sala para <?= htmlspecialchars($sala->getNomeSala()) ?> -->
                 <div class="modal fade" id="edit-room-modal-<?= htmlspecialchars($encryptedSalaId) ?>" tabindex="-1"
                     aria-labelledby="editRoomModalLabel-<?= htmlspecialchars($encryptedSalaId) ?>" aria-hidden="true">
@@ -1273,7 +1315,9 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                         </div>
                     </div>
                 </div>
+                <?php endif; ?>
 
+                <?php if (tem_permissao('locations.delete')): ?>
                 <!-- Modal de Eliminação de Sala para <?= htmlspecialchars($sala->getNomeSala()) ?> -->
                 <div class="modal fade" id="delete-room-modal-<?= htmlspecialchars($encryptedSalaId) ?>" tabindex="-1"
                     aria-labelledby="deleteRoomModalLabel-<?= htmlspecialchars($encryptedSalaId) ?>" aria-hidden="true">
@@ -1332,7 +1376,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                         </div>
                     </div>
                 </div>
-
+                <?php endif; ?>
             <?php endforeach; ?>
         <?php endforeach; ?>
     <?php endforeach; ?>

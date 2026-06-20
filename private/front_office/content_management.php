@@ -1,6 +1,6 @@
 <?php
 require_once(__DIR__ . "/../../config/funcoes.php");
-redirect_if_not_logged();
+redirect_if_not_logged('private/login/login.php', ['view.content']);
 $ligacao = connect_to_db();
 
 class SeccaoConfig
@@ -83,6 +83,9 @@ $cartoes = [];
 try {
     // Processamento do formulário POST
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar_textos'])) {
+        if (!tem_permissao('content.edit')) {
+            throw new Exception("Não tem permissão para editar conteúdos.");
+        }
         $ligacao->beginTransaction();
         $novosTextos = $_POST['textos'] ?? [];
 
@@ -105,6 +108,9 @@ try {
 
     // Criar Cartão
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['criar_cartao'])) {
+        if (!tem_permissao('content.cards.create')) {
+            throw new Exception("Não tem permissão para criar cartões.");
+        }
         $ligacao->beginTransaction();
 
         $titulo = trim($_POST['card-title'] ?? '');
@@ -157,6 +163,9 @@ try {
 
     // Editar Cartão
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_cartao'])) {
+        if (!tem_permissao('content.cards.edit')) {
+            throw new Exception("Não tem permissão para editar cartões.");
+        }
         $ligacao->beginTransaction();
 
         $cardIdEncriptado = $_POST['card-id'] ?? '';
@@ -208,6 +217,9 @@ try {
 
     // Apagar / Inativar Cartão
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['apagar_cartao'])) {
+        if (!tem_permissao('content.cards.delete')) {
+            throw new Exception("Não tem permissão para apagar cartões.");
+        }
         $ligacao->beginTransaction();
 
         $cardIdEncriptado = $_POST['card-id'] ?? '';
@@ -334,6 +346,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                 <textarea id="textos-<?= htmlspecialchars($chaveEncriptada) ?>"
                                                     name="textos[<?= htmlspecialchars($chaveEncriptada) ?>]" rows="2"
                                                     class="form-control"
+                                                    <?= tem_permissao('content.edit') ? '' : 'readonly' ?>
                                                     required><?= htmlspecialchars($textoObj->getValor()) ?></textarea>
                                             </div>
                                         <?php endforeach; ?>
@@ -350,6 +363,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                             a
                                                             Bento Grid pública.</p>
                                                     </div>
+                                                    <?php if (tem_permissao('content.cards.create')): ?>
                                                     <button type="button" class="btn btn-ghost d-flex align-items-center gap-2"
                                                         data-bs-toggle="modal" data-bs-target="#card-creation-modal">
                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -361,6 +375,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                         </svg>
                                                         Adicionar Cartão
                                                     </button>
+                                                    <?php endif; ?>
                                                 </div>
 
                                                 <!-- Features Table -->
@@ -372,7 +387,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                                 <th>ÍCONE</th>
                                                                 <th>TÍTULO</th>
                                                                 <th>DESCRIÇÃO</th>
+                                                                <?php if (tem_permissao('content.cards.edit') || tem_permissao('content.cards.delete')): ?>
                                                                 <th class="text-end">AÇÕES</th>
+                                                                <?php endif; ?>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -427,9 +444,11 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                                         <span
                                                                             class="text-secondary fw-400"><?= htmlspecialchars($cartao->descricao) ?></span>
                                                                     </td>
+                                                                    <?php if (tem_permissao('content.cards.edit') || tem_permissao('content.cards.delete')): ?>
                                                                     <td class="text-end">
                                                                         <div
                                                                             class="d-flex justify-content-end gap-3 align-items-center">
+                                                                            <?php if (tem_permissao('content.cards.edit')): ?>
                                                                             <button
                                                                                 class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
                                                                                 type="button" data-bs-toggle="modal"
@@ -444,6 +463,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                                                     <path d="m15 5 4 4" />
                                                                                 </svg>
                                                                             </button>
+                                                                            <?php endif; ?>
+                                                                            <?php if (tem_permissao('content.cards.delete')): ?>
                                                                             <button
                                                                                 class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
                                                                                 type="button" data-bs-toggle="modal"
@@ -459,8 +480,10 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                                                     <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
                                                                                 </svg>
                                                                             </button>
+                                                                            <?php endif; ?>
                                                                         </div>
                                                                     </td>
+                                                                    <?php endif; ?>
                                                                 </tr>
                                                             <?php endforeach; ?>
                                                         </tbody>
@@ -478,6 +501,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 </div>
         </div>
         </form>
+        <?php if (tem_permissao('content.edit')): ?>
         <!-- Alterações pendentes -->
         <div class="inbox-changes-container justify-content-between align-items-center padding-6"
             style="display: none;">
@@ -495,6 +519,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 Guardar alterações
             </button>
         </div>
+        <?php endif; ?>
 
     </section>
 </div>
@@ -503,6 +528,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 ?>
 
+<?php if (tem_permissao('content.cards.create')): ?>
 <!-- Modal de Criação de Cartão -->
 <div class="modal fade" id="card-creation-modal" tabindex="-1" aria-labelledby="cardModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
@@ -615,6 +641,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
         </div>
     </div>
 </div>
+<?php endif; ?>
 
 <!-- Toast Container -->
 <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3 mt-4" style="z-index: 100;">
@@ -673,6 +700,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
     }
     $is_custom = ($matchedKey === null);
     ?>
+    <?php if (tem_permissao('content.cards.edit')): ?>
     <!-- Modal de Edição de Cartão -->
     <div class="modal fade" id="card-edit-modal-<?= htmlspecialchars($encryptedCardId) ?>" tabindex="-1"
         aria-labelledby="cardEditModalLabel-<?= htmlspecialchars($encryptedCardId) ?>" aria-hidden="true">
@@ -795,7 +823,9 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
             </div>
         </div>
     </div>
+    <?php endif; ?>
 
+    <?php if (tem_permissao('content.cards.delete')): ?>
     <!-- Modal de Confirmação de Remoção -->
     <div class="modal fade" id="delete-confirm-modal-<?= htmlspecialchars($encryptedCardId) ?>" tabindex="-1"
         aria-labelledby="deleteModalLabel-<?= htmlspecialchars($encryptedCardId) ?>" aria-hidden="true">
@@ -871,6 +901,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
             </div>
         </div>
     </div>
+    <?php endif; ?>
 <?php endforeach; ?>
 
 <?php
