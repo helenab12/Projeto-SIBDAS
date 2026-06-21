@@ -419,6 +419,13 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                             Criar Pessoa
                         </button>
                     </div>
+                    <?php if (SHOW_DEBUG_BUTTONS): ?>
+                        <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
+                            <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido (Debug)</span>
+                            <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'person-name': 'Maria Inês Ribeiro', 'person-nif': '123456789', 'person-email': 'maria.ribeiro@hospital.pt', 'person-phone': '912345678', 'person-role': 'Médico', 'person-department': 'Urgência'})">Maria (Médica)</button>
+                            <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'person-name': 'Tiago Faria Silva', 'person-nif': '987654321', 'person-email': 'tiago.silva@hospital.pt', 'person-phone': '913456789', 'person-role': 'Enfermeiro', 'person-department': 'Urgência'})">Tiago (Enfermeiro)</button>
+                        </div>
+                    <?php endif; ?>
                 </form>
             </div>
         </div>

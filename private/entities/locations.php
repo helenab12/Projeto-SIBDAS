@@ -626,6 +626,13 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                             Criar
                         </button>
                     </div>
+                    <?php if (SHOW_DEBUG_BUTTONS): ?>
+                        <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
+                            <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido (Debug)</span>
+                            <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'building-name': 'Edifício D'}); setTimeout(() => { document.getElementById('building-name').dispatchEvent(new Event('input', { bubbles: true })); }, 100);">Edifício D</button>
+                            <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'building-name': 'Edifício E'}); setTimeout(() => { document.getElementById('building-name').dispatchEvent(new Event('input', { bubbles: true })); }, 100);">Edifício E</button>
+                        </div>
+                    <?php endif; ?>
                 </form>
             </div>
         </div>
@@ -847,6 +854,13 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                 Criar
                             </button>
                         </div>
+                        <?php if (SHOW_DEBUG_BUTTONS): ?>
+                            <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
+                                <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido (Debug)</span>
+                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'floor-name-create-<?= htmlspecialchars($encryptedEdificioId) ?>': 'Piso 1'}); setTimeout(() => { document.getElementById('floor-name-create-<?= htmlspecialchars($encryptedEdificioId) ?>').dispatchEvent(new Event('input', { bubbles: true })); }, 100);">Piso 1</button>
+                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'floor-name-create-<?= htmlspecialchars($encryptedEdificioId) ?>': 'Piso 2'}); setTimeout(() => { document.getElementById('floor-name-create-<?= htmlspecialchars($encryptedEdificioId) ?>').dispatchEvent(new Event('input', { bubbles: true })); }, 100);">Piso 2</button>
+                            </div>
+                        <?php endif; ?>
                     </form>
                 </div>
             </div>
@@ -1063,6 +1077,13 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                     Criar
                                 </button>
                             </div>
+                            <?php if (SHOW_DEBUG_BUTTONS): ?>
+                                <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
+                                    <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido (Debug)</span>
+                                    <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'service-name-create-<?= htmlspecialchars($encryptedPisoId) ?>': 'Informática'}); setTimeout(() => { document.getElementById('service-name-create-<?= htmlspecialchars($encryptedPisoId) ?>').dispatchEvent(new Event('input', { bubbles: true })); }, 100);">Informática</button>
+                                    <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'service-name-create-<?= htmlspecialchars($encryptedPisoId) ?>': 'Recursos Humanos'}); setTimeout(() => { document.getElementById('service-name-create-<?= htmlspecialchars($encryptedPisoId) ?>').dispatchEvent(new Event('input', { bubbles: true })); }, 100);">RH</button>
+                                </div>
+                            <?php endif; ?>
                         </form>
                     </div>
                 </div>
@@ -1246,6 +1267,13 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                         Criar
                                     </button>
                                 </div>
+                                <?php if (SHOW_DEBUG_BUTTONS): ?>
+                                    <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
+                                        <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido (Debug)</span>
+                                        <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'room-name-create-<?= htmlspecialchars($encryptedServicoId) ?>': 'Sala 101'}); setTimeout(() => { document.getElementById('room-name-create-<?= htmlspecialchars($encryptedServicoId) ?>').dispatchEvent(new Event('input', { bubbles: true })); }, 100);">Sala 101</button>
+                                        <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'room-name-create-<?= htmlspecialchars($encryptedServicoId) ?>': 'Sala 102'}); setTimeout(() => { document.getElementById('room-name-create-<?= htmlspecialchars($encryptedServicoId) ?>').dispatchEvent(new Event('input', { bubbles: true })); }, 100);">Sala 102</button>
+                                    </div>
+                                <?php endif; ?>
                             </form>
                         </div>
                     </div>

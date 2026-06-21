@@ -358,6 +358,12 @@ try {
                                 Guardar Registo
                             </button>
                         </div>
+                        <?php if (SHOW_DEBUG_BUTTONS): ?>
+                            <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
+                                <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido (Debug)</span>
+                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'warranty-start-date': '01/01/2026', 'warranty-end-date': '01/01/2028', 'warranty-notes': 'Garantia Preenchida'}); setTimeout(() => { document.getElementById('warranty-type').selectedIndex = 1; document.getElementById('warranty-periodicity').selectedIndex = 1; document.querySelectorAll('#add-warranty-form input, #add-warranty-form select, #add-warranty-form textarea').forEach(el => { el.dispatchEvent(new Event('change', { bubbles: true })); el.dispatchEvent(new Event('input', { bubbles: true })); }); }, 100);">Preencher Campos</button>
+                            </div>
+                        <?php endif; ?>
                     </form>
                 </div>
             </div>
@@ -577,6 +583,12 @@ try {
                                     Guardar Alterações
                                 </button>
                             </div>
+                            <?php if (SHOW_DEBUG_BUTTONS): ?>
+                                <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
+                                    <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido (Debug)</span>
+                                    <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'edit-warranty-notes-<?= htmlspecialchars($encId) ?>': 'Garantia Editada'}); setTimeout(() => { document.getElementById('edit-warranty-notes-<?= htmlspecialchars($encId) ?>').dispatchEvent(new Event('input', { bubbles: true })); document.querySelector('#edit-warranty-form-<?= htmlspecialchars($encId) ?> .edit-warranty-start-date').dispatchEvent(new Event('change', { bubbles: true })); }, 100);">Editar Notas</button>
+                                </div>
+                            <?php endif; ?>
                         </form>
                     </div>
                 </div>

@@ -483,6 +483,13 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                 Criar Categoria
                             </button>
                         </div>
+                        <?php if (SHOW_DEBUG_BUTTONS): ?>
+                            <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
+                                <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido (Debug)</span>
+                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'category-name': 'Ventiladores', 'category-code': 'VENT', 'category-description': 'Equipamentos de ventilação mecânica assistida.'})">Ventiladores</button>
+                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'category-name': 'Desfibrilhadores', 'category-code': 'DESF', 'category-description': 'Equipamentos de desfibrilhação cardíaca.'})">Desfibrilhadores</button>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </form>
             </div>

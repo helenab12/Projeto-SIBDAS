@@ -1499,8 +1499,8 @@ if (locationsSearchInput) {
         }
     }
 
-        applyLocationsFilter();
-    }
+    applyLocationsFilter();
+}
 
 // Campos obrigatórios do Utilizador (Nome Completo, Username, Email, Password)
 const userFullnameInput = document.getElementById("user-fullname");
@@ -2665,7 +2665,7 @@ function openQRPrintModal(encryptedId, code, designation) {
                 return;
             }
             const img = document.getElementById('qrImage');
-            if(img) {
+            if (img) {
                 img.src = url;
             }
             const modal = new bootstrap.Modal(document.getElementById('qrPrintModal'));
@@ -2699,16 +2699,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (btnProceedQRPrint) {
         btnProceedQRPrint.addEventListener('click', () => {
             const sel = document.getElementById('qrEquipamentoSelect');
-            if(!sel.value) {
+            if (!sel.value) {
                 alert('Selecione um equipamento primeiro.');
                 return;
             }
             const opt = sel.options[sel.selectedIndex];
-            
+
             const selectModalEl = document.getElementById('qrSelectModal');
             const selectModal = bootstrap.Modal.getOrCreateInstance(selectModalEl);
             selectModal.hide();
-            
+
             setTimeout(() => {
                 openQRPrintModal(sel.value, opt.getAttribute('data-code'), opt.getAttribute('data-desc'));
             }, 400);
@@ -2718,28 +2718,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // Scanner de QR Code pela câmara
     let html5QrcodeScanner = null;
     const scanModalEl = document.getElementById('qrScanModal');
-    
+
     if (scanModalEl) {
         scanModalEl.addEventListener('shown.bs.modal', function () {
-            if(!html5QrcodeScanner) {
+            if (!html5QrcodeScanner) {
                 if (typeof Html5QrcodeScanner !== 'undefined') {
                     html5QrcodeScanner = new Html5QrcodeScanner(
                         "reader",
-                        { fps: 10, qrbox: {width: 250, height: 250} },
+                        { fps: 10, qrbox: { width: 250, height: 250 } },
                         false);
                     html5QrcodeScanner.render(
                         (decodedText, decodedResult) => {
-                            if(decodedText.includes('detailed_view.php?id=')) {
-                                if(html5QrcodeScanner) html5QrcodeScanner.pause(true);
+                            if (decodedText.includes('detailed_view.php?id=')) {
+                                if (html5QrcodeScanner) html5QrcodeScanner.pause(true);
                                 window.location.href = decodedText;
                             } else {
                                 alert('Código QR não reconhecido ou inválido para este sistema.');
-                                if(html5QrcodeScanner) {
+                                if (html5QrcodeScanner) {
                                     html5QrcodeScanner.pause(true);
                                     setTimeout(() => html5QrcodeScanner.resume(), 3000);
                                 }
                             }
-                        }, 
+                        },
                         (error) => { /* ignora frames vazios */ }
                     );
                 } else {
@@ -2749,7 +2749,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         scanModalEl.addEventListener('hidden.bs.modal', function () {
-            if(html5QrcodeScanner) {
+            if (html5QrcodeScanner) {
                 html5QrcodeScanner.clear().catch(error => {
                     console.error("Failed to clear html5QrcodeScanner. ", error);
                 });
@@ -2769,7 +2769,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Lógica de Seleção
         optionCards.forEach(card => {
-            card.addEventListener('click', function() {
+            card.addEventListener('click', function () {
                 // Limpar seleções anteriores
                 optionCards.forEach(c => {
                     c.classList.remove('selected', 'selected-csv', 'selected-json', 'selected-pdf');
@@ -2777,7 +2777,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Selecionar o atual
                 this.classList.add('selected');
-                
+
                 // Mapear cores por tipo de exportação
                 const type = this.getAttribute('data-export-type');
                 exportTypeInput.value = type;
@@ -2794,12 +2794,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Acionar a Exportação
         if (btnConfirmExport) {
-            btnConfirmExport.addEventListener('click', function() {
+            btnConfirmExport.addEventListener('click', function () {
                 const currentUrl = window.location.pathname;
                 const searchParams = new URLSearchParams(window.location.search);
                 const format = exportTypeInput.value;
                 searchParams.set('format', format);
-                
+
                 let targetEndpoint = '';
                 if (currentUrl.includes('equipment_list.php')) {
                     targetEndpoint = 'export-equipments.php';
@@ -2812,12 +2812,31 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (targetEndpoint) {
                     const exportUrl = targetEndpoint + '?' + searchParams.toString();
                     window.location.href = exportUrl;
-                    
+
                     // Fechar modal opcionalmente
                     const modalInstance = bootstrap.Modal.getInstance(exportModal);
-                    if(modalInstance) modalInstance.hide();
+                    if (modalInstance) modalInstance.hide();
                 }
             });
         }
     }
 });
+
+function prefillFields(fields) {
+    if (!fields || typeof fields !== 'object') return;
+
+    for (const [idOrName, value] of Object.entries(fields)) {
+        let el = document.getElementById(idOrName);
+        if (!el) {
+            el = document.querySelector(`[name="${idOrName}"]`);
+        }
+
+        if (el) {
+            el.value = value;
+            el.dispatchEvent(new Event('input', { bubbles: true }));
+            el.dispatchEvent(new Event('change', { bubbles: true }));
+        } else {
+            console.warn(`prefillFields: Elemento '${idOrName}' não encontrado.`);
+        }
+    }
+}

@@ -164,6 +164,12 @@
                                                 Guardar
                                             </button>
                                         </div>
+                                        <?php if (SHOW_DEBUG_BUTTONS): ?>
+                                            <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
+                                                <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido (Debug)</span>
+                                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'doc-name-<?= $index ?>': 'Documento Preenchido'}); setTimeout(() => { document.getElementById('doc-name-<?= $index ?>').dispatchEvent(new Event('input', { bubbles: true })); }, 100);">Preencher Nome</button>
+                                            </div>
+                                        <?php endif; ?>
                                     </form>
                                 </div>
                             </div>
@@ -397,6 +403,12 @@
                                 Guardar
                             </button>
                         </div>
+                        <?php if (SHOW_DEBUG_BUTTONS): ?>
+                            <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
+                                <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido (Debug)</span>
+                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'doc-name-generic': 'Documento Genérico Preenchido'}); setTimeout(() => { document.getElementById('doc-name-generic').dispatchEvent(new Event('input', { bubbles: true })); document.getElementById('doc-type-generic').selectedIndex = 1; document.getElementById('doc-type-generic').dispatchEvent(new Event('change', { bubbles: true })); }, 100);">Preencher Campos</button>
+                            </div>
+                        <?php endif; ?>
                     </form>
                 </div>
             </div>
@@ -494,6 +506,12 @@
                                     Guardar
                                 </button>
                             </div>
+                            <?php if (SHOW_DEBUG_BUTTONS): ?>
+                                <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
+                                    <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido (Debug)</span>
+                                    <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'edit-doc-name-<?= $encDocId ?>': 'Documento Editado'}); setTimeout(() => { document.getElementById('edit-doc-name-<?= $encDocId ?>').dispatchEvent(new Event('input', { bubbles: true })); }, 100);">Editar Nome</button>
+                                </div>
+                            <?php endif; ?>
                         </form>
                     </div>
                 </div>

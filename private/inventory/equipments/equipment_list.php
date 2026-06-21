@@ -1813,6 +1813,12 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                     </svg>
                                 </button>
                             </div>
+                            <?php if (SHOW_DEBUG_BUTTONS): ?>
+                                <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
+                                    <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido (Debug)</span>
+                                    <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'equipment-name-<?= htmlspecialchars($encryptedEqId) ?>': 'Equipamento Modificado', 'equipment-status-<?= htmlspecialchars($encryptedEqId) ?>': 'Em manutenção'}); setTimeout(() => { document.getElementById('equipment-name-<?= htmlspecialchars($encryptedEqId) ?>').dispatchEvent(new Event('input', { bubbles: true })); document.getElementById('equipment-status-<?= htmlspecialchars($encryptedEqId) ?>').dispatchEvent(new Event('change', { bubbles: true })); }, 100);">Alterar para Manutenção</button>
+                                </div>
+                            <?php endif; ?>
                         </div>
 
                         <!-- Conteudo Pagina 2 -->

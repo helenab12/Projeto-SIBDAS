@@ -610,6 +610,13 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                 Criar Componente
                             </button>
                         </div>
+                        <?php if (SHOW_DEBUG_BUTTONS): ?>
+                            <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
+                                <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido (Debug)</span>
+                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'component-name': 'Tubo de Silicone 1.5m', 'component-sku': 'TS-9921', 'component-stock-actual': '15', 'component-stock-min': '5', 'component-price': '12.50'}); setTimeout(() => { const c = document.getElementById('component-category'); if(c && c.options.length > 1) c.selectedIndex=1; const l = document.getElementById('component-location'); if(l && l.options.length > 1) l.selectedIndex=1; }, 100);">Tubo Silicone</button>
+                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'component-name': 'Sensor SpO2 Reutilizável', 'component-sku': 'SPO2-R2', 'component-stock-actual': '8', 'component-stock-min': '3', 'component-price': '45.00'}); setTimeout(() => { const c = document.getElementById('component-category'); if(c && c.options.length > 1) c.selectedIndex=1; const l = document.getElementById('component-location'); if(l && l.options.length > 1) l.selectedIndex=1; }, 100);">Sensor SpO2</button>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </form>
             </div>

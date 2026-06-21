@@ -33,10 +33,10 @@ try {
         $decryptedId = aes_decrypt($search_query);
         if ($decryptedId !== false && is_numeric($decryptedId)) {
             $whereConditions[] = "u.idUtilizador = :searchId OR p.idPessoa = :searchId";
-            $params['searchId'] = (int)$decryptedId;
+            $params['searchId'] = (int) $decryptedId;
         } elseif (is_numeric($search_query)) {
             $whereConditions[] = "(u.idUtilizador = :searchExact OR p.idPessoa = :searchExact OR p.nome LIKE :search OR u.emailAutenticacao LIKE :search OR p.email LIKE :search)";
-            $params['searchExact'] = (int)$search_query;
+            $params['searchExact'] = (int) $search_query;
             $params['search'] = '%' . $search_query . '%';
         } else {
             $whereConditions[] = "(p.nome LIKE :search OR u.emailAutenticacao LIKE :search OR p.email LIKE :search)";
@@ -190,16 +190,16 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
             </div>
             <div class="d-flex gap-2">
                 <?php if (tem_permissao('users.create')): ?>
-                <button id="btn-open-create-user-modal" class="btn btn-primary btn-glowing gap-2" data-bs-toggle="modal"
-                    data-bs-target="#user-creation-modal">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-plus-icon lucide-plus">
-                        <path d="M5 12h14" />
-                        <path d="M12 5v14" />
-                    </svg>
-                    Novo Utilizador
-                </button>
+                    <button id="btn-open-create-user-modal" class="btn btn-primary btn-glowing gap-2" data-bs-toggle="modal"
+                        data-bs-target="#user-creation-modal">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-plus-icon lucide-plus">
+                            <path d="M5 12h14" />
+                            <path d="M12 5v14" />
+                        </svg>
+                        Novo Utilizador
+                    </button>
                 <?php endif; ?>
             </div>
         </div>
@@ -314,7 +314,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                             class="datatable-sorter text-decoration-none text-inherit">PERFIL<?= $getSortIcon('perfil') ?></a>
                                     </th>
                                     <?php if (tem_permissao('users.edit') || tem_permissao('users.delete')): ?>
-                                    <th class="text-end">AÇÕES</th>
+                                        <th class="text-end">AÇÕES</th>
                                     <?php endif; ?>
                                 </tr>
                             </thead>
@@ -351,56 +351,56 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                             </span>
                                         </td>
                                         <?php if (tem_permissao('users.edit') || tem_permissao('users.delete')): ?>
-                                        <td class="text-end equipment-actions">
-                                            <div class="dropdown">
-                                                <button
-                                                    class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
-                                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                        stroke-linecap="round" stroke-linejoin="round">
-                                                        <circle cx="12" cy="12" r="1" />
-                                                        <circle cx="19" cy="12" r="1" />
-                                                        <circle cx="5" cy="12" r="1" />
-                                                    </svg>
-                                                </button>
-                                                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
-                                                    <?php if (tem_permissao('users.edit')): ?>
-                                                    <li>
-                                                         <a class="dropdown-item action-dropdown-item text-primary" href="#"
-                                                             data-bs-toggle="modal"
-                                                             data-bs-target="#user-edit-modal-<?= htmlspecialchars($encryptedUserId) ?>">
-                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                                 class="lucide lucide-pencil">
-                                                                 <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                                 <path d="m15 5 4 4" />
-                                                             </svg>
-                                                             Editar
-                                                         </a>
-                                                    </li>
-                                                    <?php endif; ?>
-                                                    <?php if (tem_permissao('users.delete')): ?>
-                                                    <li>
-                                                         <a class="dropdown-item action-dropdown-item text-error" href="#"
-                                                             data-bs-toggle="modal"
-                                                             data-bs-target="#delete-confirm-modal-<?= htmlspecialchars($encryptedUserId) ?>">
-                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                                 class="lucide lucide-archive">
-                                                                 <rect width="20" height="5" x="2" y="3" rx="1" />
-                                                                 <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
-                                                                 <path d="M10 12h4" />
-                                                             </svg>
-                                                             Desativar (Reciclagem)
-                                                         </a>
-                                                    </li>
-                                                    <?php endif; ?>
-                                                </ul>
-                                            </div>
-                                        </td>
+                                            <td class="text-end equipment-actions">
+                                                <div class="dropdown">
+                                                    <button
+                                                        class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
+                                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round">
+                                                            <circle cx="12" cy="12" r="1" />
+                                                            <circle cx="19" cy="12" r="1" />
+                                                            <circle cx="5" cy="12" r="1" />
+                                                        </svg>
+                                                    </button>
+                                                    <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
+                                                        <?php if (tem_permissao('users.edit')): ?>
+                                                            <li>
+                                                                <a class="dropdown-item action-dropdown-item text-primary" href="#"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#user-edit-modal-<?= htmlspecialchars($encryptedUserId) ?>">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                        class="lucide lucide-pencil">
+                                                                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                                                        <path d="m15 5 4 4" />
+                                                                    </svg>
+                                                                    Editar
+                                                                </a>
+                                                            </li>
+                                                        <?php endif; ?>
+                                                        <?php if (tem_permissao('users.delete')): ?>
+                                                            <li>
+                                                                <a class="dropdown-item action-dropdown-item text-error" href="#"
+                                                                    data-bs-toggle="modal"
+                                                                    data-bs-target="#delete-confirm-modal-<?= htmlspecialchars($encryptedUserId) ?>">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                        class="lucide lucide-archive">
+                                                                        <rect width="20" height="5" x="2" y="3" rx="1" />
+                                                                        <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
+                                                                        <path d="M10 12h4" />
+                                                                    </svg>
+                                                                    Desativar (Reciclagem)
+                                                                </a>
+                                                            </li>
+                                                        <?php endif; ?>
+                                                    </ul>
+                                                </div>
+                                            </td>
                                         <?php endif; ?>
                                     </tr>
                                 <?php endforeach; ?>
@@ -462,142 +462,16 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 ?>
 
 <?php if (tem_permissao('users.create')): ?>
-<!-- Modal de Criação de Utilizador -->
-<div class="modal fade" id="user-creation-modal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
-        <div class="modal-content custom-modal-content d-flex flex-column">
-            <!-- Titulo -->
-            <div
-                class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
-                <div class="d-flex flex-column">
-                    <h2 class="equipment-creation-modal-title modal-title" id="userModalLabel">Novo Utilizador</h2>
-                    <span class="text-secondary fw-400">Credenciais e permissões de acesso</span>
-                </div>
-
-                <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
-                    data-bs-dismiss="modal" aria-label="Close">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-x-icon lucide-x stroke-secondary">
-                        <path d="M18 6 6 18" />
-                        <path d="m6 6 12 12" />
-                    </svg>
-                </button>
-            </div>
-
-            <!-- Body do Modal com scroll automático -->
-            <div class="modal-body p-0">
-                <form id="user-creation-form" method="POST" action="users-crud/create-user.php"
-                    class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
-
-                    <!-- Row 1: Email da Pessoa -->
-                    <div class="d-flex flex-column form-item w-100 mw-0">
-                        <div class="d-flex gap-1 align-items-center">
-                            <label for="user-email">Email (Funcionário)</label>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="lucide lucide-asterisk-icon lucide-asterisk text-error">
-                                <path d="M12 6v12" />
-                                <path d="M17.196 9 6.804 15" />
-                                <path d="m6.804 9 10.392 6" />
-                            </svg>
-                            <span data-bs-toggle="tooltip" data-bs-placement="top"
-                                title="Este email deve pertencer a uma pessoa já registada na gestão de pessoas."
-                                class="ms-1 text-secondary" style="cursor: help;">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" class="lucide lucide-info">
-                                    <circle cx="12" cy="12" r="10" />
-                                    <path d="M12 16v-4" />
-                                    <path d="M12 8h.01" />
-                                </svg>
-                            </span>
-                        </div>
-                        <input type="email" id="user-email" name="user-email" placeholder="funcionario@hospital.pt"
-                            required>
-                    </div>
-
-                    <!-- Row 2: Email de Autenticacao -->
-                    <div class="d-flex flex-column form-item w-100 mw-0">
-                        <div class="d-flex gap-1">
-                            <label for="user-auth-email">Email de Autenticação</label>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="lucide lucide-asterisk-icon lucide-asterisk text-error">
-                                <path d="M12 6v12" />
-                                <path d="M17.196 9 6.804 15" />
-                                <path d="m6.804 9 10.392 6" />
-                            </svg>
-                        </div>
-                        <input type="email" id="user-auth-email" name="user-auth-email" placeholder="login@hospital.pt"
-                            required>
-                    </div>
-
-                    <!-- Row 3: Password -->
-                    <div class="d-flex flex-column form-item w-100 mw-0">
-                        <div class="d-flex gap-1">
-                            <label for="user-password">Password</label>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="lucide lucide-asterisk-icon lucide-asterisk text-error">
-                                <path d="M12 6v12" />
-                                <path d="M17.196 9 6.804 15" />
-                                <path d="m6.804 9 10.392 6" />
-                            </svg>
-                        </div>
-                        <input type="password" id="user-password" name="user-password" placeholder="••••••••" required>
-                    </div>
-
-                    <!-- Row 3: Perfil de Acesso -->
-                    <div class="d-flex flex-column form-item w-100 mw-0">
-                        <label for="user-role">Perfil de Acesso</label>
-                        <select id="user-role" name="user-role" class="form-select w-100" required>
-                            <?php foreach ($perfisDisponiveis ?? [] as $perfilOption): ?>
-                                <option value="<?= htmlspecialchars($perfilOption['idPerfil']) ?>">
-                                    <?= htmlspecialchars($perfilOption['nome']) ?>
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-
-                    <!-- Footer do Formulario -->
-                    <div class="d-flex w-100 justify-content-end gap-4 button-row mt-4">
-                        <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
-                            data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" id="btn-submit-user-modal" name="criar_utilizador"
-                            class="btn btn-primary btn-glowing" disabled>
-                            Criar Utilizador
-                        </button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<?php endif; ?>
-
-<?php foreach ($listaUtilizadores as $item): ?>
-    <?php
-    $utilizador = $item['utilizador'];
-    $pessoa = $item['pessoa'];
-    $encryptedUserId = aes_encrypt($utilizador->getIdUtilizador());
-    ?>
-
-    <?php if (tem_permissao('users.edit')): ?>
-    <!-- Modal de Edição de Utilizador para <?= htmlspecialchars($pessoa->getNome()) ?> -->
-    <div class="modal fade" id="user-edit-modal-<?= htmlspecialchars($encryptedUserId) ?>" tabindex="-1"
-        aria-labelledby="userEditModalLabel-<?= htmlspecialchars($encryptedUserId) ?>" aria-hidden="true">
+    <!-- Modal de Criação de Utilizador -->
+    <div class="modal fade" id="user-creation-modal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
             <div class="modal-content custom-modal-content d-flex flex-column">
                 <!-- Titulo -->
                 <div
                     class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
                     <div class="d-flex flex-column">
-                        <h2 class="equipment-creation-modal-title modal-title"
-                            id="userEditModalLabel-<?= htmlspecialchars($encryptedUserId) ?>">
-                            Editar Utilizador
-                        </h2>
-                        <span class="text-secondary fw-400">Edite as credenciais e acessos</span>
+                        <h2 class="equipment-creation-modal-title modal-title" id="userModalLabel">Novo Utilizador</h2>
+                        <span class="text-secondary fw-400">Credenciais e permissões de acesso</span>
                     </div>
 
                     <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
@@ -613,42 +487,73 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 
                 <!-- Body do Modal com scroll automático -->
                 <div class="modal-body p-0">
-                    <form id="user-edit-form-<?= htmlspecialchars($encryptedUserId) ?>" method="POST"
-                        action="users-crud/edit-user.php"
-                        class="user-edit-form equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
+                    <form id="user-creation-form" method="POST" action="users-crud/create-user.php"
+                        class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
 
-                        <input type="hidden" name="user-id" value="<?= htmlspecialchars($encryptedUserId) ?>">
-
-                        <!-- Row 1: Email de Autenticação -->
+                        <!-- Row 1: Email da Pessoa -->
                         <div class="d-flex flex-column form-item w-100 mw-0">
-                            <div class="d-flex gap-1">
-                                <label for="edit-auth-email-<?= htmlspecialchars($encryptedUserId) ?>">Email de Autenticação
-                                    <span class="text-error">*</span></label>
+                            <div class="d-flex gap-1 align-items-center">
+                                <label for="user-email">Email (Funcionário)</label>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                    <path d="M12 6v12" />
+                                    <path d="M17.196 9 6.804 15" />
+                                    <path d="m6.804 9 10.392 6" />
+                                </svg>
+                                <span data-bs-toggle="tooltip" data-bs-placement="top"
+                                    title="Este email deve pertencer a uma pessoa já registada na gestão de pessoas."
+                                    class="ms-1 text-secondary" style="cursor: help;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-info">
+                                        <circle cx="12" cy="12" r="10" />
+                                        <path d="M12 16v-4" />
+                                        <path d="M12 8h.01" />
+                                    </svg>
+                                </span>
                             </div>
-                            <input type="email" id="edit-auth-email-<?= htmlspecialchars($encryptedUserId) ?>"
-                                name="user-auth-email" placeholder="login@hospital.pt" class="user-edit-email-input"
-                                value="<?= htmlspecialchars($utilizador->getEmailAutenticacao()) ?>" required>
+                            <input type="email" id="user-email" name="user-email" placeholder="funcionario@hospital.pt"
+                                required>
                         </div>
 
-                        <!-- Row 2: Nova Password -->
+                        <!-- Row 2: Email de Autenticacao -->
                         <div class="d-flex flex-column form-item w-100 mw-0">
                             <div class="d-flex gap-1">
-                                <label for="edit-password-<?= htmlspecialchars($encryptedUserId) ?>">Nova Password</label>
+                                <label for="user-auth-email">Email de Autenticação</label>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                    <path d="M12 6v12" />
+                                    <path d="M17.196 9 6.804 15" />
+                                    <path d="m6.804 9 10.392 6" />
+                                </svg>
                             </div>
-                            <input type="password" id="edit-password-<?= htmlspecialchars($encryptedUserId) ?>"
-                                name="user-password" placeholder="Deixe em branco para não alterar"
-                                class="user-edit-password-input">
+                            <input type="email" id="user-auth-email" name="user-auth-email" placeholder="login@hospital.pt"
+                                required>
+                        </div>
+
+                        <!-- Row 3: Password -->
+                        <div class="d-flex flex-column form-item w-100 mw-0">
+                            <div class="d-flex gap-1">
+                                <label for="user-password">Password</label>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                    <path d="M12 6v12" />
+                                    <path d="M17.196 9 6.804 15" />
+                                    <path d="m6.804 9 10.392 6" />
+                                </svg>
+                            </div>
+                            <input type="password" id="user-password" name="user-password" placeholder="••••••••" required>
                         </div>
 
                         <!-- Row 3: Perfil de Acesso -->
                         <div class="d-flex flex-column form-item w-100 mw-0">
-                            <label for="edit-role-<?= htmlspecialchars($encryptedUserId) ?>">Perfil de Acesso
-                                <span class="text-error">*</span></label>
-                            <select id="edit-role-<?= htmlspecialchars($encryptedUserId) ?>" name="user-role"
-                                class="form-select w-100 user-edit-role-input" required>
+                            <label for="user-role">Perfil de Acesso</label>
+                            <select id="user-role" name="user-role" class="form-select w-100" required>
                                 <?php foreach ($perfisDisponiveis ?? [] as $perfilOption): ?>
-                                    <option value="<?= htmlspecialchars($perfilOption['idPerfil']) ?>"
-                                        <?= ($perfilOption['idPerfil'] === $utilizador->getIdPerfil()) ? 'selected' : '' ?>>
+                                    <option value="<?= htmlspecialchars($perfilOption['idPerfil']) ?>">
                                         <?= htmlspecialchars($perfilOption['nome']) ?>
                                     </option>
                                 <?php endforeach; ?>
@@ -659,93 +564,198 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                         <div class="d-flex w-100 justify-content-end gap-4 button-row mt-4">
                             <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                                 data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" name="edit_utilizador"
-                                class="user-edit-submit-btn btn btn-primary btn-glowing" disabled>
-                                Guardar Alterações
+                            <button type="submit" id="btn-submit-user-modal" name="criar_utilizador"
+                                class="btn btn-primary btn-glowing" disabled>
+                                Criar Utilizador
                             </button>
                         </div>
+                        <?php if (SHOW_DEBUG_BUTTONS): ?>
+                            <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
+                                <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido
+                                    (Debug)</span>
+                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
+                                    onclick="prefillFields({'user-email': 'admin@heba.pt', 'user-auth-email': 'admin@heba.pt', 'user-password': 'password123'}); setTimeout(() => { const r = document.getElementById('user-role'); if(r && r.options.length > 1) r.selectedIndex=1; r.dispatchEvent(new Event('change')); }, 100);">Admin</button>
+                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
+                                    onclick="prefillFields({'user-email': 'tecnico@heba.pt', 'user-auth-email': 'tecnico@heba.pt', 'user-password': 'password123'}); setTimeout(() => { const r = document.getElementById('user-role'); if(r && r.options.length > 2) r.selectedIndex=2; r.dispatchEvent(new Event('change')); }, 100);">Técnico</button>
+                            </div>
+                        <?php endif; ?>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+<?php endif; ?>
+
+<?php foreach ($listaUtilizadores as $item): ?>
+    <?php
+    $utilizador = $item['utilizador'];
+    $pessoa = $item['pessoa'];
+    $encryptedUserId = aes_encrypt($utilizador->getIdUtilizador());
+    ?>
+
+    <?php if (tem_permissao('users.edit')): ?>
+        <!-- Modal de Edição de Utilizador para <?= htmlspecialchars($pessoa->getNome()) ?> -->
+        <div class="modal fade" id="user-edit-modal-<?= htmlspecialchars($encryptedUserId) ?>" tabindex="-1"
+            aria-labelledby="userEditModalLabel-<?= htmlspecialchars($encryptedUserId) ?>" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
+                <div class="modal-content custom-modal-content d-flex flex-column">
+                    <!-- Titulo -->
+                    <div
+                        class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
+                        <div class="d-flex flex-column">
+                            <h2 class="equipment-creation-modal-title modal-title"
+                                id="userEditModalLabel-<?= htmlspecialchars($encryptedUserId) ?>">
+                                Editar Utilizador
+                            </h2>
+                            <span class="text-secondary fw-400">Edite as credenciais e acessos</span>
+                        </div>
+
+                        <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
+                            data-bs-dismiss="modal" aria-label="Close">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-x-icon lucide-x stroke-secondary">
+                                <path d="M18 6 6 18" />
+                                <path d="m6 6 12 12" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Body do Modal com scroll automático -->
+                    <div class="modal-body p-0">
+                        <form id="user-edit-form-<?= htmlspecialchars($encryptedUserId) ?>" method="POST"
+                            action="users-crud/edit-user.php"
+                            class="user-edit-form equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
+
+                            <input type="hidden" name="user-id" value="<?= htmlspecialchars($encryptedUserId) ?>">
+
+                            <!-- Row 1: Email de Autenticação -->
+                            <div class="d-flex flex-column form-item w-100 mw-0">
+                                <div class="d-flex gap-1">
+                                    <label for="edit-auth-email-<?= htmlspecialchars($encryptedUserId) ?>">Email de Autenticação
+                                        <span class="text-error">*</span></label>
+                                </div>
+                                <input type="email" id="edit-auth-email-<?= htmlspecialchars($encryptedUserId) ?>"
+                                    name="user-auth-email" placeholder="login@hospital.pt" class="user-edit-email-input"
+                                    value="<?= htmlspecialchars($utilizador->getEmailAutenticacao()) ?>" required>
+                            </div>
+
+                            <!-- Row 2: Nova Password -->
+                            <div class="d-flex flex-column form-item w-100 mw-0">
+                                <div class="d-flex gap-1">
+                                    <label for="edit-password-<?= htmlspecialchars($encryptedUserId) ?>">Nova Password</label>
+                                </div>
+                                <input type="password" id="edit-password-<?= htmlspecialchars($encryptedUserId) ?>"
+                                    name="user-password" placeholder="Deixe em branco para não alterar"
+                                    class="user-edit-password-input">
+                            </div>
+
+                            <!-- Row 3: Perfil de Acesso -->
+                            <div class="d-flex flex-column form-item w-100 mw-0">
+                                <label for="edit-role-<?= htmlspecialchars($encryptedUserId) ?>">Perfil de Acesso
+                                    <span class="text-error">*</span></label>
+                                <select id="edit-role-<?= htmlspecialchars($encryptedUserId) ?>" name="user-role"
+                                    class="form-select w-100 user-edit-role-input" required>
+                                    <?php foreach ($perfisDisponiveis ?? [] as $perfilOption): ?>
+                                        <option value="<?= htmlspecialchars($perfilOption['idPerfil']) ?>"
+                                            <?= ($perfilOption['idPerfil'] === $utilizador->getIdPerfil()) ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($perfilOption['nome']) ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <!-- Footer do Formulario -->
+                            <div class="d-flex w-100 justify-content-end gap-4 button-row mt-4">
+                                <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
+                                    data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" name="edit_utilizador"
+                                    class="user-edit-submit-btn btn btn-primary btn-glowing" disabled>
+                                    Guardar Alterações
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     <?php endif; ?>
 
     <?php if (tem_permissao('users.delete')): ?>
-    <!-- Modal de Desativação de Utilizador para <?= htmlspecialchars($pessoa->getNome()) ?> -->
-    <div class="modal fade" id="delete-confirm-modal-<?= htmlspecialchars($encryptedUserId) ?>" tabindex="-1"
-        aria-labelledby="deleteUserModalLabel-<?= htmlspecialchars($encryptedUserId) ?>" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
-            <div class="modal-content custom-modal-content d-flex flex-column">
-                <!-- Titulo -->
-                <div
-                    class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
-                    <div class="d-flex flex-column">
-                        <h2 class="equipment-creation-modal-title modal-title"
-                            id="deleteUserModalLabel-<?= htmlspecialchars($encryptedUserId) ?>">
-                            Desativar Utilizador</h2>
-                        <span class="text-secondary fw-400">Esta ação moverá o utilizador para a reciclagem.</span>
+        <!-- Modal de Desativação de Utilizador para <?= htmlspecialchars($pessoa->getNome()) ?> -->
+        <div class="modal fade" id="delete-confirm-modal-<?= htmlspecialchars($encryptedUserId) ?>" tabindex="-1"
+            aria-labelledby="deleteUserModalLabel-<?= htmlspecialchars($encryptedUserId) ?>" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
+                <div class="modal-content custom-modal-content d-flex flex-column">
+                    <!-- Titulo -->
+                    <div
+                        class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
+                        <div class="d-flex flex-column">
+                            <h2 class="equipment-creation-modal-title modal-title"
+                                id="deleteUserModalLabel-<?= htmlspecialchars($encryptedUserId) ?>">
+                                Desativar Utilizador</h2>
+                            <span class="text-secondary fw-400">Esta ação moverá o utilizador para a reciclagem.</span>
+                        </div>
+
+                        <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
+                            data-bs-dismiss="modal" aria-label="Close">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-x-icon lucide-x stroke-secondary">
+                                <path d="M18 6 6 18" />
+                                <path d="m6 6 12 12" />
+                            </svg>
+                        </button>
                     </div>
 
-                    <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
-                        data-bs-dismiss="modal" aria-label="Close">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-x-icon lucide-x stroke-secondary">
-                            <path d="M18 6 6 18" />
-                            <path d="m6 6 12 12" />
-                        </svg>
-                    </button>
-                </div>
+                    <!-- Body do Modal -->
+                    <div class="modal-body p-0">
+                        <form method="POST" action="users-crud/delete-user.php">
+                            <input type="hidden" name="user-id" value="<?= htmlspecialchars($encryptedUserId) ?>">
+                            <div
+                                class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
 
-                <!-- Body do Modal -->
-                <div class="modal-body p-0">
-                    <form method="POST" action="users-crud/delete-user.php">
-                        <input type="hidden" name="user-id" value="<?= htmlspecialchars($encryptedUserId) ?>">
-                        <div
-                            class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
-
-                            <div class="d-flex flex-column align-items-center gap-4">
-                                <div class="d-flex padding-3 danger-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-triangle-alert">
-                                        <path
-                                            d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
-                                        <path d="M12 9v4" />
-                                        <path d="M12 17h.01" />
-                                    </svg>
-                                </div>
-                                <div class="d-flex flex-column align-items-center justify-content-center gap-3">
-                                    <div
-                                        class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
-                                        <p class="text-secondary">
-                                            Tem a certeza que deseja desativar o utilizador
-                                        </p>
-                                        <h2 class="fw-700">
-                                            <?= htmlspecialchars($pessoa->getNome()) ?>
-                                        </h2>
-                                        <span class="text-muted">Email:
-                                            <?= htmlspecialchars($utilizador->getEmailAutenticacao()) ?></span>
+                                <div class="d-flex flex-column align-items-center gap-4">
+                                    <div class="d-flex padding-3 danger-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" class="lucide lucide-triangle-alert">
+                                            <path
+                                                d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+                                            <path d="M12 9v4" />
+                                            <path d="M12 17h.01" />
+                                        </svg>
+                                    </div>
+                                    <div class="d-flex flex-column align-items-center justify-content-center gap-3">
+                                        <div
+                                            class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
+                                            <p class="text-secondary">
+                                                Tem a certeza que deseja desativar o utilizador
+                                            </p>
+                                            <h2 class="fw-700">
+                                                <?= htmlspecialchars($pessoa->getNome()) ?>
+                                            </h2>
+                                            <span class="text-muted">Email:
+                                                <?= htmlspecialchars($utilizador->getEmailAutenticacao()) ?></span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- Botoes -->
-                            <div class="d-flex w-100 justify-content-end gap-4 button-row">
-                                <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
-                                    data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" name="apagar_utilizador"
-                                    class="btn btn-danger btn-glowing text-white">
-                                    Sim, Desativar.
-                                </button>
+                                <!-- Botoes -->
+                                <div class="d-flex w-100 justify-content-end gap-4 button-row">
+                                    <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" name="apagar_utilizador"
+                                        class="btn btn-danger btn-glowing text-white">
+                                        Sim, Desativar.
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     <?php endif; ?>
 <?php endforeach; ?>
 

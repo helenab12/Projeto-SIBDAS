@@ -141,32 +141,26 @@ if (!empty($_SESSION['server_error'])) {
                         <?php if (SHOW_DEBUG_BUTTONS): ?>
                             <div class="d-flex flex-wrap gap-2">
                                 <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
-                                    onclick="prefillLogin('admin@hospital.pt', 'password01')">
+                                    onclick="prefillFields({'email': 'admin@hospital.pt', 'password': 'password01'})">
                                     Admin
                                 </button>
                                 <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
-                                    onclick="prefillLogin('eng.bio@hospital.pt', 'password02')">
+                                    onclick="prefillFields({'email': 'eng.bio@hospital.pt', 'password': 'password02'})">
                                     Eng. Biomédico
                                 </button>
                                 <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
-                                    onclick="prefillLogin('tecnico@hospital.pt', 'password03')">
+                                    onclick="prefillFields({'email': 'tecnico@hospital.pt', 'password': 'password03'})">
                                     Técnico
                                 </button>
                                 <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
-                                    onclick="prefillLogin('aprovisionamento@hospital.pt', 'password04')">
+                                    onclick="prefillFields({'email': 'aprovisionamento@hospital.pt', 'password': 'password04'})">
                                     Aprovisionamento
                                 </button>
                                 <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
-                                    onclick="prefillLogin('consulta@hospital.pt', 'password05')">
+                                    onclick="prefillFields({'email': 'consulta@hospital.pt', 'password': 'password05'})">
                                     Consulta
                                 </button>
                             </div>
-                            <script>
-                                function prefillLogin(email, password) {
-                                    document.getElementById('email').value = email;
-                                    document.getElementById('password').value = password;
-                                }
-                            </script>
                         <?php endif; ?>
 
 

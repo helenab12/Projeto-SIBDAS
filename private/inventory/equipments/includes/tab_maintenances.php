@@ -549,6 +549,12 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                                     Guardar Alterações
                                 </button>
                             </div>
+                            <?php if (SHOW_DEBUG_BUTTONS): ?>
+                                <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
+                                    <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido (Debug)</span>
+                                    <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'edit-maintenance-obs-<?= $encId ?>': 'Manutenção Editada'}); setTimeout(() => { document.getElementById('edit-maintenance-obs-<?= $encId ?>').dispatchEvent(new Event('input', { bubbles: true })); document.querySelector('#edit-maintenance-modal-<?= $encId ?> .edit-maintenance-type').dispatchEvent(new Event('change', { bubbles: true })); }, 100);">Editar Observações</button>
+                                </div>
+                            <?php endif; ?>
                         </form>
                     </div>
                 </div>
