@@ -3224,3 +3224,45 @@ section.inbox {
     font-size: 14px;
     margin-right: var(--space-1);
 }
+
+/* Modal de Exportação */
+.export-option-card {
+    cursor: pointer;
+    border-color: transparent;
+    transition: all 0.2s ease-in-out;
+}
+
+.export-option-card.selected-csv {
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 1px var(--primary-500);
+}
+
+.export-option-card.selected-json {
+    border-color: var(--warning);
+    box-shadow: 0 0 0 1px var(--warning);
+}
+
+.export-option-card.selected-pdf {
+    border-color: var(--error);
+    box-shadow: 0 0 0 1px var(--error);
+}
+
+.export-icon-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-2);
+    border-radius: var(--radius-sm);
+}
+
+.export-icon-wrapper.icon-csv {
+    background-color: color-mix(in srgb, var(--primary-500) 10%, transparent);
+}
+
+.export-icon-wrapper.icon-json {
+    background-color: color-mix(in srgb, var(--warning) 10%, transparent);
+}
+
+.export-icon-wrapper.icon-pdf {
+    background-color: color-mix(in srgb, var(--error) 10%, transparent);
+}

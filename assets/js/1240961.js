@@ -2757,4 +2757,67 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
+
+    // ==========================================
+    // Lógica do Modal de Exportação
+    // ==========================================
+    const exportModal = document.getElementById('exportModal');
+    if (exportModal) {
+        const optionCards = exportModal.querySelectorAll('.export-option-card');
+        const exportTypeInput = document.getElementById('exportTypeInput');
+        const btnConfirmExport = document.getElementById('btnConfirmExport');
+
+        // Lógica de Seleção
+        optionCards.forEach(card => {
+            card.addEventListener('click', function() {
+                // Limpar seleções anteriores
+                optionCards.forEach(c => {
+                    c.classList.remove('selected', 'selected-csv', 'selected-json', 'selected-pdf');
+                });
+
+                // Selecionar o atual
+                this.classList.add('selected');
+                
+                // Mapear cores por tipo de exportação
+                const type = this.getAttribute('data-export-type');
+                exportTypeInput.value = type;
+
+                if (type === 'csv') {
+                    this.classList.add('selected-csv');
+                } else if (type === 'json') {
+                    this.classList.add('selected-json');
+                } else if (type === 'pdf') {
+                    this.classList.add('selected-pdf');
+                }
+            });
+        });
+
+        // Acionar a Exportação
+        if (btnConfirmExport) {
+            btnConfirmExport.addEventListener('click', function() {
+                const currentUrl = window.location.pathname;
+                const searchParams = new URLSearchParams(window.location.search);
+                const format = exportTypeInput.value;
+                searchParams.set('format', format);
+                
+                let targetEndpoint = '';
+                if (currentUrl.includes('equipment_list.php')) {
+                    targetEndpoint = 'export-equipments.php';
+                } else if (currentUrl.includes('audit_logs.php')) {
+                    targetEndpoint = 'export-audit-logs.php';
+                } else if (currentUrl.includes('backups.php')) {
+                    targetEndpoint = 'export-system.php';
+                }
+
+                if (targetEndpoint) {
+                    const exportUrl = targetEndpoint + '?' + searchParams.toString();
+                    window.location.href = exportUrl;
+                    
+                    // Fechar modal opcionalmente
+                    const modalInstance = bootstrap.Modal.getInstance(exportModal);
+                    if(modalInstance) modalInstance.hide();
+                }
+            });
+        }
+    }
 });

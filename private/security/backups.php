@@ -70,21 +70,33 @@ function formatBytes($bytes, $precision = 2)
                 <p class="text-secondary fw-400">Cópias de segurança da base de dados do SIBDAS.</p>
             </div>
 
-            <form action="<?= BASE_URL ?>private/security/backups-crud/create-backup.php" method="POST" class="m-0">
-                <button type="submit" class="btn btn-primary btn-glowing d-flex align-items-center gap-2">
+            <div class="d-flex gap-2">
+                <button class="btn btn-primary-outline gap-2" data-bs-toggle="modal" data-bs-target="#exportModal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-database-backup">
-                        <ellipse cx="12" cy="5" rx="9" ry="3" />
-                        <path d="M3 12a9 3 0 0 0 5 2.69" />
-                        <path d="M21 9.3V5" />
-                        <path d="M3 5v14a9 3 0 0 0 6.47 2.88" />
-                        <path d="M12 12v4h4" />
-                        <path d="M13 20a5 5 0 0 0 9-3 4.5 4.5 0 0 0-4.5-4.5c-1.33 0-2.54.54-3.41 1.41L12 16" />
+                        class="lucide lucide-download-icon lucide-download">
+                        <path d="M12 15V3" />
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                        <path d="m7 10 5 5 5-5" />
                     </svg>
-                    Criar Backup
+                    Exportar Dados
                 </button>
-            </form>
+                <form action="<?= BASE_URL ?>private/security/backups-crud/create-backup.php" method="POST" class="m-0">
+                    <button type="submit" class="btn btn-primary btn-glowing d-flex align-items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-database-backup">
+                            <ellipse cx="12" cy="5" rx="9" ry="3" />
+                            <path d="M3 12a9 3 0 0 0 5 2.69" />
+                            <path d="M21 9.3V5" />
+                            <path d="M3 5v14a9 3 0 0 0 6.47 2.88" />
+                            <path d="M12 12v4h4" />
+                            <path d="M13 20a5 5 0 0 0 9-3 4.5 4.5 0 0 0-4.5-4.5c-1.33 0-2.54.54-3.41 1.41L12 16" />
+                        </svg>
+                        Criar Backup
+                    </button>
+                </form>
+            </div>
         </div>
 
         <?php if ($total_backups === 0): ?>
@@ -398,6 +410,7 @@ function formatBytes($bytes, $precision = 2)
 </div>
 
 <?php
+include_once BASE_PATH . 'private/includes/modals/export_modal.php';
 include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 include_once BASE_PATH . 'private/includes/footer.php';
 ?>

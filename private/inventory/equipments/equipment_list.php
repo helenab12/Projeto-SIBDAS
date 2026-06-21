@@ -225,8 +225,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <h1>Lista de Equipamentos</h1>
                 <p class="text-secondary fw-400"><?= $totalEquipamentosAll ?> equipamentos cadastrados</p>
             </div>
-            <?php if (tem_permissao('equipments.create')): ?>
             <div class="d-flex gap-2">
+                <?php if (tem_permissao('equipments.create')): ?>
                 <button id="btn-open-create-equipment-modal" class="btn btn-primary btn-glowing gap-2"
                     data-bs-toggle="modal" data-bs-target="#equipment-creation-modal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -237,8 +237,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                     </svg>
                     Criar Equipamento
                 </button>
+                <?php endif; ?>
             </div>
-            <?php endif; ?>
         </div>
 
         <!-- Barra de Pesquisa -->
