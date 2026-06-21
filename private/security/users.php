@@ -181,9 +181,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
     <?php include_once BASE_PATH . 'private/includes/headers.php'; ?>
 
     <!-- Conteúdo -->
-    <section class="content-container gap-6 security-users">
+    <section class="padding-6 gap-6 d-flex flex-column padding-6 security-users">
         <!-- Titulo -->
-        <div class="d-flex justify-content-between align-items-center w-100 dashboard-title">
+        <div class="d-flex justify-content-between align-items-center w-100 dashboard-title flex-column flex-md-row">
             <div class="d-flex flex-column gap-1">
                 <h1>Utilizadores</h1>
                 <p class="text-secondary fw-400"><?= count($listaUtilizadores) ?> utilizadores ativos</p>
@@ -205,7 +205,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
         </div>
 
         <!-- Barra de Pesquisa -->
-        <div class="bento-card padding-4 gap-4 equipment-list-search-bar">
+        <div
+            class="bento-card padding-4 gap-4 d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center w-100 equipment-list-search-bar">
             <form action="" method="GET" style="display: contents;">
                 <div class="form-item position-relative flex-grow-1">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -231,7 +232,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         </script>
                     <?php endif; ?>
                 </div>
-                <div class="d-flex gap-2 equipment-list-search-bar-filters">
+                <div class="d-flex gap-2 equipment-list-search-bar-filters flex-column flex-md-row">
                     <select class="form-select" name="perfil" aria-label="Filtro Perfil" onchange="this.form.submit()">
                         <option value="" <?= $perfil_filter === '' ? 'selected' : '' ?>>Todos os Perfis</option>
                         <option value="Administrador" <?= $perfil_filter === 'Administrador' ? 'selected' : '' ?>>
@@ -285,7 +286,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 </div>
             <?php else: ?>
                 <div class="datatable-wrapper no-footer sortable fixed-columns">
-                    <div class="datatable-container">
+                    <div class="datatable-container w-100 overflow-auto position-relative">
                         <?php
                         $buildSortUrl = function ($column) use ($search_query, $perfil_filter, $sort_param, $dir_param) {
                             $params = [];
@@ -304,7 +305,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                             return $dir_param === 'asc' ? ' ↑' : ' ↓';
                         };
                         ?>
-                        <table id="usersTable" class="sibdas-table w-100 display datatable-table">
+                        <table id="usersTable" class="heba-table w-100 display datatable-table">
                             <thead>
                                 <tr>
                                     <th><a href="<?= $buildSortUrl('nome') ?>"
@@ -345,7 +346,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="equipment-badge <?= $badge['class'] ?> gap-1 align-items-center">
+                                            <span
+                                                class="equipment-badge d-inline-flex align-items-center justify-content-center fw-500  <?= $badge['class'] ?> gap-1 align-items-center">
                                                 <?= $badge['icon'] ?>
                                                 <?= htmlspecialchars($utilizador->getPerfil()->getNome()) ?>
                                             </span>
@@ -364,11 +366,11 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                             <circle cx="5" cy="12" r="1" />
                                                         </svg>
                                                     </button>
-                                                    <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
+                                                    <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu padding-2">
                                                         <?php if (tem_permissao('users.edit')): ?>
                                                             <li>
-                                                                <a class="dropdown-item action-dropdown-item text-primary" href="#"
-                                                                    data-bs-toggle="modal"
+                                                                <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none  text-primary"
+                                                                    href="#" data-bs-toggle="modal"
                                                                     data-bs-target="#user-edit-modal-<?= htmlspecialchars($encryptedUserId) ?>">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -383,8 +385,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                         <?php endif; ?>
                                                         <?php if (tem_permissao('users.delete')): ?>
                                                             <li>
-                                                                <a class="dropdown-item action-dropdown-item text-error" href="#"
-                                                                    data-bs-toggle="modal"
+                                                                <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none  text-error"
+                                                                    href="#" data-bs-toggle="modal"
                                                                     data-bs-target="#delete-confirm-modal-<?= htmlspecialchars($encryptedUserId) ?>">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -561,7 +563,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                         </div>
 
                         <!-- Footer do Formulario -->
-                        <div class="d-flex w-100 justify-content-end gap-4 button-row mt-4">
+                        <div class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row  mt-4">
                             <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                                 data-bs-dismiss="modal">Cancelar</button>
                             <button type="submit" id="btn-submit-user-modal" name="criar_utilizador"
@@ -666,7 +668,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                             </div>
 
                             <!-- Footer do Formulario -->
-                            <div class="d-flex w-100 justify-content-end gap-4 button-row mt-4">
+                            <div class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row  mt-4">
                                 <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                                     data-bs-dismiss="modal">Cancelar</button>
                                 <button type="submit" name="edit_utilizador"
@@ -742,7 +744,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                 </div>
 
                                 <!-- Botoes -->
-                                <div class="d-flex w-100 justify-content-end gap-4 button-row">
+                                <div class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row ">
                                     <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                                         data-bs-dismiss="modal">Cancelar</button>
                                     <button type="submit" name="apagar_utilizador"

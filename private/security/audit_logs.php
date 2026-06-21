@@ -31,10 +31,10 @@ try {
         $decryptedId = aes_decrypt($search_query);
         if ($decryptedId !== false && is_numeric($decryptedId)) {
             $whereConditions[] = "ha.idAuditoria = :searchId OR ha.idRegistoAfetado = :searchId";
-            $params['searchId'] = (int)$decryptedId;
+            $params['searchId'] = (int) $decryptedId;
         } elseif (is_numeric($search_query)) {
             $whereConditions[] = "(ha.idAuditoria = :searchExact OR ha.idRegistoAfetado = :searchExact OR ha.acao LIKE :search OR p.nome LIKE :search OR ha.campoAfetado LIKE :search OR ha.valorAntigo LIKE :search OR ha.valorNovo LIKE :search OR ha.tabelaAfetada LIKE :search)";
-            $params['searchExact'] = (int)$search_query;
+            $params['searchExact'] = (int) $search_query;
             $params['search'] = '%' . $search_query . '%';
         } else {
             $whereConditions[] = "(ha.acao LIKE :search OR p.nome LIKE :search OR ha.campoAfetado LIKE :search OR ha.valorAntigo LIKE :search OR ha.valorNovo LIKE :search OR ha.tabelaAfetada LIKE :search)";
@@ -122,7 +122,7 @@ try {
             $nav = '';
             $tabelaSub = $row['tabelaAfetada'];
             $idSub = $row['idRegistoAfetado'];
-            
+
             try {
                 $stmtSub = null;
                 if ($tabelaSub === 'Documento') {
@@ -135,12 +135,12 @@ try {
                     $stmtSub = execute_query("SELECT idEquipamento FROM GarantiaContrato WHERE idGarantiaContrato = :id", ['id' => $idSub], $ligacao);
                     $nav = 'garantias';
                 }
-                
+
                 if ($stmtSub) {
                     $rowSub = $stmtSub->fetch(PDO::FETCH_ASSOC);
                     if ($rowSub && !empty($rowSub['idEquipamento'])) {
                         $idEquipamento = $rowSub['idEquipamento'];
-                        $encEqId = aes_encrypt((string)$idEquipamento);
+                        $encEqId = aes_encrypt((string) $idEquipamento);
                         $searchUrl = BASE_URL . "/private/inventory/equipments/detailed_view.php?id=" . urlencode($encEqId) . "&nav=" . $nav;
                     }
                 }
@@ -180,9 +180,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
     <?php include_once BASE_PATH . 'private/includes/headers.php'; ?>
 
     <!-- Conteúdo -->
-    <section class="content-container gap-6">
+    <section class="padding-6 gap-6 d-flex flex-column padding-6">
         <!-- Titulo -->
-        <div class="d-flex justify-content-between align-items-center w-100 dashboard-title">
+        <div class="d-flex justify-content-between align-items-center w-100 dashboard-title flex-column flex-md-row">
             <div class="d-flex flex-column gap-1">
                 <h1>Logs de Auditoria</h1>
                 <p class="text-secondary fw-400"><?= htmlspecialchars($totalLogsFiltered ?? count($auditoria)) ?>
@@ -193,7 +193,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
         </div>
 
         <!-- Barra de Pesquisa -->
-        <div class="bento-card padding-4 gap-4 equipment-list-search-bar">
+        <div
+            class="bento-card padding-4 gap-4 d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center w-100 equipment-list-search-bar">
             <form action="" method="GET" style="display: contents;">
                 <div class="form-item position-relative flex-grow-1">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -219,7 +220,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         </script>
                     <?php endif; ?>
                 </div>
-                <div class="d-flex gap-2 equipment-list-search-bar-filters">
+                <div class="d-flex gap-2 equipment-list-search-bar-filters flex-column flex-md-row">
                     <select class="form-select" name="acao" aria-label="Filtro Ações" onchange="this.form.submit()">
                         <option value="" <?= $acao_filter === '' ? 'selected' : '' ?>>Todas as ações</option>
                         <option value="Criação" <?= $acao_filter === 'Criação' ? 'selected' : '' ?>>Criação</option>
@@ -270,7 +271,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
             <!-- Lista de Logs de Auditoria -->
             <div class="bento-card w-100 p-0 border-0">
                 <div class="datatable-wrapper no-footer sortable fixed-columns">
-                    <div class="datatable-container">
+                    <div class="datatable-container w-100 overflow-auto position-relative">
                         <?php
                         $buildSortUrl = function ($column) use ($search_query, $acao_filter, $sort_param, $dir_param) {
                             $params = [];
@@ -289,7 +290,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                             return $dir_param === 'asc' ? ' ↑' : ' ↓';
                         };
                         ?>
-                        <table id="globalAuditTable" class="sibdas-table w-100 display datatable-table">
+                        <table id="globalAuditTable" class="heba-table w-100 display datatable-table">
                             <thead>
                                 <tr>
                                     <th><a href="<?= $buildSortUrl('dataCriacao') ?>"

@@ -63,8 +63,9 @@ function formatBytes($bytes, $precision = 2)
 <div class="d-flex flex-column flex-grow-1 overflow-x-hidden mw-0">
     <?php include_once BASE_PATH . 'private/includes/headers.php'; ?>
 
-    <section class="content-container gap-6 backups">
-        <div class="d-flex justify-content-between align-items-center w-100 dashboard-title flex-wrap gap-4">
+    <section class="padding-6 gap-6 d-flex flex-column padding-6 backups">
+        <div
+            class="d-flex justify-content-between align-items-center w-100 dashboard-title flex-column flex-md-row flex-wrap gap-4">
             <div class="d-flex flex-column gap-1">
                 <h1>Backups do Sistema</h1>
                 <p class="text-secondary fw-400">Cópias de segurança da base de dados do SIBDAS.</p>
@@ -122,8 +123,8 @@ function formatBytes($bytes, $precision = 2)
         <?php else: ?>
             <div class="bento-card w-100 p-0 border-0">
                 <div class="datatable-wrapper no-footer fixed-columns">
-                    <div class="datatable-container">
-                        <table class="sibdas-table w-100 display datatable-table">
+                    <div class="datatable-container w-100 overflow-auto position-relative">
+                        <table class="heba-table w-100 display datatable-table">
                             <thead>
                                 <tr>
                                     <th>Nome do Ficheiro</th>
@@ -161,9 +162,9 @@ function formatBytes($bytes, $precision = 2)
                                                         <circle cx="5" cy="12" r="1" />
                                                     </svg>
                                                 </button>
-                                                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
+                                                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu padding-2">
                                                     <li>
-                                                        <a class="dropdown-item action-dropdown-item text-primary"
+                                                        <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none  text-primary"
                                                             href="<?= BASE_URL ?>private/security/backups-crud/download-backup.php?file=<?= urlencode($backup['filename']) ?>">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -177,8 +178,8 @@ function formatBytes($bytes, $precision = 2)
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item action-dropdown-item text-success" href="#"
-                                                            data-bs-toggle="modal"
+                                                        <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none  text-success"
+                                                            href="#" data-bs-toggle="modal"
                                                             data-bs-target="#restore-modal-<?= md5($backup['filename']) ?>">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -192,8 +193,8 @@ function formatBytes($bytes, $precision = 2)
                                                         </a>
                                                     </li>
                                                     <li>
-                                                        <a class="dropdown-item action-dropdown-item text-error" href="#"
-                                                            data-bs-toggle="modal"
+                                                        <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none  text-error"
+                                                            href="#" data-bs-toggle="modal"
                                                             data-bs-target="#delete-modal-<?= md5($backup['filename']) ?>">
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -301,7 +302,7 @@ function formatBytes($bytes, $precision = 2)
                                     </div>
                                 </div>
                             </div>
-                            <div class="d-flex w-100 justify-content-end gap-4 button-row">
+                            <div class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row ">
                                 <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                                     data-bs-dismiss="modal">Cancelar</button>
                                 <button type="submit" class="btn btn-primary btn-glowing text-white">Sim, Restaurar</button>
@@ -361,7 +362,7 @@ function formatBytes($bytes, $precision = 2)
                                     </div>
                                 </div>
                             </div>
-                            <div class="d-flex w-100 justify-content-end gap-4 button-row">
+                            <div class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row ">
                                 <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                                     data-bs-dismiss="modal">Cancelar</button>
                                 <button type="submit" class="btn btn-danger btn-glowing ">Sim, Eliminar</button>

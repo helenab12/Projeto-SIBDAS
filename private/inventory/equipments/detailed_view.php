@@ -298,11 +298,11 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
     <?php include_once BASE_PATH . 'private/includes/headers.php'; ?>
 
     <!-- Conteúdo -->
-    <section class="content-container gap-6 equipment-detailed-view">
+    <section class="padding-6 gap-6 d-flex flex-column padding-6 equipment-detailed-view">
 
         <!-- Titulo -->
         <div
-            class="d-flex flex-column align-items-start gap-2 flex-md-row align-items-md-center gap-md-1 dashboard-title">
+            class="d-flex flex-column align-items-start gap-2 flex-md-row align-items-md-center gap-md-1 dashboard-title flex-column flex-md-row">
             <a href="equipment_list.php"
                 class="d-flex align-items-center gap-2 text-decoration-none text-secondary opacity-75 hover-opacity-100 transition-opacity">
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
@@ -324,7 +324,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
         <!-- Bento Card de Detalhes -->
         <div class="card bento-card padding-6 detailed-main-card d-grid gap-4">
             <!-- Icon Wrapper -->
-            <div class="table-icon-wrapper equipment-icon-wrapper padding-8 detailed-main-icon">
+            <div
+                class="table-icon-wrapper padding-2 d-flex align-items-center justify-content-center flex-shrink-0 equipment-icon-wrapper detailed-main-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="lucide lucide-box text-primary">
@@ -340,15 +341,19 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
             <div class="detailed-header-info d-flex flex-column flex-md-row justify-content-start gap-2">
                 <h2 class="fw-700 text-primary mb-0"><?= htmlspecialchars($designacao) ?></h2>
                 <div class="d-flex align-items-center gap-2 flex-wrap">
-                    <span class="equipment-badge <?= $statusClass ?> equipment-badge-tooltip" data-bs-toggle="tooltip"
-                        data-bs-placement="top"
+                    <span
+                        class="equipment-badge d-inline-flex align-items-center justify-content-center fw-500  <?= $statusClass ?> equipment-badge-tooltip"
+                        data-bs-toggle="tooltip" data-bs-placement="top"
                         title="<?= htmlspecialchars($estadoTooltip) ?>"><?= htmlspecialchars($estado) ?></span>
-                    <span class="equipment-badge <?= $critClass ?> equipment-badge-tooltip" data-bs-toggle="tooltip"
-                        data-bs-placement="top"
+                    <span
+                        class="equipment-badge d-inline-flex align-items-center justify-content-center fw-500  <?= $critClass ?> equipment-badge-tooltip"
+                        data-bs-toggle="tooltip" data-bs-placement="top"
                         title="<?= htmlspecialchars($criticidadeTooltip) ?>"><?= htmlspecialchars($criticidade) ?></span>
 
                     <!-- QR Code Badge -->
-                    <button class="equipment-badge equipment-badge-status-inactive btn-qr-code border-0 gap-1" onclick="openQRPrintModal('<?= htmlspecialchars(aes_encrypt((string)$equipamento->getIdEquipamento()), ENT_QUOTES) ?>', '<?= htmlspecialchars($equipamento->getCodigoInterno(), ENT_QUOTES) ?>', '<?= htmlspecialchars($equipamento->getDesignacao(), ENT_QUOTES) ?>')">
+                    <button
+                        class="equipment-badge d-inline-flex align-items-center justify-content-center fw-500  equipment-badge-status-inactive btn-qr-code cursor-pointer border-0 gap-1"
+                        onclick="openQRPrintModal('<?= htmlspecialchars(aes_encrypt((string) $equipamento->getIdEquipamento()), ENT_QUOTES) ?>', '<?= htmlspecialchars($equipamento->getCodigoInterno(), ENT_QUOTES) ?>', '<?= htmlspecialchars($equipamento->getDesignacao(), ENT_QUOTES) ?>')">
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="lucide lucide-qr-code">
@@ -474,7 +479,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
         <nav>
             <div class="nav bento-card d-flex gap-2 padding-1 flex-wrap" id="nav-tab" role="tablist">
                 <button
-                    class="filter-bar-badge d-flex align-items-center gap-2 border-0 <?= $activeTab === 'visao-geral' ? 'active' : '' ?>"
+                    class="filter-bar-badge cursor-pointer border-0 outline-none bg-transparent  d-flex align-items-center gap-2 border-0 <?= $activeTab === 'visao-geral' ? 'active' : '' ?>"
                     id="nav-visao-geral-tab" data-bs-toggle="tab" data-bs-target="#nav-visao-geral" type="button"
                     role="tab" aria-controls="nav-visao-geral"
                     aria-selected="<?= $activeTab === 'visao-geral' ? 'true' : 'false' ?>">
@@ -490,7 +495,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                     <p class="d-none d-md-inline m-0">Visão Geral</p>
                 </button>
                 <button
-                    class="filter-bar-badge d-flex align-items-center gap-2 border-0 <?= $activeTab === 'documentos' ? 'active' : '' ?>"
+                    class="filter-bar-badge cursor-pointer border-0 outline-none bg-transparent  d-flex align-items-center gap-2 border-0 <?= $activeTab === 'documentos' ? 'active' : '' ?>"
                     id="nav-documentos-tab" data-bs-toggle="tab" data-bs-target="#nav-documentos" type="button"
                     role="tab" aria-controls="nav-documentos"
                     aria-selected="<?= $activeTab === 'documentos' ? 'true' : 'false' ?>">
@@ -506,7 +511,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                     <p class="d-none d-md-inline m-0">Documentos</p>
                 </button>
                 <button
-                    class="filter-bar-badge d-flex align-items-center gap-2 border-0 <?= $activeTab === 'fornecedores' ? 'active' : '' ?>"
+                    class="filter-bar-badge cursor-pointer border-0 outline-none bg-transparent  d-flex align-items-center gap-2 border-0 <?= $activeTab === 'fornecedores' ? 'active' : '' ?>"
                     id="nav-fornecedores-tab" data-bs-toggle="tab" data-bs-target="#nav-fornecedores" type="button"
                     role="tab" aria-controls="nav-fornecedores"
                     aria-selected="<?= $activeTab === 'fornecedores' ? 'true' : 'false' ?>">
@@ -525,7 +530,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         style="font-size: 14px; line-height: 20px; font-weight: 500;">Fornecedores</span>
                 </button>
                 <button
-                    class="filter-bar-badge d-flex align-items-center gap-2 border-0 <?= $activeTab === 'garantias' ? 'active' : '' ?>"
+                    class="filter-bar-badge cursor-pointer border-0 outline-none bg-transparent  d-flex align-items-center gap-2 border-0 <?= $activeTab === 'garantias' ? 'active' : '' ?>"
                     id="nav-garantias-tab" data-bs-toggle="tab" data-bs-target="#nav-garantias" type="button" role="tab"
                     aria-controls="nav-garantias" aria-selected="<?= $activeTab === 'garantias' ? 'true' : 'false' ?>">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -538,7 +543,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         style="font-size: 14px; line-height: 20px; font-weight: 500;">Garantias & Contratos</span>
                 </button>
                 <button
-                    class="filter-bar-badge d-flex align-items-center gap-2 border-0 <?= $activeTab === 'componentes' ? 'active' : '' ?>"
+                    class="filter-bar-badge cursor-pointer border-0 outline-none bg-transparent  d-flex align-items-center gap-2 border-0 <?= $activeTab === 'componentes' ? 'active' : '' ?>"
                     id="nav-componentes-tab" data-bs-toggle="tab" data-bs-target="#nav-componentes" type="button"
                     role="tab" aria-controls="nav-componentes"
                     aria-selected="<?= $activeTab === 'componentes' ? 'true' : 'false' ?>">
@@ -552,7 +557,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         style="font-size: 14px; line-height: 20px; font-weight: 500;">Componentes</span>
                 </button>
                 <button
-                    class="filter-bar-badge d-flex align-items-center gap-2 border-0 <?= $activeTab === 'manutencoes' ? 'active' : '' ?>"
+                    class="filter-bar-badge cursor-pointer border-0 outline-none bg-transparent  d-flex align-items-center gap-2 border-0 <?= $activeTab === 'manutencoes' ? 'active' : '' ?>"
                     id="nav-manutencoes-tab" data-bs-toggle="tab" data-bs-target="#nav-manutencoes" type="button"
                     role="tab" aria-controls="nav-manutencoes"
                     aria-selected="<?= $activeTab === 'manutencoes' ? 'true' : 'false' ?>">
@@ -566,7 +571,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         style="font-size: 14px; line-height: 20px; font-weight: 500;">Manutenções</span>
                 </button>
                 <button
-                    class="filter-bar-badge d-flex align-items-center gap-2 border-0 <?= $activeTab === 'auditoria' ? 'active' : '' ?>"
+                    class="filter-bar-badge cursor-pointer border-0 outline-none bg-transparent  d-flex align-items-center gap-2 border-0 <?= $activeTab === 'auditoria' ? 'active' : '' ?>"
                     id="nav-auditoria-tab" data-bs-toggle="tab" data-bs-target="#nav-auditoria" type="button" role="tab"
                     aria-controls="nav-auditoria" aria-selected="<?= $activeTab === 'auditoria' ? 'true' : 'false' ?>">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -646,16 +651,16 @@ include_once __DIR__ . '/../../includes/footer.php';
 ?>
 
 <script>
-document.addEventListener("DOMContentLoaded", function () {
-    // Save tab state to URL
-    var tabElements = document.querySelectorAll('button[data-bs-toggle="tab"]');
-    tabElements.forEach(function(tab) {
-        tab.addEventListener('shown.bs.tab', function (event) {
-            var targetId = event.target.getAttribute('data-bs-target').replace('#nav-', '');
-            var url = new URL(window.location);
-            url.searchParams.set('nav', targetId);
-            window.history.replaceState({}, '', url);
+    document.addEventListener("DOMContentLoaded", function () {
+        // Save tab state to URL
+        var tabElements = document.querySelectorAll('button[data-bs-toggle="tab"]');
+        tabElements.forEach(function (tab) {
+            tab.addEventListener('shown.bs.tab', function (event) {
+                var targetId = event.target.getAttribute('data-bs-target').replace('#nav-', '');
+                var url = new URL(window.location);
+                url.searchParams.set('nav', targetId);
+                window.history.replaceState({}, '', url);
+            });
         });
     });
-});
 </script>

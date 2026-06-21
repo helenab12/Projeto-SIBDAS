@@ -24,15 +24,16 @@ if (!empty($_SESSION['server_error'])) {
     <?php include_once 'includes/headers.php'; ?>
 
     <!-- Conteúdo -->
-    <section class="content-container gap-6">
+    <section class="gap-6 d-flex flex-column padding-6">
         <!-- Titulo -->
-        <div class="d-flex justify-content-between align-items-center w-100 dashboard-title">
+        <div class="d-flex justify-content-between align-items-center w-100 dashboard-title flex-column flex-md-row">
             <div class="d-flex flex-column gap-1">
                 <h1>Dashboard</h1>
                 <p class="text-secondary fw-400">Visão geral do inventário hospitalar — abril de 2026</p>
             </div>
             <div class="d-flex gap-2">
-                <button class="btn btn-ghost-outline gap-2 btn-small" data-bs-toggle="modal" data-bs-target="#qrSelectModal">
+                <button class="btn btn-ghost-outline gap-2 btn-small" data-bs-toggle="modal"
+                    data-bs-target="#qrSelectModal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-qr-code-icon lucide-qr-code">
@@ -51,7 +52,8 @@ if (!empty($_SESSION['server_error'])) {
                     </svg>
                     Gerar QR
                 </button>
-                <button class="btn btn-primary-outline gap-2 btn-small" data-bs-toggle="modal" data-bs-target="#qrScanModal">
+                <button class="btn btn-primary-outline gap-2 btn-small" data-bs-toggle="modal"
+                    data-bs-target="#qrScanModal">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-scan-line-icon lucide-scan-line">
@@ -308,7 +310,8 @@ if (!empty($_SESSION['server_error'])) {
                         <p class="text-secondary fw-400">Quantidade de equipamentos por tipo</p>
                     </div>
 
-                    <div class="d-flex flex-row justify-content-center graph-container">
+                    <div
+                        class="d-flex flex-row justify-content-center flex-grow-1 w-100 position-relative graph-container">
                         <canvas id="categoryDistributionChart"></canvas>
                     </div>
                 </div>
@@ -318,7 +321,8 @@ if (!empty($_SESSION['server_error'])) {
                         <p class="text-secondary fw-400">Distribuição por localização/serviço</p>
                     </div>
 
-                    <div class="d-flex flex-row justify-content-center graph-container">
+                    <div
+                        class="d-flex flex-row justify-content-center flex-grow-1 w-100 position-relative graph-container">
                         <canvas id="categoryDistributionChart2"></canvas>
                     </div>
                 </div>
@@ -332,7 +336,8 @@ if (!empty($_SESSION['server_error'])) {
                         <p class="text-secondary fw-400">Últimos 12 meses — preventiva vs. corretiva</p>
                     </div>
 
-                    <div class="d-flex flex-row justify-content-center graph-container">
+                    <div
+                        class="d-flex flex-row justify-content-center flex-grow-1 w-100 position-relative graph-container">
                         <canvas id="maintenanceTrendChart"></canvas>
                     </div>
                 </div>
@@ -377,7 +382,7 @@ if (!empty($_SESSION['server_error'])) {
                                 $servicoDesc = $manutencao['nomeServico'] ?: 'Geral';
                                 ?>
                                 <a href="<?= $url ?>"
-                                    class="maintenance-widget-item d-flex flex-row align-items-stretch w-100 text-decoration-none">
+                                    class="maintenance-widget-item overflow-hidden d-flex flex-row align-items-stretch w-100 text-decoration-none">
                                     <!-- Bloco de Data -->
                                     <div
                                         class="maintenance-widget-date d-flex flex-column align-items-center justify-content-center padding-2">
@@ -386,8 +391,7 @@ if (!empty($_SESSION['server_error'])) {
                                         <span class="text-secondary fw-500"><?= $mes ?></span>
                                     </div>
                                     <!-- Bloco de Informação -->
-                                    <div
-                                        class="maintenance-widget-info d-flex flex-column justify-content-center flex-grow-1 padding-3 gap-1">
+                                    <div class="mw-0 d-flex flex-column justify-content-center flex-grow-1 padding-3 gap-1">
                                         <span
                                             class="fw-600 text-primary-900"><?= htmlspecialchars($manutencao['designacao']) ?></span>
                                         <span

@@ -33,10 +33,10 @@ try {
         $decryptedId = aes_decrypt($search_query);
         if ($decryptedId !== false && is_numeric($decryptedId)) {
             $whereConditions[] = "idCategoria = :searchId";
-            $params['searchId'] = (int)$decryptedId;
+            $params['searchId'] = (int) $decryptedId;
         } elseif (is_numeric($search_query)) {
             $whereConditions[] = "(idCategoria = :searchExact OR nome LIKE :search OR codigoPrefix LIKE :search OR descricao LIKE :search)";
-            $params['searchExact'] = (int)$search_query;
+            $params['searchExact'] = (int) $search_query;
             $params['search'] = '%' . $search_query . '%';
         } else {
             $whereConditions[] = "(nome LIKE :search OR codigoPrefix LIKE :search OR descricao LIKE :search)";
@@ -108,31 +108,32 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
     <?php include_once BASE_PATH . 'private/includes/headers.php'; ?>
 
     <!-- Conteúdo -->
-    <section class="content-container gap-6">
+    <section class="padding-6 gap-6 d-flex flex-column padding-6">
         <!-- Titulo -->
-        <div class="d-flex justify-content-between align-items-center w-100 dashboard-title">
+        <div class="d-flex justify-content-between align-items-center w-100 dashboard-title flex-column flex-md-row">
             <div class="d-flex flex-column gap-1">
                 <h1>Categorias</h1>
                 <p class="text-secondary fw-400">Gestão de categorias</p>
             </div>
             <?php if (tem_permissao('categories.create')): ?>
-            <div class="d-flex gap-2">
-                <button id="btn-open-create-category-modal" class="btn btn-primary btn-glowing gap-2"
-                    data-bs-toggle="modal" data-bs-target="#category-creation-modal">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-plus-icon lucide-plus">
-                        <path d="M5 12h14" />
-                        <path d="M12 5v14" />
-                    </svg>
-                    Nova Categoria
-                </button>
-            </div>
+                <div class="d-flex gap-2">
+                    <button id="btn-open-create-category-modal" class="btn btn-primary btn-glowing gap-2"
+                        data-bs-toggle="modal" data-bs-target="#category-creation-modal">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-plus-icon lucide-plus">
+                            <path d="M5 12h14" />
+                            <path d="M12 5v14" />
+                        </svg>
+                        Nova Categoria
+                    </button>
+                </div>
             <?php endif; ?>
         </div>
 
         <!-- Barra de Pesquisa -->
-        <div class="bento-card padding-4 equipment-list-search-bar">
+        <div
+            class="bento-card padding-4 d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center w-100 equipment-list-search-bar">
             <form action="" method="GET" style="display: contents;">
                 <div class="form-item w-100 position-relative">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -201,7 +202,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
             <!-- Tabela -->
             <div class="bento-card w-100 p-0 border-0">
                 <div class="datatable-wrapper no-footer sortable fixed-columns">
-                    <div class="datatable-container">
+                    <div class="datatable-container w-100 overflow-auto position-relative">
                         <?php
                         // Função auxiliar para criar links de ordenação
                         $buildSortUrl = function ($column) use ($search_query, $sort_param, $dir_param) {
@@ -223,7 +224,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                             return $dir_param === 'asc' ? ' ↑' : ' ↓';
                         };
                         ?>
-                        <table id="categoriesTable" class="sibdas-table w-100 display datatable-table">
+                        <table id="categoriesTable" class="heba-table w-100 display datatable-table">
                             <thead>
                                 <tr>
                                     <th><a href="<?= $buildSortUrl('nome') ?>"
@@ -237,7 +238,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                     </th>
                                     <th>EQUIPAMENTOS</th>
                                     <?php if (tem_permissao('categories.edit') || tem_permissao('categories.delete')): ?>
-                                    <th class="text-end">AÇÕES</th>
+                                        <th class="text-end">AÇÕES</th>
                                     <?php endif; ?>
                                 </tr>
                             </thead>
@@ -247,7 +248,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center gap-3">
-                                                <div class="table-icon-wrapper equipment-icon-wrapper">
+                                                <div
+                                                    class="table-icon-wrapper padding-2 d-flex align-items-center justify-content-center flex-shrink-0 equipment-icon-wrapper">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                         stroke-linecap="round" stroke-linejoin="round"
@@ -267,7 +269,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                             </div>
                                         </td>
                                         <td>
-                                            <span class="equipment-badge component-sku-badge font-mono">
+                                            <span
+                                                class="equipment-badge d-inline-flex align-items-center justify-content-center fw-500  component-sku-badge text-secondary font-mono">
                                                 <?= htmlspecialchars($categoria->getCodigo()) ?>
                                             </span>
                                         </td>
@@ -280,58 +283,58 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                             <?= $categoria->getEquipamentosCount() ?>
                                         </td>
                                         <?php if (tem_permissao('categories.edit') || tem_permissao('categories.delete')): ?>
-                                        <td class="text-end equipment-actions">
-                                            <div class="dropdown">
-                                                <button
-                                                    class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
-                                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                        stroke-linecap="round" stroke-linejoin="round">
-                                                        <circle cx="12" cy="12" r="1" />
-                                                        <circle cx="19" cy="12" r="1" />
-                                                        <circle cx="5" cy="12" r="1" />
-                                                    </svg>
-                                                </button>
-                                                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
-                                                    <?php if (tem_permissao('categories.edit')): ?>
-                                                    <li>
-                                                        <a class="dropdown-item action-dropdown-item text-primary" href="#"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#category-edit-modal-<?= htmlspecialchars($encryptedCatId) ?>">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                                class="lucide lucide-pencil">
-                                                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                                <path d="m15 5 4 4" />
-                                                            </svg>
-                                                            Editar
-                                                        </a>
-                                                    </li>
-                                                    <?php endif; ?>
-                                                    <?php if (tem_permissao('categories.delete')): ?>
-                                                    <li>
-                                                        <a class="dropdown-item action-dropdown-item text-error" href="#"
-                                                            data-bs-toggle="modal"
-                                                            data-bs-target="#category-delete-modal-<?= htmlspecialchars($encryptedCatId) ?>">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                                class="lucide lucide-trash-2">
-                                                                <path d="M3 6h18" />
-                                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                                                <line x1="10" x2="10" y1="11" y2="17" />
-                                                                <line x1="14" x2="14" y1="11" y2="17" />
-                                                            </svg>
-                                                            Apagar
-                                                        </a>
-                                                    </li>
-                                                    <?php endif; ?>
-                                                </ul>
-                                            </div>
-                                        </td>
+                                            <td class="text-end equipment-actions">
+                                                <div class="dropdown">
+                                                    <button
+                                                        class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
+                                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round">
+                                                            <circle cx="12" cy="12" r="1" />
+                                                            <circle cx="19" cy="12" r="1" />
+                                                            <circle cx="5" cy="12" r="1" />
+                                                        </svg>
+                                                    </button>
+                                                    <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu padding-2">
+                                                        <?php if (tem_permissao('categories.edit')): ?>
+                                                            <li>
+                                                                <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none  text-primary"
+                                                                    href="#" data-bs-toggle="modal"
+                                                                    data-bs-target="#category-edit-modal-<?= htmlspecialchars($encryptedCatId) ?>">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                        class="lucide lucide-pencil">
+                                                                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                                                        <path d="m15 5 4 4" />
+                                                                    </svg>
+                                                                    Editar
+                                                                </a>
+                                                            </li>
+                                                        <?php endif; ?>
+                                                        <?php if (tem_permissao('categories.delete')): ?>
+                                                            <li>
+                                                                <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none  text-error"
+                                                                    href="#" data-bs-toggle="modal"
+                                                                    data-bs-target="#category-delete-modal-<?= htmlspecialchars($encryptedCatId) ?>">
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                        class="lucide lucide-trash-2">
+                                                                        <path d="M3 6h18" />
+                                                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                                                        <line x1="10" x2="10" y1="11" y2="17" />
+                                                                        <line x1="14" x2="14" y1="11" y2="17" />
+                                                                    </svg>
+                                                                    Apagar
+                                                                </a>
+                                                            </li>
+                                                        <?php endif; ?>
+                                                    </ul>
+                                                </div>
+                                            </td>
                                         <?php endif; ?>
                                     </tr>
 
@@ -395,107 +398,112 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 
 <!-- Modal de Criação de Categoria -->
 <?php if (tem_permissao('categories.create')): ?>
-<div class="modal fade" id="category-creation-modal" tabindex="-1" aria-labelledby="categoryModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
-        <div class="modal-content custom-modal-content d-flex flex-column">
-            <!-- Titulo -->
-            <div
-                class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
-                <div class="d-flex flex-column">
-                    <h2 class="equipment-creation-modal-title modal-title" id="categoryModalLabel">Nova
-                        Categoria</h2>
-                    <span class="text-secondary fw-400">As categorias organizam os equipamentos por tipo.</span>
+    <div class="modal fade" id="category-creation-modal" tabindex="-1" aria-labelledby="categoryModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
+            <div class="modal-content custom-modal-content d-flex flex-column">
+                <!-- Titulo -->
+                <div
+                    class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
+                    <div class="d-flex flex-column">
+                        <h2 class="equipment-creation-modal-title modal-title" id="categoryModalLabel">Nova
+                            Categoria</h2>
+                        <span class="text-secondary fw-400">As categorias organizam os equipamentos por tipo.</span>
+                    </div>
+
+                    <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
+                        data-bs-dismiss="modal" aria-label="Close">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-x-icon lucide-x stroke-secondary">
+                            <path d="M18 6 6 18" />
+                            <path d="m6 6 12 12" />
+                        </svg>
+                    </button>
+
                 </div>
 
-                <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
-                    data-bs-dismiss="modal" aria-label="Close">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-x-icon lucide-x stroke-secondary">
-                        <path d="M18 6 6 18" />
-                        <path d="m6 6 12 12" />
-                    </svg>
-                </button>
-
-            </div>
-
-            <!-- Body do Modal -->
-            <div class="modal-body p-0">
-                <form action="categories-crud/create-category.php" method="POST">
-                    <div class="equipment-creation-modal-content padding-6 gap-6 d-flex flex-column">
-                        <!-- Row 1: Nome da Categoria -->
-                        <div class="d-flex flex-column form-item w-100">
-                            <div class="d-flex gap-1">
-                                <label for="category-name">Nome da Categoria</label>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    class="lucide lucide-asterisk-icon lucide-asterisk text-error">
-                                    <path d="M12 6v12" />
-                                    <path d="M17.196 9 6.804 15" />
-                                    <path d="m6.804 9 10.392 6" />
-                                </svg>
+                <!-- Body do Modal -->
+                <div class="modal-body p-0">
+                    <form action="categories-crud/create-category.php" method="POST">
+                        <div class="equipment-creation-modal-content padding-6 gap-6 d-flex flex-column">
+                            <!-- Row 1: Nome da Categoria -->
+                            <div class="d-flex flex-column form-item w-100">
+                                <div class="d-flex gap-1">
+                                    <label for="category-name">Nome da Categoria</label>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                        <path d="M12 6v12" />
+                                        <path d="M17.196 9 6.804 15" />
+                                        <path d="m6.804 9 10.392 6" />
+                                    </svg>
+                                </div>
+                                <input type="text" id="category-name" name="category-name" placeholder="Ex: Ventiladores"
+                                    required>
                             </div>
-                            <input type="text" id="category-name" name="category-name" placeholder="Ex: Ventiladores"
-                                required>
-                        </div>
 
-                        <!-- Row 2: Código -->
-                        <div class="d-flex flex-column form-item w-100">
-                            <div class="d-flex gap-1">
-                                <label for="category-code">Código</label>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    class="lucide lucide-asterisk-icon lucide-asterisk text-error">
-                                    <path d="M12 6v12" />
-                                    <path d="M17.196 9 6.804 15" />
-                                    <path d="m6.804 9 10.392 6" />
-                                </svg>
+                            <!-- Row 2: Código -->
+                            <div class="d-flex flex-column form-item w-100">
+                                <div class="d-flex gap-1">
+                                    <label for="category-code">Código</label>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                        <path d="M12 6v12" />
+                                        <path d="M17.196 9 6.804 15" />
+                                        <path d="m6.804 9 10.392 6" />
+                                    </svg>
+                                </div>
+                                <input type="text" id="category-code" name="category-code" placeholder="Ex: VENT"
+                                    maxlength="5" required>
                             </div>
-                            <input type="text" id="category-code" name="category-code" placeholder="Ex: VENT"
-                                maxlength="5" required>
-                        </div>
 
-                        <!-- Row 3: Descrição -->
-                        <div class="d-flex flex-column form-item w-100">
-                            <div class="d-flex gap-1">
-                                <label for="category-description">Descrição</label>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    class="lucide lucide-asterisk-icon lucide-asterisk text-error">
-                                    <path d="M12 6v12" />
-                                    <path d="M17.196 9 6.804 15" />
-                                    <path d="m6.804 9 10.392 6" />
-                                </svg>
+                            <!-- Row 3: Descrição -->
+                            <div class="d-flex flex-column form-item w-100">
+                                <div class="d-flex gap-1">
+                                    <label for="category-description">Descrição</label>
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                        <path d="M12 6v12" />
+                                        <path d="M17.196 9 6.804 15" />
+                                        <path d="m6.804 9 10.392 6" />
+                                    </svg>
+                                </div>
+                                <textarea id="category-description" name="category-description" rows="4"
+                                    placeholder="Descrição breve da categoria..."></textarea>
                             </div>
-                            <textarea id="category-description" name="category-description" rows="4"
-                                placeholder="Descrição breve da categoria..."></textarea>
-                        </div>
 
-                        <!-- Button Row / Footer -->
-                        <div class="d-flex w-100 justify-content-end gap-4 button-row mt-4 pt-4 border-top">
-                            <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
-                                data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" id="btn-submit-modal" class="btn btn-primary btn-glowing">
-                                Criar Categoria
-                            </button>
-                        </div>
-                        <?php if (SHOW_DEBUG_BUTTONS): ?>
-                            <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
-                                <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido (Debug)</span>
-                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'category-name': 'Ventiladores', 'category-code': 'VENT', 'category-description': 'Equipamentos de ventilação mecânica assistida.'})">Ventiladores</button>
-                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'category-name': 'Desfibrilhadores', 'category-code': 'DESF', 'category-description': 'Equipamentos de desfibrilhação cardíaca.'})">Desfibrilhadores</button>
+                            <!-- Button Row / Footer -->
+                            <div
+                                class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row  mt-4 pt-4 border-top">
+                                <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
+                                    data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" id="btn-submit-modal" class="btn btn-primary btn-glowing">
+                                    Criar Categoria
+                                </button>
                             </div>
-                        <?php endif; ?>
-                    </div>
-                </form>
+                            <?php if (SHOW_DEBUG_BUTTONS): ?>
+                                <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
+                                    <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento
+                                        Rápido
+                                        (Debug)</span>
+                                    <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
+                                        onclick="prefillFields({'category-name': 'Ventiladores', 'category-code': 'VENT', 'category-description': 'Equipamentos de ventilação mecânica assistida.'})">Ventiladores</button>
+                                    <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
+                                        onclick="prefillFields({'category-name': 'Desfibrilhadores', 'category-code': 'DESF', 'category-description': 'Equipamentos de desfibrilhação cardíaca.'})">Desfibrilhadores</button>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
-</div>
 <?php endif; ?>
 
 
@@ -546,182 +554,183 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
     <?php $encryptedCatId = aes_encrypt($categoria->getIdCategoria()); ?>
 
     <?php if (tem_permissao('categories.edit')): ?>
-    <!-- Modal de Edição de Categoria para <?= htmlspecialchars($categoria->getNome()) ?> -->
-    <div class="modal fade" id="category-edit-modal-<?= htmlspecialchars($encryptedCatId) ?>" tabindex="-1"
-        aria-labelledby="categoryEditModalLabel-<?= htmlspecialchars($encryptedCatId) ?>" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
-            <div class="modal-content custom-modal-content d-flex flex-column">
-                <!-- Titulo -->
-                <div
-                    class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
-                    <div class="d-flex flex-column">
-                        <h2 class="equipment-creation-modal-title modal-title"
-                            id="categoryEditModalLabel-<?= htmlspecialchars($encryptedCatId) ?>">
-                            Editar Categoria
-                        </h2>
+        <!-- Modal de Edição de Categoria para <?= htmlspecialchars($categoria->getNome()) ?> -->
+        <div class="modal fade" id="category-edit-modal-<?= htmlspecialchars($encryptedCatId) ?>" tabindex="-1"
+            aria-labelledby="categoryEditModalLabel-<?= htmlspecialchars($encryptedCatId) ?>" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
+                <div class="modal-content custom-modal-content d-flex flex-column">
+                    <!-- Titulo -->
+                    <div
+                        class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
+                        <div class="d-flex flex-column">
+                            <h2 class="equipment-creation-modal-title modal-title"
+                                id="categoryEditModalLabel-<?= htmlspecialchars($encryptedCatId) ?>">
+                                Editar Categoria
+                            </h2>
+                        </div>
+
+                        <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
+                            data-bs-dismiss="modal" aria-label="Close">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-x-icon lucide-x stroke-secondary">
+                                <path d="M18 6 6 18" />
+                                <path d="m6 6 12 12" />
+                            </svg>
+                        </button>
                     </div>
 
-                    <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
-                        data-bs-dismiss="modal" aria-label="Close">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-x-icon lucide-x stroke-secondary">
-                            <path d="M18 6 6 18" />
-                            <path d="m6 6 12 12" />
-                        </svg>
-                    </button>
-                </div>
-
-                <!-- Body do Modal com scroll automático -->
-                <div class="modal-body p-0">
-                    <form action="categories-crud/edit-category.php" method="POST" class="edit-category-form">
-                        <input type="hidden" name="category-id" value="<?= htmlspecialchars($encryptedCatId) ?>">
-                        <div class="equipment-creation-modal-content padding-6 gap-6 d-flex flex-column">
-                            <!-- Row 1: Nome da Categoria -->
-                            <div class="d-flex flex-column form-item w-100">
-                                <div class="d-flex gap-1">
-                                    <label for="category-name-<?= htmlspecialchars($encryptedCatId) ?>">Nome da
-                                        Categoria</label>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        class="lucide lucide-asterisk-icon lucide-asterisk text-error">
-                                        <path d="M12 6v12" />
-                                        <path d="M17.196 9 6.804 15" />
-                                        <path d="m6.804 9 10.392 6" />
-                                    </svg>
+                    <!-- Body do Modal com scroll automático -->
+                    <div class="modal-body p-0">
+                        <form action="categories-crud/edit-category.php" method="POST" class="edit-category-form">
+                            <input type="hidden" name="category-id" value="<?= htmlspecialchars($encryptedCatId) ?>">
+                            <div class="equipment-creation-modal-content padding-6 gap-6 d-flex flex-column">
+                                <!-- Row 1: Nome da Categoria -->
+                                <div class="d-flex flex-column form-item w-100">
+                                    <div class="d-flex gap-1">
+                                        <label for="category-name-<?= htmlspecialchars($encryptedCatId) ?>">Nome da
+                                            Categoria</label>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                            <path d="M12 6v12" />
+                                            <path d="M17.196 9 6.804 15" />
+                                            <path d="m6.804 9 10.392 6" />
+                                        </svg>
+                                    </div>
+                                    <input type="text" id="category-name-<?= htmlspecialchars($encryptedCatId) ?>"
+                                        name="category-name" placeholder="Ex: Ventiladores"
+                                        value="<?= htmlspecialchars($categoria->getNome()) ?>" required>
                                 </div>
-                                <input type="text" id="category-name-<?= htmlspecialchars($encryptedCatId) ?>"
-                                    name="category-name" placeholder="Ex: Ventiladores"
-                                    value="<?= htmlspecialchars($categoria->getNome()) ?>" required>
-                            </div>
 
-                            <!-- Row 2: Código -->
-                            <div class="d-flex flex-column form-item w-100">
-                                <div class="d-flex gap-1">
-                                    <label for="category-code-<?= htmlspecialchars($encryptedCatId) ?>">Código</label>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        class="lucide lucide-asterisk-icon lucide-asterisk text-error">
-                                        <path d="M12 6v12" />
-                                        <path d="M17.196 9 6.804 15" />
-                                        <path d="m6.804 9 10.392 6" />
-                                    </svg>
+                                <!-- Row 2: Código -->
+                                <div class="d-flex flex-column form-item w-100">
+                                    <div class="d-flex gap-1">
+                                        <label for="category-code-<?= htmlspecialchars($encryptedCatId) ?>">Código</label>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                            <path d="M12 6v12" />
+                                            <path d="M17.196 9 6.804 15" />
+                                            <path d="m6.804 9 10.392 6" />
+                                        </svg>
+                                    </div>
+                                    <input type="text" id="category-code-<?= htmlspecialchars($encryptedCatId) ?>"
+                                        name="category-code" placeholder="Ex: VENT"
+                                        value="<?= htmlspecialchars($categoria->getCodigo()) ?>" maxlength="5" required>
                                 </div>
-                                <input type="text" id="category-code-<?= htmlspecialchars($encryptedCatId) ?>"
-                                    name="category-code" placeholder="Ex: VENT"
-                                    value="<?= htmlspecialchars($categoria->getCodigo()) ?>" maxlength="5" required>
-                            </div>
 
-                            <!-- Row 3: Descrição -->
-                            <div class="d-flex flex-column form-item w-100">
-                                <div class="d-flex gap-1">
-                                    <label
-                                        for="category-description-<?= htmlspecialchars($encryptedCatId) ?>">Descrição</label>
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        class="lucide lucide-asterisk-icon lucide-asterisk text-error">
-                                        <path d="M12 6v12" />
-                                        <path d="M17.196 9 6.804 15" />
-                                        <path d="m6.804 9 10.392 6" />
-                                    </svg>
+                                <!-- Row 3: Descrição -->
+                                <div class="d-flex flex-column form-item w-100">
+                                    <div class="d-flex gap-1">
+                                        <label
+                                            for="category-description-<?= htmlspecialchars($encryptedCatId) ?>">Descrição</label>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                            <path d="M12 6v12" />
+                                            <path d="M17.196 9 6.804 15" />
+                                            <path d="m6.804 9 10.392 6" />
+                                        </svg>
+                                    </div>
+                                    <textarea id="category-description-<?= htmlspecialchars($encryptedCatId) ?>"
+                                        name="category-description" rows="4" placeholder="Descrição breve da categoria..."
+                                        required><?= htmlspecialchars($categoria->getDescricao()) ?></textarea>
                                 </div>
-                                <textarea id="category-description-<?= htmlspecialchars($encryptedCatId) ?>"
-                                    name="category-description" rows="4" placeholder="Descrição breve da categoria..."
-                                    required><?= htmlspecialchars($categoria->getDescricao()) ?></textarea>
-                            </div>
 
-                            <!-- Button Row / Footer -->
-                            <div class="d-flex w-100 justify-content-end gap-4 button-row mt-4 pt-4 border-top">
-                                <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
-                                    data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" name="editar_categoria" class="btn btn-primary btn-glowing">
-                                    Guardar
-                                </button>
+                                <!-- Button Row / Footer -->
+                                <div
+                                    class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row  mt-4 pt-4 border-top">
+                                    <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" name="editar_categoria" class="btn btn-primary btn-glowing">
+                                        Guardar
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     <?php endif; ?>
 
     <?php if (tem_permissao('categories.delete')): ?>
-    <!-- Modal de Eliminação de Categoria para <?= htmlspecialchars($categoria->getNome()) ?> -->
-    <div class="modal fade" id="category-delete-modal-<?= htmlspecialchars($encryptedCatId) ?>" tabindex="-1"
-        aria-labelledby="categoryDeleteModalLabel-<?= htmlspecialchars($encryptedCatId) ?>" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
-            <div class="modal-content custom-modal-content d-flex flex-column">
-                <!-- Titulo -->
-                <div
-                    class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
-                    <div class="d-flex flex-column">
-                        <h2 class="equipment-creation-modal-title modal-title"
-                            id="categoryDeleteModalLabel-<?= htmlspecialchars($encryptedCatId) ?>">
-                            Eliminar Categoria</h2>
-                        <span class="text-secondary fw-400">A categoria será movida para a reciclagem.</span>
+        <!-- Modal de Eliminação de Categoria para <?= htmlspecialchars($categoria->getNome()) ?> -->
+        <div class="modal fade" id="category-delete-modal-<?= htmlspecialchars($encryptedCatId) ?>" tabindex="-1"
+            aria-labelledby="categoryDeleteModalLabel-<?= htmlspecialchars($encryptedCatId) ?>" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
+                <div class="modal-content custom-modal-content d-flex flex-column">
+                    <!-- Titulo -->
+                    <div
+                        class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
+                        <div class="d-flex flex-column">
+                            <h2 class="equipment-creation-modal-title modal-title"
+                                id="categoryDeleteModalLabel-<?= htmlspecialchars($encryptedCatId) ?>">
+                                Eliminar Categoria</h2>
+                            <span class="text-secondary fw-400">A categoria será movida para a reciclagem.</span>
+                        </div>
+
+                        <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
+                            data-bs-dismiss="modal" aria-label="Close">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-x-icon lucide-x stroke-secondary">
+                                <path d="M18 6 6 18" />
+                                <path d="m6 6 12 12" />
+                            </svg>
+                        </button>
                     </div>
 
-                    <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
-                        data-bs-dismiss="modal" aria-label="Close">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-x-icon lucide-x stroke-secondary">
-                            <path d="M18 6 6 18" />
-                            <path d="m6 6 12 12" />
-                        </svg>
-                    </button>
-                </div>
+                    <!-- Body do Modal -->
+                    <div class="modal-body p-0">
+                        <form method="POST" action="categories-crud/delete-category.php">
+                            <input type="hidden" name="category-id" value="<?= htmlspecialchars($encryptedCatId) ?>">
+                            <div
+                                class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
 
-                <!-- Body do Modal -->
-                <div class="modal-body p-0">
-                    <form method="POST" action="categories-crud/delete-category.php">
-                        <input type="hidden" name="category-id" value="<?= htmlspecialchars($encryptedCatId) ?>">
-                        <div
-                            class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
-
-                            <div class="d-flex flex-column align-items-center gap-4">
-                                <div class="d-flex padding-3 danger-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-triangle-alert">
-                                        <path
-                                            d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
-                                        <path d="M12 9v4" />
-                                        <path d="M12 17h.01" />
-                                    </svg>
-                                </div>
-                                <div class="d-flex flex-column align-items-center justify-content-center gap-3">
-                                    <div
-                                        class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
-                                        <p class="text-secondary">
-                                            Tem a certeza que deseja eliminar a categoria?
-                                        </p>
-                                        <h2 class="fw-700">
-                                            "<?= htmlspecialchars($categoria->getNome()) ?>"
-                                        </h2>
-                                        <span class="text-muted">Tipo: Categoria</span>
+                                <div class="d-flex flex-column align-items-center gap-4">
+                                    <div class="d-flex padding-3 danger-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" class="lucide lucide-triangle-alert">
+                                            <path
+                                                d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+                                            <path d="M12 9v4" />
+                                            <path d="M12 17h.01" />
+                                        </svg>
+                                    </div>
+                                    <div class="d-flex flex-column align-items-center justify-content-center gap-3">
+                                        <div
+                                            class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
+                                            <p class="text-secondary">
+                                                Tem a certeza que deseja eliminar a categoria?
+                                            </p>
+                                            <h2 class="fw-700">
+                                                "<?= htmlspecialchars($categoria->getNome()) ?>"
+                                            </h2>
+                                            <span class="text-muted">Tipo: Categoria</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- Botoes -->
-                            <div class="d-flex w-100 justify-content-end gap-4 button-row">
-                                <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
-                                    data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" name="apagar_categoria" class="btn btn-danger btn-glowing text-white">
-                                    Sim, Eliminar.
-                                </button>
+                                <!-- Botoes -->
+                                <div class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row ">
+                                    <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" name="apagar_categoria" class="btn btn-danger btn-glowing text-white">
+                                        Sim, Eliminar.
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     <?php endif; ?>
 <?php endforeach; ?>
 

@@ -77,7 +77,7 @@ try {
                 </div>
             </div>
         <?php else: ?>
-            <table id="warrantiesTable" class="sibdas-table w-100 display border-0">
+            <table id="warrantiesTable" class="heba-table w-100 display border-0">
                 <thead>
                     <tr>
                         <th>DATA</th>
@@ -94,7 +94,7 @@ try {
                         <?php
                         $estado = $item->getEstado();
                         $badgeClass = match ($estado) {
-                            'Ativo' => 'equipment-badge new',
+                            'Ativo' => 'equipment-badge d-inline-flex align-items-center justify-content-center fw-500  new',
                             'Expirado' => 'equipment-badge-status-abated',
                             default => 'bg-secondary',
                         };
@@ -117,7 +117,8 @@ try {
                                 <span class="fw-700"><?= htmlspecialchars($item->getObservacoes() ?? 'N/A') ?></span>
                             </td>
                             <td>
-                                <span class="equipment-badge <?= $badgeClass ?>"><?= $estado ?></span>
+                                <span
+                                    class="equipment-badge d-inline-flex align-items-center justify-content-center fw-500  <?= $badgeClass ?>"><?= $estado ?></span>
                             </td>
                             <td>
                                 <span
@@ -323,7 +324,7 @@ try {
                         <!-- Row 4: Upload Ficheiro -->
                         <div class="d-flex flex-column form-item w-100 mt-2">
                             <label>Documento Adicional</label>
-                            <div class="file-upload-zone d-flex flex-column align-items-center justify-content-center gap-2"
+                            <div class="file-upload-zone w-100 cursor-pointer bg-transparent  d-flex flex-column align-items-center justify-content-center gap-2"
                                 id="add-warranty-dropzone" data-dropzone-target="warranty-file"
                                 data-text-target="add-warranty-dropzone-text">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -333,8 +334,10 @@ try {
                                     <polyline points="17 8 12 3 7 8" />
                                     <line x1="12" x2="12" y1="3" y2="15" />
                                 </svg>
-                                <p class="file-upload-text" id="add-warranty-dropzone-text">Arraste um ficheiro ou
-                                    <span class="file-upload-text-action text-primary-500">clique para selecionar</span>
+                                <p class="file-upload-text fw-500 text-secondary m-0" id="add-warranty-dropzone-text">
+                                    Arraste um ficheiro ou
+                                    <span class="file-upload-text-action text-primary-500 text-primary-500">clique para
+                                        selecionar</span>
                                 </p>
                                 <span class="m-0 text-muted">PDF, JPG, PNG — máx. 25MB</span>
                             </div>
@@ -360,8 +363,11 @@ try {
                         </div>
                         <?php if (SHOW_DEBUG_BUTTONS): ?>
                             <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
-                                <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido (Debug)</span>
-                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'warranty-start-date': '01/01/2026', 'warranty-end-date': '01/01/2028', 'warranty-notes': 'Garantia Preenchida'}); setTimeout(() => { document.getElementById('warranty-type').selectedIndex = 1; document.getElementById('warranty-periodicity').selectedIndex = 1; document.querySelectorAll('#add-warranty-form input, #add-warranty-form select, #add-warranty-form textarea').forEach(el => { el.dispatchEvent(new Event('change', { bubbles: true })); el.dispatchEvent(new Event('input', { bubbles: true })); }); }, 100);">Preencher Campos</button>
+                                <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido
+                                    (Debug)</span>
+                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
+                                    onclick="prefillFields({'warranty-start-date': '01/01/2026', 'warranty-end-date': '01/01/2028', 'warranty-notes': 'Garantia Preenchida'}); setTimeout(() => { document.getElementById('warranty-type').selectedIndex = 1; document.getElementById('warranty-periodicity').selectedIndex = 1; document.querySelectorAll('#add-warranty-form input, #add-warranty-form select, #add-warranty-form textarea').forEach(el => { el.dispatchEvent(new Event('change', { bubbles: true })); el.dispatchEvent(new Event('input', { bubbles: true })); }); }, 100);">Preencher
+                                    Campos</button>
                             </div>
                         <?php endif; ?>
                     </form>
@@ -544,7 +550,7 @@ try {
                                     <p class="text-secondary text-sm mb-2">Já existe um ficheiro associado. Se fizer upload de um
                                         novo, o antigo será apagado.</p>
                                 <?php endif; ?>
-                                <div class="file-upload-zone d-flex flex-column align-items-center justify-content-center gap-2"
+                                <div class="file-upload-zone w-100 cursor-pointer bg-transparent  d-flex flex-column align-items-center justify-content-center gap-2"
                                     id="edit-warranty-dropzone-<?= htmlspecialchars($encId) ?>"
                                     data-dropzone-target="edit-warranty-file-<?= htmlspecialchars($encId) ?>"
                                     data-text-target="edit-warranty-dropzone-text-<?= htmlspecialchars($encId) ?>">
@@ -555,9 +561,10 @@ try {
                                         <polyline points="17 8 12 3 7 8" />
                                         <line x1="12" x2="12" y1="3" y2="15" />
                                     </svg>
-                                    <p class="file-upload-text"
+                                    <p class="file-upload-text fw-500 text-secondary m-0"
                                         id="edit-warranty-dropzone-text-<?= htmlspecialchars($encId) ?>">Arraste um ficheiro ou
-                                        <span class="file-upload-text-action text-primary-500">clique para selecionar</span>
+                                        <span class="file-upload-text-action text-primary-500 text-primary-500">clique para
+                                            selecionar</span>
                                     </p>
                                     <span class="m-0 text-muted">PDF, JPG, PNG — máx. 25MB</span>
                                 </div>
@@ -585,8 +592,11 @@ try {
                             </div>
                             <?php if (SHOW_DEBUG_BUTTONS): ?>
                                 <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
-                                    <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido (Debug)</span>
-                                    <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'edit-warranty-notes-<?= htmlspecialchars($encId) ?>': 'Garantia Editada'}); setTimeout(() => { document.getElementById('edit-warranty-notes-<?= htmlspecialchars($encId) ?>').dispatchEvent(new Event('input', { bubbles: true })); document.querySelector('#edit-warranty-form-<?= htmlspecialchars($encId) ?> .edit-warranty-start-date').dispatchEvent(new Event('change', { bubbles: true })); }, 100);">Editar Notas</button>
+                                    <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido
+                                        (Debug)</span>
+                                    <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
+                                        onclick="prefillFields({'edit-warranty-notes-<?= htmlspecialchars($encId) ?>': 'Garantia Editada'}); setTimeout(() => { document.getElementById('edit-warranty-notes-<?= htmlspecialchars($encId) ?>').dispatchEvent(new Event('input', { bubbles: true })); document.querySelector('#edit-warranty-form-<?= htmlspecialchars($encId) ?> .edit-warranty-start-date').dispatchEvent(new Event('change', { bubbles: true })); }, 100);">Editar
+                                        Notas</button>
                                 </div>
                             <?php endif; ?>
                         </form>
@@ -645,7 +655,7 @@ try {
                                         </div>
                                     </div>
                                 </div>
-                                <div class="d-flex w-100 justify-content-end gap-4 button-row">
+                                <div class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row ">
                                     <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                                         data-bs-dismiss="modal">Cancelar</button>
                                     <button type="submit" class="btn btn-danger btn-glowing text-white">Sim, Eliminar</button>

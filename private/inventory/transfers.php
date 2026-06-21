@@ -96,10 +96,10 @@ try {
         $searchUrl = BASE_URL . "/private/inventory/equipments/detailed_view.php?id=" . urlencode($encryptedEqId);
 
         $equipamentoNome = htmlspecialchars($row['codigoInterno'] . ' — ' . $row['designacao']);
-        
+
         $localizacaoAntiga = $row['salaAntiga'] ? htmlspecialchars($row['servicoAntigo'] . ' — ' . $row['salaAntiga']) : 'Desconhecida';
         $localizacaoNova = $row['salaNova'] ? htmlspecialchars($row['servicoNovo'] . ' — ' . $row['salaNova']) : 'Desconhecida';
-        
+
         if ($row['acao'] === 'Criação') {
             $localizacaoAntiga = 'N/A (Registo Inicial)';
         }
@@ -128,9 +128,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
     <?php include_once BASE_PATH . 'private/includes/headers.php'; ?>
 
     <!-- Conteúdo -->
-    <section class="content-container gap-6">
+    <section class="padding-6 gap-6 d-flex flex-column padding-6">
         <!-- Titulo -->
-        <div class="d-flex justify-content-between align-items-center w-100 dashboard-title">
+        <div class="d-flex justify-content-between align-items-center w-100 dashboard-title flex-column flex-md-row">
             <div class="d-flex flex-column gap-1">
                 <h1>Transferências de Equipamentos</h1>
                 <p class="text-secondary fw-400"><?= htmlspecialchars($totalLogsFiltered ?? count($transferencias)) ?>
@@ -151,7 +151,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
         </div>
 
         <!-- Barra de Pesquisa -->
-        <div class="bento-card padding-4 gap-4 equipment-list-search-bar">
+        <div
+            class="bento-card padding-4 gap-4 d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center w-100 equipment-list-search-bar">
             <form action="" method="GET" style="display: contents;">
                 <div class="form-item position-relative flex-grow-1">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -187,10 +188,10 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-arrow-right-left">
-                        <path d="m16 3 4 4-4 4"/>
-                        <path d="M20 7H4"/>
-                        <path d="m8 21-4-4 4-4"/>
-                        <path d="M4 17h16"/>
+                        <path d="m16 3 4 4-4 4" />
+                        <path d="M20 7H4" />
+                        <path d="m8 21-4-4 4-4" />
+                        <path d="M4 17h16" />
                     </svg>
                 </div>
                 <div class="d-flex flex-column gap-2">
@@ -221,7 +222,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
             <!-- Lista de Transferencias -->
             <div class="bento-card w-100 p-0 border-0">
                 <div class="datatable-wrapper no-footer sortable fixed-columns">
-                    <div class="datatable-container">
+                    <div class="datatable-container w-100 overflow-auto position-relative">
                         <?php
                         $buildSortUrl = function ($column) use ($search_query, $sort_param, $dir_param) {
                             $params = [];
@@ -238,7 +239,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                             return $dir_param === 'asc' ? ' ↑' : ' ↓';
                         };
                         ?>
-                        <table id="globalTransfersTable" class="sibdas-table w-100 display datatable-table">
+                        <table id="globalTransfersTable" class="heba-table w-100 display datatable-table">
                             <thead>
                                 <tr>
                                     <th><a href="<?= $buildSortUrl('dataCriacao') ?>"
@@ -266,17 +267,16 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                 class="text-secondary fw-400"><?= htmlspecialchars($item['utilizador']) ?></span>
                                         </td>
                                         <td>
-                                            <a href="<?= htmlspecialchars($item['url']) ?>" class="text-primary-500 text-decoration-none fw-700">
+                                            <a href="<?= htmlspecialchars($item['url']) ?>"
+                                                class="text-primary-500 text-decoration-none fw-700">
                                                 <?= $item['equipamento'] ?>
                                             </a>
                                         </td>
                                         <td>
-                                            <span
-                                                class="text-secondary fw-400"><?= $item['localizacaoAntiga'] ?></span>
+                                            <span class="text-secondary fw-400"><?= $item['localizacaoAntiga'] ?></span>
                                         </td>
                                         <td>
-                                            <span
-                                                class="fw-500"><?= $item['localizacaoNova'] ?></span>
+                                            <span class="fw-500"><?= $item['localizacaoNova'] ?></span>
                                         </td>
                                     </tr>
                                 <?php endforeach; ?>

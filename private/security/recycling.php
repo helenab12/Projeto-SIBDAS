@@ -207,9 +207,9 @@ try {
     <?php include_once BASE_PATH . 'private/includes/headers.php'; ?>
 
     <!-- Conteúdo -->
-    <section class="content-container gap-6 recycling">
+    <section class="gap-6 d-flex  flex-column padding-6 recycling">
         <!-- Titulo -->
-        <div class="d-flex justify-content-between align-items-center w-100 dashboard-title">
+        <div class="d-flex justify-content-between align-items-center w-100 dashboard-title flex-column flex-md-row">
             <div class="d-flex flex-column gap-1">
                 <h1>Reciclagem</h1>
                 <p class="text-secondary fw-400">Registos removidos do sistema (Soft Delete).</p>
@@ -217,7 +217,8 @@ try {
         </div>
 
         <!-- Barra de Pesquisa -->
-        <div class="bento-card padding-4 gap-4 equipment-list-search-bar">
+        <div
+            class="bento-card padding-4 gap-4 d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center w-100 equipment-list-search-bar">
             <form action="" method="GET" style="display: contents;">
                 <div class="form-item position-relative flex-grow-1">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -242,7 +243,7 @@ try {
                         </script>
                     <?php endif; ?>
                 </div>
-                <div class="d-flex gap-2 equipment-list-search-bar-filters">
+                <div class="d-flex gap-2 equipment-list-search-bar-filters flex-column flex-md-row">
                     <select class="form-select" name="tipo" aria-label="Filtro de Tipo" onchange="this.form.submit()">
                         <option value="" <?= $tipo_filter === '' ? 'selected' : '' ?>>Todos os Tipos</option>
                         <option value="Equipamentos" <?= $tipo_filter === 'Equipamentos' ? 'selected' : '' ?>>Equipamentos
@@ -277,9 +278,17 @@ try {
                 </div>
             </div>
         <?php elseif (empty($objetosReciclados)): ?>
-            <div class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
+            <div
+                class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
                 <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-x"><path d="m13.5 8.5-5 5"/><path d="m8.5 8.5 5 5"/><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-search-x">
+                        <path d="m13.5 8.5-5 5" />
+                        <path d="m8.5 8.5 5 5" />
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
+                    </svg>
                 </div>
                 <div class="d-flex flex-column gap-2">
                     <h3 class="fw-700 m-0">Sem resultados</h3>
@@ -291,7 +300,7 @@ try {
             <!-- Tabela de Reciclagem -->
             <div class="bento-card w-100 p-0 border-0">
                 <div class="datatable-wrapper no-footer fixed-columns">
-                    <div class="datatable-container">
+                    <div class="datatable-container w-100 overflow-auto position-relative">
                         <?php
                         $buildSortUrl = function ($column) use ($search_query, $tipo_filter, $sort_param, $dir_param) {
                             $params = [];
@@ -310,7 +319,7 @@ try {
                             return $dir_param === 'asc' ? ' ↑' : ' ↓';
                         };
                         ?>
-                        <table id="recyclingTable" class="sibdas-table w-100 display datatable-table">
+                        <table id="recyclingTable" class="heba-table w-100 display datatable-table">
                             <thead>
                                 <tr>
                                     <th><a href="<?= $buildSortUrl('nome') ?>"
@@ -326,45 +335,45 @@ try {
                                             class="datatable-sorter text-decoration-none text-inherit">Removido
                                             a<?= $getSortIcon('removidoA') ?></a></th>
                                     <?php if (tem_permissao('recycling.restore')): ?>
-                                    <th>Ações</th>
+                                        <th>Ações</th>
                                     <?php endif; ?>
                                 </tr>
                             </thead>
                             <tbody>
-                                
-                                    <?php foreach ($objetosReciclados as $object): ?>
-                                        <tr>
-                                            <td>
-                                                <div class="d-flex align-items-center gap-3">
-                                                    <div class="recycle-type-icon d-flex align-items-center justify-content-center padding-2"
-                                                        style="background-color: color-mix(in srgb, <?php echo $object->tipo->cor; ?> 10%, transparent); color: <?php echo $object->tipo->cor; ?>; width: 36px; height: 36px; border-radius: 8px;">
-                                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                            stroke-linecap="round" stroke-linejoin="round" class="lucide">
-                                                            <?php echo $object->tipo->caminhoSvg; ?>
-                                                        </svg>
-                                                    </div>
-                                                    <div class="d-flex flex-column">
-                                                        <span
-                                                            class="fw-600 item-name"><?php echo htmlspecialchars($object->nome); ?></span>
-                                                        <span
-                                                            class="visually-hidden item-hidden-id"><?php echo htmlspecialchars($object->idEncriptado); ?></span>
-                                                    </div>
+
+                                <?php foreach ($objetosReciclados as $object): ?>
+                                    <tr>
+                                        <td>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <div class="recycle-type-icon d-flex align-items-center justify-content-center padding-2"
+                                                    style="background-color: color-mix(in srgb, <?php echo $object->tipo->cor; ?> 10%, transparent); color: <?php echo $object->tipo->cor; ?>; width: 36px; height: 36px; border-radius: 8px;">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round" class="lucide">
+                                                        <?php echo $object->tipo->caminhoSvg; ?>
+                                                    </svg>
                                                 </div>
-                                            </td>
-                                            <td>
-                                                <span
-                                                    class="text-secondary fw-500"><?php echo htmlspecialchars($object->tipo->nome); ?></span>
-                                            </td>
-                                            <td>
-                                                <span
-                                                    class="text-secondary"><?php echo htmlspecialchars($object->descricao); ?></span>
-                                            </td>
-                                            <td>
-                                                <span
-                                                    class="text-secondary"><?php echo $object->removidoA->format('Y-m-d H:i'); ?></span>
-                                            </td>
-                                            <?php if (tem_permissao('recycling.restore')): ?>
+                                                <div class="d-flex flex-column">
+                                                    <span
+                                                        class="fw-600 item-name"><?php echo htmlspecialchars($object->nome); ?></span>
+                                                    <span
+                                                        class="visually-hidden item-hidden-id"><?php echo htmlspecialchars($object->idEncriptado); ?></span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span
+                                                class="text-secondary fw-500"><?php echo htmlspecialchars($object->tipo->nome); ?></span>
+                                        </td>
+                                        <td>
+                                            <span
+                                                class="text-secondary"><?php echo htmlspecialchars($object->descricao); ?></span>
+                                        </td>
+                                        <td>
+                                            <span
+                                                class="text-secondary"><?php echo $object->removidoA->format('Y-m-d H:i'); ?></span>
+                                        </td>
+                                        <?php if (tem_permissao('recycling.restore')): ?>
                                             <td>
                                                 <button type="button" data-bs-toggle="modal"
                                                     data-bs-target="#restore-modal-<?php echo htmlspecialchars($object->idEncriptado); ?>"
@@ -379,10 +388,10 @@ try {
                                                     <span class="fw-700 ">Restaurar</span>
                                                 </button>
                                             </td>
-                                            <?php endif; ?>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                
+                                        <?php endif; ?>
+                                    </tr>
+                                <?php endforeach; ?>
+
                             </tbody>
                         </table>
                     </div>
@@ -439,70 +448,70 @@ try {
 </div>
 
 <?php if (tem_permissao('recycling.restore')): ?>
-<?php foreach ($objetosReciclados as $object): ?>
-    <!-- Modal de Restauro de Registo -->
-    <div class="modal fade" id="restore-modal-<?= htmlspecialchars($object->idEncriptado) ?>" tabindex="-1"
-        aria-labelledby="restoreModalLabel-<?= htmlspecialchars($object->idEncriptado) ?>" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
-            <div class="modal-content custom-modal-content d-flex flex-column">
-                <div
-                    class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
-                    <div class="d-flex flex-column">
-                        <h2 class="equipment-creation-modal-title modal-title"
-                            id="restoreModalLabel-<?= htmlspecialchars($object->idEncriptado) ?>">
-                            Restaurar Registo</h2>
-                        <span class="text-secondary fw-400">O registo será restaurado no sistema principal.</span>
+    <?php foreach ($objetosReciclados as $object): ?>
+        <!-- Modal de Restauro de Registo -->
+        <div class="modal fade" id="restore-modal-<?= htmlspecialchars($object->idEncriptado) ?>" tabindex="-1"
+            aria-labelledby="restoreModalLabel-<?= htmlspecialchars($object->idEncriptado) ?>" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
+                <div class="modal-content custom-modal-content d-flex flex-column">
+                    <div
+                        class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
+                        <div class="d-flex flex-column">
+                            <h2 class="equipment-creation-modal-title modal-title"
+                                id="restoreModalLabel-<?= htmlspecialchars($object->idEncriptado) ?>">
+                                Restaurar Registo</h2>
+                            <span class="text-secondary fw-400">O registo será restaurado no sistema principal.</span>
+                        </div>
+                        <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
+                            data-bs-dismiss="modal" aria-label="Close">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-x-icon lucide-x stroke-secondary">
+                                <path d="M18 6 6 18" />
+                                <path d="m6 6 12 12" />
+                            </svg>
+                        </button>
                     </div>
-                    <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
-                        data-bs-dismiss="modal" aria-label="Close">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-x-icon lucide-x stroke-secondary">
-                            <path d="M18 6 6 18" />
-                            <path d="m6 6 12 12" />
-                        </svg>
-                    </button>
-                </div>
-                <div class="modal-body p-0">
-                    <form method="POST" action="<?php echo BASE_URL; ?>/private/security/restore_item.php">
-                        <input type="hidden" name="id" value="<?= htmlspecialchars($object->idEncriptado) ?>">
-                        <input type="hidden" name="table" value="<?= htmlspecialchars($object->nomeTabela) ?>">
-                        <div
-                            class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
-                            <div class="d-flex flex-column align-items-center gap-4">
-                                <div class="d-flex padding-3 danger-icon"
-                                    style="background-color: var(--primary-100); color: var(--primary-500);">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-archive-restore">
-                                        <rect width="20" height="5" x="2" y="3" rx="1" />
-                                        <path d="M4 8v11a2 2 0 0 0 2 2h2" />
-                                        <path d="M20 8v11a2 2 0 0 1-2 2h-2" />
-                                        <path d="m9 15 3-3 3 3" />
-                                        <path d="M12 12v9" />
-                                    </svg>
-                                </div>
-                                <div class="d-flex flex-column align-items-center justify-content-center gap-3">
-                                    <div
-                                        class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
-                                        <p class="text-secondary">Tem a certeza que deseja restaurar este registo?</p>
-                                        <h2 class="fw-700">"<?= htmlspecialchars($object->nome) ?>"</h2>
-                                        <span class="text-muted">Tipo: <?= htmlspecialchars($object->tipo->nome) ?></span>
+                    <div class="modal-body p-0">
+                        <form method="POST" action="<?php echo BASE_URL; ?>/private/security/restore_item.php">
+                            <input type="hidden" name="id" value="<?= htmlspecialchars($object->idEncriptado) ?>">
+                            <input type="hidden" name="table" value="<?= htmlspecialchars($object->nomeTabela) ?>">
+                            <div
+                                class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
+                                <div class="d-flex flex-column align-items-center gap-4">
+                                    <div class="d-flex padding-3 danger-icon"
+                                        style="background-color: var(--primary-100); color: var(--primary-500);">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" class="lucide lucide-archive-restore">
+                                            <rect width="20" height="5" x="2" y="3" rx="1" />
+                                            <path d="M4 8v11a2 2 0 0 0 2 2h2" />
+                                            <path d="M20 8v11a2 2 0 0 1-2 2h-2" />
+                                            <path d="m9 15 3-3 3 3" />
+                                            <path d="M12 12v9" />
+                                        </svg>
+                                    </div>
+                                    <div class="d-flex flex-column align-items-center justify-content-center gap-3">
+                                        <div
+                                            class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
+                                            <p class="text-secondary">Tem a certeza que deseja restaurar este registo?</p>
+                                            <h2 class="fw-700">"<?= htmlspecialchars($object->nome) ?>"</h2>
+                                            <span class="text-muted">Tipo: <?= htmlspecialchars($object->tipo->nome) ?></span>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row ">
+                                    <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary btn-glowing text-white">Sim, Restaurar</button>
+                                </div>
                             </div>
-                            <div class="d-flex w-100 justify-content-end gap-4 button-row">
-                                <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
-                                    data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary btn-glowing text-white">Sim, Restaurar</button>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-<?php endforeach; ?>
+    <?php endforeach; ?>
 <?php endif; ?>
 
 

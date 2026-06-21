@@ -132,7 +132,7 @@
                                             </select>
                                         </div>
 
-                                        <div class="file-upload-zone d-flex flex-column align-items-center justify-content-center gap-2"
+                                        <div class="file-upload-zone w-100 cursor-pointer bg-transparent  d-flex flex-column align-items-center justify-content-center gap-2"
                                             id="add-dropzone-<?= $index ?>" data-dropzone-target="doc-file-<?= $index ?>"
                                             data-text-target="add-dropzone-text-<?= $index ?>">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -142,8 +142,9 @@
                                                 <polyline points="17 8 12 3 7 8" />
                                                 <line x1="12" x2="12" y1="3" y2="15" />
                                             </svg>
-                                            <p class="file-upload-text">Arraste ficheiros ou
-                                                <span class="file-upload-text-action text-primary-500">clique para selecionar</span>
+                                            <p class="file-upload-text fw-500 text-secondary m-0">Arraste ficheiros ou
+                                                <span class="file-upload-text-action text-primary-500 text-primary-500">clique para
+                                                    selecionar</span>
                                             </p>
                                             <span class="m-0 text-muted" id="add-dropzone-text-<?= $index ?>">PDF, JPG, PNG — máx.
                                                 25MB</span>
@@ -166,8 +167,11 @@
                                         </div>
                                         <?php if (SHOW_DEBUG_BUTTONS): ?>
                                             <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
-                                                <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido (Debug)</span>
-                                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'doc-name-<?= $index ?>': 'Documento Preenchido'}); setTimeout(() => { document.getElementById('doc-name-<?= $index ?>').dispatchEvent(new Event('input', { bubbles: true })); }, 100);">Preencher Nome</button>
+                                                <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido
+                                                    (Debug)</span>
+                                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
+                                                    onclick="prefillFields({'doc-name-<?= $index ?>': 'Documento Preenchido'}); setTimeout(() => { document.getElementById('doc-name-<?= $index ?>').dispatchEvent(new Event('input', { bubbles: true })); }, 100);">Preencher
+                                                    Nome</button>
                                             </div>
                                         <?php endif; ?>
                                     </form>
@@ -216,7 +220,7 @@
                     </div>
                 </div>
             <?php else: ?>
-                <table id="documentsTable" class="sibdas-table w-100 display border-0">
+                <table id="documentsTable" class="heba-table w-100 display border-0">
                     <thead>
                         <tr>
                             <th>NOME</th>
@@ -373,7 +377,7 @@
                             </select>
                         </div>
 
-                        <div class="file-upload-zone d-flex flex-column align-items-center justify-content-center gap-2"
+                        <div class="file-upload-zone w-100 cursor-pointer bg-transparent  d-flex flex-column align-items-center justify-content-center gap-2"
                             id="add-dropzone-generic" data-dropzone-target="doc-file-generic"
                             data-text-target="add-dropzone-text-generic">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -383,8 +387,9 @@
                                 <polyline points="17 8 12 3 7 8" />
                                 <line x1="12" x2="12" y1="3" y2="15" />
                             </svg>
-                            <p class="file-upload-text">Arraste ficheiros ou
-                                <span class="file-upload-text-action text-primary-500">clique para selecionar</span>
+                            <p class="file-upload-text fw-500 text-secondary m-0">Arraste ficheiros ou
+                                <span class="file-upload-text-action text-primary-500 text-primary-500">clique para
+                                    selecionar</span>
                             </p>
                             <span class="m-0 text-muted" id="add-dropzone-text-generic">PDF, JPG, PNG — máx. 25MB</span>
                             <input type="file" id="doc-file-generic" name="doc-file" class="d-none"
@@ -405,8 +410,11 @@
                         </div>
                         <?php if (SHOW_DEBUG_BUTTONS): ?>
                             <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
-                                <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido (Debug)</span>
-                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'doc-name-generic': 'Documento Genérico Preenchido'}); setTimeout(() => { document.getElementById('doc-name-generic').dispatchEvent(new Event('input', { bubbles: true })); document.getElementById('doc-type-generic').selectedIndex = 1; document.getElementById('doc-type-generic').dispatchEvent(new Event('change', { bubbles: true })); }, 100);">Preencher Campos</button>
+                                <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido
+                                    (Debug)</span>
+                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
+                                    onclick="prefillFields({'doc-name-generic': 'Documento Genérico Preenchido'}); setTimeout(() => { document.getElementById('doc-name-generic').dispatchEvent(new Event('input', { bubbles: true })); document.getElementById('doc-type-generic').selectedIndex = 1; document.getElementById('doc-type-generic').dispatchEvent(new Event('change', { bubbles: true })); }, 100);">Preencher
+                                    Campos</button>
                             </div>
                         <?php endif; ?>
                     </form>
@@ -508,8 +516,11 @@
                             </div>
                             <?php if (SHOW_DEBUG_BUTTONS): ?>
                                 <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
-                                    <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido (Debug)</span>
-                                    <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'edit-doc-name-<?= $encDocId ?>': 'Documento Editado'}); setTimeout(() => { document.getElementById('edit-doc-name-<?= $encDocId ?>').dispatchEvent(new Event('input', { bubbles: true })); }, 100);">Editar Nome</button>
+                                    <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido
+                                        (Debug)</span>
+                                    <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
+                                        onclick="prefillFields({'edit-doc-name-<?= $encDocId ?>': 'Documento Editado'}); setTimeout(() => { document.getElementById('edit-doc-name-<?= $encDocId ?>').dispatchEvent(new Event('input', { bubbles: true })); }, 100);">Editar
+                                        Nome</button>
                                 </div>
                             <?php endif; ?>
                         </form>
@@ -569,7 +580,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="d-flex w-100 justify-content-end gap-4 button-row">
+                            <div class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row ">
                                 <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                                     data-bs-dismiss="modal">Cancelar</button>
                                 <button type="submit" class="btn btn-danger btn-glowing text-white">Sim, Eliminar</button>

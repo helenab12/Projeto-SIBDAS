@@ -82,7 +82,8 @@ $cardsConfig = [
                 <div class="card bento-card supplier-card padding-6 d-flex flex-column gap-4 h-100">
                     <div class="d-flex align-items-center justify-content-between w-100">
                         <div class="d-flex align-items-center gap-3">
-                            <div class="table-icon-wrapper <?= $config['iconClass'] ?> padding-2">
+                            <div
+                                class="table-icon-wrapper padding-2 d-flex align-items-center justify-content-center flex-shrink-0 <?= $config['iconClass'] ?> padding-2">
                                 <?= $config['iconSvg'] ?>
                             </div>
                             <h3 class="fw-700 m-0 text-primary"><?= $config['titulo'] ?></h3>

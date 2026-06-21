@@ -17,32 +17,26 @@ if (isset($_SESSION['id_utilizador'])) {
 }
 ?>
 <!-- Header Desktop + Tablet -->
-<header class="d-flex flex-row w-100 padding-4 desktop-header justify-content-between">
+<header class="d-flex flex-row w-100 padding-4 desktop-header d-none d-md-flex justify-content-between sticky-top">
     <?php if (tem_permissao('view.searchbar')): ?>
         <form action="" class="d-flex flex-column" style="width: 400px;">
-            <div class="form-item nav-search-bar">
-                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-search-icon lucide-search">
+            <div class="form-item nav-search-bar position-relative d-flex align-items-center">
+                <svg class="search-icon position-absolute text-secondary" xmlns="http://www.w3.org/2000/svg" width="20"
+                    height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search">
                     <path d="m21 21-4.34-4.34" />
                     <circle cx="11" cy="11" r="8" />
                 </svg>
-                <input type="search" id="search" name="search" placeholder="Pesquisar equipamentos, fornecedores..."
-                    data-bs-toggle="modal" data-bs-target="#search-modal" readonly>
-
-                <div class="search-shortcut">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-command-icon lucide-command">
-                        <path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3" />
-                    </svg>
-                    <span>K</span>
-                </div>
+                <input type="search" class="w-100" id="search" name="search"
+                    placeholder="Pesquisar equipamentos, fornecedores..." data-bs-toggle="modal"
+                    data-bs-target="#search-modal" readonly>
             </div>
         </form>
     <?php endif; ?>
     <div class="d-flex flex-row align-items-center gap-6 ">
-        <button class="pa-theme-toggle" aria-label="Alternar tema">
+        <button
+            class="pa-theme-toggle cursor-pointer  border-0 bg-transparent p-0 d-inline-flex align-items-center text-secondary"
+            aria-label="Alternar tema">
             <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path
@@ -80,8 +74,8 @@ if (isset($_SESSION['id_utilizador'])) {
             <?php endif; ?>
         </a>
         <div class="dropdown">
-            <div class="d-flex flex-row align-items-center navbar-user gap-3 dropdown-toggle" data-bs-toggle="dropdown"
-                aria-expanded="false" style="cursor: pointer;">
+            <div class="d-flex flex-row align-items-center navbar-user text-end gap-3 dropdown-toggle"
+                data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
                 <div class="d-flex flex-column gap-1 text-end">
                     <p class="fw-600 text-primary mb-0">
                         <?= htmlspecialchars(isset($_SESSION['pessoaAtual']) ? $_SESSION['pessoaAtual']->getNome() : 'Utilizador Desconhecido') ?>
@@ -90,13 +84,14 @@ if (isset($_SESSION['id_utilizador'])) {
                         <?= htmlspecialchars(isset($_SESSION['userAtual']) ? $_SESSION['userAtual']->getPerfil()->getNome() : 'Sem Perfil') ?>
                     </span>
                 </div>
-                <p class="user-icon btn-glowing d-flex align-items-center justify-content-center fw-700 mb-0">
+                <p
+                    class="user-icon text-white btn-glowing d-flex align-items-center justify-content-center fw-700 mb-0">
                     <?= get_user_initials(isset($_SESSION['pessoaAtual']) ? $_SESSION['pessoaAtual']->getNome() : 'Utilizador') ?>
                 </p>
             </div>
-            <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
+            <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu padding-2">
                 <li>
-                    <a class="dropdown-item action-dropdown-item text-error"
+                    <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none  text-error"
                         href="<?= BASE_URL ?>private/login/logout.php">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -114,12 +109,14 @@ if (isset($_SESSION['id_utilizador'])) {
 </header>
 
 <!-- Header Mobile -->
-<header class="d-flex flex-row w-100 padding-4 mobile-header">
+<header class="d-flex flex-row w-100 padding-4 mobile-header d-flex d-md-none sticky-top">
     <div class="d-flex flex-row align-items-center justify-content-between w-100">
 
 
         <div class="d-flex flex-row align-items-center gap-6 ">
-            <button class="pa-hamburger" id="mobile-menu-toggle" aria-label="Menu">
+            <button
+                class="pa-hamburger bg-transparent border-0 cursor-pointer p-0 d-inline-flex align-items-center text-primary"
+                id="mobile-menu-toggle" aria-label="Menu">
                 <svg class="icon-menu stroke-secondary" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                     stroke-linejoin="round">
@@ -143,7 +140,9 @@ if (isset($_SESSION['id_utilizador'])) {
         </div>
 
         <div class="d-flex flex-row align-items-center gap-6 ">
-            <button class="pa-theme-toggle" aria-label="Alternar tema">
+            <button
+                class="pa-theme-toggle cursor-pointer  border-0 bg-transparent p-0 d-inline-flex align-items-center text-secondary"
+                aria-label="Alternar tema">
                 <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path
@@ -183,13 +182,14 @@ if (isset($_SESSION['id_utilizador'])) {
             <div class="dropdown">
                 <div class="d-flex flex-row align-items-center navbar-user gap-3 dropdown-toggle"
                     data-bs-toggle="dropdown" aria-expanded="false" style="cursor: pointer;">
-                    <p class="user-icon btn-glowing d-flex align-items-center justify-content-center fw-700 mb-0">
+                    <p
+                        class="user-icon text-white  btn-glowing d-flex align-items-center justify-content-center fw-700 mb-0">
                         <?= get_user_initials(isset($_SESSION['pessoaAtual']) ? $_SESSION['pessoaAtual']->getNome() : 'Utilizador') ?>
                     </p>
                 </div>
-                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
+                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu padding-2">
                     <li>
-                        <a class="dropdown-item action-dropdown-item text-error"
+                        <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none  text-error"
                             href="<?= BASE_URL ?>private/login/logout.php">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"

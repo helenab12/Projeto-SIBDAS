@@ -118,7 +118,7 @@ try {
                 </div>
             </div>
         <?php else: ?>
-            <table id="auditTable" class="sibdas-table w-100 display border-0">
+            <table id="auditTable" class="heba-table w-100 display border-0">
                 <thead>
                     <tr>
                         <th>DATA</th>

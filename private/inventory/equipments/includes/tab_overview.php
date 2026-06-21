@@ -1,5 +1,6 @@
-<div class="tab-pane fade <?= $activeTab === 'visao-geral' ? 'show active' : '' ?>" id="nav-visao-geral" role="tabpanel" aria-labelledby="nav-visao-geral-tab">
-    <div class="visao-geral-container d-flex gap-4 w-100">
+<div class="tab-pane fade <?= $activeTab === 'visao-geral' ? 'show active' : '' ?>" id="nav-visao-geral" role="tabpanel"
+    aria-labelledby="nav-visao-geral-tab">
+    <div class="visao-geral-container flex-column flex-lg-row d-flex gap-4 w-100">
         <!-- Detalhes do Equipamento -->
         <div class="card bento-card details-card padding-6 d-flex flex-column gap-4">
             <h2 class="fw-700 text-primary">Detalhes do Equipamento</h2>
@@ -39,7 +40,7 @@
                 </div>
             </div>
 
-            <div class="d-flex flex-column gap-1 detailed-view-divider">
+            <div class="d-flex flex-column gap-1 detailed-view-divider border-0">
                 <label class="text-secondary fw-500 opacity-75">Notas</label>
                 <p class="text-secondary fw-500"><?= $notes ?></p>
             </div>
@@ -50,7 +51,8 @@
             <h2 class="fw-700 text-primary">Estado da Garantia</h2>
 
             <?php if ($warrantyExpirationDate === null): ?>
-                <div class="warranty-banner expired padding-5 d-flex flex-column align-items-center justify-content-center text-secondary gap-2" style="background-color: var(--grey-100); border-color: var(--grey-200);">
+                <div class="warranty-banner expired padding-5 d-flex flex-column align-items-center justify-content-center text-secondary gap-2"
+                    style="background-color: var(--grey-100); border-color: var(--grey-200);">
                     <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-shield-off">

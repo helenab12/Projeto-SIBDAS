@@ -3,7 +3,8 @@
     <div class="modal-dialog modal-dialog-centered equipment-creation-modal-dialog">
         <div class="modal-content custom-modal-content d-flex flex-column">
             <!-- Header -->
-            <div class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
+            <div
+                class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
                 <div class="d-flex flex-column">
                     <h2 class="equipment-creation-modal-title modal-title" id="exportModalLabel">
                         Exportar Dados
@@ -26,12 +27,22 @@
             <div class="modal-body p-0">
                 <div class="padding-6 pt-2 pb-2">
                     <input type="hidden" id="exportTypeInput" value="csv">
-                    
+
                     <div class="d-flex flex-column gap-3">
                         <!-- Option: CSV -->
-                        <div class="export-option-card bento-card p-3 d-flex align-items-center gap-3 selected-csv" data-export-type="csv">
-                            <div class="export-icon-wrapper icon-csv">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-spreadsheet text-primary-500"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M8 13h2"/><path d="M8 17h2"/><path d="M14 13h2"/><path d="M14 17h2"/></svg>
+                        <div class="export-option-card cursor-pointer  bento-card p-3 d-flex align-items-center gap-3 selected-csv"
+                            data-export-type="csv">
+                            <div class="export-icon-wrapper d-flex align-items-center justify-content-center padding-2 icon-csv">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-file-spreadsheet text-primary-500">
+                                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                                    <polyline points="14 2 14 8 20 8" />
+                                    <path d="M8 13h2" />
+                                    <path d="M8 17h2" />
+                                    <path d="M14 13h2" />
+                                    <path d="M14 17h2" />
+                                </svg>
                             </div>
                             <div class="d-flex flex-column">
                                 <span class="fw-600 text-primary">CSV (Excel)</span>
@@ -40,9 +51,17 @@
                         </div>
 
                         <!-- Option: JSON -->
-                        <div class="export-option-card bento-card p-3 d-flex align-items-center gap-3" data-export-type="json">
-                            <div class="export-icon-wrapper icon-json">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-json text-warning"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><path d="M10 12a1 1 0 0 0-1 1v1a1 1 0 0 1-1 1 1 1 0 0 1 1 1v1a1 1 0 0 0 1 1"/><path d="M14 18a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1 1 1 0 0 1-1-1v-1a1 1 0 0 0-1-1"/></svg>
+                        <div class="export-option-card cursor-pointer  bento-card p-3 d-flex align-items-center gap-3"
+                            data-export-type="json">
+                            <div class="export-icon-wrapper d-flex align-items-center justify-content-center padding-2 icon-json">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-file-json text-warning">
+                                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                                    <polyline points="14 2 14 8 20 8" />
+                                    <path d="M10 12a1 1 0 0 0-1 1v1a1 1 0 0 1-1 1 1 1 0 0 1 1 1v1a1 1 0 0 0 1 1" />
+                                    <path d="M14 18a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1 1 1 0 0 1-1-1v-1a1 1 0 0 0-1-1" />
+                                </svg>
                             </div>
                             <div class="d-flex flex-column">
                                 <span class="fw-600 text-primary">JSON</span>
@@ -51,9 +70,18 @@
                         </div>
 
                         <!-- Option: PDF -->
-                        <div class="export-option-card bento-card p-3 d-flex align-items-center gap-3" data-export-type="pdf">
-                            <div class="export-icon-wrapper icon-pdf">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-file-text text-error"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" x2="8" y1="13" y2="13"/><line x1="16" x2="8" y1="17" y2="17"/><line x1="10" x2="8" y1="9" y2="9"/></svg>
+                        <div class="export-option-card cursor-pointer  bento-card p-3 d-flex align-items-center gap-3"
+                            data-export-type="pdf">
+                            <div class="export-icon-wrapper d-flex align-items-center justify-content-center padding-2 icon-pdf">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-file-text text-error">
+                                    <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z" />
+                                    <polyline points="14 2 14 8 20 8" />
+                                    <line x1="16" x2="8" y1="13" y2="13" />
+                                    <line x1="16" x2="8" y1="17" y2="17" />
+                                    <line x1="10" x2="8" y1="9" y2="9" />
+                                </svg>
                             </div>
                             <div class="d-flex flex-column">
                                 <span class="fw-600 text-primary">PDF</span>

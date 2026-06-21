@@ -83,10 +83,10 @@ try {
         $decryptedId = aes_decrypt($search_query);
         if ($decryptedId !== false && is_numeric($decryptedId)) {
             $whereConditions[] = "e.idEquipamento = :searchId";
-            $params['searchId'] = (int)$decryptedId;
+            $params['searchId'] = (int) $decryptedId;
         } elseif (is_numeric($search_query)) {
             $whereConditions[] = "(e.idEquipamento = :searchExact OR e.designacao LIKE :search OR e.numeroSerie LIKE :search OR m.nome LIKE :search OR e.modelo LIKE :search)";
-            $params['searchExact'] = (int)$search_query;
+            $params['searchExact'] = (int) $search_query;
             $params['search'] = '%' . $search_query . '%';
         } else {
             $whereConditions[] = "(e.designacao LIKE :search OR e.numeroSerie LIKE :search OR m.nome LIKE :search OR e.modelo LIKE :search)";
@@ -193,9 +193,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
     <?php include_once BASE_PATH . 'private/includes/headers.php'; ?>
 
     <!-- Conteúdo -->
-    <section class="content-container gap-6">
+    <section class="padding-6 gap-6 d-flex flex-column padding-6">
         <!-- Titulo -->
-        <div class="d-flex justify-content-between align-items-center w-100 dashboard-title">
+        <div class="d-flex justify-content-between align-items-center w-100 dashboard-title flex-column flex-md-row">
             <div class="d-flex flex-column gap-1">
                 <h1>Equipamentos Arquivados</h1>
                 <p class="text-secondary fw-400"><?= count($listaEquipamentos) ?> equipamentos arquivados</p>
@@ -204,7 +204,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
         </div>
 
         <!-- Barra de Pesquisa -->
-        <div class="bento-card padding-4 gap-4 equipment-list-search-bar">
+        <div
+            class="bento-card padding-4 gap-4 d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center w-100 equipment-list-search-bar">
             <form action="" method="GET" style="display: contents;">
                 <div class="form-item position-relative flex-grow-1">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -230,7 +231,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         </script>
                     <?php endif; ?>
                 </div>
-                <div class="d-flex gap-2 equipment-list-search-bar-filters">
+                <div class="d-flex gap-2 equipment-list-search-bar-filters flex-column flex-md-row">
                     <select class="form-select" name="estado" aria-label="Filtro Estado" onchange="this.form.submit()">
                         <option value="" <?= $estado_filter === '' ? 'selected' : '' ?>>Estado</option>
                         <?php foreach (EstadoEquipamento::cases() as $estado): ?>
@@ -304,7 +305,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
             <!-- Tabela -->
             <div class="bento-card w-100 p-0 border-0">
                 <div class="datatable-wrapper no-footer sortable fixed-columns">
-                    <div class="datatable-container">
+                    <div class="datatable-container w-100 overflow-auto position-relative">
                         <?php
                         // Função auxiliar para criar links de ordenação
                         $buildSortUrl = function ($column) use ($search_query, $estado_filter, $criticidade_filter, $categoria_filter, $sort_param, $dir_param) {
@@ -332,7 +333,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                             return $dir_param === 'asc' ? ' ↑' : ' ↓';
                         };
                         ?>
-                        <table id="archiveTable" class="sibdas-table w-100 display datatable-table">
+                        <table id="archiveTable" class="heba-table w-100 display datatable-table">
                             <thead>
                                 <tr>
                                     <th><a href="<?= $buildSortUrl('equipamento') ?>"
@@ -407,7 +408,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                     <tr>
                                         <td>
                                             <div class="d-flex align-items-center gap-3">
-                                                <div class="table-icon-wrapper equipment-icon-wrapper">
+                                                <div
+                                                    class="table-icon-wrapper padding-2 d-flex align-items-center justify-content-center flex-shrink-0 equipment-icon-wrapper">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                         stroke-linecap="round" stroke-linejoin="round"
@@ -451,7 +453,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                 default => "Estado: " . $estado,
                                             };
                                             ?>
-                                            <span class="equipment-badge <?= $statusClass ?> equipment-badge-tooltip"
+                                            <span
+                                                class="equipment-badge d-inline-flex align-items-center justify-content-center fw-500  <?= $statusClass ?> equipment-badge-tooltip"
                                                 data-bs-toggle="tooltip" data-bs-placement="top"
                                                 title="<?= htmlspecialchars($estadoTooltip) ?>">
                                                 <?= htmlspecialchars($estado) ?>
@@ -467,7 +470,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                 default => "Criticidade: " . $criticidade,
                                             };
                                             ?>
-                                            <span class="equipment-badge <?= $critClass ?> equipment-badge-tooltip"
+                                            <span
+                                                class="equipment-badge d-inline-flex align-items-center justify-content-center fw-500  <?= $critClass ?> equipment-badge-tooltip"
                                                 data-bs-toggle="tooltip" data-bs-placement="top"
                                                 title="<?= htmlspecialchars($criticidadeTooltip) ?>">
                                                 <?= htmlspecialchars($criticidade) ?>
@@ -487,10 +491,10 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                             <circle cx="5" cy="12" r="1" />
                                                         </svg>
                                                     </button>
-                                                    <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
+                                                    <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu padding-2">
                                                         <li>
-                                                            <a class="dropdown-item action-dropdown-item text-primary" href="#"
-                                                                data-bs-toggle="modal"
+                                                            <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none  text-primary"
+                                                                href="#" data-bs-toggle="modal"
                                                                 data-bs-target="#equipment-unarchive-modal-<?= htmlspecialchars($encryptedEqId) ?>">
                                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -578,69 +582,71 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 <?php foreach ($listaEquipamentos as $equipamento): ?>
     <?php $encryptedEqId = aes_encrypt((string) $equipamento->getIdEquipamento()); ?>
     <?php if (tem_permissao('equipments.unarchive')): ?>
-    <!-- Modal de Desarquivo de Equipamento -->
-    <div class="modal fade" id="equipment-unarchive-modal-<?= htmlspecialchars($encryptedEqId) ?>" tabindex="-1"
-        aria-labelledby="equipmentUnarchiveModalLabel-<?= htmlspecialchars($encryptedEqId) ?>" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
-            <div class="modal-content custom-modal-content d-flex flex-column">
-                <div
-                    class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
-                    <div class="d-flex flex-column">
-                        <h2 class="equipment-creation-modal-title modal-title"
-                            id="equipmentUnarchiveModalLabel-<?= htmlspecialchars($encryptedEqId) ?>">
-                            Desarquivar Equipamento</h2>
-                        <span class="text-secondary fw-400">O equipamento será restaurado para a lista de
-                            equipamentos.</span>
+        <!-- Modal de Desarquivo de Equipamento -->
+        <div class="modal fade" id="equipment-unarchive-modal-<?= htmlspecialchars($encryptedEqId) ?>" tabindex="-1"
+            aria-labelledby="equipmentUnarchiveModalLabel-<?= htmlspecialchars($encryptedEqId) ?>" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
+                <div class="modal-content custom-modal-content d-flex flex-column">
+                    <div
+                        class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
+                        <div class="d-flex flex-column">
+                            <h2 class="equipment-creation-modal-title modal-title"
+                                id="equipmentUnarchiveModalLabel-<?= htmlspecialchars($encryptedEqId) ?>">
+                                Desarquivar Equipamento</h2>
+                            <span class="text-secondary fw-400">O equipamento será restaurado para a lista de
+                                equipamentos.</span>
+                        </div>
+                        <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
+                            data-bs-dismiss="modal" aria-label="Close">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-x-icon lucide-x stroke-secondary">
+                                <path d="M18 6 6 18" />
+                                <path d="m6 6 12 12" />
+                            </svg>
+                        </button>
                     </div>
-                    <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
-                        data-bs-dismiss="modal" aria-label="Close">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-x-icon lucide-x stroke-secondary">
-                            <path d="M18 6 6 18" />
-                            <path d="m6 6 12 12" />
-                        </svg>
-                    </button>
-                </div>
-                <div class="modal-body p-0">
-                    <form method="POST" action="equipments-crud/unarchive-equipment.php">
-                        <input type="hidden" name="equipment-id" value="<?= htmlspecialchars($encryptedEqId) ?>">
-                        <div
-                            class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
-                            <div class="d-flex flex-column align-items-center gap-4">
-                                <div class="d-flex padding-3 danger-icon"
-                                    style="background-color: var(--primary-100); color: var(--primary-500);">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-archive-restore">
-                                        <rect width="20" height="5" x="2" y="3" rx="1" />
-                                        <path d="M4 8v11a2 2 0 0 0 2 2h2" />
-                                        <path d="M20 8v11a2 2 0 0 1-2 2h-2" />
-                                        <path d="m9 15 3-3 3 3" />
-                                        <path d="M12 12v9" />
-                                    </svg>
-                                </div>
-                                <div class="d-flex flex-column align-items-center justify-content-center gap-3">
-                                    <div
-                                        class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
-                                        <p class="text-secondary">Tem a certeza que deseja desarquivar o equipamento?</p>
-                                        <h2 class="fw-700">"<?= htmlspecialchars($equipamento->getDesignacao()) ?>"</h2>
-                                        <span class="text-muted">Tipo: Equipamento</span>
+                    <div class="modal-body p-0">
+                        <form method="POST" action="equipments-crud/unarchive-equipment.php">
+                            <input type="hidden" name="equipment-id" value="<?= htmlspecialchars($encryptedEqId) ?>">
+                            <div
+                                class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
+                                <div class="d-flex flex-column align-items-center gap-4">
+                                    <div class="d-flex padding-3 danger-icon"
+                                        style="background-color: var(--primary-100); color: var(--primary-500);">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" class="lucide lucide-archive-restore">
+                                            <rect width="20" height="5" x="2" y="3" rx="1" />
+                                            <path d="M4 8v11a2 2 0 0 0 2 2h2" />
+                                            <path d="M20 8v11a2 2 0 0 1-2 2h-2" />
+                                            <path d="m9 15 3-3 3 3" />
+                                            <path d="M12 12v9" />
+                                        </svg>
+                                    </div>
+                                    <div class="d-flex flex-column align-items-center justify-content-center gap-3">
+                                        <div
+                                            class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
+                                            <p class="text-secondary">Tem a certeza que deseja desarquivar o
+                                                equipamento?</p>
+                                            <h2 class="fw-700">"<?= htmlspecialchars($equipamento->getDesignacao()) ?>"
+                                            </h2>
+                                            <span class="text-muted">Tipo: Equipamento</span>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row ">
+                                    <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary btn-glowing text-white">Sim,
+                                        Desarquivar</button>
+                                </div>
                             </div>
-                            <div class="d-flex w-100 justify-content-end gap-4 button-row">
-                                <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
-                                    data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-primary btn-glowing text-white">Sim,
-                                    Desarquivar</button>
-                            </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     <?php endif; ?>
 <?php endforeach; ?>
 

@@ -65,7 +65,7 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                 </div>
             </div>
         <?php else: ?>
-            <table id="maintenancesTable" class="sibdas-table w-100 display border-0">
+            <table id="maintenancesTable" class="heba-table w-100 display border-0">
                 <thead>
                     <tr>
                         <th>TIPO</th>
@@ -551,8 +551,11 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                             </div>
                             <?php if (SHOW_DEBUG_BUTTONS): ?>
                                 <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
-                                    <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido (Debug)</span>
-                                    <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'edit-maintenance-obs-<?= $encId ?>': 'Manutenção Editada'}); setTimeout(() => { document.getElementById('edit-maintenance-obs-<?= $encId ?>').dispatchEvent(new Event('input', { bubbles: true })); document.querySelector('#edit-maintenance-modal-<?= $encId ?> .edit-maintenance-type').dispatchEvent(new Event('change', { bubbles: true })); }, 100);">Editar Observações</button>
+                                    <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido
+                                        (Debug)</span>
+                                    <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
+                                        onclick="prefillFields({'edit-maintenance-obs-<?= $encId ?>': 'Manutenção Editada'}); setTimeout(() => { document.getElementById('edit-maintenance-obs-<?= $encId ?>').dispatchEvent(new Event('input', { bubbles: true })); document.querySelector('#edit-maintenance-modal-<?= $encId ?> .edit-maintenance-type').dispatchEvent(new Event('change', { bubbles: true })); }, 100);">Editar
+                                        Observações</button>
                                 </div>
                             <?php endif; ?>
                         </form>
@@ -612,7 +615,7 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                                         </div>
                                     </div>
                                 </div>
-                                <div class="d-flex w-100 justify-content-end gap-4 button-row">
+                                <div class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row ">
                                     <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                                         data-bs-dismiss="modal">Cancelar</button>
                                     <button type="submit" class="btn btn-danger btn-glowing text-white">Sim, Eliminar</button>

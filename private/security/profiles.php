@@ -36,10 +36,10 @@ try {
         $decryptedId = aes_decrypt($search_query);
         if ($decryptedId !== false && is_numeric($decryptedId)) {
             $whereConditions[] = "idPermissao = :searchId";
-            $params['searchId'] = (int)$decryptedId;
+            $params['searchId'] = (int) $decryptedId;
         } elseif (is_numeric($search_query)) {
             $whereConditions[] = "(idPermissao = :searchExact OR chave LIKE :search OR descricao LIKE :search)";
-            $params['searchExact'] = (int)$search_query;
+            $params['searchExact'] = (int) $search_query;
             $params['search'] = '%' . $search_query . '%';
         } else {
             $whereConditions[] = "(chave LIKE :search OR descricao LIKE :search)";
@@ -92,10 +92,11 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
     <?php include_once BASE_PATH . 'private/includes/headers.php'; ?>
 
     <!-- Conteúdo -->
-    <section class="content-container gap-6 security-profiles flex-grow-1 p-0">
+    <section class="gap-6 d-flex  flex-column padding-6 security-profiles flex-grow-1 p-0">
         <div class="d-flex flex-column flex-grow-1 gap-6 padding-6">
             <!-- Titulo -->
-            <div class="d-flex justify-content-between align-items-center w-100 dashboard-title">
+            <div
+                class="d-flex justify-content-between align-items-center w-100 dashboard-title flex-column flex-md-row">
                 <div class="d-flex flex-column gap-1">
                     <h1>Perfis</h1>
                     <p class="text-secondary fw-400">Gestão de perfis de utilizadores</p>
@@ -103,7 +104,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
             </div>
 
             <!-- Barra de Pesquisa -->
-            <div class="bento-card padding-4 gap-4 equipment-list-search-bar">
+            <div class="bento-card padding-4 gap-4 d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center w-100 equipment-list-search-bar">
                 <form action="" method="GET" style="display: contents;">
                     <div class="form-item position-relative flex-grow-1">
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -172,8 +173,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                 <form method="POST" action="profiles-crud/update-profiles.php" class="flex-grow-1 d-flex flex-column gap-6">
                     <div class="bento-card w-100 p-0 border-0">
                         <div class="datatable-wrapper no-footer sortable fixed-columns">
-                            <div class="datatable-container">
-                                <table class="sibdas-table w-100 display datatable-table">
+                            <div class="datatable-container w-100 overflow-auto position-relative">
+                                <table class="heba-table w-100 display datatable-table">
                                     <thead>
                                         <tr>
                                             <th class="text-center align-middle">
@@ -229,9 +230,8 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                             id="permission-input-<?= $perfil['idPerfil'] ?>-<?= $permission['idPermissao'] ?>"
                                                             value="<?= $hasPerm ? '1' : '0' ?>">
                                                         <button type="button"
-                                                            class="check-badge <?= $hasPerm ? 'has-permission' : '' ?> <?= tem_permissao('profiles.edit') ? '' : 'pe-none' ?>"
-                                                            id="<?= $badgeId ?>"
-                                                            <?= tem_permissao('profiles.edit') ? "onclick=\"togglePermission('{$perfil['idPerfil']}-{$permission['idPermissao']}')\"" : '' ?>>
+                                                            class="check-badge bg-transparent border-0 p-0 m-0 cursor-pointer outline-none <?= $hasPerm ? 'has-permission' : '' ?> <?= tem_permissao('profiles.edit') ? '' : 'pe-none' ?>"
+                                                            id="<?= $badgeId ?>" <?= tem_permissao('profiles.edit') ? "onclick=\"togglePermission('{$perfil['idPerfil']}-{$permission['idPermissao']}')\"" : '' ?>>
                                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                                                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -293,22 +293,22 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         </div>
 
                         <?php if (tem_permissao('profiles.edit')): ?>
-                        <!-- Alterações pendentes -->
-                        <div class="inbox-changes-container justify-content-between align-items-center padding-6"
-                            style="display: none;">
-                            <p class="text-muted m-0">Existem alterações pendentes</p>
-                            <button type="submit" class="btn btn-primary btn-glowing gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" class="lucide lucide-save-icon lucide-save">
-                                    <path
-                                        d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
-                                    <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" />
-                                    <path d="M7 3v4a1 1 0 0 0 1 1h7" />
-                                </svg>
-                                Guardar Alterações
-                            </button>
-                        </div>
+                            <!-- Alterações pendentes -->
+                            <div class="inbox-changes-container position-sticky w-100  justify-content-between align-items-center padding-6"
+                                style="display: none;">
+                                <p class="text-muted m-0">Existem alterações pendentes</p>
+                                <button type="submit" class="btn btn-primary btn-glowing gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-save-icon lucide-save">
+                                        <path
+                                            d="M15.2 3a2 2 0 0 1 1.4.6l3.8 3.8a2 2 0 0 1 .6 1.4V19a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" />
+                                        <path d="M17 21v-7a1 1 0 0 0-1-1H8a1 1 0 0 0-1 1v7" />
+                                        <path d="M7 3v4a1 1 0 0 0 1 1h7" />
+                                    </svg>
+                                    Guardar Alterações
+                                </button>
+                            </div>
                         <?php endif; ?>
                 </form>
             <?php endif; ?>

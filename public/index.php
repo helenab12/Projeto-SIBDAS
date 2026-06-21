@@ -118,8 +118,8 @@ try {
     flush(); ?>
 
     <!-- Nav Bar -->
-    <nav class="pa-navbar">
-        <div class="pa-page-container">
+    <nav class="pa-navbar w-100 position-fixed ">
+        <div class="pa-page-container w-100">
             <!-- Header (sempre visível) -->
             <div class="pa-nav-header d-flex align-items-center justify-content-between align-self-center">
                 <div class="navbar-brand d-flex align-items-center gap-3">
@@ -138,7 +138,7 @@ try {
                 </div>
 
                 <!-- Desktop: links + toggle + CTA -->
-                <div class="pa-nav-desktop d-flex align-items-center gap-8">
+                <div class="d-none d-md-flex align-items-center gap-8">
                     <a href="#pa-features">
                         <p class="text-secondary">
                             <?= $conteudoPagina['navbar.link_funcionalidades'] ?>
@@ -147,7 +147,9 @@ try {
                     <a href="#pa-advantages">
                         <p class="text-secondary"><?= $conteudoPagina['navbar.link_vantagens'] ?></p>
                     </a>
-                    <button class="pa-theme-toggle" aria-label="Alternar tema">
+                    <button
+                        class="pa-theme-toggle cursor-pointer  border-0 bg-transparent p-0 d-inline-flex align-items-center text-secondary"
+                        aria-label="Alternar tema">
                         <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round">
@@ -174,8 +176,10 @@ try {
                 </div>
 
                 <!-- Mobile: toggle + hambúrguer -->
-                <div class="pa-nav-mobile-controls d-flex align-items-center gap-4">
-                    <button class="pa-theme-toggle" aria-label="Alternar tema">
+                <div class="pa-nav-mobile-controls align-items-center gap-4 d-flex d-md-none">
+                    <button
+                        class="pa-theme-toggle cursor-pointer  border-0 bg-transparent p-0 d-inline-flex align-items-center text-secondary"
+                        aria-label="Alternar tema">
                         <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round">
@@ -196,7 +200,9 @@ try {
                             <path d="m19.07 4.93-1.41 1.41" />
                         </svg>
                     </button>
-                    <button class="pa-hamburger" id="menu-toggle" aria-label="Menu">
+                    <button
+                        class="pa-hamburger bg-transparent border-0 cursor-pointer p-0 d-inline-flex align-items-center text-primary"
+                        id="menu-toggle" aria-label="Menu">
                         <svg class="icon-menu" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                             viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                             stroke-linecap="round" stroke-linejoin="round">
@@ -215,7 +221,7 @@ try {
             </div>
 
             <!-- Menu mobile (colapsável) -->
-            <div class="pa-nav-mobile-menu" id="mobile-menu">
+            <div class="pa-nav-mobile-menu flex-column gap-6" id="mobile-menu">
                 <a href="#pa-features">
                     <p class="text-secondary">
                         <?= $conteudoPagina['navbar.link_funcionalidades'] ?>
@@ -226,7 +232,7 @@ try {
                         <?= $conteudoPagina['navbar.link_vantagens'] ?>
                     </p>
                 </a>
-                <a href="#pa-cta" class="btn btn-primary">
+                <a href="#pa-cta" class="btn btn-primary w-100 text-center">
                     <?= $conteudoPagina['navbar.btn_agendar_demo'] ?>
                 </a>
             </div>
@@ -237,7 +243,7 @@ try {
     <main>
         <!-- main-section -->
         <section class="pa-main-section d-flex align-items-center justify-content-center" id="pa-main-section">
-            <div class="pa-page-container d-flex gap-6 flex-column align-items-center text-center">
+            <div class="pa-page-container w-100 d-flex gap-6 flex-column align-items-center text-center">
                 <p class="badge badge-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                         fill="currentColor" stroke="none">
@@ -245,13 +251,13 @@ try {
                     </svg>
                     <?= $conteudoPagina['hero.badge'] ?>
                 </p>
-                <h1 class="main-section">
+                <h1 class="main-section m-0 fw-700">
                     <?= $conteudoPagina['hero.title'] ?>
                 </h1>
                 <h2 class="text-secondary fw-400">
                     <?= $conteudoPagina['hero.subtitle'] ?>
                 </h2>
-                <div class="d-flex main-section-buttons">
+                <div class="d-flex main-section-buttons flex-column flex-md-row">
                     <a href="#pa-cta" class="btn btn-primary btn-large btn-glowing fw-600 ">
                         <?= $conteudoPagina['hero.btn_agendar'] ?>
                     </a>
@@ -264,7 +270,7 @@ try {
 
         <!-- Features -->
         <section class="pa-features" id="pa-features">
-            <div class="pa-page-container d-flex flex-column align-items-center gap-16">
+            <div class="pa-page-container w-100 d-flex flex-column align-items-center gap-16">
                 <div class="gap-4 d-flex flex-column align-items-center text-center">
                     <h1 class="section-title">
                         <?= $conteudoPagina['features.title'] ?>
@@ -285,10 +291,10 @@ try {
                                 class="bento-card <?= $cartao->getTitulo() == 'Assistente IA' ? 'bento-ai-card' : '' ?> padding-8 d-flex flex-column gap-3 align-items-start text-start">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                    class="lucide padding-3">
+                                    class="lucide <?= $cartao->getTitulo() == 'Assistente IA' ? 'stroke-white' : 'text-primary-500' ?> padding-3">
                                     <?= $cartao->getIcone() ?>
                                 </svg>
-                                <h2>
+                                <h2 class="font-mono">
                                     <?= $cartao->getTitulo() ?>
                                 </h2>
                                 <h3 class="text-secondary fw-400">
@@ -304,9 +310,9 @@ try {
 
         <!-- Vantagens -->
         <section class="pa-advantages" id="pa-advantages">
-            <div class="pa-page-container d-flex align-items-stretch text-center gap-16">
+            <div class="pa-page-container w-100 d-flex flex-column flex-md-row align-items-stretch text-center gap-16">
                 <div class="d-flex flex-column gap-6 align-items-start">
-                    <p class="badge badge-advantages">
+                    <p class="badge badge-advantages text-success">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                             fill="currentColor" stroke="none">
                             <circle cx="12" cy="12" r="4" />
@@ -321,11 +327,11 @@ try {
                     </h2>
                     <div class="d-flex flex-column gap-8">
                         <div class="d-flex align-items-start gap-4">
-                            <div class="pa-advantage-icon">
+                            <div class="pa-advantage-icon text-success">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round"
-                                    class="lucide lucide-shield-check-icon lucide-shield-check padding-3">
+                                    class="lucide lucide-shield-check-icon lucide-shield-check padding-3 rounded-pill">
                                     <path
                                         d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" />
                                     <path d="m9 12 2 2 4-4" />
@@ -339,11 +345,11 @@ try {
                             </div>
                         </div>
                         <div class="d-flex align-items-start gap-4">
-                            <div class="pa-advantage-icon">
+                            <div class="pa-advantage-icon text-success">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round"
-                                    class="lucide lucide-circle-check-big-icon lucide-circle-check-big padding-3">
+                                    class="lucide lucide-circle-check-big-icon lucide-circle-check-big padding-3 rounded-pill">
                                     <path d="M21.801 10A10 10 0 1 1 17 3.335" />
                                     <path d="m9 11 3 3L22 4" />
                                 </svg>
@@ -358,10 +364,11 @@ try {
                             </div>
                         </div>
                         <div class="d-flex align-items-start justify-items-start gap-4">
-                            <div class="pa-advantage-icon">
+                            <div class="pa-advantage-icon text-success">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round" class="lucide lucide-clock-icon lucide-clock padding-3">
+                                    stroke-linejoin="round"
+                                    class="lucide lucide-clock-icon lucide-clock padding-3 rounded-pill">
                                     <circle cx="12" cy="12" r="10" />
                                     <path d="M12 6v6l4 2" />
                                 </svg>
@@ -378,20 +385,21 @@ try {
                     </div>
                 </div>
                 <div class="d-flex align-items-center justify-content-center pa-advantages-image-background padding-8">
-                    <img src="<?= BASE_URL . '/assets/img/dashboard.png' ?>" alt="Imagem de vantagens">
+                    <img src="<?= BASE_URL . '/assets/img/dashboard.png' ?>" alt="Imagem de vantagens"
+                        class="w-100 h-100 object-fit-cover">
                 </div>
             </div>
         </section>
 
         <!-- Clientes -->
-        <section class="pa-clients" id="pa-clients">
-            <div class="pa-page-container d-flex flex-column align-items-center gap-16">
+        <section class="pa-clients text-white" id="pa-clients">
+            <div class="pa-page-container w-100 d-flex flex-column align-items-center gap-16">
                 <h1 class="section-title text-center"><?= $conteudoPagina['clients.title'] ?></h1>
                 <div class="bento-grid">
                     <div class="bento-card padding-8 d-flex flex-column gap-3 align-items-center text-start">
                         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-package-icon lucide-package">
+                            class="lucide lucide-package-icon lucide-package bg-transparent">
                             <path
                                 d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z" />
                             <path d="M12 22V12" />
@@ -406,7 +414,7 @@ try {
                     <div class="bento-card padding-8 d-flex flex-column gap-3 align-items-center text-start">
                         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-wrench-icon lucide-wrench">
+                            class="lucide lucide-wrench-icon lucide-wrench bg-transparent">
                             <path
                                 d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z" />
                         </svg>
@@ -418,7 +426,7 @@ try {
                     <div class="bento-card padding-8 d-flex flex-column gap-3 align-items-center text-start">
                         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-users-icon lucide-users">
+                            class="lucide lucide-users-icon lucide-users bg-transparent">
                             <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
                             <path d="M16 3.128a4 4 0 0 1 0 7.744" />
                             <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
@@ -435,8 +443,8 @@ try {
 
         <!-- CTA -->
         <section class="pa-cta" id="pa-cta">
-            <div class="pa-page-container d-flex">
-                <div class="bento-card d-flex flex-column gap-8 padding-16">
+            <div class="pa-page-container w-100 d-flex">
+                <div class="bento-card d-flex flex-column gap-8 padding-16 w-100">
                     <div class="d-flex flex-column gap-4 align-items-center w-100">
                         <h1 class="section-title text-center"><?= $conteudoPagina['cta.title'] ?></h1>
                         <h3 class="fw-400 text-center text-secondary">
@@ -446,7 +454,7 @@ try {
                     <div class="d-flex flex-column gap-6 w-100">
                         <form action="index.php#pa-cta" method="POST"
                             class="d-flex flex-column gap-6 align-items-stretch w-100" id="cta-form" novalidate>
-                            <div class="pa-cta-form-grid gap-6">
+                            <div class="pa-cta-form-grid d-grid gap-6">
                                 <div class="d-flex flex-column align-items-start form-item justify-items-start">
                                     <label for="name"><?= $conteudoPagina['cta.label_nome'] ?>
                                         <span class="text-error">*</span>
@@ -503,15 +511,16 @@ try {
 
     <!-- Footer -->
     <footer class="pa-footer">
-        <div class="pa-page-container d-flex flex-column gap-10">
-            <div class="d-flex gap-10 footer-row">
+        <div class="pa-page-container w-100 d-flex flex-column gap-10">
+            <div class="d-flex gap-10 flex-column flex-md-row">
                 <div class="d-flex flex-column gap-4 footer-col">
                     <div class="d-flex align-items-center gap-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-activity-icon lucide-activity">
+                            class="lucide lucide-activity-icon lucide-activity stroke-primary-500">
                             <path
-                                d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2" />
+                                d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
+                            <path d="M3.22 13H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27" />
                         </svg>
                         <h1><?= $conteudoPagina['footer.brand_name'] ?></h1>
                     </div>
@@ -522,7 +531,8 @@ try {
                         <div class="d-flex gap-3">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="lucide lucide-map-pin-icon lucide-map-pin">
+                                stroke-linejoin="round"
+                                class="lucide lucide-map-pin-icon lucide-map-pin stroke-primary-500">
                                 <path
                                     d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
                                 <circle cx="12" cy="10" r="3" />
@@ -532,7 +542,7 @@ try {
                         <div class="d-flex gap-3">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="lucide lucide-mail-icon lucide-mail">
+                                stroke-linejoin="round" class="lucide lucide-mail-icon lucide-mail stroke-primary-500">
                                 <path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7" />
                                 <rect x="2" y="4" width="20" height="16" rx="2" />
                             </svg>
@@ -541,7 +551,8 @@ try {
                         <div class="d-flex gap-3">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="lucide lucide-phone-icon lucide-phone">
+                                stroke-linejoin="round"
+                                class="lucide lucide-phone-icon lucide-phone stroke-primary-500">
                                 <path
                                     d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384" />
                             </svg>
@@ -552,16 +563,19 @@ try {
                 <div class="d-flex flex-column gap-4 footer-col">
                     <span class="fw-700 text-uppercase"><?= $conteudoPagina['footer.section_acesso_rapido'] ?></span>
                     <div class="d-flex flex-column gap-3">
-                        <a href="#pa-features" class="fw-400"><?= $conteudoPagina['footer.link_funcionalidades'] ?></a>
-                        <a href="#pa-advantages" class="fw-400"><?= $conteudoPagina['footer.link_vantagens'] ?></a>
-                        <a href="#pa-cta" class="fw-400"><?= $conteudoPagina['footer.link_demo'] ?></a>
+                        <a href="#pa-features"
+                            class="fw-400 decoration-none text-secondary"><?= $conteudoPagina['footer.link_funcionalidades'] ?></a>
+                        <a href="#pa-advantages"
+                            class="fw-400 decoration-none text-secondary"><?= $conteudoPagina['footer.link_vantagens'] ?></a>
+                        <a href="#pa-cta"
+                            class="fw-400 decoration-none text-secondary"><?= $conteudoPagina['footer.link_demo'] ?></a>
                     </div>
                 </div>
                 <div class="d-flex flex-column gap-4 footer-col">
                     <span class="fw-700 text-uppercase"><?= $conteudoPagina['footer.section_plataforma'] ?></span>
                     <div class="d-flex flex-column gap-3">
                         <a href="../private/login/login.php"
-                            class="fw-400 d-flex align-items-center gap-2 text-primary-500"><?= $conteudoPagina['footer.link_backoffice'] ?>
+                            class="fw-400 decoration-none text-secondary d-flex align-items-center gap-2 text-primary-500"><?= $conteudoPagina['footer.link_backoffice'] ?>
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round"
@@ -571,12 +585,14 @@ try {
                                 <path d="M15 3h6v6" />
                             </svg>
                         </a>
-                        <a href="#" class="fw-400"><?= $conteudoPagina['footer.link_termos'] ?></a>
-                        <a href="#" class="fw-400"><?= $conteudoPagina['footer.link_privacidade'] ?></a>
+                        <a href="#"
+                            class="fw-400 decoration-none text-secondary"><?= $conteudoPagina['footer.link_termos'] ?></a>
+                        <a href="#"
+                            class="fw-400 decoration-none text-secondary"><?= $conteudoPagina['footer.link_privacidade'] ?></a>
                     </div>
                 </div>
             </div>
-            <div class="d-flex footer-copywright justify-content-between">
+            <div class="d-flex flex-column flex-md-row footer-copywright justify-content-between">
                 <p class="fw-400 text-secondary"><?= $conteudoPagina['footer.copyright'] ?></p>
                 <p class="fw-400 text-secondary"><?= $conteudoPagina['footer.developer'] ?></p>
             </div>

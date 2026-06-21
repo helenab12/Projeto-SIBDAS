@@ -53,7 +53,7 @@ try {
                 </div>
             </div>
         <?php else: ?>
-            <table id="componentsTable" class="sibdas-table w-100 display border-0">
+            <table id="componentsTable" class="heba-table w-100 display border-0">
                 <thead>
                     <tr>
                         <th>COMPONENTE</th>

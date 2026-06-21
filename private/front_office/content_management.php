@@ -260,10 +260,11 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
     <?php include_once BASE_PATH . 'private/includes/headers.php'; ?>
 
     <!-- Conteúdo -->
-    <section class="content-container gap-6 content-management flex-grow-1 p-0">
+    <section class="gap-6 d-flex  flex-column padding-6 content-management flex-grow-1 p-0">
         <div class="d-flex flex-column padding-6 gap-6 flex-grow-1">
             <!-- Titulo -->
-            <div class="d-flex justify-content-between align-items-center w-100 dashboard-title">
+            <div
+                class="d-flex justify-content-between align-items-center w-100 dashboard-title flex-column flex-md-row">
                 <div class="d-flex flex-column gap-1">
                     <h1>Gestão de Conteúdos</h1>
                     <p class="text-secondary fw-400">Página única de edição. Expanda os módulos para editar os textos do
@@ -272,20 +273,22 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
             </div>
 
             <!-- Formulário de Edição -->
-            <form id="update-texts-form" method="POST" action="content_management-crud/update-content-management.php" class="w-100">
+            <form id="update-texts-form" method="POST" action="content_management-crud/update-content-management.php"
+                class="w-100">
                 <!-- Dropdowns -->
                 <div class="d-flex flex-column gap-4 w-100">
                     <?php foreach ($seccoesConfig as $config): ?>
                         <div class="d-flex flex-column gap-3 w-100">
                             <div class="card bento-card d-flex align-items-start overflow-hidden">
                                 <button
-                                    class="btn btn-link text-decoration-none mw-0 d-flex w-100 accordion-button top-level padding-6 collapsed"
+                                    class="btn btn-link text-decoration-none mw-0 d-flex w-100 accordion-button bg-transparent  top-level padding-6 collapsed"
                                     type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapse-<?= $config->prefix ?>" aria-expanded="false"
                                     aria-controls="collapse-<?= $config->prefix ?>">
                                     <div class="d-flex w-100 justify-content-between align-items-center">
                                         <div class="d-flex gap-3 align-items-center w-100">
-                                            <div class="table-icon-wrapper content-icon-wrapper">
+                                            <div
+                                                class="table-icon-wrapper padding-2 d-flex align-items-center justify-content-center flex-shrink-0 content-icon-wrapper">
                                                 <?= $config->iconeSvg ?>
                                             </div>
                                             <div class="d-flex flex-column gap-half text-primary">
@@ -355,7 +358,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 
                                                 <!-- Features Table -->
                                                 <div class="bento-card w-100 p-0 overflow-hidden mt-3">
-                                                    <table id="featuresTable" class="sibdas-table w-100 display border-0">
+                                                    <table id="featuresTable" class="heba-table w-100 display border-0">
                                                         <thead>
                                                             <tr>
                                                                 <th>ESTADO</th>
@@ -478,7 +481,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
         </form>
         <?php if (tem_permissao('content.edit')): ?>
             <!-- Alterações pendentes -->
-            <div class="inbox-changes-container justify-content-between align-items-center padding-6"
+            <div class="inbox-changes-container position-sticky w-100  justify-content-between align-items-center padding-6"
                 style="display: none;">
                 <p class="text-muted m-0">Existem alterações pendentes</p>
                 <button form="update-texts-form" type="submit" name="guardar_textos"
@@ -561,8 +564,8 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                 <label>Estado na Página</label>
                                 <div class="d-flex align-items-center gap-2 switch-wrapper">
                                     <div class="form-check form-switch p-0 m-0 d-flex align-items-center gap-3">
-                                        <input class="form-check-input m-0 switch-input" type="checkbox" id="card-status"
-                                            name="card-status" checked>
+                                        <input class="form-check-input m-0 switch-input cursor-pointer" type="checkbox"
+                                            id="card-status" name="card-status" checked>
                                         <label class="form-check-label m-0 fw-500 text-secondary"
                                             for="card-status">Visível</label>
                                     </div>
@@ -603,7 +606,8 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                         </div>
 
                         <!-- Footer do Formulario -->
-                        <div class="d-flex w-100 justify-content-end gap-4 button-row mt-4 align-items-center">
+                        <div
+                            class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row  mt-4 align-items-center">
                             <button type="button" class="btn btn-link text-secondary text-decoration-none p-0"
                                 data-bs-dismiss="modal">Cancelar</button>
                             <button type="submit" name="criar_cartao" id="btn-submit-modal"
@@ -746,7 +750,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                     <label>Estado na Página</label>
                                     <div class="d-flex align-items-center gap-2 switch-wrapper">
                                         <div class="form-check form-switch p-0 m-0 d-flex align-items-center gap-3">
-                                            <input class="form-check-input m-0 switch-input" type="checkbox"
+                                            <input class="form-check-input m-0 switch-input cursor-pointer" type="checkbox"
                                                 id="edit-card-status-<?= htmlspecialchars($encryptedCardId) ?>"
                                                 name="card-status" <?= $cartao->ativo ? 'checked' : '' ?>>
                                             <label class="form-check-label m-0 fw-500 text-secondary"
@@ -786,7 +790,8 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                             </div>
 
                             <!-- Footer do Formulario -->
-                            <div class="d-flex w-100 justify-content-end gap-4 button-row mt-4 align-items-center">
+                            <div
+                                class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row  mt-4 align-items-center">
                                 <button type="button" class="btn btn-link text-secondary text-decoration-none p-0"
                                     data-bs-dismiss="modal">Cancelar</button>
                                 <button type="submit" name="editar_cartao" class="btn btn-primary btn-glowing">
@@ -863,7 +868,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                 </div>
 
                                 <!-- Botoes -->
-                                <div class="d-flex w-100 justify-content-end gap-4 button-row">
+                                <div class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row ">
                                     <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                                         data-bs-dismiss="modal">Cancelar</button>
                                     <button type="submit" name="apagar_cartao" class="btn btn-danger btn-glowing text-white">

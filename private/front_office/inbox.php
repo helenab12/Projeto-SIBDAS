@@ -42,15 +42,15 @@ try {
 
     if ($search_query !== '') {
         $decryptedId = aes_decrypt($search_query);
-        
+
         if ($decryptedId !== false && is_numeric($decryptedId)) {
             // É um ID encriptado válido
             $whereConditions[] = "idPedido = :searchId";
-            $params['searchId'] = (int)$decryptedId;
+            $params['searchId'] = (int) $decryptedId;
         } elseif (is_numeric($search_query)) {
             // Pode ser um ID numérico direto ou texto
             $whereConditions[] = "(idPedido = :searchExact OR nomeContacto LIKE :search OR emailContacto LIKE :search OR organizacao LIKE :search)";
-            $params['searchExact'] = (int)$search_query;
+            $params['searchExact'] = (int) $search_query;
             $params['search'] = '%' . $search_query . '%';
         } else {
             // Pesquisa normal por texto
@@ -140,10 +140,11 @@ try {
     <?php include_once BASE_PATH . 'private/includes/headers.php'; ?>
 
     <!-- Conteúdo -->
-    <section class="content-container inbox flex-grow-1">
+    <section class="inbox flex-grow-1">
         <div class="d-flex flex-column padding-6 gap-6 flex-grow-1">
             <!-- Titulo -->
-            <div class="d-flex justify-content-between align-items-center w-100 dashboard-title">
+            <div
+                class="d-flex justify-content-between align-items-center w-100 dashboard-title flex-column flex-md-row">
                 <div class="d-flex flex-column gap-1">
                     <h1>Caixa de Entrada</h1>
                     <p class="text-secondary fw-400">Gestão dos pedidos de demonstração do Website.</p>
@@ -151,7 +152,8 @@ try {
             </div>
 
             <!-- Barra de Pesquisa -->
-            <div class="bento-card padding-4 gap-4 equipment-list-search-bar">
+            <div
+                class="bento-card padding-4 gap-4 d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center w-100 equipment-list-search-bar">
                 <form action="" method="GET" style="display: contents;">
                     <div class="flex-grow-1">
                         <div class="form-item w-100 position-relative">
@@ -225,7 +227,7 @@ try {
                     <!-- Tabela -->
                     <div class="bento-card w-100 p-0 border-0">
                         <div class="datatable-wrapper no-footer sortable fixed-columns">
-                            <div class="datatable-container">
+                            <div class="datatable-container w-100 overflow-auto position-relative">
                                 <?php
                                 $buildSortUrl = function ($column) use ($search_query, $sort_param, $dir_param) {
                                     $params = [];
@@ -243,7 +245,7 @@ try {
                                 };
                                 ?>
 
-                                <table id="equipmentsTable" class="sibdas-table w-100 display datatable-table">
+                                <table id="equipmentsTable" class="heba-table w-100 display datatable-table">
                                     <thead>
                                         <tr>
                                             <th><a href="<?= $buildSortUrl('estado') ?>"
@@ -275,7 +277,7 @@ try {
                                                         id="inbox-state-input-<?php echo $encryptedId; ?>">
                                                     <div class="dropdown">
                                                         <button id="inbox-state-btn-<?php echo $encryptedId; ?>"
-                                                            class="d-inline-flex align-items-center equipment-badge <?php echo $request->state->class; ?> gap-1 mw-0 border-0 <?= tem_permissao('inbox.manage') ? '' : 'pe-none' ?>"
+                                                            class="d-inline-flex align-items-center equipment-badge d-inline-flex align-items-center justify-content-center fw-500  <?php echo $request->state->class; ?> gap-1 mw-0 border-0 <?= tem_permissao('inbox.manage') ? '' : 'pe-none' ?>"
                                                             type="button" <?= tem_permissao('inbox.manage') ? 'data-bs-toggle="dropdown"' : '' ?> aria-expanded="false">
                                                             <span><?php echo $request->state->name; ?>
                                                                 <span
@@ -290,18 +292,21 @@ try {
                                                             <?php endif; ?>
                                                         </button>
                                                         <?php if (tem_permissao('inbox.manage')): ?>
-                                                            <ul class="dropdown-menu action-dropdown-menu">
+                                                            <ul class="dropdown-menu action-dropdown-menu padding-2">
                                                                 <li>
-                                                                    <a class="dropdown-item action-dropdown-item" href="#"
+                                                                    <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none "
+                                                                        href="#"
                                                                         onclick="changeInboxState('<?php echo $encryptedId; ?>', 'Novo', 'new')">Novo</a>
                                                                 </li>
                                                                 <li>
-                                                                    <a class="dropdown-item action-dropdown-item" href="#"
+                                                                    <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none "
+                                                                        href="#"
                                                                         onclick="changeInboxState('<?php echo $encryptedId; ?>', 'Em Contacto', 'in-contact')">Em
                                                                         Contacto</a>
                                                                 </li>
                                                                 <li>
-                                                                    <a class="dropdown-item action-dropdown-item" href="#"
+                                                                    <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none "
+                                                                        href="#"
                                                                         onclick="changeInboxState('<?php echo $encryptedId; ?>', 'Fechado', 'concluded')">Fechado</a>
                                                                 </li>
                                                             </ul>
@@ -342,9 +347,10 @@ try {
                                                                 <circle cx="5" cy="12" r="1" />
                                                             </svg>
                                                         </button>
-                                                        <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
+                                                        <ul
+                                                            class="dropdown-menu dropdown-menu-end action-dropdown-menu padding-2">
                                                             <li>
-                                                                <a class="dropdown-item action-dropdown-item text-primary"
+                                                                <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none  text-primary"
                                                                     href="#" data-bs-toggle="modal"
                                                                     data-bs-target="#inbox-detail-modal-<?php echo $encryptedId; ?>">
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16"
@@ -361,7 +367,7 @@ try {
                                                             </li>
                                                             <?php if (tem_permissao('inbox.delete')): ?>
                                                                 <li>
-                                                                    <a class="dropdown-item action-dropdown-item text-error"
+                                                                    <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none  text-error"
                                                                         href="#" data-bs-toggle="modal"
                                                                         data-bs-target="#delete-confirm-modal-<?php echo $encryptedId; ?>">
                                                                         <svg xmlns="http://www.w3.org/2000/svg" width="16"
@@ -435,7 +441,7 @@ try {
 
         <?php if (tem_permissao('inbox.manage')): ?>
             <!-- Alterações pendentes -->
-            <div class="inbox-changes-container justify-content-between align-items-center padding-6"
+            <div class="inbox-changes-container position-sticky w-100  justify-content-between align-items-center padding-6"
                 style="display: none;">
                 <p class="text-muted">Existem alterações pendentes</p>
                 <button type="submit" class="btn btn-primary btn-glowing gap-2">
@@ -486,7 +492,7 @@ try {
                         <!-- Contact info row -->
                         <div class="d-flex align-items-center gap-3">
                             <div
-                                class="d-flex justify-content-center align-items-center text-secondary fw-700 position-relative inbox-modal-user-icon ">
+                                class="d-flex justify-content-center align-items-center text-secondary fw-700 position-relative inbox-modal-user-icon rounded-pill">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round" class="lucide lucide-user text-secondary">
@@ -514,8 +520,8 @@ try {
                         </div>
 
                         <!-- Info Grid -->
-                        <div class="inbox-info-grid d-flex gap-4 w-100">
-                            <div class="inbox-info-card d-flex flex-column padding-3 gap-2">
+                        <div class="inbox-info-grid flex-column flex-md-row d-flex gap-4 w-100">
+                            <div class="inbox-info-card w-100 w-md-50 d-flex flex-column padding-3 gap-2">
                                 <span class="text-secondary d-flex align-items-center gap-1 fw-500 text-uppercase">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -525,9 +531,9 @@ try {
                                     </svg>
                                     Email Profissional
                                 </span>
-                                <span class="inbox-info-card-value"><?php echo $request->email; ?></span>
+                                <p class="inbox-info-card-value fw-600 text-primary"><?php echo $request->email; ?></p>
                             </div>
-                            <div class="inbox-info-card d-flex flex-column padding-3 gap-2">
+                            <div class="inbox-info-card w-100 w-md-50 d-flex flex-column padding-3 gap-2">
                                 <span class="text-secondary d-flex align-items-center gap-1 fw-500 text-uppercase">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
@@ -539,7 +545,7 @@ try {
                                     </svg>
                                     Data Submissão
                                 </span>
-                                <span class="inbox-info-card-value"><?php echo $request->date; ?></span>
+                                <p class="inbox-info-card-value fw-600 text-primary"><?php echo $request->date; ?></p>
                             </div>
                         </div>
 
@@ -562,7 +568,7 @@ try {
                         <!-- Footer Actions -->
                         <div class="inbox-modal-footer d-flex w-100 justify-content-between align-items-center">
                             <span id="inbox-modal-badge-<?php echo $encryptedId; ?>"
-                                class="equipment-badge <?php echo $request->state->class; ?> inbox-modal-footer-badge fw-400">
+                                class="equipment-badge d-inline-flex align-items-center justify-content-center fw-500  <?php echo $request->state->class; ?> inbox-modal-footer-badge fw-400">
                                 Tratamento atual: <?php echo $request->state->name; ?>
                             </span>
                             <button type="button" class="btn btn-ghost" data-bs-dismiss="modal">
@@ -628,7 +634,7 @@ try {
                                 </div>
 
                                 <!-- Botoes -->
-                                <div class="d-flex w-100 justify-content-end gap-4 button-row">
+                                <div class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row ">
                                     <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                                         data-bs-dismiss="modal">Cancelar</button>
                                     <form action="inbox-crud/delete-inbox.php" method="POST" class="m-0 p-0">

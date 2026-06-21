@@ -7,7 +7,8 @@ $equipamentosQR = $stmtEquip->fetchAll(PDO::FETCH_ASSOC);
     <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
         <div class="modal-content custom-modal-content d-flex flex-column">
             <!-- Titulo -->
-            <div class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
+            <div
+                class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
                 <div class="d-flex flex-column">
                     <h2 class="equipment-creation-modal-title modal-title" id="qrSelectModalLabel">
                         Gerar QR Code
@@ -40,14 +41,15 @@ $equipamentosQR = $stmtEquip->fetchAll(PDO::FETCH_ASSOC);
                                 <option value="<?= htmlspecialchars($encId) ?>"
                                     data-code="<?= htmlspecialchars($eq['codigoInterno']) ?>"
                                     data-desc="<?= htmlspecialchars($eq['designacao']) ?>">
-                                    <?= htmlspecialchars($eq['codigoInterno']) ?> - <?= htmlspecialchars($eq['designacao']) ?>
+                                    <?= htmlspecialchars($eq['codigoInterno']) ?> -
+                                    <?= htmlspecialchars($eq['designacao']) ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
 
                     <!-- Footer do Formulario -->
-                    <div class="d-flex w-100 justify-content-end gap-4 button-row mt-4">
+                    <div class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row  mt-4">
                         <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                             data-bs-dismiss="modal">Cancelar</button>
                         <button type="button" id="btnProceedQRPrint"

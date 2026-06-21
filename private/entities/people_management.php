@@ -51,31 +51,32 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
     <?php include_once BASE_PATH . 'private/includes/headers.php'; ?>
 
     <!-- Conteúdo -->
-    <section class="content-container gap-6">
+    <section class="padding-6 gap-6 d-flex flex-column padding-6">
         <!-- Titulo -->
-        <div class="d-flex justify-content-between align-items-center w-100 dashboard-title">
+        <div class="d-flex justify-content-between align-items-center w-100 dashboard-title flex-column flex-md-row">
             <div class="d-flex flex-column gap-1">
                 <h1>Gestão de Pessoas</h1>
                 <p class="text-secondary fw-400"><?= count($listaPessoas) ?> pessoas ativas</p>
             </div>
             <div class="d-flex gap-2">
                 <?php if (tem_permissao('people.create')): ?>
-                <button id="btn-open-create-equipment-modal" class="btn btn-primary btn-glowing gap-2"
-                    data-bs-toggle="modal" data-bs-target="#equipment-creation-modal">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-plus-icon lucide-plus">
-                        <path d="M5 12h14" />
-                        <path d="M12 5v14" />
-                    </svg>
-                    Nova Pessoa
-                </button>
+                    <button id="btn-open-create-equipment-modal" class="btn btn-primary btn-glowing gap-2"
+                        data-bs-toggle="modal" data-bs-target="#equipment-creation-modal">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-plus-icon lucide-plus">
+                            <path d="M5 12h14" />
+                            <path d="M12 5v14" />
+                        </svg>
+                        Nova Pessoa
+                    </button>
                 <?php endif; ?>
             </div>
         </div>
 
         <!-- Barra de Pesquisa -->
-        <div class="bento-card padding-4 gap-4 equipment-list-search-bar">
+        <div
+            class="bento-card padding-4 gap-4 d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center w-100 equipment-list-search-bar">
             <form action="" method="GET" style="display: contents;">
                 <div class="form-item w-100 position-relative">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -87,11 +88,14 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                     <input type="search" name="search" class="form-item w-100 search-bar-input person-search-input"
                         placeholder="Pesquisar por nome ou email..." value="<?= htmlspecialchars($search_query) ?>">
                 </div>
-                <div class="d-flex gap-2 equipment-list-search-bar-filters">
-                    <select class="form-select" name="role" aria-label="Filtro Função" id="filter-role" onchange="this.form.submit()">
+                <div class="d-flex gap-2 equipment-list-search-bar-filters flex-column flex-md-row">
+                    <select class="form-select" name="role" aria-label="Filtro Função" id="filter-role"
+                        onchange="this.form.submit()">
                         <option value="" <?= $role_filter === '' ? 'selected' : '' ?>>Todas as Funções</option>
                         <?php foreach (Funcao::cases() as $funcao): ?>
-                            <option value="<?= $funcao->value ?>" <?= $role_filter === $funcao->value ? 'selected' : '' ?>><?= $funcao->value ?></option>
+                            <option value="<?= $funcao->value ?>" <?= $role_filter === $funcao->value ? 'selected' : '' ?>>
+                                <?= $funcao->value ?>
+                            </option>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -163,51 +167,52 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                 </div>
                             </div>
                             <?php if (tem_permissao('people.edit') || tem_permissao('people.delete')): ?>
-                            <div class="dropdown">
-                                <button
-                                    class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-primary"
-                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round">
-                                        <circle cx="12" cy="12" r="1" />
-                                        <circle cx="19" cy="12" r="1" />
-                                        <circle cx="5" cy="12" r="1" />
-                                    </svg>
-                                </button>
-                                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu">
-                                    <?php if (tem_permissao('people.edit')): ?>
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-primary" href="#"
-                                            data-bs-toggle="modal"
-                                            data-bs-target="#person-edit-modal-<?= htmlspecialchars(aes_encrypt($pessoa->getId())) ?>">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round" class="lucide lucide-pencil">
-                                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                <path d="m15 5 4 4" />
-                                            </svg>
-                                            Editar
-                                        </a>
-                                    </li>
-                                    <?php endif; ?>
-                                    <?php if (tem_permissao('people.delete')): ?>
-                                    <li>
-                                        <a class="dropdown-item action-dropdown-item text-error" href="#" data-bs-toggle="modal"
-                                            data-bs-target="#delete-confirm-modal-<?= htmlspecialchars(aes_encrypt($pessoa->getId())) ?>">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round" class="lucide lucide-archive">
-                                                <rect width="20" height="5" x="2" y="3" rx="1" />
-                                                <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
-                                                <path d="M10 12h4" />
-                                            </svg>
-                                            Mover para Reciclagem
-                                        </a>
-                                    </li>
-                                    <?php endif; ?>
-                                </ul>
-                            </div>
+                                <div class="dropdown">
+                                    <button
+                                        class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-primary"
+                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round">
+                                            <circle cx="12" cy="12" r="1" />
+                                            <circle cx="19" cy="12" r="1" />
+                                            <circle cx="5" cy="12" r="1" />
+                                        </svg>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu padding-2">
+                                        <?php if (tem_permissao('people.edit')): ?>
+                                            <li>
+                                                <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none  text-primary"
+                                                    href="#" data-bs-toggle="modal"
+                                                    data-bs-target="#person-edit-modal-<?= htmlspecialchars(aes_encrypt($pessoa->getId())) ?>">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" class="lucide lucide-pencil">
+                                                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                                        <path d="m15 5 4 4" />
+                                                    </svg>
+                                                    Editar
+                                                </a>
+                                            </li>
+                                        <?php endif; ?>
+                                        <?php if (tem_permissao('people.delete')): ?>
+                                            <li>
+                                                <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none  text-error"
+                                                    href="#" data-bs-toggle="modal"
+                                                    data-bs-target="#delete-confirm-modal-<?= htmlspecialchars(aes_encrypt($pessoa->getId())) ?>">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" class="lucide lucide-archive">
+                                                        <rect width="20" height="5" x="2" y="3" rx="1" />
+                                                        <path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8" />
+                                                        <path d="M10 12h4" />
+                                                    </svg>
+                                                    Mover para Reciclagem
+                                                </a>
+                                            </li>
+                                        <?php endif; ?>
+                                    </ul>
+                                </div>
                             <?php endif; ?>
                         </div>
 
@@ -273,183 +278,17 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 
 <!-- Modal de Criação de Pessoa -->
 <?php if (tem_permissao('people.create')): ?>
-<div class="modal fade" id="equipment-creation-modal" tabindex="-1" aria-labelledby="equipmentModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
-        <div class="modal-content custom-modal-content d-flex flex-column">
-            <!-- Titulo -->
-            <div
-                class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
-                <div class="d-flex flex-column">
-                    <h2 class="equipment-creation-modal-title modal-title" id="equipmentModalLabel">Nova Pessoa
-                    </h2>
-                    <span class="text-secondary fw-400">Informações do colaborador</span>
-                </div>
-
-                <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
-                    data-bs-dismiss="modal" aria-label="Close">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-x-icon lucide-x stroke-secondary">
-                        <path d="M18 6 6 18" />
-                        <path d="m6 6 12 12" />
-                    </svg>
-                </button>
-            </div>
-
-            <!-- Body do Modal com scroll automático -->
-            <div class="modal-body p-0">
-                <form id="person-creation-form" method="POST" action="people-crud/create-person.php"
-                    class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
-
-                    <!-- Row 1: Nome Completo e NIF -->
-                    <div class="d-flex gap-4 w-100">
-                        <div class="d-flex flex-column form-item w-100 mw-0">
-                            <div class="d-flex gap-1 align-items-center">
-                                <label for="person-name">Nome Completo</label>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    class="lucide lucide-asterisk-icon lucide-asterisk text-error">
-                                    <path d="M12 6v12" />
-                                    <path d="M17.196 9 6.804 15" />
-                                    <path d="m6.804 9 10.392 6" />
-                                </svg>
-                            </div>
-                            <input type="text" id="person-name" name="person-name" placeholder="Ex: Dr. Manuel Costa"
-                                required>
-                        </div>
-
-                        <div class="d-flex flex-column form-item w-100 mw-0">
-                            <div class="d-flex gap-1 align-items-center">
-                                <label for="person-nif">NIF</label>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    class="lucide lucide-asterisk-icon lucide-asterisk text-error">
-                                    <path d="M12 6v12" />
-                                    <path d="M17.196 9 6.804 15" />
-                                    <path d="m6.804 9 10.392 6" />
-                                </svg>
-                            </div>
-                            <input type="text" id="person-nif" name="person-nif" placeholder="Ex: 123456789" required>
-                        </div>
-                    </div>
-
-                    <!-- Row 2: Função e Departamento -->
-                    <div class="d-flex gap-4 w-100">
-                        <div class="d-flex flex-column form-item w-100 mw-0">
-                            <div class="d-flex gap-1 align-items-center">
-                                <label for="person-role">Função</label>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    class="lucide lucide-asterisk-icon lucide-asterisk text-error">
-                                    <path d="M12 6v12" />
-                                    <path d="M17.196 9 6.804 15" />
-                                    <path d="m6.804 9 10.392 6" />
-                                </svg>
-                            </div>
-                            <select class="form-select" id="person-role" name="person-role" required>
-                                <option value="" disabled selected>Selecione uma Função</option>
-                                <?php foreach (Funcao::cases() as $funcao): ?>
-                                    <option value="<?= $funcao->value ?>"><?= $funcao->value ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-
-                        <div class="d-flex flex-column form-item w-100 mw-0">
-                            <div class="d-flex gap-1 align-items-center">
-                                <label for="person-department">Departamento</label>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    class="lucide lucide-asterisk-icon lucide-asterisk text-error">
-                                    <path d="M12 6v12" />
-                                    <path d="M17.196 9 6.804 15" />
-                                    <path d="m6.804 9 10.392 6" />
-                                </svg>
-                            </div>
-                            <input type="text" id="person-department" name="person-department"
-                                placeholder="Ex: Servicio de Eng. Biomédica" required>
-                        </div>
-                    </div>
-
-                    <!-- Row 3: Email e Telefone -->
-                    <div class="d-flex gap-4 w-100">
-                        <div class="d-flex flex-column form-item w-100 mw-0">
-                            <div class="d-flex gap-1 align-items-center">
-                                <label for="person-email">Email</label>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    class="lucide lucide-asterisk-icon lucide-asterisk text-error">
-                                    <path d="M12 6v12" />
-                                    <path d="M17.196 9 6.804 15" />
-                                    <path d="m6.804 9 10.392 6" />
-                                </svg>
-                            </div>
-                            <input type="email" id="person-email" name="person-email" placeholder="email@hospital.pt"
-                                required>
-                        </div>
-
-                        <div class="d-flex flex-column form-item w-100 mw-0">
-                            <div class="d-flex gap-1 align-items-center">
-                                <label for="person-phone">Telefone</label>
-                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    class="lucide lucide-asterisk-icon lucide-asterisk text-error">
-                                    <path d="M12 6v12" />
-                                    <path d="M17.196 9 6.804 15" />
-                                    <path d="m6.804 9 10.392 6" />
-                                </svg>
-                            </div>
-                            <input type="text" id="person-phone" name="person-phone" placeholder="+351 9XX XXX XXX"
-                                required>
-                        </div>
-                    </div>
-
-                    <!-- Footer do Formulario -->
-                    <div class="d-flex w-100 justify-content-end gap-4 button-row mt-4">
-                        <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
-                            data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" name="criar_pessoa" id="btn-submit-modal"
-                            class="btn btn-primary btn-glowing" disabled>
-                            Criar Pessoa
-                        </button>
-                    </div>
-                    <?php if (SHOW_DEBUG_BUTTONS): ?>
-                        <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
-                            <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido (Debug)</span>
-                            <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'person-name': 'Maria Inês Ribeiro', 'person-nif': '123456789', 'person-email': 'maria.ribeiro@hospital.pt', 'person-phone': '912345678', 'person-role': 'Médico', 'person-department': 'Urgência'})">Maria (Médica)</button>
-                            <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1" onclick="prefillFields({'person-name': 'Tiago Faria Silva', 'person-nif': '987654321', 'person-email': 'tiago.silva@hospital.pt', 'person-phone': '913456789', 'person-role': 'Enfermeiro', 'person-department': 'Urgência'})">Tiago (Enfermeiro)</button>
-                        </div>
-                    <?php endif; ?>
-                </form>
-            </div>
-        </div>
-    </div>
-</div>
-<?php endif; ?>
-
-<?php foreach ($listaPessoas as $pessoa): ?>
-    <?php $encryptedPersonId = aes_encrypt($pessoa->getId()); ?>
-
-    <?php if (tem_permissao('people.edit')): ?>
-    <!-- Modal de Edição de Pessoa para <?= htmlspecialchars($pessoa->getNome()) ?> -->
-    <div class="modal fade" id="person-edit-modal-<?= htmlspecialchars($encryptedPersonId) ?>" tabindex="-1"
-        aria-labelledby="personEditModalLabel-<?= htmlspecialchars($encryptedPersonId) ?>" aria-hidden="true">
+    <div class="modal fade" id="equipment-creation-modal" tabindex="-1" aria-labelledby="equipmentModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
             <div class="modal-content custom-modal-content d-flex flex-column">
                 <!-- Titulo -->
                 <div
                     class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
                     <div class="d-flex flex-column">
-                        <h2 class="equipment-creation-modal-title modal-title"
-                            id="personEditModalLabel-<?= htmlspecialchars($encryptedPersonId) ?>">
-                            Editar Pessoa
+                        <h2 class="equipment-creation-modal-title modal-title" id="equipmentModalLabel">Nova Pessoa
                         </h2>
+                        <span class="text-secondary fw-400">Informações do colaborador</span>
                     </div>
 
                     <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
@@ -465,18 +304,14 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 
                 <!-- Body do Modal com scroll automático -->
                 <div class="modal-body p-0">
-                    <form id="person-edit-form-<?= htmlspecialchars($encryptedPersonId) ?>" method="POST"
-                        action="people-crud/edit-person.php"
-                        class="person-edit-form equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
-
-                        <input type="hidden" name="person-id" value="<?= htmlspecialchars($encryptedPersonId) ?>">
+                    <form id="person-creation-form" method="POST" action="people-crud/create-person.php"
+                        class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
 
                         <!-- Row 1: Nome Completo e NIF -->
-                        <div class="d-flex w-100 gap-4">
+                        <div class="d-flex gap-4 w-100">
                             <div class="d-flex flex-column form-item w-100 mw-0">
-                                <div class="d-flex gap-1">
-                                    <label for="edit-person-name-<?= htmlspecialchars($encryptedPersonId) ?>">Nome
-                                        Completo</label>
+                                <div class="d-flex gap-1 align-items-center">
+                                    <label for="person-name">Nome Completo</label>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                         stroke-linejoin="round"
@@ -486,13 +321,13 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                         <path d="m6.804 9 10.392 6" />
                                     </svg>
                                 </div>
-                                <input type="text" id="edit-person-name-<?= htmlspecialchars($encryptedPersonId) ?>"
-                                    name="person-name" value="<?= htmlspecialchars($pessoa->getNome()) ?>" required>
+                                <input type="text" id="person-name" name="person-name" placeholder="Ex: Dr. Manuel Costa"
+                                    required>
                             </div>
 
                             <div class="d-flex flex-column form-item w-100 mw-0">
-                                <div class="d-flex gap-1">
-                                    <label for="edit-person-nif-<?= htmlspecialchars($encryptedPersonId) ?>">NIF</label>
+                                <div class="d-flex gap-1 align-items-center">
+                                    <label for="person-nif">NIF</label>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                         stroke-linejoin="round"
@@ -502,16 +337,15 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                         <path d="m6.804 9 10.392 6" />
                                     </svg>
                                 </div>
-                                <input type="text" id="edit-person-nif-<?= htmlspecialchars($encryptedPersonId) ?>"
-                                    name="person-nif" value="<?= htmlspecialchars($pessoa->getNif()) ?>" required>
+                                <input type="text" id="person-nif" name="person-nif" placeholder="Ex: 123456789" required>
                             </div>
                         </div>
 
                         <!-- Row 2: Função e Departamento -->
-                        <div class="d-flex w-100 gap-4">
+                        <div class="d-flex gap-4 w-100">
                             <div class="d-flex flex-column form-item w-100 mw-0">
-                                <div class="d-flex gap-1">
-                                    <label for="edit-person-role-<?= htmlspecialchars($encryptedPersonId) ?>">Função</label>
+                                <div class="d-flex gap-1 align-items-center">
+                                    <label for="person-role">Função</label>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                         stroke-linejoin="round"
@@ -521,20 +355,17 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                         <path d="m6.804 9 10.392 6" />
                                     </svg>
                                 </div>
-                                <select class="form-select"
-                                    id="edit-person-role-<?= htmlspecialchars($encryptedPersonId) ?>" name="person-role"
-                                    required>
-                                    <option value="" disabled>Selecione uma Função</option>
+                                <select class="form-select" id="person-role" name="person-role" required>
+                                    <option value="" disabled selected>Selecione uma Função</option>
                                     <?php foreach (Funcao::cases() as $funcao): ?>
-                                        <option value="<?= $funcao->value ?>" <?= $pessoa->getFuncao() === $funcao ? 'selected' : '' ?>><?= $funcao->value ?></option>
+                                        <option value="<?= $funcao->value ?>"><?= $funcao->value ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
 
                             <div class="d-flex flex-column form-item w-100 mw-0">
-                                <div class="d-flex gap-1">
-                                    <label
-                                        for="edit-person-department-<?= htmlspecialchars($encryptedPersonId) ?>">Departamento</label>
+                                <div class="d-flex gap-1 align-items-center">
+                                    <label for="person-department">Departamento</label>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                         stroke-linejoin="round"
@@ -544,17 +375,16 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                         <path d="m6.804 9 10.392 6" />
                                     </svg>
                                 </div>
-                                <input type="text" id="edit-person-department-<?= htmlspecialchars($encryptedPersonId) ?>"
-                                    name="person-department" value="<?= htmlspecialchars($pessoa->getDepartamento()) ?>"
-                                    required>
+                                <input type="text" id="person-department" name="person-department"
+                                    placeholder="Ex: Servicio de Eng. Biomédica" required>
                             </div>
                         </div>
 
                         <!-- Row 3: Email e Telefone -->
-                        <div class="d-flex w-100 gap-4">
+                        <div class="d-flex gap-4 w-100">
                             <div class="d-flex flex-column form-item w-100 mw-0">
-                                <div class="d-flex gap-1">
-                                    <label for="edit-person-email-<?= htmlspecialchars($encryptedPersonId) ?>">Email</label>
+                                <div class="d-flex gap-1 align-items-center">
+                                    <label for="person-email">Email</label>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                         stroke-linejoin="round"
@@ -564,14 +394,13 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                         <path d="m6.804 9 10.392 6" />
                                     </svg>
                                 </div>
-                                <input type="email" id="edit-person-email-<?= htmlspecialchars($encryptedPersonId) ?>"
-                                    name="person-email" value="<?= htmlspecialchars($pessoa->getEmail()) ?>" required>
+                                <input type="email" id="person-email" name="person-email" placeholder="email@hospital.pt"
+                                    required>
                             </div>
 
                             <div class="d-flex flex-column form-item w-100 mw-0">
-                                <div class="d-flex gap-1">
-                                    <label
-                                        for="edit-person-phone-<?= htmlspecialchars($encryptedPersonId) ?>">Telefone</label>
+                                <div class="d-flex gap-1 align-items-center">
+                                    <label for="person-phone">Telefone</label>
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                         stroke-linejoin="round"
@@ -581,102 +410,283 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                         <path d="m6.804 9 10.392 6" />
                                     </svg>
                                 </div>
-                                <input type="text" id="edit-person-phone-<?= htmlspecialchars($encryptedPersonId) ?>"
-                                    name="person-phone" value="<?= htmlspecialchars($pessoa->getContactoTelefonico()) ?>"
+                                <input type="text" id="person-phone" name="person-phone" placeholder="+351 9XX XXX XXX"
                                     required>
                             </div>
                         </div>
 
                         <!-- Footer do Formulario -->
-                        <div class="d-flex w-100 justify-content-end gap-4 button-row mt-4">
+                        <div class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row  mt-4">
                             <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                                 data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" name="editar_pessoa" class="btn-edit-submit btn btn-primary btn-glowing">
-                                Guardar Alterações
+                            <button type="submit" name="criar_pessoa" id="btn-submit-modal"
+                                class="btn btn-primary btn-glowing" disabled>
+                                Criar Pessoa
                             </button>
                         </div>
+                        <?php if (SHOW_DEBUG_BUTTONS): ?>
+                            <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
+                                <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido
+                                    (Debug)</span>
+                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
+                                    onclick="prefillFields({'person-name': 'Maria Inês Ribeiro', 'person-nif': '123456789', 'person-email': 'maria.ribeiro@hospital.pt', 'person-phone': '912345678', 'person-role': 'Médico', 'person-department': 'Urgência'})">Maria
+                                    (Médica)</button>
+                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
+                                    onclick="prefillFields({'person-name': 'Tiago Faria Silva', 'person-nif': '987654321', 'person-email': 'tiago.silva@hospital.pt', 'person-phone': '913456789', 'person-role': 'Enfermeiro', 'person-department': 'Urgência'})">Tiago
+                                    (Enfermeiro)</button>
+                            </div>
+                        <?php endif; ?>
                     </form>
                 </div>
             </div>
         </div>
     </div>
+<?php endif; ?>
+
+<?php foreach ($listaPessoas as $pessoa): ?>
+    <?php $encryptedPersonId = aes_encrypt($pessoa->getId()); ?>
+
+    <?php if (tem_permissao('people.edit')): ?>
+        <!-- Modal de Edição de Pessoa para <?= htmlspecialchars($pessoa->getNome()) ?> -->
+        <div class="modal fade" id="person-edit-modal-<?= htmlspecialchars($encryptedPersonId) ?>" tabindex="-1"
+            aria-labelledby="personEditModalLabel-<?= htmlspecialchars($encryptedPersonId) ?>" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
+                <div class="modal-content custom-modal-content d-flex flex-column">
+                    <!-- Titulo -->
+                    <div
+                        class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
+                        <div class="d-flex flex-column">
+                            <h2 class="equipment-creation-modal-title modal-title"
+                                id="personEditModalLabel-<?= htmlspecialchars($encryptedPersonId) ?>">
+                                Editar Pessoa
+                            </h2>
+                        </div>
+
+                        <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
+                            data-bs-dismiss="modal" aria-label="Close">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-x-icon lucide-x stroke-secondary">
+                                <path d="M18 6 6 18" />
+                                <path d="m6 6 12 12" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <!-- Body do Modal com scroll automático -->
+                    <div class="modal-body p-0">
+                        <form id="person-edit-form-<?= htmlspecialchars($encryptedPersonId) ?>" method="POST"
+                            action="people-crud/edit-person.php"
+                            class="person-edit-form equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
+
+                            <input type="hidden" name="person-id" value="<?= htmlspecialchars($encryptedPersonId) ?>">
+
+                            <!-- Row 1: Nome Completo e NIF -->
+                            <div class="d-flex w-100 gap-4">
+                                <div class="d-flex flex-column form-item w-100 mw-0">
+                                    <div class="d-flex gap-1">
+                                        <label for="edit-person-name-<?= htmlspecialchars($encryptedPersonId) ?>">Nome
+                                            Completo</label>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                            <path d="M12 6v12" />
+                                            <path d="M17.196 9 6.804 15" />
+                                            <path d="m6.804 9 10.392 6" />
+                                        </svg>
+                                    </div>
+                                    <input type="text" id="edit-person-name-<?= htmlspecialchars($encryptedPersonId) ?>"
+                                        name="person-name" value="<?= htmlspecialchars($pessoa->getNome()) ?>" required>
+                                </div>
+
+                                <div class="d-flex flex-column form-item w-100 mw-0">
+                                    <div class="d-flex gap-1">
+                                        <label for="edit-person-nif-<?= htmlspecialchars($encryptedPersonId) ?>">NIF</label>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                            <path d="M12 6v12" />
+                                            <path d="M17.196 9 6.804 15" />
+                                            <path d="m6.804 9 10.392 6" />
+                                        </svg>
+                                    </div>
+                                    <input type="text" id="edit-person-nif-<?= htmlspecialchars($encryptedPersonId) ?>"
+                                        name="person-nif" value="<?= htmlspecialchars($pessoa->getNif()) ?>" required>
+                                </div>
+                            </div>
+
+                            <!-- Row 2: Função e Departamento -->
+                            <div class="d-flex w-100 gap-4">
+                                <div class="d-flex flex-column form-item w-100 mw-0">
+                                    <div class="d-flex gap-1">
+                                        <label for="edit-person-role-<?= htmlspecialchars($encryptedPersonId) ?>">Função</label>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                            <path d="M12 6v12" />
+                                            <path d="M17.196 9 6.804 15" />
+                                            <path d="m6.804 9 10.392 6" />
+                                        </svg>
+                                    </div>
+                                    <select class="form-select"
+                                        id="edit-person-role-<?= htmlspecialchars($encryptedPersonId) ?>" name="person-role"
+                                        required>
+                                        <option value="" disabled>Selecione uma Função</option>
+                                        <?php foreach (Funcao::cases() as $funcao): ?>
+                                            <option value="<?= $funcao->value ?>" <?= $pessoa->getFuncao() === $funcao ? 'selected' : '' ?>><?= $funcao->value ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+
+                                <div class="d-flex flex-column form-item w-100 mw-0">
+                                    <div class="d-flex gap-1">
+                                        <label
+                                            for="edit-person-department-<?= htmlspecialchars($encryptedPersonId) ?>">Departamento</label>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                            <path d="M12 6v12" />
+                                            <path d="M17.196 9 6.804 15" />
+                                            <path d="m6.804 9 10.392 6" />
+                                        </svg>
+                                    </div>
+                                    <input type="text" id="edit-person-department-<?= htmlspecialchars($encryptedPersonId) ?>"
+                                        name="person-department" value="<?= htmlspecialchars($pessoa->getDepartamento()) ?>"
+                                        required>
+                                </div>
+                            </div>
+
+                            <!-- Row 3: Email e Telefone -->
+                            <div class="d-flex w-100 gap-4">
+                                <div class="d-flex flex-column form-item w-100 mw-0">
+                                    <div class="d-flex gap-1">
+                                        <label for="edit-person-email-<?= htmlspecialchars($encryptedPersonId) ?>">Email</label>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                            <path d="M12 6v12" />
+                                            <path d="M17.196 9 6.804 15" />
+                                            <path d="m6.804 9 10.392 6" />
+                                        </svg>
+                                    </div>
+                                    <input type="email" id="edit-person-email-<?= htmlspecialchars($encryptedPersonId) ?>"
+                                        name="person-email" value="<?= htmlspecialchars($pessoa->getEmail()) ?>" required>
+                                </div>
+
+                                <div class="d-flex flex-column form-item w-100 mw-0">
+                                    <div class="d-flex gap-1">
+                                        <label
+                                            for="edit-person-phone-<?= htmlspecialchars($encryptedPersonId) ?>">Telefone</label>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                            <path d="M12 6v12" />
+                                            <path d="M17.196 9 6.804 15" />
+                                            <path d="m6.804 9 10.392 6" />
+                                        </svg>
+                                    </div>
+                                    <input type="text" id="edit-person-phone-<?= htmlspecialchars($encryptedPersonId) ?>"
+                                        name="person-phone" value="<?= htmlspecialchars($pessoa->getContactoTelefonico()) ?>"
+                                        required>
+                                </div>
+                            </div>
+
+                            <!-- Footer do Formulario -->
+                            <div class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row  mt-4">
+                                <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
+                                    data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" name="editar_pessoa" class="btn-edit-submit btn btn-primary btn-glowing">
+                                    Guardar Alterações
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     <?php endif; ?>
 
     <?php if (tem_permissao('people.delete')): ?>
-    <!-- Modal de Eliminação de Pessoa para <?= htmlspecialchars($pessoa->getNome()) ?> -->
-    <div class="modal fade" id="delete-confirm-modal-<?= htmlspecialchars($encryptedPersonId) ?>" tabindex="-1"
-        aria-labelledby="deleteModalLabel-<?= htmlspecialchars($encryptedPersonId) ?>" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
-            <div class="modal-content custom-modal-content d-flex flex-column">
-                <!-- Titulo -->
-                <div
-                    class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
-                    <div class="d-flex flex-column">
-                        <h2 class="equipment-creation-modal-title modal-title"
-                            id="deleteModalLabel-<?= htmlspecialchars($encryptedPersonId) ?>">
-                            Mover para Reciclagem</h2>
-                        <span class="text-secondary fw-400">Esta ação não pode ser
-                            revertida.</span>
+        <!-- Modal de Eliminação de Pessoa para <?= htmlspecialchars($pessoa->getNome()) ?> -->
+        <div class="modal fade" id="delete-confirm-modal-<?= htmlspecialchars($encryptedPersonId) ?>" tabindex="-1"
+            aria-labelledby="deleteModalLabel-<?= htmlspecialchars($encryptedPersonId) ?>" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
+                <div class="modal-content custom-modal-content d-flex flex-column">
+                    <!-- Titulo -->
+                    <div
+                        class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
+                        <div class="d-flex flex-column">
+                            <h2 class="equipment-creation-modal-title modal-title"
+                                id="deleteModalLabel-<?= htmlspecialchars($encryptedPersonId) ?>">
+                                Mover para Reciclagem</h2>
+                            <span class="text-secondary fw-400">Esta ação não pode ser
+                                revertida.</span>
+                        </div>
+
+                        <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
+                            data-bs-dismiss="modal" aria-label="Close">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-x-icon lucide-x stroke-secondary">
+                                <path d="M18 6 6 18" />
+                                <path d="m6 6 12 12" />
+                            </svg>
+                        </button>
                     </div>
 
-                    <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
-                        data-bs-dismiss="modal" aria-label="Close">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-x-icon lucide-x stroke-secondary">
-                            <path d="M18 6 6 18" />
-                            <path d="m6 6 12 12" />
-                        </svg>
-                    </button>
-                </div>
+                    <!-- Body do Modal -->
+                    <div class="modal-body p-0">
+                        <form method="POST" action="people-crud/delete-person.php">
+                            <input type="hidden" name="person-id" value="<?= htmlspecialchars($encryptedPersonId) ?>">
+                            <div
+                                class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
 
-                <!-- Body do Modal -->
-                <div class="modal-body p-0">
-                    <form method="POST" action="people-crud/delete-person.php">
-                        <input type="hidden" name="person-id" value="<?= htmlspecialchars($encryptedPersonId) ?>">
-                        <div
-                            class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
-
-                            <div class="d-flex flex-column align-items-center gap-4">
-                                <div class="d-flex padding-3 danger-icon">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-triangle-alert">
-                                        <path
-                                            d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
-                                        <path d="M12 9v4" />
-                                        <path d="M12 17h.01" />
-                                    </svg>
-                                </div>
-                                <div class="d-flex flex-column align-items-center justify-content-center gap-3">
-                                    <div
-                                        class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
-                                        <p class="text-secondary">
-                                            Tem a certeza que deseja apagar
-                                            esta pessoa?
-                                        </p>
-                                        <h2 class="fw-700">
-                                            <?= htmlspecialchars($pessoa->getNome()) ?>
-                                        </h2>
-                                        <span class="text-muted">NIF: <?= htmlspecialchars($pessoa->getNif()) ?></span>
+                                <div class="d-flex flex-column align-items-center gap-4">
+                                    <div class="d-flex padding-3 danger-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round" class="lucide lucide-triangle-alert">
+                                            <path
+                                                d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+                                            <path d="M12 9v4" />
+                                            <path d="M12 17h.01" />
+                                        </svg>
+                                    </div>
+                                    <div class="d-flex flex-column align-items-center justify-content-center gap-3">
+                                        <div
+                                            class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
+                                            <p class="text-secondary">
+                                                Tem a certeza que deseja apagar
+                                                esta pessoa?
+                                            </p>
+                                            <h2 class="fw-700">
+                                                <?= htmlspecialchars($pessoa->getNome()) ?>
+                                            </h2>
+                                            <span class="text-muted">NIF: <?= htmlspecialchars($pessoa->getNif()) ?></span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <!-- Botoes -->
-                            <div class="d-flex w-100 justify-content-end gap-4 button-row">
-                                <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
-                                    data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" name="apagar_pessoa" class="btn btn-danger btn-glowing text-white">
-                                    Sim, Apagar.
-                                </button>
+                                <!-- Botoes -->
+                                <div class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row ">
+                                    <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" name="apagar_pessoa" class="btn btn-danger btn-glowing text-white">
+                                        Sim, Apagar.
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
     <?php endif; ?>
 <?php endforeach; ?>
 

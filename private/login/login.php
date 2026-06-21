@@ -43,34 +43,36 @@ if (!empty($_SESSION['server_error'])) {
     <?php ob_flush();
     flush(); ?>
 
-    <main class="login-page-container vh-100">
-        <div class="d-flex vh-100">
-            <button class="pa-theme-toggle" aria-label="Alternar tema">
-                <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path
-                        d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />
-                </svg>
-                <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
-                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <circle cx="12" cy="12" r="4" />
-                    <path d="M12 2v2" />
-                    <path d="M12 20v2" />
-                    <path d="m4.93 4.93 1.41 1.41" />
-                    <path d="m17.66 17.66 1.41 1.41" />
-                    <path d="M2 12h2" />
-                    <path d="M20 12h2" />
-                    <path d="m6.34 17.66-1.41 1.41" />
-                    <path d="m19.07 4.93-1.41 1.41" />
-                </svg>
-            </button>
+    <main class="login-page-container position-relative vh-100">
+        <button
+            class="pa-theme-toggle position-absolute top-0 end-0 m-4 z-3 cursor-pointer border-0 bg-transparent p-0 d-inline-flex align-items-center text-secondary"
+            aria-label="Alternar tema">
+            <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path
+                    d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />
+            </svg>
+            <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="4" />
+                <path d="M12 2v2" />
+                <path d="M12 20v2" />
+                <path d="m4.93 4.93 1.41 1.41" />
+                <path d="m17.66 17.66 1.41 1.41" />
+                <path d="M2 12h2" />
+                <path d="M20 12h2" />
+                <path d="m6.34 17.66-1.41 1.41" />
+                <path d="m19.07 4.93-1.41 1.41" />
+            </svg>
+        </button>
+        <div class="row g-0 vh-100">
             <div
-                class="col-6 d-flex flex-column align-items-start justify-content-center pa-informative-section padding-16 gap-8 overflow-hidden">
-                <div class="background-decorations">
-                    <div class="background-decoration-item background-decoration-1"></div>
-                    <div class="background-decoration-item background-decoration-2"></div>
-                    <div class="background-decoration-item background-decoration-3"></div>
-                    <div class="background-decoration-item background-decoration-4"></div>
+                class="col-6 d-flex flex-column align-items-start justify-content-center pa-informative-section position-relative d-none d-md-flex padding-16 gap-8 overflow-hidden">
+                <div class="background-decorations position-absolute overflow-hidden z-0">
+                    <div class="background-decoration-item position-absolute background-decoration-1"></div>
+                    <div class="background-decoration-item position-absolute background-decoration-2"></div>
+                    <div class="background-decoration-item position-absolute background-decoration-3"></div>
+                    <div class="background-decoration-item position-absolute background-decoration-4"></div>
                 </div>
                 <div class="d-flex gap-4">
                     <div class="d-flex align-items-center justify-content-center svg-container">
@@ -114,14 +116,16 @@ if (!empty($_SESSION['server_error'])) {
                 </div>
 
             </div>
-            <div class="col-6 d-flex flex-column justify-content-center padding-16 login-section">
-                <div class="background-decorations">
-                    <div class="background-decoration-item background-decoration-1"></div>
-                    <div class="background-decoration-item background-decoration-2"></div>
-                    <div class="background-decoration-item background-decoration-3"></div>
-                    <div class="background-decoration-item background-decoration-4"></div>
+            <div
+                class="col-12 col-md-6 d-flex flex-column justify-content-center padding-16 login-section">
+                <div class="background-decorations position-absolute overflow-hidden z-0">
+                    <div class="background-decoration-item position-absolute background-decoration-1"></div>
+                    <div class="background-decoration-item position-absolute background-decoration-2"></div>
+                    <div class="background-decoration-item position-absolute background-decoration-3"></div>
+                    <div class="background-decoration-item position-absolute background-decoration-4"></div>
                 </div>
-                <div class="d-flex align-self-center justify-content-center flex-column gap-8 login-section-content">
+                <div
+                    class="d-flex align-self-center justify-content-center flex-column gap-8 login-section-content">
                     <div class="d-flex flex-column gap-1">
                         <h1>Bem-vindo de volta</h1>
                         <p class="text-secondary fw-400">Introduza as suas credenciais para aceder ao sistema.</p>

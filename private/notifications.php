@@ -86,9 +86,9 @@ $unreadCount = count(array_filter($notificacoes, function ($n) {
     <?php include_once BASE_PATH . 'private/includes/headers.php'; ?>
 
     <!-- Conteúdo -->
-    <section class="content-container gap-6 notifications">
+    <section class="padding-6 gap-6 d-flex flex-column padding-6 notifications">
         <!-- Titulo -->
-        <div class="d-flex justify-content-between align-items-center w-100 dashboard-title">
+        <div class="d-flex justify-content-between align-items-center w-100 dashboard-title flex-column flex-md-row">
             <div class="d-flex flex-column gap-1">
                 <h1>Notificações</h1>
                 <p class="text-secondary fw-400"><span id="unread-count"><?php echo $unreadCount; ?></span> notificações
