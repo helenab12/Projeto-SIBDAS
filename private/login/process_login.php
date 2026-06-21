@@ -13,6 +13,11 @@ try {
     $email = $_POST["email"] ?? null;
     $password = $_POST["password"] ?? null;
 
+    // Sanitizar o email para garantir match com a base de dados
+    if (!empty($email)) {
+        $email = sanitizar_array_dados(['email' => $email])['email'];
+    }
+
     if (empty($email) || empty($password)) {
         $_SESSION['server_error'] = 'Preencha todos os campos.';
         header("Location: " . BASE_URL . "private/login/login.php");

@@ -75,12 +75,30 @@ function redirect_if_not_logged($redirect_to = 'private/login/login.php', ?array
                     )
                 );
             }
+
+            // Aproveitar a ligação aberta para carregar as permissões, se necessário
+            if (!isset($_SESSION['permissoes']) && isset($_SESSION['userAtual'])) {
+                $stmtPerms = execute_query(
+                    "SELECT pm.chave, pp.possui
+                     FROM PerfilPermissao pp
+                     INNER JOIN Permissao pm ON pp.idPermissao = pm.idPermissao
+                     WHERE pp.idPerfil = :idPerfil AND pm.ativo = 1",
+                    ['idPerfil' => $_SESSION['userAtual']->getIdPerfil()],
+                    $ligacao
+                );
+                $permissoes = [];
+                while ($row = $stmtPerms->fetch(PDO::FETCH_OBJ)) {
+                    $permissoes[$row->chave] = (bool) $row->possui;
+                }
+                $_SESSION['permissoes'] = $permissoes;
+            }
+            $ligacao = null;
         } catch (Exception $e) {
             // Ignorar silenciosamente
         }
     }
 
-    // Carregar permissões se não existirem (ex: sessão antiga ou login feito antes da feature)
+    // Caso as permissões ainda não estejam carregadas (ex: sessão antiga sem o userAtual a ser null)
     if (!isset($_SESSION['permissoes']) && isset($_SESSION['userAtual'])) {
         try {
             $ligacao = connect_to_db();
@@ -97,6 +115,7 @@ function redirect_if_not_logged($redirect_to = 'private/login/login.php', ?array
                 $permissoes[$row->chave] = (bool) $row->possui;
             }
             $_SESSION['permissoes'] = $permissoes;
+            $ligacao = null;
         } catch (Exception $e) {
             $_SESSION['permissoes'] = [];
         }
@@ -265,4 +284,44 @@ function registar_auditoria_edicao(
             );
         }
     }
+}
+
+// Sanitiza um array de dados baseado nas chaves 
+function sanitizar_array_dados(array $dados): array {
+    $sanitizados = [];
+    foreach ($dados as $chave => $valor) {
+        if (is_string($valor)) {
+            $valor = trim($valor);
+            
+            // Nomes próprios e designações
+            if (in_array($chave, ['nome', 'pessoa_nome', 'fornecedorNome', 'fabricante', 'distribuidor', 'nomeUtilizador'])) {
+                $valor = capitalize_name($valor);
+            }
+            // Títulos e descrições (primeira letra maiúscula)
+            elseif (in_array($chave, ['designacao', 'descricao', 'observacoes', 'titulo', 'mensagem'])) {
+                if (strlen($valor) > 0) {
+                    $valor = mb_strtoupper(mb_substr($valor, 0, 1)) . mb_substr($valor, 1);
+                }
+            }
+            // Emails (minúsculas)
+            elseif (in_array($chave, ['email', 'emailAutenticacao', 'emailContacto'])) {
+                $valor = strtolower($valor);
+            }
+            // Contactos e NIFs (remover espaços soltos)
+            elseif (in_array($chave, ['contactoTelefonico', 'nif', 'codigoInterno', 'numeroSerie'])) {
+                if (in_array($chave, ['contactoTelefonico', 'nif'])) {
+                    $valor = str_replace(' ', '', $valor);
+                }
+            }
+            // Datas no formato DD/MM/YYYY para YYYY-MM-DD
+            elseif (str_contains(strtolower((string)$chave), 'data') && preg_match('/^\d{2}\/\d{2}\/\d{4}$/', $valor)) {
+                $data = DateTime::createFromFormat('d/m/Y', $valor);
+                if ($data) {
+                    $valor = $data->format('Y-m-d');
+                }
+            }
+        }
+        $sanitizados[$chave] = $valor;
+    }
+    return $sanitizados;
 }

@@ -15,12 +15,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $id = (int)$id;
 
-        $ligacao = connect_to_db();
         execute_query(
             "UPDATE Permissao SET ativo = 0 WHERE idPermissao = :id",
-            ['id' => $id],
-            $ligacao
-        );
+            ['id' => $id]);
 
         // Registar auditoria
         registar_auditoria($ligacao, 'Permissao', $id, 'Remoção', 'ativo', '1', '0');

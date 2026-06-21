@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $telefone = trim($_POST['person-phone'] ?? '');
 
         // Validação usando a classe Pessoa
-        $erros = Pessoa::validarDados([
+        $dadosSanitizados = Pessoa::sanitizarDados([
             'id' => (string) $id,
             'nome' => $nome,
             'email' => $email,
@@ -34,19 +34,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'dataCriacao' => new DateTime(),
             'dataAtualizacao' => new DateTime()
         ]);
+        $nome = $dadosSanitizados['nome'] ?? $nome;
+        $email = $dadosSanitizados['email'] ?? $email;
+        $telefone = $dadosSanitizados['contactoTelefonico'] ?? $telefone;
+        $nif = $dadosSanitizados['nif'] ?? $nif;
+        $funcao = $dadosSanitizados['funcao'] ?? $funcao;
+        $departamento = $dadosSanitizados['departamento'] ?? $departamento;
+        $erros = Pessoa::validarDados($dadosSanitizados);
 
         if (!empty($erros)) {
             throw new Exception(implode(", ", $erros));
         }
 
-        $ligacao = connect_to_db();
-
         // Verificar se NIF ou Email já existem para outra pessoa
         $stmt = execute_query(
             "SELECT idPessoa, nif, email FROM Pessoa WHERE (nif = :nif OR email = :email) AND idPessoa != :id",
-            ['nif' => $nif, 'email' => $email, 'id' => $id],
-            $ligacao
-        );
+            ['nif' => $nif, 'email' => $email, 'id' => $id]);
         $existente = $stmt->fetch();
         if ($existente) {
             if ($existente['nif'] === $nif) {
@@ -60,9 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Ler o estado antigo antes do Update para Auditoria
         $stmtAntigo = execute_query(
             "SELECT nome, email, contactoTelefonico, nif, funcao, departamento FROM Pessoa WHERE idPessoa = :id",
-            ['id' => $id],
-            $ligacao
-        );
+            ['id' => $id]);
         $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
 
         execute_query(
@@ -77,9 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'funcao' => $funcao,
                 'departamento' => $departamento,
                 'id' => $id
-            ],
-            $ligacao
-        );
+            ]);
 
         // Registar auditoria
         registar_auditoria_edicao($ligacao, 'Pessoa', $id, $antigo, [

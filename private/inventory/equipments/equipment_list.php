@@ -1491,6 +1491,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
     while ($row = $stmtCompEq->fetch(PDO::FETCH_ASSOC)) {
         $componentesEq[$row['idComponente']] = $row['quantidade'];
     }
+    $ligacao = null;
     ?>
 
     <?php if (tem_permissao('equipments.edit')): ?>

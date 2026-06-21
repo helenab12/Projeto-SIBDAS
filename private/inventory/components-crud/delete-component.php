@@ -15,12 +15,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $id = (int) $id;
 
-        $ligacao = connect_to_db();
         execute_query(
             "UPDATE Componente SET ativo = 0 WHERE idComponente = :id",
-            ['id' => $id],
-            $ligacao
-        );
+            ['id' => $id]);
 
         registar_auditoria($ligacao, 'Componente', $id, 'Remoção', 'ativo', '1', '0');
 

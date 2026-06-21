@@ -8,22 +8,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $idPiso = (int) aes_decrypt($_POST['floor-id']);
         $nomePiso = trim($_POST['floor-name'] ?? '');
 
-        // Sanitização
-        $nomePiso = capitalize_name($nomePiso);
+        // Sanitização usando a classe Piso
+        $dadosSanitizados = Piso::sanitizarDados(['nome' => $nomePiso]);
+        $nomePiso = $dadosSanitizados['nome'] ?? $nomePiso;
 
         // Validação
         if (empty($nomePiso)) {
             throw new Exception("O nome do piso não pode estar vazio.");
         }
 
-        $ligacao = connect_to_db();
-
         // Buscar o idEdificio deste piso para a verificação de duplicados
         $stmtPiso = execute_query(
             "SELECT idEdificio FROM Piso WHERE idPiso = :id",
-            ['id' => $idPiso],
-            $ligacao
-        );
+            ['id' => $idPiso]);
         $pisoRow = $stmtPiso->fetch(PDO::FETCH_ASSOC);
 
         if (!$pisoRow) {
@@ -35,9 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Verificar se já existe outro Piso com o mesmo nome no mesmo Edifício
         $stmtVerificar = execute_query(
             "SELECT idPiso FROM Piso WHERE nome = :nome AND idEdificio = :idEdificio AND idPiso != :id",
-            ['nome' => $nomePiso, 'idEdificio' => $idEdificio, 'id' => $idPiso],
-            $ligacao
-        );
+            ['nome' => $nomePiso, 'idEdificio' => $idEdificio, 'id' => $idPiso]);
 
         if ($stmtVerificar->fetch()) {
             throw new Exception("Já existe um piso (ativo ou inativo) com este nome neste edifício.");
@@ -46,17 +41,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Ler o estado antigo antes do Update para Auditoria
         $stmtAntigo = execute_query(
             "SELECT nome FROM Piso WHERE idPiso = :id",
-            ['id' => $idPiso],
-            $ligacao
-        );
+            ['id' => $idPiso]);
         $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
 
         // Fazer o update
         execute_query(
             "UPDATE Piso SET nome = :nome WHERE idPiso = :id",
-            ['nome' => $nomePiso, 'id' => $idPiso],
-            $ligacao
-        );
+            ['nome' => $nomePiso, 'id' => $idPiso]);
 
         // Registar auditoria
         registar_auditoria_edicao($ligacao, 'Piso', $idPiso, $antigo, [

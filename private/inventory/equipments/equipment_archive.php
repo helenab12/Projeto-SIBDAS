@@ -179,6 +179,7 @@ try {
             $row['marcaNome']
         );
     }
+    $ligacao = null;
 } catch (Exception $e) {
     $server_error = "Erro ao carregar dados: " . $e->getMessage();
 }

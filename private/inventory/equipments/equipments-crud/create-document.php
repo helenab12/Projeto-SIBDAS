@@ -25,10 +25,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $idFornecedor = null;
         }
 
-        $erros = Documento::validarDados([
+        $dadosSanitizados = Documento::sanitizarDados([
             'nome' => $nome,
             'tipo' => $tipo
         ]);
+        $nome = $dadosSanitizados['nome'] ?? $nome;
+        $tipo = $dadosSanitizados['tipo'] ?? $tipo;
+        $erros = Documento::validarDados($dadosSanitizados);
 
         if (!empty($erros)) {
             throw new Exception(implode(", ", $erros));
@@ -89,6 +92,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         registar_auditoria($ligacao, 'Documento', $novoId, 'Criação');
 
         $_SESSION['success_message'] = "Documento '$nome' adicionado com sucesso!";
+
+        $ligacao = null;
 
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro: " . $e->getMessage();

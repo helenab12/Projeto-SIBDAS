@@ -5,6 +5,11 @@ interface Validavel
     public static function validarDados(array $dados): array;
 }
 
+interface Sanitizavel
+{
+    public static function sanitizarDados(array $dados): array;
+}
+
 // Pessoas, Autenticação, Autorização, Gestão de Utilizadores e Perfis
 
 enum Funcao: string
@@ -20,7 +25,7 @@ enum Funcao: string
     case OUTRO = 'Outro';
 }
 
-class Pessoa implements Validavel
+class Pessoa implements Validavel, Sanitizavel
 {
     private string $id;
     private string $nome;
@@ -113,6 +118,10 @@ class Pessoa implements Validavel
     {
         return $this->dataAtualizacao;
     }
+    public static function sanitizarDados(array $dados): array
+    {
+        return sanitizar_array_dados($dados);
+    }
 
     public static function validarDados(array $dados): array
     {
@@ -176,7 +185,7 @@ class Pessoa implements Validavel
     }
 }
 
-class Utilizador implements Validavel
+class Utilizador implements Validavel, Sanitizavel
 {
     private string $idUtilizador;
     private string $idPessoa;
@@ -271,6 +280,10 @@ class Utilizador implements Validavel
     {
         return $this->perfil;
     }
+    public static function sanitizarDados(array $dados): array
+    {
+        return sanitizar_array_dados($dados);
+    }
 
     public static function validarDados(array $dados): array
     {
@@ -328,7 +341,7 @@ class Utilizador implements Validavel
     }
 }
 
-class Perfil implements Validavel
+class Perfil implements Validavel, Sanitizavel
 {
     private string $idPerfil;
     private string $nome;
@@ -381,6 +394,10 @@ class Perfil implements Validavel
     {
         return $this->permissoes;
     }
+    public static function sanitizarDados(array $dados): array
+    {
+        return sanitizar_array_dados($dados);
+    }
 
     public static function validarDados(array $dados): array
     {
@@ -429,7 +446,7 @@ class Perfil implements Validavel
     }
 }
 
-class Permissao implements Validavel
+class Permissao implements Validavel, Sanitizavel
 {
     private int $idPermissao;
     private string $chave;
@@ -466,6 +483,10 @@ class Permissao implements Validavel
     {
         return $this->descricao;
     }
+    public static function sanitizarDados(array $dados): array
+    {
+        return sanitizar_array_dados($dados);
+    }
 
     public static function validarDados(array $dados): array
     {
@@ -497,7 +518,7 @@ enum TipoFornecedor: string
     case CONSUMIVEIS = 'Consumíveis';
 }
 
-class Fornecedor implements Validavel
+class Fornecedor implements Validavel, Sanitizavel
 {
     private string $idFornecedor;
     private string $nome;
@@ -618,6 +639,10 @@ class Fornecedor implements Validavel
     {
         return $this->pessoaResponsavel;
     }
+    public static function sanitizarDados(array $dados): array
+    {
+        return sanitizar_array_dados($dados);
+    }
 
     public static function validarDados(array $dados): array
     {
@@ -678,7 +703,7 @@ class Fornecedor implements Validavel
 
 // Conteúdo do Site
 
-class ConteudoTexto implements Validavel
+class ConteudoTexto implements Validavel, Sanitizavel
 {
     private int $idConteudo;
     private string $chaveSecao;
@@ -726,6 +751,10 @@ class ConteudoTexto implements Validavel
     {
         return $this->valor;
     }
+    public static function sanitizarDados(array $dados): array
+    {
+        return sanitizar_array_dados($dados);
+    }
 
     public static function validarDados(array $dados): array
     {
@@ -747,7 +776,7 @@ class ConteudoTexto implements Validavel
     }
 }
 
-class CartaoFuncionalidade implements Validavel
+class CartaoFuncionalidade implements Validavel, Sanitizavel
 {
     private int $idCartao;
     private string $titulo;
@@ -839,6 +868,10 @@ class CartaoFuncionalidade implements Validavel
     public function getAtivo(): bool
     {
         return $this->ativo;
+    }
+    public static function sanitizarDados(array $dados): array
+    {
+        return sanitizar_array_dados($dados);
     }
 
     public static function validarDados(array $dados): array
@@ -1007,7 +1040,7 @@ class EstadoPedidoDemonstracao
     }
 }
 
-class PedidoDemonstracao implements Validavel
+class PedidoDemonstracao implements Validavel, Sanitizavel
 {
     private int $id;
     private EstadoPedidoDemonstracao $state;
@@ -1077,6 +1110,10 @@ class PedidoDemonstracao implements Validavel
         }
         return null;
     }
+    public static function sanitizarDados(array $dados): array
+    {
+        return sanitizar_array_dados($dados);
+    }
 
     public static function validarDados(array $dados): array
     {
@@ -1112,7 +1149,7 @@ class PedidoDemonstracao implements Validavel
 
 // Hierarquia de Localizações
 
-class Edificio implements Validavel
+class Edificio implements Validavel, Sanitizavel
 {
     private int $idEdificio;
     private string $nome;
@@ -1131,6 +1168,10 @@ class Edificio implements Validavel
 
         $this->idEdificio = $idEdificio;
         $this->nome = $nome;
+    }
+    public static function sanitizarDados(array $dados): array
+    {
+        return sanitizar_array_dados($dados);
     }
 
     public static function validarDados(array $dados): array
@@ -1163,7 +1204,7 @@ class Edificio implements Validavel
     }
 }
 
-class Piso implements Validavel
+class Piso implements Validavel, Sanitizavel
 {
     private int $idPiso;
     private int $idEdificio;
@@ -1185,6 +1226,10 @@ class Piso implements Validavel
         $this->idPiso = $idPiso;
         $this->idEdificio = $idEdificio;
         $this->nome = $nome;
+    }
+    public static function sanitizarDados(array $dados): array
+    {
+        return sanitizar_array_dados($dados);
     }
 
     public static function validarDados(array $dados): array
@@ -1225,7 +1270,7 @@ class Piso implements Validavel
     }
 }
 
-class Servico implements Validavel
+class Servico implements Validavel, Sanitizavel
 {
     private int $idServico;
     private int $idPiso;
@@ -1247,6 +1292,10 @@ class Servico implements Validavel
         $this->idServico = $idServico;
         $this->idPiso = $idPiso;
         $this->nome = $nome;
+    }
+    public static function sanitizarDados(array $dados): array
+    {
+        return sanitizar_array_dados($dados);
     }
 
     public static function validarDados(array $dados): array
@@ -1287,7 +1336,7 @@ class Servico implements Validavel
     }
 }
 
-class Localizacao implements Validavel
+class Localizacao implements Validavel, Sanitizavel
 {
     private int $idLocalizacao;
     private int $idServico;
@@ -1308,6 +1357,10 @@ class Localizacao implements Validavel
         $this->idLocalizacao = $idLocalizacao;
         $this->idServico = $idServico;
         $this->nomeSala = $nomeSala;
+    }
+    public static function sanitizarDados(array $dados): array
+    {
+        return sanitizar_array_dados($dados);
     }
 
     public static function validarDados(array $dados): array
@@ -1340,7 +1393,7 @@ class Localizacao implements Validavel
 
 // Categorias
 
-class Categoria implements Validavel
+class Categoria implements Validavel, Sanitizavel
 {
     private string $idCategoria;
     private string $nome;
@@ -1427,6 +1480,10 @@ class Categoria implements Validavel
             return 0;
         }
     }
+    public static function sanitizarDados(array $dados): array
+    {
+        return sanitizar_array_dados($dados);
+    }
 
     public static function validarDados(array $dados): array
     {
@@ -1491,7 +1548,7 @@ enum TipoEntrada: string
     case EMPRESTIMO = 'Empréstimo';
 }
 
-class Marca implements Validavel
+class Marca implements Validavel, Sanitizavel
 {
     private string $idMarca;
     private string $nome;
@@ -1544,6 +1601,10 @@ class Marca implements Validavel
     {
         return $this->dataAtualizacao;
     }
+    public static function sanitizarDados(array $dados): array
+    {
+        return sanitizar_array_dados($dados);
+    }
 
     public static function validarDados(array $dados): array
     {
@@ -1555,7 +1616,7 @@ class Marca implements Validavel
     }
 }
 
-class Equipamento implements Validavel
+class Equipamento implements Validavel, Sanitizavel
 {
     private string $idEquipamento;
     private ?string $idCategoria;
@@ -1719,6 +1780,10 @@ class Equipamento implements Validavel
     {
         return $this->marcaNome;
     }
+    public static function sanitizarDados(array $dados): array
+    {
+        return sanitizar_array_dados($dados);
+    }
 
     public static function validarDados(array $dados): array
     {
@@ -1809,7 +1874,7 @@ enum TipoDocumento: string
     case GARANTIA = 'Garantia';
 }
 
-class Documento implements Validavel
+class Documento implements Validavel, Sanitizavel
 {
     private string $idDocumento;
     private TipoDocumento $tipo;
@@ -1845,7 +1910,7 @@ class Documento implements Validavel
             'dataDocumento' => $dataDocumento ? $dataDocumento->format('Y-m-d') : null,
             'dataValidade' => $dataValidade ? $dataValidade->format('Y-m-d') : null,
         ]);
-        
+
         if (!empty($erros)) {
             throw new Exception("Erro ao criar documento: " . implode(", ", $erros));
         }
@@ -1912,11 +1977,15 @@ class Documento implements Validavel
     {
         return $this->fornecedorNome;
     }
+    public static function sanitizarDados(array $dados): array
+    {
+        return sanitizar_array_dados($dados);
+    }
 
     public static function validarDados(array $dados): array
     {
         $erros = [];
-        
+
         if (empty(trim($dados['nome'] ?? ''))) {
             $erros[] = "O campo Nome é obrigatório.";
         } elseif (strlen(trim($dados['nome'])) > 255) {
@@ -1980,7 +2049,7 @@ class Documento implements Validavel
 
 // Componentes
 
-class Componente implements Validavel
+class Componente implements Validavel, Sanitizavel
 {
     private string $idComponente;
     private string $codigoInterno;
@@ -2080,6 +2149,10 @@ class Componente implements Validavel
     {
         return $this->dataAtualizacao;
     }
+    public static function sanitizarDados(array $dados): array
+    {
+        return sanitizar_array_dados($dados);
+    }
 
     public static function validarDados(array $dados): array
     {
@@ -2141,7 +2214,7 @@ enum Periodicidade: string
     case NA = 'N/A';
 }
 
-class GarantiaContrato implements Validavel
+class GarantiaContrato implements Validavel, Sanitizavel
 {
     private string $idGarantiaContrato;
     private ?string $idEquipamento;
@@ -2260,13 +2333,17 @@ class GarantiaContrato implements Validavel
     {
         return $this->documentoCaminho;
     }
-    
+
     public function getEstado(): string
     {
         if ($this->dataFim === null) {
             return 'Ativo';
         }
         return $this->dataFim >= new DateTime('today') ? 'Ativo' : 'Expirado';
+    }
+    public static function sanitizarDados(array $dados): array
+    {
+        return sanitizar_array_dados($dados);
     }
 
     public static function validarDados(array $dados): array
@@ -2346,7 +2423,7 @@ enum TipoManutencao: string
     case Calibracao = 'Calibração';
 }
 
-class Manutencao implements Validavel
+class Manutencao implements Validavel, Sanitizavel
 {
     private string $idManutencao;
     private string $idEquipamento;
@@ -2410,20 +2487,66 @@ class Manutencao implements Validavel
         $this->fornecedorNome = $fornecedorNome;
     }
 
-    public function getIdManutencao(): string { return $this->idManutencao; }
-    public function getIdEquipamento(): string { return $this->idEquipamento; }
-    public function getTipoManutencao(): TipoManutencao { return $this->tipoManutencao; }
-    public function getDataInicio(): DateTime { return $this->dataInicio; }
-    public function getDataFim(): ?DateTime { return $this->dataFim; }
-    public function getIdPessoaResponsavel(): ?string { return $this->idPessoaResponsavel; }
-    public function getIdFornecedor(): ?string { return $this->idFornecedor; }
-    public function getCustoManutencao(): ?float { return $this->custoManutencao; }
-    public function getObservacoes(): ?string { return $this->observacoes; }
-    public function getAtivo(): bool { return $this->ativo; }
-    public function getDataCriacao(): DateTime { return $this->dataCriacao; }
-    public function getDataAtualizacao(): DateTime { return $this->dataAtualizacao; }
-    public function getPessoaNome(): ?string { return $this->pessoaNome; }
-    public function getFornecedorNome(): ?string { return $this->fornecedorNome; }
+    public function getIdManutencao(): string
+    {
+        return $this->idManutencao;
+    }
+    public function getIdEquipamento(): string
+    {
+        return $this->idEquipamento;
+    }
+    public function getTipoManutencao(): TipoManutencao
+    {
+        return $this->tipoManutencao;
+    }
+    public function getDataInicio(): DateTime
+    {
+        return $this->dataInicio;
+    }
+    public function getDataFim(): ?DateTime
+    {
+        return $this->dataFim;
+    }
+    public function getIdPessoaResponsavel(): ?string
+    {
+        return $this->idPessoaResponsavel;
+    }
+    public function getIdFornecedor(): ?string
+    {
+        return $this->idFornecedor;
+    }
+    public function getCustoManutencao(): ?float
+    {
+        return $this->custoManutencao;
+    }
+    public function getObservacoes(): ?string
+    {
+        return $this->observacoes;
+    }
+    public function getAtivo(): bool
+    {
+        return $this->ativo;
+    }
+    public function getDataCriacao(): DateTime
+    {
+        return $this->dataCriacao;
+    }
+    public function getDataAtualizacao(): DateTime
+    {
+        return $this->dataAtualizacao;
+    }
+    public function getPessoaNome(): ?string
+    {
+        return $this->pessoaNome;
+    }
+    public function getFornecedorNome(): ?string
+    {
+        return $this->fornecedorNome;
+    }
+    public static function sanitizarDados(array $dados): array
+    {
+        return sanitizar_array_dados($dados);
+    }
 
     public static function validarDados(array $dados): array
     {
@@ -2482,7 +2605,7 @@ class Manutencao implements Validavel
 
         if (!empty($dados['custoManutencao']) && !is_numeric($dados['custoManutencao'])) {
             $erros[] = "O Custo da Manutenção tem de ser um valor numérico.";
-        } elseif (!empty($dados['custoManutencao']) && (float)$dados['custoManutencao'] < 0) {
+        } elseif (!empty($dados['custoManutencao']) && (float) $dados['custoManutencao'] < 0) {
             $erros[] = "O Custo da Manutenção não pode ser negativo.";
         }
 

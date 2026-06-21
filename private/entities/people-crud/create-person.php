@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $telefone = trim($telefone);
 
         // Validação usando a classe Pessoa
-        $erros = Pessoa::validarDados([
+        $dadosSanitizados = Pessoa::sanitizarDados([
             'id' => '-1', // ID fictício para validação de criação
             'nome' => $nome,
             'email' => $email,
@@ -30,6 +30,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'dataCriacao' => new DateTime(),
             'dataAtualizacao' => new DateTime()
         ]);
+        $nome = $dadosSanitizados['nome'] ?? $nome;
+        $email = $dadosSanitizados['email'] ?? $email;
+        $telefone = $dadosSanitizados['contactoTelefonico'] ?? $telefone;
+        $nif = $dadosSanitizados['nif'] ?? $nif;
+        $funcao = $dadosSanitizados['funcao'] ?? $funcao;
+        $departamento = $dadosSanitizados['departamento'] ?? $departamento;
+        $erros = Pessoa::validarDados($dadosSanitizados);
 
         if (!empty($erros)) {
             throw new Exception(implode(", ", $erros));
@@ -73,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         registar_auditoria($ligacao, 'Pessoa', $novoId, 'Criação');
 
         $_SESSION['success_message'] = "Pessoa criada com sucesso!";
+        $ligacao = null;
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro ao criar pessoa: " . $e->getMessage();
     }

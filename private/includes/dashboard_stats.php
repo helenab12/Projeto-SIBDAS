@@ -170,6 +170,7 @@ try {
         LIMIT 4
     ", [], $ligacaoStats);
     $dashboardStats['proximasManutencoes'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $ligacaoStats = null;
 
 } catch (Exception $e) {
     error_log("Erro ao calcular estatísticas do dashboard: " . $e->getMessage());

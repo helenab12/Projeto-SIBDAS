@@ -8,8 +8,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $idPiso = (int) aes_decrypt($_POST['floor-id']);
         $nomeServico = trim($_POST['service-name'] ?? '');
 
-        // Sanitização
-        $nomeServico = capitalize_name($nomeServico);
+        // Sanitização usando a classe Servico
+        $dadosSanitizados = Servico::sanitizarDados(['nome' => $nomeServico]);
+        $nomeServico = $dadosSanitizados['nome'] ?? $nomeServico;
 
         // Validação
         if (empty($nomeServico)) {
@@ -40,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         registar_auditoria($ligacao, 'Servico', $novoId, 'Criação');
 
         $_SESSION['success_message'] = "Serviço criado com sucesso!";
+        $ligacao = null;
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro ao criar serviço: " . $e->getMessage();
     }

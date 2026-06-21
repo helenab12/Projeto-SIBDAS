@@ -234,6 +234,7 @@ $stmtNextMaint = execute_query(
 if ($nextMaintRow = $stmtNextMaint->fetch(PDO::FETCH_ASSOC)) {
     $nextMaintenance = (new DateTime($nextMaintRow['dataInicio']))->format('d/m/Y');
 }
+$ligacao = null;
 
 // Cálculo da garantia para exibição na UI
 $isExpired = false;

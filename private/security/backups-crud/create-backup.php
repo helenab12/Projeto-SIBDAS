@@ -44,6 +44,7 @@ if ($return_var === 0 && file_exists($filepath)) {
         );
         
         $_SESSION['success_message'] = "Cópia de segurança criada com sucesso!";
+        $ligacao = null;
     } catch (Exception $e) {
         $_SESSION['success_message'] = "Backup criado, mas falhou ao notificar administradores.";
     }

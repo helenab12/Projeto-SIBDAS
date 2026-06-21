@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $custoManutencao = $custoManutencaoRaw !== '' ? (float) $custoManutencaoRaw : null;
 
         // 3. Validar dados com a classe Manutencao
-        $erros = Manutencao::validarDados([
+        $dadosSanitizados = Manutencao::sanitizarDados([
             'idManutencao' => '-1',  // ID fictício para validação
             'tipoManutencao' => $tipoManutencaoRaw,
             'dataInicio' => $dataInicio,
@@ -50,6 +50,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'idPessoaResponsavel' => $idPessoaResponsavel,
             'custoManutencao' => $custoManutencao
         ]);
+        $tipoManutencaoRaw = $dadosSanitizados['tipoManutencao'] ?? $tipoManutencaoRaw;
+        $dataInicio = $dadosSanitizados['dataInicio'] ?? $dataInicio;
+        $dataFim = $dadosSanitizados['dataFim'] ?? $dataFim;
+        $idPessoaResponsavel = $dadosSanitizados['idPessoaResponsavel'] ?? $idPessoaResponsavel;
+        $custoManutencao = $dadosSanitizados['custoManutencao'] ?? $custoManutencao;
+        $erros = Manutencao::validarDados($dadosSanitizados);
 
         if (!empty($erros)) {
             throw new Exception(implode("<br>", $erros));
@@ -76,6 +82,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         registar_auditoria($ligacao, 'Manutencao', $novoId, 'Criação');
 
         $_SESSION['success_message'] = "Registo de manutenção adicionado com sucesso!";
+
+        $ligacao = null;
 
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro: " . $e->getMessage();

@@ -7,14 +7,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $idServico = (int) aes_decrypt($_POST['service-id']);
 
-        $ligacao = connect_to_db();
-
         // Soft-delete do serviço definindo ativo = 0
         execute_query(
             "UPDATE Servico SET ativo = 0 WHERE idServico = :id",
-            ['id' => $idServico],
-            $ligacao
-        );
+            ['id' => $idServico]);
 
         registar_auditoria($ligacao, 'Servico', $idServico, 'Remoção', 'ativo', '1', '0');
 

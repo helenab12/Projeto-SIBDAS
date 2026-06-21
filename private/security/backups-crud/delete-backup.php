@@ -19,7 +19,7 @@ if (!file_exists($filepath) || pathinfo($filepath, PATHINFO_EXTENSION) !== 'sql'
 if (unlink($filepath)) {
     $_SESSION['success_message'] = "Backup eliminado com sucesso.";
     try {
-        $ligacao = connect_to_db();
+
         registar_auditoria($ligacao, 'Backup', null, 'Remoção', 'Ficheiro', $filename, null);
     } catch (Exception $e) {}
 } else {

@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['criar_fornecedor'])) 
         }
 
         // Validação usando a classe Fornecedor
-        $erros = Fornecedor::validarDados([
+        $dadosSanitizados = Fornecedor::sanitizarDados([
             'idFornecedor' => '-1', // ID fictício para validação
             'nome' => $nome,
             'nifFornecedor' => $nif,
@@ -40,6 +40,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['criar_fornecedor'])) 
             'dataCriacao' => new DateTime(),
             'dataAtualizacao' => new DateTime()
         ]);
+        $nome = $dadosSanitizados['nome'] ?? $nome;
+        $nif = $dadosSanitizados['nifFornecedor'] ?? $nif;
+        $telefone = $dadosSanitizados['contactoTelefonico'] ?? $telefone;
+        $email = $dadosSanitizados['email'] ?? $email;
+        $website = $dadosSanitizados['website'] ?? $website;
+        $idPessoa = $dadosSanitizados['idPessoaResponsavel'] ?? $idPessoa;
+        $tipoEnum = $dadosSanitizados['tipoFornecedor'] ?? $tipoEnum;
+        $erros = Fornecedor::validarDados($dadosSanitizados);
 
         if (!empty($erros)) {
             throw new Exception(implode(", ", $erros));
@@ -84,6 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['criar_fornecedor'])) 
         registar_auditoria($ligacao, 'Fornecedor', $novoId, 'Criação');
 
         $_SESSION['success_message'] = "Fornecedor criado com sucesso!";
+        $ligacao = null;
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro ao criar fornecedor: " . $e->getMessage();
     }

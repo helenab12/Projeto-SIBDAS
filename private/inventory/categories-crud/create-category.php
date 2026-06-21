@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $descricao = ucfirst(trim($_POST['category-description'] ?? ''));
 
         // Validação básica
-        $erros = Categoria::validarDados([
+        $dadosSanitizados = Categoria::sanitizarDados([
             'idCategoria' => 0, // ID fictício para validação de criação
             'codigo' => $codigo,
             'nome' => $nome,
@@ -19,6 +19,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'dataCriacao' => new DateTime(),
             'dataAtualizacao' => new DateTime()
         ]);
+        $codigo = $dadosSanitizados['codigo'] ?? $codigo;
+        $nome = $dadosSanitizados['nome'] ?? $nome;
+        $descricao = $dadosSanitizados['descricao'] ?? $descricao;
+        $erros = Categoria::validarDados($dadosSanitizados);
 
         if (!empty($erros)) {
             throw new Exception(implode(", ", $erros));
@@ -42,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         registar_auditoria($ligacao, 'CategoriaEquipamento', $novoId, 'Criação');
 
         $_SESSION['success_message'] = "Categoria criada com sucesso!";
+        $ligacao = null;
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro ao criar categoria: " . $e->getMessage();
     }

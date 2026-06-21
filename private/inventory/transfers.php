@@ -113,6 +113,7 @@ try {
             'localizacaoNova' => $localizacaoNova
         ];
     }
+    $ligacao = null;
 } catch (Exception $e) {
     $server_error = "Erro ao carregar histórico de transferências: " . $e->getMessage();
 }

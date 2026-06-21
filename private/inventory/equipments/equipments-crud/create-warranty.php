@@ -89,13 +89,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // 4. Validar dados com a classe GarantiaContrato
-        $erros = GarantiaContrato::validarDados([
+        $dadosSanitizados = GarantiaContrato::sanitizarDados([
             'idGarantiaContrato' => '-1',  // ID fictício para validação
             'tipoRegisto' => $tipoRegisto,
             'dataInicio' => $dataInicio,
             'dataFim' => $dataFim,
             'periodicidade' => $periodicidade,
         ]);
+        $tipoRegisto = $dadosSanitizados['tipoRegisto'] ?? $tipoRegisto;
+        $dataInicio = $dadosSanitizados['dataInicio'] ?? $dataInicio;
+        $dataFim = $dadosSanitizados['dataFim'] ?? $dataFim;
+        $periodicidade = $dadosSanitizados['periodicidade'] ?? $periodicidade;
+        $erros = GarantiaContrato::validarDados($dadosSanitizados);
 
         if (!empty($erros)) {
             throw new Exception(implode(", ", $erros));
@@ -122,6 +127,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         registar_auditoria($ligacao, 'GarantiaContrato', $novoId, 'Criação');
 
         $_SESSION['success_message'] = "Registo adicionado com sucesso!";
+
+        $ligacao = null;
 
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro: " . $e->getMessage();

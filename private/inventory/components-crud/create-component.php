@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $preco = isset($_POST['component-price']) && $_POST['component-price'] !== '' ? (float)$_POST['component-price'] : 0.00;
 
         // Validação usando o método do Componente
-        $erros = Componente::validarDados([
+        $dadosSanitizados = Componente::sanitizarDados([
             'codigoInterno' => $sku,
             'descricao' => $nome,
             'stock' => $stock,
@@ -26,6 +26,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'dataCriacao' => new DateTime(),
             'dataAtualizacao' => new DateTime()
         ]);
+        $sku = $dadosSanitizados['codigoInterno'] ?? $sku;
+        $nome = $dadosSanitizados['descricao'] ?? $nome;
+        $stock = $dadosSanitizados['stock'] ?? $stock;
+        $stockMin = $dadosSanitizados['stockMinimo'] ?? $stockMin;
+        $preco = $dadosSanitizados['preco'] ?? $preco;
+        $idLocalizacao = $dadosSanitizados['idLocalizacao'] ?? $idLocalizacao;
+        $erros = Componente::validarDados($dadosSanitizados);
 
         if (empty($idCategoria)) {
             $erros[] = "A categoria é obrigatória.";
@@ -77,6 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         registar_auditoria($ligacao, 'Componente', $idComponente, 'Criação');
 
         $_SESSION['success_message'] = "Componente criado com sucesso!";
+        $ligacao = null;
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro ao criar componente: " . $e->getMessage();
     }

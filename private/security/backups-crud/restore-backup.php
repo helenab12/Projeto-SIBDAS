@@ -45,6 +45,7 @@ if ($return_var === 0) {
             ['idNotif' => $idNotificacao],
             $ligacao
         );
+        $ligacao = null;
     } catch (Exception $e) {
     }
 

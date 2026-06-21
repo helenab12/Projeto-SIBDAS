@@ -9,8 +9,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_utilizador'])) {
         $emailAutenticacao = $_POST['user-auth-email'] ?? '';
         $password = $_POST['user-password'] ?? '';
         $idPerfil = $_POST['user-role'] ?? '';
+        // Sanitização usando a classe
+        $dadosSanitizados = Utilizador::sanitizarDados([
+            'emailAutenticacao' => $emailAutenticacao
+        ]);
+        $emailAutenticacao = $dadosSanitizados['emailAutenticacao'] ?? $emailAutenticacao;
 
-        if (empty(trim($encryptedUserId)) || empty(trim($emailAutenticacao)) || empty(trim($idPerfil))) {
+        if (empty(trim($encryptedUserId)) || empty($emailAutenticacao) || empty(trim($idPerfil))) {
             throw new Exception("Por favor, preencha todos os campos obrigatórios.");
         }
 
@@ -19,14 +24,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_utilizador'])) {
             throw new Exception("ID de utilizador inválido.");
         }
 
-        $ligacao = connect_to_db();
-
         // 1. Verificar se o utilizador existe
         $stmtUtilizador = execute_query(
             "SELECT idUtilizador FROM Utilizador WHERE idUtilizador = :id AND ativo = 1",
-            ['id' => $idUtilizador],
-            $ligacao
-        );
+            ['id' => $idUtilizador]);
         if (!$stmtUtilizador->fetch()) {
             throw new Exception("O utilizador que está a tentar editar não existe ou está inativo.");
         }
@@ -34,9 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_utilizador'])) {
         // 2. Verificar se o email de autenticação já está em uso por OUTRO utilizador
         $stmtAuth = execute_query(
             "SELECT idUtilizador FROM Utilizador WHERE emailAutenticacao = :email AND idUtilizador != :id",
-            ['email' => $emailAutenticacao, 'id' => $idUtilizador],
-            $ligacao
-        );
+            ['email' => $emailAutenticacao, 'id' => $idUtilizador]);
         if ($stmtAuth->fetch()) {
             throw new Exception("O email de autenticação fornecido já está em uso por outro utilizador.");
         }
@@ -44,9 +43,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_utilizador'])) {
         // 3. Verificar se o perfil existe
         $stmtPerfil = execute_query(
             "SELECT idPerfil FROM Perfil WHERE idPerfil = :idPerfil AND ativo = 1",
-            ['idPerfil' => $idPerfil],
-            $ligacao
-        );
+            ['idPerfil' => $idPerfil]);
         if (!$stmtPerfil->fetch()) {
             throw new Exception("O perfil selecionado não é válido.");
         }
@@ -54,9 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_utilizador'])) {
         // 4. Ler o estado antigo antes do Update para Auditoria
         $stmtAntigo = execute_query(
             "SELECT emailAutenticacao, idPerfil FROM Utilizador WHERE idUtilizador = :id",
-            ['id' => $idUtilizador],
-            $ligacao
-        );
+            ['id' => $idUtilizador]);
         $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
 
         // 5. Update Utilizador
@@ -79,9 +74,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_utilizador'])) {
                     'key' => MYSQL_AES_KEY,
                     'perfil' => $idPerfil,
                     'id' => $idUtilizador
-                ],
-                $ligacao
-            );
+                ]);
         } else {
             execute_query(
                 "UPDATE Utilizador 
@@ -93,9 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_utilizador'])) {
                     'email' => $emailAutenticacao,
                     'perfil' => $idPerfil,
                     'id' => $idUtilizador
-                ],
-                $ligacao
-            );
+                ]);
         }
 
         // Registar auditoria

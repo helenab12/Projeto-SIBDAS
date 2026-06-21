@@ -15,12 +15,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['apagar_fornecedor']))
         }
         $id = (int)$id;
 
-        $ligacao = connect_to_db();
         execute_query(
             "UPDATE Fornecedor SET ativo = 0, dataAtualizacao = NOW() WHERE idFornecedor = :id",
-            ['id' => $id],
-            $ligacao
-        );
+            ['id' => $id]);
 
         registar_auditoria($ligacao, 'Fornecedor', $id, 'Remoção', 'ativo', '1', '0');
 

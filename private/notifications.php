@@ -71,6 +71,7 @@ try {
             (bool) $row['lida']
         );
     }
+    $ligacao = null;
 } catch (Exception $e) {
     $server_error = "Erro ao carregar notificações: " . $e->getMessage();
 }

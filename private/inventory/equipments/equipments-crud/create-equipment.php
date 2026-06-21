@@ -37,6 +37,39 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $idLocalizacao = trim($_POST['equipment-location'] ?? '');
         $observacoes = trim($_POST['equipment-notes'] ?? '');
         
+        // Sanitização usando a classe Equipamento
+        $dadosSanitizados = Equipamento::sanitizarDados([
+            'codigoInterno' => $codigoInterno,
+            'idCategoria' => $idCategoria,
+            'numeroSerie' => $numeroSerie,
+            'designacao' => $nome,
+            'idMarca' => $idMarca,
+            'modelo' => $modelo,
+            'dataAquisicao' => $dataAquisicao,
+            'dataFabrico' => $dataFabrico,
+            'custoAquisicao' => $custo,
+            'tipoEntrada' => $tipoEntrada,
+            'estadoAtual' => $estadoAtual,
+            'criticidade' => $criticidade,
+            'idLocalizacao' => $idLocalizacao,
+            'observacoes' => $observacoes
+        ]);
+
+        $codigoInterno = $dadosSanitizados['codigoInterno'] ?? $codigoInterno;
+        $idCategoria = $dadosSanitizados['idCategoria'] ?? $idCategoria;
+        $numeroSerie = $dadosSanitizados['numeroSerie'] ?? $numeroSerie;
+        $nome = $dadosSanitizados['designacao'] ?? $nome;
+        $idMarca = $dadosSanitizados['idMarca'] ?? $idMarca;
+        $modelo = $dadosSanitizados['modelo'] ?? $modelo;
+        $dataAquisicao = $dadosSanitizados['dataAquisicao'] ?? $dataAquisicao;
+        $dataFabrico = $dadosSanitizados['dataFabrico'] ?? $dataFabrico;
+        $custo = $dadosSanitizados['custoAquisicao'] ?? $custo;
+        $tipoEntrada = $dadosSanitizados['tipoEntrada'] ?? $tipoEntrada;
+        $estadoAtual = $dadosSanitizados['estadoAtual'] ?? $estadoAtual;
+        $criticidade = $dadosSanitizados['criticidade'] ?? $criticidade;
+        $idLocalizacao = $dadosSanitizados['idLocalizacao'] ?? $idLocalizacao;
+        $observacoes = $dadosSanitizados['observacoes'] ?? $observacoes;
+
         // Validação básica
         if (empty($codigoInterno) || empty($idCategoria) || empty($numeroSerie) || empty($nome) || empty($idMarca) || empty($idLocalizacao)) {
             throw new Exception("Por favor preencha todos os campos obrigatórios da primeira página.");
@@ -159,10 +192,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     
                     $nomeDoc = $_FILES['doc-files']['name'][$i];
                     
-                    $erros = Documento::validarDados([
-                        'nome' => $nomeDoc,
+                    $dadosSanitizados = Documento::sanitizarDados([
+            'nome' => $nomeDoc,
                         'tipo' => $tipo
-                    ]);
+        ]);
+        $nomeDoc = $dadosSanitizados['nome'] ?? $nomeDoc;
+        $tipo = $dadosSanitizados['tipo'] ?? $tipo;
+        $erros = Documento::validarDados($dadosSanitizados);
 
                     if (!empty($erros)) {
                         throw new Exception("Erro no documento '$nomeDoc': " . implode(", ", $erros));
@@ -215,6 +251,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $ligacao->commit();
         $_SESSION['success_message'] = "Equipamento '$nome' criado com sucesso!";
+
+        $ligacao = null;
 
     } catch (Exception $e) {
         if (isset($ligacao) && $ligacao->inTransaction()) {

@@ -9,11 +9,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $descricao = ucfirst(trim($_POST['permission-description'] ?? ''));
 
         // Validação básica
-        $erros = Permissao::validarDados([
+        $dadosSanitizados = Permissao::sanitizarDados([
             'idPermissao' => 0, // ID fictício para validação de criação
             'chave' => $chave,
             'descricao' => $descricao
         ]);
+        $chave = $dadosSanitizados['chave'] ?? $chave;
+        $descricao = $dadosSanitizados['descricao'] ?? $descricao;
+        $erros = Permissao::validarDados($dadosSanitizados);
 
         if (!empty($erros)) {
             throw new Exception(implode(", ", $erros));
@@ -37,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         registar_auditoria($ligacao, 'Permissao', $novoId, 'Criação');
 
         $_SESSION['success_message'] = "Permissão criada com sucesso!";
+        $ligacao = null;
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro ao criar permissão: " . $e->getMessage();
     }

@@ -5,7 +5,6 @@ redirect_if_not_logged('private/login/login.php', ['warranties.delete']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        $ligacao = connect_to_db();
 
         $encryptedEqId = trim($_POST['equipment-id'] ?? '');
         $encryptedWarId = trim($_POST['warranty-id'] ?? '');
@@ -25,9 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         execute_query(
             "UPDATE GarantiaContrato SET ativo = 0, dataAtualizacao = CURRENT_TIMESTAMP WHERE idGarantiaContrato = :idGarantia",
-            ['idGarantia' => $idGarantia],
-            $ligacao
-        );
+            ['idGarantia' => $idGarantia]);
 
         registar_auditoria($ligacao, 'GarantiaContrato', $idGarantia, 'Remoção', 'ativo', '1', '0');
 

@@ -11,9 +11,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $nomeEdificio = capitalize_name($nomeEdificio);
 
         // Validação usando a classe
-        $erros = Edificio::validarDados([
+        $dadosSanitizados = Edificio::sanitizarDados([
             'nome' => $nomeEdificio
         ]);
+        $nomeEdificio = $dadosSanitizados['nome'] ?? $nomeEdificio;
+        $erros = Edificio::validarDados($dadosSanitizados);
 
         if (!empty($erros)) {
             throw new Exception(implode(", ", $erros));
@@ -43,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         registar_auditoria($ligacao, 'Edificio', $novoId, 'Criação');
 
         $_SESSION['success_message'] = "Edifício criado com sucesso!";
+        $ligacao = null;
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro ao criar edifício: " . $e->getMessage();
     }

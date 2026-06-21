@@ -42,13 +42,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Validar dados com a classe GarantiaContrato
-        $erros = GarantiaContrato::validarDados([
+        $dadosSanitizados = GarantiaContrato::sanitizarDados([
             'idGarantiaContrato' => $idGarantia,
             'tipoRegisto' => $tipoRegisto,
             'dataInicio' => $dataInicio,
             'dataFim' => $dataFim,
             'periodicidade' => $periodicidade,
         ]);
+        $idGarantia = $dadosSanitizados['idGarantiaContrato'] ?? $idGarantia;
+        $tipoRegisto = $dadosSanitizados['tipoRegisto'] ?? $tipoRegisto;
+        $dataInicio = $dadosSanitizados['dataInicio'] ?? $dataInicio;
+        $dataFim = $dadosSanitizados['dataFim'] ?? $dataFim;
+        $periodicidade = $dadosSanitizados['periodicidade'] ?? $periodicidade;
+        $erros = GarantiaContrato::validarDados($dadosSanitizados);
 
         if (!empty($erros)) {
             throw new Exception(implode("<br>", $erros));
@@ -191,6 +197,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
 
         $_SESSION['success_message'] = "Registo atualizado com sucesso!";
+
+        $ligacao = null;
 
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro: " . $e->getMessage();

@@ -16,14 +16,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception("ID de utilizador inválido.");
         }
 
-        $ligacao = connect_to_db();
-
         // Soft delete: set ativo = 0
         execute_query(
             "UPDATE Utilizador SET ativo = 0, dataAtualizacao = CURRENT_TIMESTAMP WHERE idUtilizador = :id",
-            ['id' => $idUtilizador],
-            $ligacao
-        );
+            ['id' => $idUtilizador]);
 
         // Registar auditoria
         registar_auditoria($ligacao, 'Utilizador', $idUtilizador, 'Remoção', 'ativo', '1', '0');

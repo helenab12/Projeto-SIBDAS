@@ -8,8 +8,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $idEdificio = (int) aes_decrypt($_POST['building-id']);
         $nomePiso = trim($_POST['floor-name'] ?? '');
 
-        // Sanitização
-        $nomePiso = capitalize_name($nomePiso);
+        // Sanitização usando a classe Piso
+        $dadosSanitizados = Piso::sanitizarDados(['nome' => $nomePiso]);
+        $nomePiso = $dadosSanitizados['nome'] ?? $nomePiso;
 
         // Validação
         if (empty($nomePiso)) {
@@ -40,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         registar_auditoria($ligacao, 'Piso', $novoId, 'Criação');
 
         $_SESSION['success_message'] = "Piso criado com sucesso!";
+        $ligacao = null;
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro ao criar piso: " . $e->getMessage();
     }

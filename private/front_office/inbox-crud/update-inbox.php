@@ -45,6 +45,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $ligacao->commit();
         $_SESSION['success_message'] = "Alterações guardadas com sucesso!";
+        $ligacao = null;
     } catch (Exception $e) {
         if (isset($ligacao) && $ligacao->inTransaction()) {
             $ligacao->rollBack();

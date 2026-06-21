@@ -36,6 +36,7 @@ try {
             $row['dataAtualizacao'] ? new DateTime($row['dataAtualizacao']) : new DateTime()
         );
     }
+    $ligacao = null;
 } catch (Exception $e) {
     error_log("Erro ao carregar pessoas: " . $e->getMessage());
     $_SESSION['server_error'] = "Não foi possível carregar a lista de pessoas.";

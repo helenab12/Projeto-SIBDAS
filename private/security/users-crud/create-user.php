@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Validação básica
         $perfilFicticio = new Perfil('-1', 'Temporário', new DateTime(), new DateTime());
-        $erros = Utilizador::validarDados([
+        $dadosSanitizados = Utilizador::sanitizarDados([
             'idUtilizador' => '-1', // ID fictício
             'idPessoa' => '-1', // ID fictício
             'emailAutenticacao' => $emailAutenticacao,
@@ -26,6 +26,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'dataAtualizacao' => new DateTime(),
             'perfil' => $perfilFicticio
         ]);
+        $emailAutenticacao = $dadosSanitizados['emailAutenticacao'] ?? $emailAutenticacao;
+        $password = $dadosSanitizados['password'] ?? $password;
+        $idPerfil = $dadosSanitizados['idPerfil'] ?? $idPerfil;
+        $perfilFicticio = $dadosSanitizados['perfil'] ?? $perfilFicticio;
+        $erros = Utilizador::validarDados($dadosSanitizados);
 
         if (!empty($erros)) {
             throw new Exception(implode(", ", $erros));
@@ -107,6 +112,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         registar_auditoria($ligacao, 'Utilizador', $novoId, 'Criação');
 
         $_SESSION['success_message'] = "Utilizador criado com sucesso!";
+        $ligacao = null;
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro ao criar utilizador: " . $e->getMessage();
     }

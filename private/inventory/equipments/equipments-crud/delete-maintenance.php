@@ -5,7 +5,6 @@ redirect_if_not_logged('private/login/login.php', ['maintenances.delete']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        $ligacao = connect_to_db();
 
         $encryptedEqId = trim($_POST['equipment-id'] ?? '');
         $encryptedManId = trim($_POST['maintenance-id'] ?? '');
@@ -26,9 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             [
                 'idMan' => $idManutencao,
                 'idEq' => $idEquipamento
-            ],
-            $ligacao
-        );
+            ]);
 
         registar_auditoria($ligacao, 'Manutencao', $idManutencao, 'Remoção', 'ativo', '1', '0');
 

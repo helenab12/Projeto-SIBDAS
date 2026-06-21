@@ -5,7 +5,6 @@ redirect_if_not_logged('private/login/login.php', ['documents.edit']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        $ligacao = connect_to_db();
 
         $encryptedEqId = trim($_POST['equipment-id'] ?? '');
         $encryptedDocId = trim($_POST['document-id'] ?? '');
@@ -30,10 +29,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $idFornecedor = null;
         }
 
-        $erros = Documento::validarDados([
+        $dadosSanitizados = Documento::sanitizarDados([
             'nome' => $nome,
             'tipo' => $tipo
         ]);
+        $nome = $dadosSanitizados['nome'] ?? $nome;
+        $tipo = $dadosSanitizados['tipo'] ?? $tipo;
+        $erros = Documento::validarDados($dadosSanitizados);
 
         if (!empty($erros)) {
             throw new Exception(implode(", ", $erros));
@@ -42,9 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Ler o estado antigo antes do Update para Auditoria
         $stmtAntigo = execute_query(
             "SELECT nome, tipo, idFornecedor FROM Documento WHERE idDocumento = :idDoc AND ativo = 1",
-            ['idDoc' => $idDocumento],
-            $ligacao
-        );
+            ['idDoc' => $idDocumento]);
         $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
 
         execute_query(
@@ -59,9 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'tipo' => $tipo,
                 'idForn' => $idFornecedor,
                 'idDoc' => $idDocumento
-            ],
-            $ligacao
-        );
+            ]);
 
         // Registar auditoria
         registar_auditoria_edicao($ligacao, 'Documento', $idDocumento, $antigo, [

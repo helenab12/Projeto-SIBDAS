@@ -8,8 +8,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $idServico = (int) aes_decrypt($_POST['service-id']);
         $nomeSala = trim($_POST['room-name'] ?? '');
 
-        // Sanitização
-        $nomeSala = capitalize_name($nomeSala);
+        // Sanitização usando a classe Localizacao
+        $dadosSanitizados = Localizacao::sanitizarDados(['nomeSala' => $nomeSala]);
+        $nomeSala = $dadosSanitizados['nomeSala'] ?? $nomeSala;
 
         // Validação
         if (empty($nomeSala)) {
@@ -40,6 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         registar_auditoria($ligacao, 'Localizacao', $novoId, 'Criação');
 
         $_SESSION['success_message'] = "Sala criada com sucesso!";
+        $ligacao = null;
     } catch (Exception $e) {
         $_SESSION['server_error'] = "Erro ao criar sala: " . $e->getMessage();
     }

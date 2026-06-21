@@ -5,7 +5,6 @@ redirect_if_not_logged('private/login/login.php', ['maintenances.edit']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        $ligacao = connect_to_db();
 
         // 1. Desencriptar IDs
         $encryptedEqId = trim($_POST['equipment-id'] ?? '');
@@ -48,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $custoManutencao = $custoManutencaoRaw !== '' ? (float) $custoManutencaoRaw : null;
 
         // 3. Validar
-        $erros = Manutencao::validarDados([
+        $dadosSanitizados = Manutencao::sanitizarDados([
             'idManutencao' => (string)$idManutencao,
             'tipoManutencao' => $tipoManutencaoRaw,
             'dataInicio' => $dataInicio,
@@ -56,6 +55,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'idPessoaResponsavel' => $idPessoaResponsavel,
             'custoManutencao' => $custoManutencao
         ]);
+        $tipoManutencaoRaw = $dadosSanitizados['tipoManutencao'] ?? $tipoManutencaoRaw;
+        $dataInicio = $dadosSanitizados['dataInicio'] ?? $dataInicio;
+        $dataFim = $dadosSanitizados['dataFim'] ?? $dataFim;
+        $idPessoaResponsavel = $dadosSanitizados['idPessoaResponsavel'] ?? $idPessoaResponsavel;
+        $custoManutencao = $dadosSanitizados['custoManutencao'] ?? $custoManutencao;
+        $erros = Manutencao::validarDados($dadosSanitizados);
 
         if (!empty($erros)) {
             throw new Exception(implode("<br>", $erros));
@@ -64,9 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Ler o estado antigo antes do Update para Auditoria
         $stmtAntigo = execute_query(
             "SELECT tipoManutencao, dataInicio, dataFim, idPessoaResponsavel, idFornecedor, custoManutencao, observacoes FROM Manutencao WHERE idManutencao = :idMan AND idEquipamento = :idEq",
-            ['idMan' => $idManutencao, 'idEq' => $idEquipamento],
-            $ligacao
-        );
+            ['idMan' => $idManutencao, 'idEq' => $idEquipamento]);
         $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
 
         // 4. Atualizar DB
@@ -91,9 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'obs' => !empty($observacoes) ? $observacoes : null,
                 'idMan' => $idManutencao,
                 'idEq' => $idEquipamento
-            ],
-            $ligacao
-        );
+            ]);
 
         // Registar auditoria
         registar_auditoria_edicao($ligacao, 'Manutencao', $idManutencao, $antigo, [

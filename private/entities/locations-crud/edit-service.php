@@ -8,22 +8,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $idServico = (int) aes_decrypt($_POST['service-id']);
         $nomeServico = trim($_POST['service-name'] ?? '');
 
-        // Sanitização
-        $nomeServico = capitalize_name($nomeServico);
+        // Sanitização usando a classe Servico
+        $dadosSanitizados = Servico::sanitizarDados(['nome' => $nomeServico]);
+        $nomeServico = $dadosSanitizados['nome'] ?? $nomeServico;
 
         // Validação
         if (empty($nomeServico)) {
             throw new Exception("O nome do serviço não pode estar vazio.");
         }
 
-        $ligacao = connect_to_db();
-
         // Buscar o idPiso deste serviço para verificação de duplicados
         $stmtServico = execute_query(
             "SELECT idPiso FROM Servico WHERE idServico = :id",
-            ['id' => $idServico],
-            $ligacao
-        );
+            ['id' => $idServico]);
         $servicoRow = $stmtServico->fetch(PDO::FETCH_ASSOC);
 
         if (!$servicoRow) {
@@ -35,9 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Verificar se já existe outro Serviço com o mesmo nome no mesmo Piso
         $stmtVerificar = execute_query(
             "SELECT idServico FROM Servico WHERE nome = :nome AND idPiso = :idPiso AND idServico != :id",
-            ['nome' => $nomeServico, 'idPiso' => $idPiso, 'id' => $idServico],
-            $ligacao
-        );
+            ['nome' => $nomeServico, 'idPiso' => $idPiso, 'id' => $idServico]);
 
         if ($stmtVerificar->fetch()) {
             throw new Exception("Já existe um serviço (ativo ou inativo) com este nome neste piso.");
@@ -46,17 +41,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Ler o estado antigo antes do Update para Auditoria
         $stmtAntigo = execute_query(
             "SELECT nome FROM Servico WHERE idServico = :id",
-            ['id' => $idServico],
-            $ligacao
-        );
+            ['id' => $idServico]);
         $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
 
         // Fazer o update
         execute_query(
             "UPDATE Servico SET nome = :nome WHERE idServico = :id",
-            ['nome' => $nomeServico, 'id' => $idServico],
-            $ligacao
-        );
+            ['nome' => $nomeServico, 'id' => $idServico]);
 
         // Registar auditoria
         registar_auditoria_edicao($ligacao, 'Servico', $idServico, $antigo, [

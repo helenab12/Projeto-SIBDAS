@@ -37,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_fornecedor']))
         }
 
         // Validação usando a classe Fornecedor
-        $erros = Fornecedor::validarDados([
+        $dadosSanitizados = Fornecedor::sanitizarDados([
             'idFornecedor' => (string)$id,
             'nome' => $nome,
             'nifFornecedor' => $nif,
@@ -50,19 +50,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_fornecedor']))
             'dataCriacao' => new DateTime(),
             'dataAtualizacao' => new DateTime()
         ]);
+        $nome = $dadosSanitizados['nome'] ?? $nome;
+        $nif = $dadosSanitizados['nifFornecedor'] ?? $nif;
+        $telefone = $dadosSanitizados['contactoTelefonico'] ?? $telefone;
+        $email = $dadosSanitizados['email'] ?? $email;
+        $website = $dadosSanitizados['website'] ?? $website;
+        $idPessoa = $dadosSanitizados['idPessoaResponsavel'] ?? $idPessoa;
+        $tipoEnum = $dadosSanitizados['tipoFornecedor'] ?? $tipoEnum;
+        $erros = Fornecedor::validarDados($dadosSanitizados);
 
         if (!empty($erros)) {
             throw new Exception(implode(", ", $erros));
         }
 
-        $ligacao = connect_to_db();
-
         // Verificar duplicados (NIF ou email noutro registo)
         $stmtVerificar = execute_query(
             "SELECT nifFornecedor, email FROM Fornecedor WHERE (nifFornecedor = :nif OR email = :email) AND idFornecedor != :id",
-            ['nif' => $nif, 'email' => $email, 'id' => $id],
-            $ligacao
-        );
+            ['nif' => $nif, 'email' => $email, 'id' => $id]);
 
         $fornecedorExistente = $stmtVerificar->fetch(PDO::FETCH_ASSOC);
         if ($fornecedorExistente) {
@@ -77,9 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_fornecedor']))
         // Ler o estado antigo antes do Update para Auditoria
         $stmtAntigo = execute_query(
             "SELECT nome, nifFornecedor, contactoTelefonico, email, website, idPessoaResponsavel, tipoFornecedor FROM Fornecedor WHERE idFornecedor = :id",
-            ['id' => $id],
-            $ligacao
-        );
+            ['id' => $id]);
         $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
 
         // Atualizar na base de dados
@@ -97,9 +99,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_fornecedor']))
                 'idPessoa' => $idPessoa,
                 'tipo' => $tipoEnum->value,
                 'id' => $id
-            ],
-            $ligacao
-        );
+            ]);
 
         // Registar auditoria
         registar_auditoria_edicao($ligacao, 'Fornecedor', $id, $antigo, [

@@ -20,7 +20,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $descricao = ucfirst(trim($_POST['category-description'] ?? ''));
 
         // Validação básica
-        $erros = Categoria::validarDados([
+        $dadosSanitizados = Categoria::sanitizarDados([
             'idCategoria' => (string) $id,
             'codigo' => $codigo,
             'nome' => $nome,
@@ -29,19 +29,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'dataCriacao' => new DateTime(),
             'dataAtualizacao' => new DateTime()
         ]);
+        $codigo = $dadosSanitizados['codigo'] ?? $codigo;
+        $nome = $dadosSanitizados['nome'] ?? $nome;
+        $descricao = $dadosSanitizados['descricao'] ?? $descricao;
+        $erros = Categoria::validarDados($dadosSanitizados);
 
         if (!empty($erros)) {
             throw new Exception(implode(", ", $erros));
         }
 
-        $ligacao = connect_to_db();
-
         // Verificar se o código ou nome já existe noutra categoria
         $stmt = execute_query(
             "SELECT idCategoria FROM CategoriaEquipamento WHERE (codigoPrefix = :codigo OR nome = :nome) AND idCategoria != :id",
-            ['codigo' => $codigo, 'nome' => $nome, 'id' => $id],
-            $ligacao
-        );
+            ['codigo' => $codigo, 'nome' => $nome, 'id' => $id]);
         if ($stmt->fetch()) {
             throw new Exception("O código ou nome da categoria já existe noutro registo.");
         }
@@ -49,16 +49,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Ler o estado antigo antes do Update para Auditoria
         $stmtAntigo = execute_query(
             "SELECT codigoPrefix, nome, descricao FROM CategoriaEquipamento WHERE idCategoria = :id",
-            ['id' => $id],
-            $ligacao
-        );
+            ['id' => $id]);
         $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
 
         execute_query(
             "UPDATE CategoriaEquipamento SET codigoPrefix = :codigo, nome = :nome, descricao = :descricao WHERE idCategoria = :id",
-            ['codigo' => $codigo, 'nome' => $nome, 'descricao' => $descricao, 'id' => $id],
-            $ligacao
-        );
+            ['codigo' => $codigo, 'nome' => $nome, 'descricao' => $descricao, 'id' => $id]);
 
         // Registar auditoria
         registar_auditoria_edicao($ligacao, 'CategoriaEquipamento', $id, $antigo, [

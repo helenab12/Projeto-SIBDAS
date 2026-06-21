@@ -5,7 +5,6 @@ redirect_if_not_logged('private/login/login.php', ['documents.delete']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        $ligacao = connect_to_db();
 
         $encryptedEqId = trim($_POST['equipment-id'] ?? '');
         $encryptedDocId = trim($_POST['document-id'] ?? '');
@@ -25,9 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         execute_query(
             "UPDATE Documento SET ativo = 0, dataAtualizacao = CURRENT_TIMESTAMP WHERE idDocumento = :idDoc",
-            ['idDoc' => $idDocumento],
-            $ligacao
-        );
+            ['idDoc' => $idDocumento]);
 
         registar_auditoria($ligacao, 'Documento', $idDocumento, 'Remoção', 'ativo', '1', '0');
 

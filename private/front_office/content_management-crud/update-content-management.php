@@ -16,7 +16,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar_textos'])) {
             $chaveDecriptada = aes_decrypt($chaveEncriptada);
             if ($chaveDecriptada === false) continue;
             
-            $novoValor = trim($novoValor);
+            // Sanitização usando a classe
+            $dadosSanitizados = ConteudoTexto::sanitizarDados(['valor' => $novoValor]);
+            $novoValor = $dadosSanitizados['valor'] ?? $novoValor;
 
             // Obter valor antigo e id
             $stmtSelect = execute_query("SELECT idConteudo, valor FROM ConteudoFrontOffice WHERE chaveSecao = :id", ['id' => $chaveDecriptada], $ligacao);
@@ -48,6 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar_textos'])) {
         } else {
             $_SESSION['success_message'] = "Nenhuma alteração foi feita aos textos.";
         }
+        $ligacao = null;
     } catch (Exception $e) {
         if (isset($ligacao) && $ligacao->inTransaction()) {
             $ligacao->rollBack();

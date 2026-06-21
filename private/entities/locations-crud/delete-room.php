@@ -7,14 +7,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $idLocalizacao = (int) aes_decrypt($_POST['room-id']);
 
-        $ligacao = connect_to_db();
-
         // Soft-delete da sala definindo ativo = 0
         execute_query(
             "UPDATE Localizacao SET ativo = 0 WHERE idLocalizacao = :id",
-            ['id' => $idLocalizacao],
-            $ligacao
-        );
+            ['id' => $idLocalizacao]);
 
         registar_auditoria($ligacao, 'Localizacao', $idLocalizacao, 'Remoção', 'ativo', '1', '0');
 

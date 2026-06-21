@@ -11,6 +11,7 @@ if (isset($_SESSION['id_utilizador'])) {
         if ($row = $stmtHeaders->fetch(PDO::FETCH_ASSOC)) {
             $numeroNotificacoesNaoLidas = (int) $row['count'];
         }
+        $ligacaoHeaders = null;
     } catch (Exception $e) {
     }
 }

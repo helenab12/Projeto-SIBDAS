@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $preco = isset($_POST['component-price']) && $_POST['component-price'] !== '' ? (float) $_POST['component-price'] : 0.00;
 
         // Validação básica
-        $erros = Componente::validarDados([
+        $dadosSanitizados = Componente::sanitizarDados([
             'codigoInterno' => $sku,
             'descricao' => $nome,
             'stock' => $stock,
@@ -36,6 +36,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'dataCriacao' => new DateTime(),
             'dataAtualizacao' => new DateTime()
         ]);
+        $sku = $dadosSanitizados['codigoInterno'] ?? $sku;
+        $nome = $dadosSanitizados['descricao'] ?? $nome;
+        $stock = $dadosSanitizados['stock'] ?? $stock;
+        $stockMin = $dadosSanitizados['stockMinimo'] ?? $stockMin;
+        $preco = $dadosSanitizados['preco'] ?? $preco;
+        $idLocalizacao = $dadosSanitizados['idLocalizacao'] ?? $idLocalizacao;
+        $erros = Componente::validarDados($dadosSanitizados);
 
         if (empty($idCategoria)) {
             $erros[] = "A categoria é obrigatória.";
@@ -46,14 +53,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception(implode(",", $erros));
         }
 
-        $ligacao = connect_to_db();
-
         // Verificar se o SKU já existe noutro componente
         $stmt = execute_query(
             "SELECT idComponente FROM Componente WHERE codigoInterno = :sku AND idComponente != :id",
-            ['sku' => $sku, 'id' => $idComponente],
-            $ligacao
-        );
+            ['sku' => $sku, 'id' => $idComponente]);
         if ($stmt->fetch()) {
             throw new Exception("O SKU inserido já existe noutro registo.");
         }
@@ -61,9 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Ler o estado antigo antes do Update para Auditoria
         $stmtAntigo = execute_query(
             "SELECT codigoInterno, descricao, stock, stockMinimo, preco, idLocalizacao FROM Componente WHERE idComponente = :id",
-            ['id' => $idComponente],
-            $ligacao
-        );
+            ['id' => $idComponente]);
         $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
 
         // Atualizar Componente
@@ -79,24 +80,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'preco' => $preco,
                 'idLocalizacao' => $idLocalizacao,
                 'id' => $idComponente
-            ],
-            $ligacao
-        );
+            ]);
 
         // Atualizar mapeamento do Componente com a Categoria
-        $stmtCheckCat = execute_query("SELECT idCategoria FROM ComponenteCategoria WHERE idComponente = :idComponente", ['idComponente' => $idComponente], $ligacao);
+        $stmtCheckCat = execute_query("SELECT idCategoria FROM ComponenteCategoria WHERE idComponente = :idComponente", ['idComponente' => $idComponente]);
         if ($stmtCheckCat->fetch()) {
             execute_query(
                 "UPDATE ComponenteCategoria SET idCategoria = :idCategoria WHERE idComponente = :idComponente",
-                ['idCategoria' => $idCategoria, 'idComponente' => $idComponente],
-                $ligacao
-            );
+                ['idCategoria' => $idCategoria, 'idComponente' => $idComponente]);
         } else {
             execute_query(
                 "INSERT INTO ComponenteCategoria (idComponente, idCategoria) VALUES (:idComponente, :idCategoria)",
-                ['idComponente' => $idComponente, 'idCategoria' => $idCategoria],
-                $ligacao
-            );
+                ['idComponente' => $idComponente, 'idCategoria' => $idCategoria]);
         }
 
         // Registar auditoria
