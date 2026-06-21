@@ -29,7 +29,7 @@ if (!empty($_SESSION['server_error'])) {
         <div class="d-flex justify-content-between align-items-center w-100 dashboard-title flex-column flex-md-row">
             <div class="d-flex flex-column gap-1">
                 <h1>Dashboard</h1>
-                <p class="text-secondary fw-400">Visão geral do inventário hospitalar — abril de 2026</p>
+                <p class="text-secondary fw-400">Visão geral do inventário hospitalar</p>
             </div>
             <div class="d-flex gap-2">
                 <button class="btn btn-ghost-outline gap-2 btn-small" data-bs-toggle="modal"

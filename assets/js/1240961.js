@@ -1,4 +1,8 @@
-/* Menu mobile — toggle hamburguer / X */
+// ===================
+// 1. UI Core e Layout
+// ===================
+
+// - Toggle Menu Mobile (Hamburguer / X)
 const menuToggle = document.getElementById("menu-toggle");
 const mobileMenu = document.getElementById("mobile-menu");
 
@@ -9,7 +13,7 @@ if (menuToggle && mobileMenu) {
     });
 }
 
-/* Toggle de tema (dark/light) */
+// - Toggle de Tema (Dark/Light mode) e Inicialização de Tema
 const themeToggles = document.querySelectorAll(".pa-theme-toggle");
 
 function toggleTheme() {
@@ -24,7 +28,6 @@ function toggleTheme() {
     updateChartColors();
 }
 
-/* Inicializar tema guardado ou preferência do sistema */
 (function () {
     const saved = localStorage.getItem("theme");
     const preferred =
@@ -39,16 +42,7 @@ function toggleTheme() {
 
 themeToggles.forEach((btn) => btn.addEventListener("click", toggleTheme));
 
-/* Navbar border ao fazer scroll */
-const navbar = document.querySelector(".pa-navbar");
-
-if (navbar) {
-    window.addEventListener("scroll", () => {
-        navbar.classList.toggle("scrolled", window.scrollY > 50);
-    });
-}
-
-/* Sidebar Dropdowns */
+// - Sidebar
 const dropdownToggles = document.querySelectorAll(".nav-dropdown-toggle");
 
 dropdownToggles.forEach((toggle) => {
@@ -61,41 +55,8 @@ dropdownToggles.forEach((toggle) => {
     });
 });
 
-/* Sidebar Collapse */
-const collapseBtn = document.querySelector(".sidebar-collapse-btn");
-if (collapseBtn) {
-    collapseBtn.addEventListener("click", () => {
-        const sidebar = document.querySelector(".desktop-sidebar");
-        sidebar.classList.toggle("collapsed");
-
-        if (sidebar.classList.contains("collapsed")) {
-            const openCollapses = sidebar.querySelectorAll(".collapse.show");
-            openCollapses.forEach((collapseEl) => {
-                if (typeof bootstrap !== "undefined") {
-                    const bsCollapse = bootstrap.Collapse.getInstance(collapseEl);
-                    if (bsCollapse) {
-                        bsCollapse.hide();
-                    } else {
-                        new bootstrap.Collapse(collapseEl, { toggle: false }).hide();
-                    }
-                }
-            });
-        }
-    });
-}
-
-/* Mobile Sidebar */
 const mobileSidebar = document.querySelector(".mobile-sidebar");
 const sidebarBackground = document.querySelector(".sidebar-background");
-
-// Funcionalidade utilitária para prender o scroll da página
-function toggleBodyScroll(isOpen) {
-    if (isOpen) {
-        document.body.style.overflowY = "hidden";
-    } else {
-        document.body.style.overflowY = "";
-    }
-}
 
 // Abrir menu mobile (clique no hamburguer)
 const mobileMenuBtn = document.getElementById("mobile-menu-toggle");
@@ -123,33 +84,41 @@ if (sidebarBackground && mobileSidebar) {
     });
 }
 
-/* Gráficos de Estatísticas */
+// - Header Semi-transparente (Scroll)
+const navbar = document.querySelector(".pa-navbar");
 
-// Variáveis partilhadas de Dados e Cores para os Gráficos
-const estatisticasLabels = window.DashboardData?.graficoCategoria?.labels || [
-    "Ventiladores",
-    "Desfibrilhadores",
-    "Bombas Infusão",
-    "Monitores Paciente",
-    "Máquinas Anestesia",
-    "Incubadoras",
-    "Eletrocardiógrafos",
-    "Aspiradores",
-];
+if (navbar) {
+    window.addEventListener("scroll", () => {
+        navbar.classList.toggle("scrolled", window.scrollY > 50);
+    });
+}
 
-const estatisticasData = window.DashboardData?.graficoCategoria?.data || [42, 67, 89, 28, 15, 53, 38, 22];
+const privateAreaHeader = document.querySelectorAll(".private-area header");
 
-const estatisticasColors = [
-    "#3b82f6", // azul
-    "#22c55e", // verde
-    "#a855f7", // roxo
-    "#ef4444", // vermelho
-    "#f97316", // laranja
-    "#06b6d4", // ciano
-    "#ff69b4", // rosa choque
-    "#7fffd4", // verde água
-];
+if (privateAreaHeader) {
+    window.addEventListener("scroll", () => {
+        privateAreaHeader.forEach((header) => {
+            header.classList.toggle("header-scrolled", window.scrollY > 50);
+        });
+    });
+}
 
+// - Funcionalidade para prender scroll do body (toggleBodyScroll)
+function toggleBodyScroll(isOpen) {
+    if (isOpen) {
+        document.body.style.overflowY = "hidden";
+    } else {
+        document.body.style.overflowY = "";
+    }
+}
+
+// - Esconder page-loading-overlay após o DOM carregar
+
+// ===================
+// 2. Gráficos e Estatísticas
+// ===================
+
+// - Variáveis partilhadas de Cores Chart.js
 function getCalculatedCssColor(varName) {
     const div = document.createElement("div");
     div.style.color = `var(${varName})`;
@@ -160,6 +129,7 @@ function getCalculatedCssColor(varName) {
     return finalColor;
 }
 
+// - Lógica de updateChartColors
 function updateChartColors() {
     const newTextColor = getCalculatedCssColor("--text-secondary");
     const newGridColor = getCalculatedCssColor("--border-light");
@@ -194,10 +164,33 @@ window
     .addEventListener("change", updateChartColors);
 window.addEventListener("load", updateChartColors);
 
-// Chamar uma vez de imediato
 updateChartColors();
 
-// Grafico de Barras
+// - Gráfico de Barras (Status)
+const estatisticasLabels = window.DashboardData?.graficoCategoria?.labels || [
+    "Ventiladores",
+    "Desfibrilhadores",
+    "Bombas Infusão",
+    "Monitores Paciente",
+    "Máquinas Anestesia",
+    "Incubadoras",
+    "Eletrocardiógrafos",
+    "Aspiradores",
+];
+
+const estatisticasData = window.DashboardData?.graficoCategoria?.data || [42, 67, 89, 28, 15, 53, 38, 22];
+
+const estatisticasColors = [
+    "#3b82f6", // azul
+    "#22c55e", // verde
+    "#a855f7", // roxo
+    "#ef4444", // vermelho
+    "#f97316", // laranja
+    "#06b6d4", // ciano
+    "#ff69b4", // rosa choque
+    "#7fffd4", // verde água
+];
+
 const canvas1 = document.getElementById("categoryDistributionChart");
 if (canvas1) {
     const ctx = canvas1.getContext("2d");
@@ -228,7 +221,7 @@ if (canvas1) {
     });
 }
 
-// Dados para Gráfico de Donut (Serviços)
+// - Gráfico de Donut (Serviços)
 const servicosLabels = window.DashboardData?.graficoServico?.labels || [
     "UCI",
     "Bloco Operatório",
@@ -237,6 +230,7 @@ const servicosLabels = window.DashboardData?.graficoServico?.labels || [
     "Laboratório",
     "Esterilização",
 ];
+
 const servicosData = window.DashboardData?.graficoServico?.data || [2, 2, 3, 1, 1, 1];
 const servicosColors = [
     "#3b82f6",
@@ -280,10 +274,11 @@ if (canvas2) {
     });
 }
 
-// Dados para Gráfico de Tendência (Manutenções)
+// - Gráfico de Tendência (Manutenções)
 const tendenciaLabels = window.DashboardData?.graficoManutencao?.labels || [
     "Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"
 ];
+
 const preventivaData = window.DashboardData?.graficoManutencao?.preventiva || [8, 10, 12, 9, 11, 14, 10, 18, 15, 12, 16, 20];
 const corretivaData = window.DashboardData?.graficoManutencao?.corretiva || [3, 4, 5, 2, 6, 4, 7, 5, 3, 6, 4, 5];
 
@@ -347,38 +342,11 @@ if (ctx3) {
     });
 }
 
-// Header Semi-transparente ao dar scroll
-const privateAreaHeader = document.querySelectorAll(".private-area header");
+// ===================
+// 3. Tabelas e Pesquisas Simples
+// ===================
 
-if (privateAreaHeader) {
-    window.addEventListener("scroll", () => {
-        privateAreaHeader.forEach((header) => {
-            header.classList.toggle("header-scrolled", window.scrollY > 50);
-        });
-    });
-}
-
-// Inicializar DataTables (Equipamentos)
-if (
-    document.getElementById("equipmentsTable") &&
-    typeof simpleDatatables !== "undefined"
-) {
-    const table = new simpleDatatables.DataTable("#equipmentsTable", {
-        searchable: false,
-        paging: false,
-        sortable: false,
-        labels: {
-            noRows: "Nenhum registo encontrado",
-            info: "",
-        },
-    });
-
-    table.on('datatable.page', initTooltips);
-    table.on('datatable.sort', initTooltips);
-    table.on('datatable.search', initTooltips);
-}
-
-// Auto-submit da pesquisa global (para qualquer input de pesquisa que use form)
+// - Auto-submit global (keyup debounce) e disparo de input
 document.addEventListener("DOMContentLoaded", function () {
     const searchInputs = document.querySelectorAll(".equipment-list-search-bar .search-bar-input");
     let debounceTimer;
@@ -398,7 +366,78 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
-// Inicializar DataTables (Fornecedores)
+window.addEventListener("DOMContentLoaded", () => {
+    document.querySelectorAll(".search-bar-input, .person-search-input").forEach(input => {
+        if (input.value.trim() !== "") {
+            input.dispatchEvent(new Event("input", { bubbles: true }));
+        }
+    });
+
+    const overlay = document.getElementById('page-loading-overlay');
+    if (overlay) {
+        overlay.classList.add('hidden');
+        if (overlay) overlay.remove();
+        document.body.classList.remove("overflow-hidden");
+    }
+});
+
+// Pesquisa de Edifícios
+const locationsSearchInput = document.querySelector(".equipment-list-search-bar .search-bar-input");
+const locationsSearchForm = document.querySelector(".equipment-list-search-bar form");
+
+if (locationsSearchForm) {
+    locationsSearchForm.addEventListener("submit", function (e) {
+        e.preventDefault();
+    });
+}
+
+if (locationsSearchInput) {
+    function applyLocationsFilter() {
+        const query = locationsSearchInput.value.trim().toLowerCase();
+        const locationsBuildingCards = document.querySelectorAll(".locations");
+        let anyVisible = false;
+        locationsBuildingCards.forEach(function (card) {
+            const nameEl = card.querySelector(".building-row p.fw-700");
+            const hiddenIdEl = card.querySelector(".building-row .visually-hidden");
+            if (nameEl) {
+                const name = nameEl.textContent.trim().toLowerCase();
+                const hiddenId = hiddenIdEl ? hiddenIdEl.textContent.trim().toLowerCase() : "";
+                const isMatch = !query || name.includes(query) || hiddenId.includes(query);
+                card.classList.toggle("d-none", !isMatch);
+                if (isMatch) {
+                    anyVisible = true;
+                }
+            }
+        });
+        const emptyState = document.getElementById("locations-empty-state");
+        if (emptyState) {
+            emptyState.classList.toggle("d-none", anyVisible);
+        }
+    }
+
+    applyLocationsFilter();
+}
+
+// - DataTables: Equipamentos, Fornecedores, Utilizadores
+if (
+    document.getElementById("equipmentsTable") &&
+    typeof simpleDatatables !== "undefined"
+) {
+    const table = new simpleDatatables.DataTable("#equipmentsTable", {
+        searchable: false,
+        paging: false,
+        sortable: false,
+        labels: {
+            noRows: "Nenhum registo encontrado",
+            info: "",
+        },
+    });
+
+    table.on('datatable.page', initTooltips);
+    table.on('datatable.sort', initTooltips);
+    table.on('datatable.search', initTooltips);
+}
+
 if (
     document.getElementById("suppliersTable") &&
     typeof simpleDatatables !== "undefined"
@@ -445,7 +484,6 @@ if (
     if (filterType) filterType.addEventListener("change", applySupplierFilters);
 }
 
-// Inicializar DataTables (Utilizadores)
 if (
     document.getElementById("usersTable") &&
     typeof simpleDatatables !== "undefined"
@@ -492,7 +530,7 @@ if (
     if (filterType) filterType.addEventListener("change", applyUserFilters);
 }
 
-// Inicializar DataTables (Funcionalidades)
+// - DataTables: Funcionalidades, Documentos, Componentes
 if (
     document.getElementById("featuresTable") &&
     typeof simpleDatatables !== "undefined"
@@ -524,22 +562,6 @@ if (
     });
 }
 
-// Inicializar DataTables (Garantias & Contratos)
-if (
-    document.getElementById("warrantiesTable") &&
-    typeof simpleDatatables !== "undefined"
-) {
-    new simpleDatatables.DataTable("#warrantiesTable", {
-        searchable: false,
-        perPage: 10,
-        perPageSelect: false,
-        labels: {
-            noRows: "Nenhum registo encontrado",
-            info: "",
-        },
-    });
-}
-
 // Inicializar DataTables (Componentes)
 if (
     document.getElementById("componentsTable") &&
@@ -555,6 +577,23 @@ if (
         },
     });
 }
+
+// - DataTables: Garantias, Manutenções
+if (
+    document.getElementById("warrantiesTable") &&
+    typeof simpleDatatables !== "undefined"
+) {
+    new simpleDatatables.DataTable("#warrantiesTable", {
+        searchable: false,
+        perPage: 10,
+        perPageSelect: false,
+        labels: {
+            noRows: "Nenhum registo encontrado",
+            info: "",
+        },
+    });
+}
+
 
 // Inicializar DataTables (Manutenções)
 if (
@@ -572,7 +611,7 @@ if (
     });
 }
 
-// Inicializar DataTables (Auditoria)
+// - DataTables: Auditoria, Global Audit Logs, Reciclagem
 if (document.getElementById("auditTable") && typeof simpleDatatables !== "undefined") {
     new simpleDatatables.DataTable("#auditTable", {
         searchable: false,
@@ -585,7 +624,118 @@ if (document.getElementById("auditTable") && typeof simpleDatatables !== "undefi
     });
 }
 
-// Inicializar Flatpickr (Datas)
+// Inicializar DataTables (Global Audit Logs)
+if (
+    document.getElementById("globalAuditTable") &&
+    typeof simpleDatatables !== "undefined"
+) {
+    const table = new simpleDatatables.DataTable("#globalAuditTable", {
+        searchable: true,
+        perPage: 10,
+        perPageSelect: [10, 25, 50, 100],
+        labels: {
+            placeholder: "Pesquisar...",
+            perPage: "entradas por página",
+            noRows: "Nenhum registo encontrado",
+            noResults: "Nenhum resultado corresponde à sua pesquisa",
+            info: "A mostrar {start}–{end} de {rows}",
+        },
+    });
+
+    table.on('datatable.page', initTooltips);
+    table.on('datatable.sort', initTooltips);
+    table.on('datatable.search', initTooltips);
+    table.on('datatable.update', initTooltips);
+
+    // Custom search binding
+    const searchInput = document.getElementById("search-global-audit");
+    const filterType = document.getElementById("filter-global-audit-type");
+
+    function applyGlobalAuditFilters() {
+        const searchVal = searchInput ? searchInput.value.trim() : "";
+        const typeVal = filterType ? filterType.value : "";
+
+        if (typeof table.multiSearch === 'function') {
+            let queries = [];
+            if (searchVal) queries.push({ terms: [searchVal] });
+            if (typeVal) queries.push({ terms: [typeVal], columns: [1] });
+
+            if (queries.length > 0) {
+                table.multiSearch(queries);
+            } else {
+                table.search("");
+            }
+        } else {
+            let terms = [];
+            if (searchVal) terms.push(searchVal);
+            if (typeVal) terms.push(typeVal);
+            table.search(terms.join(" "));
+        }
+    }
+
+    if (searchInput) {
+        searchInput.addEventListener("input", applyGlobalAuditFilters);
+    }
+
+    if (filterType) {
+        filterType.addEventListener("change", applyGlobalAuditFilters);
+    }
+}
+
+// Inicializar DataTables (Reciclagem)
+if (document.getElementById("recyclingTable") && typeof simpleDatatables !== "undefined") {
+    const table = new simpleDatatables.DataTable("#recyclingTable", {
+        searchable: true,
+        perPage: 10,
+        perPageSelect: false,
+        labels: {
+            placeholder: "Pesquisar...",
+            perPage: "entradas por página",
+            noRows: "Nenhum registo encontrado",
+            noResults: "Nenhum resultado corresponde à sua pesquisa",
+            info: "A mostrar {start}–{end} de {rows}",
+        },
+    });
+
+    table.on('datatable.page', initTooltips);
+    table.on('datatable.sort', initTooltips);
+    table.on('datatable.search', initTooltips);
+    table.on('datatable.update', initTooltips);
+
+    const searchInput = document.getElementById("search-input-recycling");
+    const filterType = document.getElementById("filter-type-recycling");
+
+    function applyRecyclingFilters() {
+        const searchVal = searchInput ? searchInput.value.trim() : "";
+        const typeVal = filterType ? filterType.value : "";
+
+        if (typeof table.multiSearch === 'function') {
+            let queries = [];
+            if (searchVal) queries.push({ terms: [searchVal] });
+            if (typeVal) queries.push({ terms: [typeVal], columns: [1] });
+
+            if (queries.length > 0) {
+                table.multiSearch(queries);
+            } else {
+                table.search("");
+            }
+        } else {
+            let terms = [];
+            if (searchVal) terms.push(searchVal);
+            if (typeVal) terms.push(typeVal);
+            table.search(terms.join(" "));
+        }
+    }
+
+    if (searchInput) searchInput.addEventListener("input", applyRecyclingFilters);
+    if (filterType) filterType.addEventListener("change", applyRecyclingFilters);
+}
+
+// ===================
+// 4. Componentes Extra e Plugins
+// ===================
+
+// - Inicialização do Flatpickr (Datas)
 if (typeof flatpickr !== "undefined") {
     flatpickr("#purchase-date", {
         dateFormat: "d/m/Y",
@@ -641,519 +791,7 @@ if (typeof flatpickr !== "undefined") {
     });
 }
 
-// Cascata para Localização (Edifício -> Piso -> Serviço -> Sala)
-const buildingSelect = document.getElementById("building");
-const floorSelect = document.getElementById("floor");
-const serviceSelect = document.getElementById("service");
-const roomSelect = document.getElementById("room");
-
-if (buildingSelect && floorSelect && serviceSelect && roomSelect) {
-    buildingSelect.addEventListener("change", () => {
-        floorSelect.removeAttribute("disabled");
-
-        // Reset dos seguintes
-        floorSelect.value = "";
-        serviceSelect.setAttribute("disabled", "true");
-        serviceSelect.value = "";
-        roomSelect.setAttribute("disabled", "true");
-        roomSelect.value = "";
-    });
-
-    floorSelect.addEventListener("change", () => {
-        serviceSelect.removeAttribute("disabled");
-
-        // Reset dos seguintes
-        serviceSelect.value = "";
-        roomSelect.setAttribute("disabled", "true");
-        roomSelect.value = "";
-    });
-
-    serviceSelect.addEventListener("change", () => {
-        roomSelect.removeAttribute("disabled");
-
-        // Reset do seguinte
-        roomSelect.value = "";
-    });
-}
-
-// Lógica de Abertura, Fecho e Submissão do Modal
-const createEquipmentModal = document.getElementById(
-    "equipment-creation-modal",
-);
-const btnOpenCreateModal = document.getElementById(
-    "btn-open-create-equipment-modal",
-);
-const btnSubmitModal = document.getElementById("btn-submit-modal");
-
-// Lógica de Paginação e Validação do Modal de Criação de Equipamento
-const btnNextPage = document.getElementById("btn-next-page");
-const btnPrevPage = document.getElementById("btn-prev-page");
-const modalPage1 = document.getElementById("modal-page-1");
-const modalPage2 = document.getElementById("modal-page-2");
-
-let bsCreateEquipmentModal = null;
-if (createEquipmentModal) {
-    bsCreateEquipmentModal = new bootstrap.Modal(createEquipmentModal);
-
-    // Reset à primeira página do modal quando fechado
-    createEquipmentModal.addEventListener("hidden.bs.modal", () => {
-        if (modalPage1 && modalPage2) {
-            modalPage1.classList.remove("d-none");
-            modalPage1.classList.add("d-flex");
-            modalPage2.classList.remove("d-flex");
-            modalPage2.classList.add("d-none");
-        }
-    });
-}
-
-if (btnOpenCreateModal && bsCreateEquipmentModal) {
-    btnOpenCreateModal.addEventListener("click", () => {
-        bsCreateEquipmentModal.show();
-    });
-}
-
-// Campos obrigatórios do Componente
-const componentNameInput = document.getElementById("component-name");
-const componentSkuInput = document.getElementById("component-sku");
-
-if (componentNameInput && componentSkuInput && btnSubmitModal) {
-    const validateComponentForm = () => {
-        if (
-            componentNameInput.value.trim() !== "" &&
-            componentSkuInput.value.trim() !== ""
-        ) {
-            btnSubmitModal.removeAttribute("disabled");
-        } else {
-            btnSubmitModal.setAttribute("disabled", "true");
-        }
-    };
-
-    validateComponentForm();
-
-    componentNameInput.addEventListener("input", validateComponentForm);
-    componentSkuInput.addEventListener("input", validateComponentForm);
-}
-
-// Campos obrigatórios da Categoria
-const categoryNameInput = document.getElementById("category-name");
-const categoryCodeInput = document.getElementById("category-code");
-const categoryDescriptionInput = document.getElementById(
-    "category-description",
-);
-const categoryModalEl = document.getElementById("category-creation-modal");
-
-if (categoryNameInput && categoryCodeInput && categoryDescriptionInput && btnSubmitModal) {
-    const validateCategoryForm = () => {
-        if (
-            categoryNameInput.value.trim() !== "" &&
-            categoryCodeInput.value.trim() !== "" &&
-            categoryDescriptionInput.value.trim() !== ""
-        ) {
-            btnSubmitModal.removeAttribute("disabled");
-        } else {
-            btnSubmitModal.setAttribute("disabled", "true");
-        }
-    };
-
-    validateCategoryForm();
-
-    categoryNameInput.addEventListener("input", validateCategoryForm);
-    categoryCodeInput.addEventListener("input", validateCategoryForm);
-    categoryDescriptionInput.addEventListener("input", validateCategoryForm);
-
-    if (categoryModalEl) {
-        categoryModalEl.addEventListener("hidden.bs.modal", () => {
-            categoryNameInput.value = "";
-            categoryCodeInput.value = "";
-            if (categoryDescriptionInput) {
-                categoryDescriptionInput.value = "";
-            }
-            validateCategoryForm();
-        });
-    }
-}
-
-// Campos obrigatórios da Categoria (Editar)
-document.querySelectorAll(".edit-category-form").forEach(form => {
-    const nameInput = form.querySelector('input[name="category-name"]');
-    const codeInput = form.querySelector('input[name="category-code"]');
-    const descInput = form.querySelector('textarea[name="category-description"]');
-    const submitBtn = form.querySelector('button[name="editar_categoria"]');
-
-    if (nameInput && codeInput && descInput && submitBtn) {
-        const validateEditForm = () => {
-            if (
-                nameInput.value.trim() !== "" &&
-                codeInput.value.trim() !== "" &&
-                descInput.value.trim() !== ""
-            ) {
-                submitBtn.removeAttribute("disabled");
-            } else {
-                submitBtn.setAttribute("disabled", "true");
-            }
-        };
-
-        validateEditForm();
-
-        nameInput.addEventListener("input", validateEditForm);
-        codeInput.addEventListener("input", validateEditForm);
-        descInput.addEventListener("input", validateEditForm);
-    }
-});
-
-// Campos obrigatórios da Página 1
-const equipmentCodeInput = document.getElementById("equipment-code");
-const equipmentCategorySelect = document.getElementById("equipment-category");
-const equipmentSerialInput = document.getElementById("equipment-serial");
-const equipmentNameInput = document.getElementById("equipment-name");
-const equipmentBrandSelect = document.getElementById("equipment-brand");
-const equipmentStatusSelect = document.getElementById("equipment-status");
-const equipmentLocationSelect = document.getElementById("equipment-location");
-
-if (btnNextPage && btnPrevPage && modalPage1 && modalPage2) {
-    // Validação da Página 1
-    const validatePage1 = () => {
-        if (
-            equipmentCodeInput?.value.trim() !== "" &&
-            equipmentCategorySelect?.value !== "" &&
-            equipmentSerialInput?.value.trim() !== "" &&
-            equipmentNameInput?.value.trim() !== "" &&
-            equipmentBrandSelect?.value !== "" &&
-            equipmentStatusSelect?.value !== "" &&
-            equipmentLocationSelect?.value !== ""
-        ) {
-            btnNextPage.removeAttribute("disabled");
-        } else {
-            btnNextPage.setAttribute("disabled", "true");
-        }
-    };
-
-    const attachValidation = (element, eventType) => {
-        if (element) {
-            element.addEventListener(eventType, validatePage1);
-        }
-    };
-
-    attachValidation(equipmentCodeInput, "input");
-    attachValidation(equipmentCategorySelect, "change");
-    attachValidation(equipmentSerialInput, "input");
-    attachValidation(equipmentNameInput, "input");
-    attachValidation(equipmentBrandSelect, "change");
-    attachValidation(equipmentStatusSelect, "change");
-    attachValidation(equipmentLocationSelect, "change");
-
-    // Filtragem de componentes pela categoria selecionada
-    if (equipmentCategorySelect) {
-        equipmentCategorySelect.addEventListener("change", (e) => {
-            const selectedCategoryId = e.target.value;
-            const componentItems = document.querySelectorAll(".multi-select-item[data-category-id]");
-            const noComponentsMsg = document.getElementById("no-components-msg");
-            let visibleCount = 0;
-
-            componentItems.forEach(item => {
-                const itemCategoryId = item.getAttribute("data-category-id");
-                // Se o componente não tiver categoria (vazio) ou pertencer à selecionada, mostra
-                if (selectedCategoryId === "" || itemCategoryId === selectedCategoryId || itemCategoryId === "") {
-                    item.classList.remove("d-none");
-                    item.classList.add("d-flex");
-                    visibleCount++;
-                } else {
-                    item.classList.remove("d-flex");
-                    item.classList.add("d-none");
-                    // Desmarcar componente se for escondido
-                    const checkbox = item.querySelector('input[type="checkbox"]');
-                    if (checkbox && checkbox.checked) {
-                        checkbox.checked = false;
-                        const qtyContainer = item.querySelector(".multi-select-qty-container");
-                        if (qtyContainer) {
-                            qtyContainer.classList.add("d-none");
-                        }
-                    }
-                }
-            });
-
-            if (noComponentsMsg) {
-                if (visibleCount === 0) {
-                    noComponentsMsg.classList.remove("d-none");
-                } else {
-                    noComponentsMsg.classList.add("d-none");
-                }
-            }
-        });
-
-        // Trigger inicial para aplicar o filtro e mostrar o empty state se necessário
-        equipmentCategorySelect.dispatchEvent(new Event("change"));
-    }
-
-    // Navegação
-    btnNextPage.addEventListener("click", () => {
-        modalPage1.classList.add("d-none");
-        modalPage2.classList.remove("d-none");
-    });
-
-    btnPrevPage.addEventListener("click", () => {
-        modalPage2.classList.add("d-none");
-        modalPage1.classList.remove("d-none");
-    });
-
-    // Validação de Datas de Manutenção
-    const maintenanceStartDate = document.getElementById("last-maintenance-start-date");
-    const maintenanceEndDate = document.getElementById("last-maintenance-end-date");
-
-    const validateMaintenanceDates = () => {
-        let valid = true;
-        if (maintenanceStartDate && maintenanceEndDate && maintenanceStartDate.value && maintenanceEndDate.value) {
-            const startDate = new Date(maintenanceStartDate.value);
-            const endDate = new Date(maintenanceEndDate.value);
-
-            if (startDate > endDate) {
-                maintenanceEndDate.setCustomValidity("A data de fim não pode ser anterior à data de início.");
-                maintenanceEndDate.reportValidity();
-                valid = false;
-            } else {
-                maintenanceEndDate.setCustomValidity("");
-            }
-        } else if (maintenanceEndDate) {
-            maintenanceEndDate.setCustomValidity("");
-        }
-        return valid;
-    };
-
-    const validatePage2 = () => {
-        let isPage2Valid = true;
-
-        if (!validateMaintenanceDates()) {
-            isPage2Valid = false;
-        }
-
-        const docTypes = document.querySelectorAll('#uploaded-files-container .doc-type-select');
-        docTypes.forEach(select => {
-            if (select.value === "") {
-                isPage2Valid = false;
-            }
-        });
-
-        if (btnSubmitModal) {
-            if (isPage2Valid) {
-                btnSubmitModal.removeAttribute("disabled");
-            } else {
-                btnSubmitModal.setAttribute("disabled", "true");
-            }
-        }
-    };
-    window.validatePage2 = validatePage2;
-
-    if (maintenanceStartDate) maintenanceStartDate.addEventListener("change", validatePage2);
-    if (maintenanceEndDate) maintenanceEndDate.addEventListener("change", validatePage2);
-
-    const localUploadContainer = document.getElementById("uploaded-files-container");
-    if (localUploadContainer) {
-        localUploadContainer.addEventListener("change", (e) => {
-            if (e.target.classList.contains("doc-type-select")) {
-                validatePage2();
-            }
-        });
-    }
-}
-
-// Lógica para Checkboxes Múltiplos com Quantidade
-const multiSelectCheckboxes = document.querySelectorAll(
-    '.multi-select-form input[type="checkbox"]',
-);
-multiSelectCheckboxes.forEach((checkbox) => {
-    checkbox.addEventListener("change", function () {
-        // Tenta encontrar o contentor de quantidade no item do componente
-        const item = this.closest(".multi-select-item");
-        if (item) {
-            const qtyContainer = item.querySelector(".multi-select-qty-container");
-            if (qtyContainer) {
-                if (this.checked) {
-                    qtyContainer.classList.remove("d-none");
-                } else {
-                    qtyContainer.classList.add("d-none");
-                }
-            }
-        }
-
-        // Atualizar o texto de contagem de checkboxes selecionadas
-        const formItem = this.closest(".form-item");
-        if (formItem) {
-            const countLabel = formItem.querySelector(".multi-select-count-label");
-            if (countLabel) {
-                const checkedCount = formItem.querySelectorAll('.multi-select-form input[type="checkbox"]:checked').length;
-                countLabel.textContent = `${checkedCount} selecionado(s)`;
-            }
-        }
-    });
-});
-
-// Inicializar os contadores de "selecionado(s)"
-document.querySelectorAll(".form-item").forEach(formItem => {
-    const countLabel = formItem.querySelector(".multi-select-count-label");
-    if (countLabel) {
-        const checkedCount = formItem.querySelectorAll('.multi-select-form input[type="checkbox"]:checked').length;
-        countLabel.textContent = `${checkedCount} selecionado(s)`;
-    }
-});
-
-// Lógica de Upload de Documentos Genérica
-const uploadTemplate = document.getElementById("uploaded-file-template");
-const localUploadContainer = document.getElementById("uploaded-files-container");
-
-// Input de multi-upload
-const multiFileInput = document.getElementById("document-upload-input");
-if (multiFileInput) {
-    multiFileInput.addEventListener("change", (e) => {
-        if (typeof handleFiles === 'function') handleFiles(e.target.files);
-        multiFileInput.value = "";
-    });
-}
-
-document.querySelectorAll(".file-upload-zone").forEach(zone => {
-    const targetId = zone.getAttribute("data-dropzone-target");
-    const textTargetId = zone.getAttribute("data-text-target");
-    let fileInput = targetId ? document.getElementById(targetId) : multiFileInput;
-    const isMulti = !targetId;
-
-    if (!fileInput) return;
-
-    // Abrir o file picker ao clicar na zona
-    zone.addEventListener("click", () => {
-        fileInput.click();
-    });
-
-    // Drag and Drop events
-    zone.addEventListener("dragover", (e) => {
-        e.preventDefault();
-        zone.style.borderColor = "var(--primary-500)";
-        zone.style.backgroundColor = "var(--primary-50)";
-    });
-
-    zone.addEventListener("dragleave", (e) => {
-        e.preventDefault();
-        zone.style.borderColor = "";
-        zone.style.backgroundColor = "";
-    });
-
-    zone.addEventListener("drop", (e) => {
-        e.preventDefault();
-        zone.style.borderColor = "";
-        zone.style.backgroundColor = "";
-
-        if (e.dataTransfer.files.length > 0) {
-            if (isMulti) {
-                if (typeof handleFiles === 'function') handleFiles(e.dataTransfer.files);
-            } else {
-                const file = e.dataTransfer.files[0];
-                const maxSize = 25 * 1024 * 1024; // 25MB
-                const allowedTypes = ["application/pdf", "image/jpeg", "image/png"];
-
-                if (!allowedTypes.includes(file.type) && !file.name.match(/\.(pdf|jpe?g|png)$/i)) {
-                    alert(`O ficheiro "${file.name}" tem um formato inválido. Apenas PDF, JPG e PNG são permitidos.`);
-                    return;
-                }
-
-                if (file.size > maxSize) {
-                    alert(`O ficheiro "${file.name}" excede o tamanho máximo de 25MB.`);
-                    return;
-                }
-
-                const dt = new DataTransfer();
-                dt.items.add(file);
-                fileInput.files = dt.files;
-                fileInput.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-        }
-    });
-
-    // Se for input único, atualiza o texto quando muda e valida
-    if (!isMulti && textTargetId) {
-        fileInput.addEventListener("change", (e) => {
-            if (e.target.files.length > 0) {
-                const file = e.target.files[0];
-                const maxSize = 25 * 1024 * 1024; // 25MB
-                const allowedTypes = ["application/pdf", "image/jpeg", "image/png"];
-
-                if (!allowedTypes.includes(file.type) && !file.name.match(/\.(pdf|jpe?g|png)$/i)) {
-                    alert(`O ficheiro "${file.name}" tem um formato inválido. Apenas PDF, JPG e PNG são permitidos.`);
-                    e.target.value = ""; // Limpa o input
-                    return;
-                }
-
-                if (file.size > maxSize) {
-                    alert(`O ficheiro "${file.name}" excede o tamanho máximo de 25MB.`);
-                    e.target.value = ""; // Limpa o input
-                    return;
-                }
-
-                const textEl = document.getElementById(textTargetId);
-                if (textEl) {
-                    textEl.textContent = file.name;
-                    textEl.classList.remove("text-muted");
-                    textEl.classList.add("text-primary-700", "fw-600");
-                }
-            }
-        });
-    }
-});
-
-// Função para processar os ficheiros multi-upload e criar os cards
-function handleFiles(files) {
-    if (!uploadTemplate || !localUploadContainer) return;
-    const allowedTypes = ["application/pdf", "image/jpeg", "image/png"];
-    const maxSize = 25 * 1024 * 1024; // 25MB
-
-    for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-
-        // Validação de tipo
-        if (
-            !allowedTypes.includes(file.type) &&
-            !file.name.match(/\.(pdf|jpe?g|png)$/i)
-        ) {
-            alert(
-                `O ficheiro "${file.name}" tem um formato inválido. Apenas PDF, JPG e PNG são permitidos.`,
-            );
-            continue;
-        }
-
-        // Validação de tamanho (máx 25MB)
-        if (file.size > maxSize) {
-            alert(`O ficheiro "${file.name}" excede o tamanho máximo de 25MB.`);
-            continue;
-        }
-
-        // Criar o card do ficheiro a partir do template
-        const clone = uploadTemplate.content.cloneNode(true);
-        const card = clone.querySelector(".uploaded-file-card");
-        const nameDisplay = clone.querySelector(".file-name-display");
-        const closeBtn = clone.querySelector(".btn-close-file");
-
-        // Atualizar os dados
-        nameDisplay.textContent = file.name;
-        nameDisplay.title = file.name;
-
-        // Popular o input escondido do template com o ficheiro selecionado
-        const hiddenInput = clone.querySelector(".real-file-input");
-        if (hiddenInput) {
-            const dt = new DataTransfer();
-            dt.items.add(file);
-            hiddenInput.files = dt.files;
-        }
-
-        // Lógica de remoção
-        closeBtn.addEventListener("click", () => {
-            card.remove();
-            if (window.validatePage2) window.validatePage2();
-        });
-
-        // Adicionar ao container
-        localUploadContainer.appendChild(clone);
-        if (window.validatePage2) window.validatePage2();
-    }
-}
-
-// Inicializar Tooltips do Bootstrap
+// - Inicialização de Tooltips (Bootstrap)
 function initTooltips() {
     var tooltipTriggerList = [].slice.call(
         document.querySelectorAll('[data-bs-toggle="tooltip"]')
@@ -1170,710 +808,14 @@ document.addEventListener("DOMContentLoaded", function () {
     initTooltips();
 });
 
-// Campos obrigatórios do Fornecedor (Nome da Empresa, NIF)
-const supplierNameInput = document.getElementById("supplier-name");
-const supplierNifInput = document.getElementById("supplier-nif");
-const supplierTypeSelect = document.getElementById("supplier-type");
-const supplierEmailInput = document.getElementById("supplier-email");
-const supplierPhoneInput = document.getElementById("supplier-phone");
-const supplierWebsiteInput = document.getElementById("supplier-website");
-const supplierContactPersonSelect = document.getElementById(
-    "supplier-contact-person",
-);
-const supplierModalEl = document.getElementById("equipment-creation-modal");
-
-if (supplierNameInput && supplierNifInput && btnSubmitModal) {
-    const validateSupplierForm = () => {
-        if (
-            supplierNameInput.value.trim() !== "" &&
-            supplierNifInput.value.trim() !== ""
-        ) {
-            btnSubmitModal.removeAttribute("disabled");
-        } else {
-            btnSubmitModal.setAttribute("disabled", "true");
-        }
-    };
-
-    validateSupplierForm();
-
-    supplierNameInput.addEventListener("input", validateSupplierForm);
-    supplierNifInput.addEventListener("input", validateSupplierForm);
-
-    if (supplierModalEl) {
-        supplierModalEl.addEventListener("hidden.bs.modal", () => {
-            supplierNameInput.value = "";
-            supplierNifInput.value = "";
-            if (supplierTypeSelect) supplierTypeSelect.value = "Fabricante";
-            if (supplierEmailInput) supplierEmailInput.value = "";
-            if (supplierPhoneInput) supplierPhoneInput.value = "";
-            if (supplierWebsiteInput) supplierWebsiteInput.value = "";
-            if (supplierContactPersonSelect) supplierContactPersonSelect.value = "";
-            validateSupplierForm();
-        });
-    }
-}
-
-// Campos obrigatórios do Colaborador / Pessoa (Nome Completo, Nº Funcionário)
-const personNameInput = document.getElementById("person-name");
-const personIdInput = document.getElementById("person-id");
-const personRoleInput = document.getElementById("person-role");
-const personDepartmentInput = document.getElementById("person-department");
-const personEmailInput = document.getElementById("person-email");
-const personPhoneInput = document.getElementById("person-phone");
-const personStartDateInput = document.getElementById("person-start-date");
-const personModalEl = document.getElementById("equipment-creation-modal");
-
-if (personNameInput && personIdInput && btnSubmitModal) {
-    const validatePersonForm = () => {
-        if (
-            personNameInput.value.trim() !== "" &&
-            personIdInput.value.trim() !== ""
-        ) {
-            btnSubmitModal.removeAttribute("disabled");
-        } else {
-            btnSubmitModal.setAttribute("disabled", "true");
-        }
-    };
-
-    validatePersonForm();
-
-    personNameInput.addEventListener("input", validatePersonForm);
-    personIdInput.addEventListener("input", validatePersonForm);
-
-    if (personModalEl) {
-        personModalEl.addEventListener("hidden.bs.modal", () => {
-            personNameInput.value = "";
-            personIdInput.value = "";
-            if (personRoleInput) personRoleInput.value = "";
-            if (personDepartmentInput) personDepartmentInput.value = "";
-            if (personEmailInput) personEmailInput.value = "";
-            if (personPhoneInput) personPhoneInput.value = "";
-            if (personStartDateInput) personStartDateInput.value = "";
-
-            // Resetar títulos e textos do modal
-            const modalTitleEl = document.getElementById("equipmentModalLabel");
-            const modalSubtitleEl = modalTitleEl
-                ? modalTitleEl.nextElementSibling
-                : null;
-            if (modalTitleEl) modalTitleEl.textContent = "Nova Pessoa";
-            if (modalSubtitleEl)
-                modalSubtitleEl.textContent = "Informações do colaborador";
-            if (btnSubmitModal) btnSubmitModal.textContent = "Criar Pessoa";
-
-            validatePersonForm();
-        });
-    }
-}
-
-
-
-// Campos obrigatórios do Edifício (Nome)
-const buildingNameInput = document.getElementById("building-name");
-const buildingModalEl = document.getElementById("equipment-creation-modal");
-
-if (buildingNameInput && btnSubmitModal) {
-    const validateBuildingForm = () => {
-        if (buildingNameInput.value.trim() !== "") {
-            btnSubmitModal.removeAttribute("disabled");
-        } else {
-            btnSubmitModal.setAttribute("disabled", "true");
-        }
-    };
-
-    validateBuildingForm();
-
-    buildingNameInput.addEventListener("input", validateBuildingForm);
-
-    if (buildingModalEl) {
-        buildingModalEl.addEventListener("hidden.bs.modal", () => {
-            buildingNameInput.value = "";
-            validateBuildingForm();
-        });
-    }
-}
-
-// Validação do Form de Criar Garantia/Contrato
-const warrantyForm = document.getElementById("add-warranty-form");
-if (warrantyForm) {
-    const typeInput = document.getElementById("warranty-type");
-    const periodicityInput = document.getElementById("warranty-periodicity");
-    const startDateInput = document.getElementById("warranty-start-date");
-    const endDateInput = document.getElementById("warranty-end-date");
-    const btnSubmitWarranty = document.getElementById("btn-submit-warranty");
-
-    if (typeInput && periodicityInput && startDateInput && endDateInput && btnSubmitWarranty) {
-        // Função para converter dd/mm/yyyy para objeto Date
-        const parseDate = (dateString) => {
-            if (!dateString) return null;
-            const parts = dateString.split("/");
-            if (parts.length === 3) {
-                return new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
-            }
-            return null;
-        };
-
-        const validateWarrantyForm = () => {
-            let isValid = false;
-            if (typeInput.value && periodicityInput.value && startDateInput.value && endDateInput.value) {
-                const startDate = parseDate(startDateInput.value);
-                const endDate = parseDate(endDateInput.value);
-
-                if (startDate && endDate && endDate > startDate) {
-                    isValid = true;
-                }
-            }
-
-            if (isValid) {
-                btnSubmitWarranty.removeAttribute("disabled");
-            } else {
-                btnSubmitWarranty.setAttribute("disabled", "true");
-            }
-        };
-
-        validateWarrantyForm();
-
-        typeInput.addEventListener("change", validateWarrantyForm);
-        periodicityInput.addEventListener("change", validateWarrantyForm);
-        startDateInput.addEventListener("change", validateWarrantyForm);
-        endDateInput.addEventListener("change", validateWarrantyForm);
-        startDateInput.addEventListener("input", validateWarrantyForm);
-        endDateInput.addEventListener("input", validateWarrantyForm);
-    }
-}
-
-// Validação do Form de Criar Manutenção
-const maintenanceForm = document.getElementById("add-maintenance-form");
-if (maintenanceForm) {
-    const typeInput = document.getElementById("maintenance-type");
-    const responsibleInput = document.getElementById("maintenance-responsible");
-    const startDateInput = document.getElementById("maintenance-start-date");
-    const endDateInput = document.getElementById("maintenance-end-date");
-    const btnSubmitMaintenance = document.getElementById("btn-submit-maintenance");
-
-    if (typeInput && responsibleInput && startDateInput && btnSubmitMaintenance) {
-        const parseDate = (dateString) => {
-            if (!dateString) return null;
-            const parts = dateString.split("/");
-            if (parts.length === 3) {
-                return new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
-            }
-            return null;
-        };
-
-        const validateMaintenanceForm = () => {
-            let isValid = false;
-            if (typeInput.value && responsibleInput.value && startDateInput.value) {
-                isValid = true;
-
-                // Se houver data de fim preenchida, tem de ser maior que a data de início
-                if (endDateInput && endDateInput.value) {
-                    const startDate = parseDate(startDateInput.value);
-                    const endDate = parseDate(endDateInput.value);
-                    if (!startDate || !endDate || endDate <= startDate) {
-                        isValid = false;
-                    }
-                }
-            }
-
-            if (isValid) {
-                btnSubmitMaintenance.removeAttribute("disabled");
-            } else {
-                btnSubmitMaintenance.setAttribute("disabled", "true");
-            }
-        };
-
-        validateMaintenanceForm();
-
-        typeInput.addEventListener("change", validateMaintenanceForm);
-        responsibleInput.addEventListener("change", validateMaintenanceForm);
-        startDateInput.addEventListener("change", validateMaintenanceForm);
-        startDateInput.addEventListener("input", validateMaintenanceForm);
-        if (endDateInput) {
-            endDateInput.addEventListener("change", validateMaintenanceForm);
-            endDateInput.addEventListener("input", validateMaintenanceForm);
-        }
-    }
-}
-
-// Validação e Inicialização dos Forms de Editar Garantia/Contrato
-const editWarrantyForms = document.querySelectorAll(".edit-warranty-form");
-editWarrantyForms.forEach((form) => {
-    const typeInput = form.querySelector(".edit-warranty-type");
-    const periodicityInput = form.querySelector(".edit-warranty-periodicity");
-    const startDateInput = form.querySelector(".edit-warranty-start-date");
-    const endDateInput = form.querySelector(".edit-warranty-end-date");
-    const btnSubmit = form.querySelector(".btn-submit-edit-warranty");
-
-    if (typeInput && periodicityInput && startDateInput && endDateInput && btnSubmit) {
-        const parseDate = (dateString) => {
-            if (!dateString) return null;
-            const parts = dateString.split("/");
-            if (parts.length === 3) {
-                return new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
-            }
-            return null;
-        };
-
-        const validateForm = () => {
-            let isValid = false;
-            if (typeInput.value && periodicityInput.value && startDateInput.value && endDateInput.value) {
-                const startDate = parseDate(startDateInput.value);
-                const endDate = parseDate(endDateInput.value);
-                if (startDate && endDate && endDate > startDate) {
-                    isValid = true;
-                }
-            }
-            if (isValid) {
-                btnSubmit.disabled = false;
-            } else {
-                btnSubmit.disabled = true;
-            }
-        };
-
-        // Initialize flatpickr on this form's date inputs
-        flatpickr(startDateInput, {
-            dateFormat: "d/m/Y",
-            allowInput: true,
-            onChange: validateForm
-        });
-        flatpickr(endDateInput, {
-            dateFormat: "d/m/Y",
-            allowInput: true,
-            onChange: validateForm
-        });
-
-        validateForm();
-
-        typeInput.addEventListener("change", validateForm);
-        periodicityInput.addEventListener("change", validateForm);
-        startDateInput.addEventListener("input", validateForm);
-        endDateInput.addEventListener("input", validateForm);
-    }
-});
-// Impedir que os botões de ação disparem o colapso do accordion nas localizações
-document.addEventListener(
-    "click",
-    (e) => {
-        const actionBtn = e.target.closest(
-            ".locations .action-buttons, .locations .action-buttons svg, .locations .action-buttons path",
-        );
-        if (actionBtn) {
-            e.stopPropagation();
-            e.preventDefault();
-        }
-    },
-    true,
-);
-
-// Pesquisa de Edifícios
-const locationsSearchInput = document.querySelector(".equipment-list-search-bar .search-bar-input");
-const locationsSearchForm = document.querySelector(".equipment-list-search-bar form");
-
-if (locationsSearchForm) {
-    locationsSearchForm.addEventListener("submit", function (e) {
-        e.preventDefault();
-    });
-}
-
-if (locationsSearchInput) {
-    function applyLocationsFilter() {
-        const query = locationsSearchInput.value.trim().toLowerCase();
-        const locationsBuildingCards = document.querySelectorAll(".locations");
-        let anyVisible = false;
-        locationsBuildingCards.forEach(function (card) {
-            const nameEl = card.querySelector(".building-row p.fw-700");
-            const hiddenIdEl = card.querySelector(".building-row .visually-hidden");
-            if (nameEl) {
-                const name = nameEl.textContent.trim().toLowerCase();
-                const hiddenId = hiddenIdEl ? hiddenIdEl.textContent.trim().toLowerCase() : "";
-                const isMatch = !query || name.includes(query) || hiddenId.includes(query);
-                card.classList.toggle("d-none", !isMatch);
-                if (isMatch) {
-                    anyVisible = true;
-                }
-            }
-        });
-        const emptyState = document.getElementById("locations-empty-state");
-        if (emptyState) {
-            emptyState.classList.toggle("d-none", anyVisible);
-        }
-    }
-
-    applyLocationsFilter();
-}
-
-// Campos obrigatórios do Utilizador (Nome Completo, Username, Email, Password)
-const userFullnameInput = document.getElementById("user-fullname");
-const userUsernameInput = document.getElementById("user-username");
-const userEmailInput = document.getElementById("user-email");
-const userPasswordInput = document.getElementById("user-password");
-const userRoleSelect = document.getElementById("user-role");
-const userModalEl = document.getElementById("equipment-creation-modal");
-
-if (
-    userFullnameInput &&
-    userUsernameInput &&
-    userEmailInput &&
-    userPasswordInput &&
-    btnSubmitModal
-) {
-    const validateUserForm = () => {
-        const fullnameValid = userFullnameInput.value.trim() !== "";
-        const usernameValid = userUsernameInput.value.trim() !== "";
-        const emailValue = userEmailInput.value.trim();
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        const emailValid = emailRegex.test(emailValue);
-        const passwordValid = userPasswordInput.value.trim() !== "";
-
-        if (fullnameValid && usernameValid && emailValid && passwordValid) {
-            btnSubmitModal.removeAttribute("disabled");
-        } else {
-            btnSubmitModal.setAttribute("disabled", "true");
-        }
-    };
-
-    validateUserForm();
-
-    userFullnameInput.addEventListener("input", validateUserForm);
-    userUsernameInput.addEventListener("input", validateUserForm);
-    userEmailInput.addEventListener("input", validateUserForm);
-    userPasswordInput.addEventListener("input", validateUserForm);
-
-    if (userModalEl) {
-        userModalEl.addEventListener("hidden.bs.modal", () => {
-            userFullnameInput.value = "";
-            userUsernameInput.value = "";
-            userEmailInput.value = "";
-            userPasswordInput.value = "";
-            if (userRoleSelect) userRoleSelect.value = "Consulta";
-            validateUserForm();
-        });
-    }
-}
-
-// Campos obrigatórios da Permissão (Chave, Descrição)
-const permissionKeyInput = document.getElementById("permission-key");
-const permissionDescInput = document.getElementById("permission-description");
-const btnSubmitPermission = document.getElementById("btn-submit-permission");
-const permissionForm = document.getElementById("permission-creation-form");
-const permissionModal = document.getElementById("permission-creation-modal");
-
-if (permissionKeyInput && permissionDescInput && btnSubmitPermission) {
-    const validatePermissionForm = () => {
-        const keyValid = permissionKeyInput.value.trim() !== "";
-        const descValid = permissionDescInput.value.trim() !== "";
-
-        if (keyValid && descValid) {
-            btnSubmitPermission.removeAttribute("disabled");
-        } else {
-            btnSubmitPermission.setAttribute("disabled", "true");
-        }
-    };
-
-    validatePermissionForm();
-
-    permissionKeyInput.addEventListener("input", validatePermissionForm);
-    permissionDescInput.addEventListener("input", validatePermissionForm);
-
-    if (permissionModal) {
-        permissionModal.addEventListener("hidden.bs.modal", () => {
-            permissionKeyInput.value = "";
-            permissionDescInput.value = "";
-            validatePermissionForm();
-        });
-    }
-}
-
-// Validação dos formulários de Edição de Permissão
-const editPermissionForms = document.querySelectorAll(".permission-edit-form");
-if (editPermissionForms.length > 0) {
-    editPermissionForms.forEach(form => {
-        const keyInput = form.querySelector(".permission-edit-key");
-        const descInput = form.querySelector(".permission-edit-description");
-        const submitBtn = form.querySelector(".btn-edit-submit");
-
-        if (keyInput && descInput && submitBtn) {
-            const validateEditForm = () => {
-                const keyValid = keyInput.value.trim() !== "";
-                const descValid = descInput.value.trim() !== "";
-                if (keyValid && descValid) {
-                    submitBtn.removeAttribute("disabled");
-                } else {
-                    submitBtn.setAttribute("disabled", "true");
-                }
-            };
-
-            // Executar inicialmente
-            validateEditForm();
-
-            // Escutar inputs
-            keyInput.addEventListener("input", validateEditForm);
-            descInput.addEventListener("input", validateEditForm);
-        }
-    });
-}
-
-// Perfis
-function togglePermission(permissionId) {
-    const permissionBadge = document.getElementById(
-        `permission-badge-${permissionId}`,
-    );
-    if (permissionBadge) {
-        permissionBadge.classList.toggle("has-permission");
-    }
-
-    const permissionInput = document.getElementById(
-        `permission-input-${permissionId}`,
-    );
-    if (permissionInput) {
-        permissionInput.value = permissionInput.value === "1" ? "0" : "1";
-    }
-
-    const bar = document.querySelector(".inbox-changes-container");
-    if (bar) {
-        bar.style.setProperty("display", "flex", "important");
-    }
-}
-
-// Reciclagem
-function changeSelectedTyoe(buttonId) {
-    const btn = document.getElementById(buttonId);
-    if (btn) {
-        const currentlySelected = document.querySelector(
-            ".recycling .filter-bar-badge.active",
-        );
-        if (currentlySelected) {
-            currentlySelected.classList.remove("active");
-        }
-        btn.classList.add("active");
-    } else {
-        console.warn(`Botão com ID "${buttonId}" não encontrado.`);
-    }
-}
-
-
-// Inbox 
-function changeInboxState(requestId, stateName, stateClass) {
-    const btn = document.getElementById(`inbox-state-btn-${requestId}`);
-    if (btn) {
-        btn.className = `d-inline-flex align-items-center equipment-badge ${stateClass} gap-1 mw-0 border-0`;
-        const span = btn.querySelector("span");
-        if (span) {
-            span.textContent = stateName;
-        }
-
-        // Fechar o dropdown
-        if (typeof bootstrap !== "undefined") {
-            const bsDropdown = bootstrap.Dropdown.getInstance(btn);
-            if (bsDropdown) {
-                bsDropdown.hide();
-            }
-        }
-    }
-    const modalBadge = document.getElementById(`inbox-modal-badge-${requestId}`);
-    if (modalBadge) {
-        modalBadge.className = `equipment-badge ${stateClass} inbox-modal-footer-badge fw-400`;
-        modalBadge.textContent = `Tratamento atual: ${stateName}`;
-    }
-
-    // Atualizar o input hidden do form
-    const input = document.getElementById(`inbox-state-input-${requestId}`);
-    if (input) {
-        input.value = stateName;
-    }
-
-    // Mostrar a barra de alterações pendentes
-    const bar = document.querySelector(".inbox-changes-container");
-    if (bar) {
-        bar.style.setProperty("display", "flex", "important");
-    }
-}
-
-// Lógica de Contagem de Caracteres (Form Area Publica)
-document.addEventListener("DOMContentLoaded", () => {
-    const msgInput = document.getElementById("message");
-    const charCount = document.getElementById("message-char-count");
-    if (msgInput && charCount) {
-        msgInput.addEventListener("input", () => {
-            const currentLength = msgInput.value.length;
-            charCount.textContent = `${currentLength} / 400`;
-        });
-    }
-});
-
-// Lógica do Modal de Pesquisa Global (AJAX)
-document.addEventListener("DOMContentLoaded", () => {
-    const searchModal = document.getElementById("search-modal");
-    if (searchModal) {
-        const searchInput = document.getElementById("global-search-input");
-        const quickAccess = document.getElementById("search-quick-access");
-        const searchResults = document.getElementById("search-results");
-        const searchEmpty = document.getElementById("search-empty");
-        const searchLoading = document.getElementById("search-loading");
-        const searchEmptyTerm = document.getElementById("search-empty-term");
-        const searchUrl = searchModal.getAttribute("data-search-url");
-
-        let debounceTimeout = null;
-
-        // Foco automático ao abrir o modal
-        searchModal.addEventListener("shown.bs.modal", () => {
-            if (searchInput) {
-                searchInput.focus();
-            }
-        });
-
-        // Alternar estados e fazer fetch ao escrever no input
-        if (searchInput && quickAccess && searchResults) {
-            searchInput.addEventListener("input", () => {
-                const term = searchInput.value.trim();
-
-                clearTimeout(debounceTimeout);
-
-                if (term.length > 0) {
-                    quickAccess.classList.add("d-none");
-                    searchResults.classList.add("d-none");
-                    searchEmpty.classList.add("d-none");
-                    searchLoading.classList.remove("d-none");
-
-                    // Debounce: esperar 300ms antes de pesquisar
-                    debounceTimeout = setTimeout(() => {
-                        performSearch(term);
-                    }, 300);
-                } else {
-                    quickAccess.classList.remove("d-none");
-                    searchResults.classList.add("d-none");
-                    searchEmpty.classList.add("d-none");
-                    searchLoading.classList.add("d-none");
-                    searchResults.innerHTML = "";
-                }
-            });
-        }
-
-        async function performSearch(term) {
-            try {
-                const response = await fetch(`${searchUrl}?q=${encodeURIComponent(term)}`);
-                if (!response.ok) throw new Error("Erro de rede ao pesquisar");
-
-                const data = await response.json();
-
-                searchLoading.classList.add("d-none");
-
-                if (data.error) {
-                    throw new Error(data.error);
-                }
-
-                if (data.length === 0) {
-                    if (searchEmptyTerm) searchEmptyTerm.textContent = term;
-                    searchEmpty.classList.remove("d-none");
-                    searchResults.classList.add("d-none");
-                } else {
-                    renderSearchResults(data);
-                    searchResults.classList.remove("d-none");
-                    searchEmpty.classList.add("d-none");
-                }
-
-            } catch (error) {
-                console.error("Erro na pesquisa:", error);
-                searchLoading.classList.add("d-none");
-                if (searchEmptyTerm) searchEmptyTerm.textContent = term + " (Ocorreu um erro)";
-                searchEmpty.classList.remove("d-none");
-            }
-        }
-
-        function renderSearchResults(sections) {
-            searchResults.innerHTML = "";
-            const sectionTemplate = document.getElementById("search-section-template");
-            const itemTemplate = document.getElementById("search-item-template");
-
-            if (!sectionTemplate || !itemTemplate) {
-                console.error("Templates de pesquisa não encontrados");
-                return;
-            }
-
-            sections.forEach(section => {
-                const sectionClone = sectionTemplate.content.cloneNode(true);
-                sectionClone.querySelector(".section-title-text").textContent = section.title;
-                const itemsContainer = sectionClone.querySelector(".section-items-container");
-
-                section.items.forEach(item => {
-                    const itemClone = itemTemplate.content.cloneNode(true);
-
-                    const link = itemClone.querySelector(".item-link");
-                    link.href = item.url;
-
-                    const iconWrapper = itemClone.querySelector(".item-icon-wrapper");
-                    iconWrapper.style.backgroundColor = section.bg;
-                    iconWrapper.style.color = section.color;
-                    iconWrapper.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${section.icon}</svg>`;
-
-                    itemClone.querySelector(".item-title").textContent = item.title;
-                    itemClone.querySelector(".item-subtitle").textContent = item.subtitle;
-
-                    itemsContainer.appendChild(itemClone);
-                });
-
-                searchResults.appendChild(sectionClone);
-            });
-        }
-
-        // Limpar pesquisa e restaurar estado inicial ao fechar o modal
-        searchModal.addEventListener("hidden.bs.modal", () => {
-            if (searchInput) {
-                searchInput.value = "";
-            }
-            if (quickAccess && searchResults) {
-                quickAccess.classList.remove("d-none");
-                searchResults.classList.add("d-none");
-                searchEmpty.classList.add("d-none");
-                searchLoading.classList.add("d-none");
-                searchResults.innerHTML = "";
-            }
-            clearTimeout(debounceTimeout);
-        });
-    }
-});
-
-// Inicializar toasts na pagina de login
+// - Inicialização de Toasts 
 document.addEventListener("DOMContentLoaded", function () {
     const toastElList = document.querySelectorAll('.toast-container .toast');
     const toastList = [...toastElList].map(toastEl => new bootstrap.Toast(toastEl));
     toastList.forEach(toast => toast.show());
 });
 
-// Validação no frontend para o contact form
-document.addEventListener("DOMContentLoaded", function () {
-    const nameInput = document.getElementById("name");
-    const emailInput = document.getElementById("email");
-    const organizationInput = document.getElementById("organization");
-    const msgInput = document.getElementById("message");
-    const submitBtn = document.getElementById("cta-submit-btn");
-
-    if (nameInput && emailInput && organizationInput && msgInput && submitBtn) {
-        const validateForm = () => {
-            const isNameValid = nameInput.value.trim().length > 0 && !/\d/.test(nameInput.value);
-            const isEmailValid = emailInput.value.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value);
-            const isOrgValid = organizationInput.value.trim().length > 0;
-            const isMsgValid = msgInput.value.length <= 400;
-
-            if (isNameValid && isEmailValid && isOrgValid && isMsgValid) {
-                submitBtn.removeAttribute("disabled");
-            } else {
-                submitBtn.setAttribute("disabled", "true");
-            }
-        };
-
-        [nameInput, emailInput, organizationInput, msgInput].forEach(input => {
-            input.addEventListener("input", validateForm);
-            input.addEventListener("change", validateForm);
-        });
-
-        // Executa a validação ao carregar a página para habilitar o botão se estiver preenchido corretamente
-        // No caso de terem havidos erros de validação 
-        validateForm();
-    }
-});
-
-// Customização de Ícones SVG dos Cartões
+// - Customização de Ícones SVG em tempo real (Card Preview)
 document.addEventListener("DOMContentLoaded", () => {
     // Função para atualizar a visualização do ícone SVG
     function updateIconPreview(inputValue, previewElement) {
@@ -2118,8 +1060,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Validação Modais de Edição de Utilizador
-
-
     const editUserForms = document.querySelectorAll('.user-edit-form');
     editUserForms.forEach(form => {
         const authEmailInput = form.querySelector('.user-edit-email-input');
@@ -2226,117 +1166,211 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 });
 
-// Validação Modais de Edição de Pessoa
-const personEditForms = document.querySelectorAll('.person-edit-form');
-personEditForms.forEach(form => {
-    const nameInput = form.querySelector('[name="person-name"]');
-    const nifInput = form.querySelector('[name="person-nif"]');
-    const roleInput = form.querySelector('[name="person-role"]');
-    const deptInput = form.querySelector('[name="person-department"]');
-    const emailInput = form.querySelector('[name="person-email"]');
-    const phoneInput = form.querySelector('[name="person-phone"]');
-    const submitBtn = form.querySelector('.btn-edit-submit');
+// ===================
+// 5. Uploads de Ficheiros
+// ===================
 
-    if (nameInput && nifInput && roleInput && deptInput && emailInput && phoneInput && submitBtn) {
-        function validateEditForm() {
-            const isNameValid = nameInput.value.trim() !== '';
-            const isNifValid = /^\d{9}$/.test(nifInput.value.trim());
-            const isRoleValid = roleInput.value !== '';
-            const isDeptValid = deptInput.value.trim() !== '';
-            const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim());
-            const isPhoneValid = phoneInput.value.trim() !== '';
+// - Lógica base de Drag & Drop de Documentos
+function handleFiles(files) {
+    if (!uploadTemplate || !localUploadContainer) return;
+    const allowedTypes = ["application/pdf", "image/jpeg", "image/png"];
+    const maxSize = 25 * 1024 * 1024; // 25MB
 
-            if (isNameValid && isNifValid && isRoleValid && isDeptValid && isEmailValid && isPhoneValid) {
-                submitBtn.removeAttribute('disabled');
+    for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+
+        // Validação de tipo
+        if (
+            !allowedTypes.includes(file.type) &&
+            !file.name.match(/\.(pdf|jpe?g|png)$/i)
+        ) {
+            alert(
+                `O ficheiro "${file.name}" tem um formato inválido. Apenas PDF, JPG e PNG são permitidos.`,
+            );
+            continue;
+        }
+
+        // Validação de tamanho (máx 25MB)
+        if (file.size > maxSize) {
+            alert(`O ficheiro "${file.name}" excede o tamanho máximo de 25MB.`);
+            continue;
+        }
+
+        // Criar o card do ficheiro a partir do template
+        const clone = uploadTemplate.content.cloneNode(true);
+        const card = clone.querySelector(".uploaded-file-card");
+        const nameDisplay = clone.querySelector(".file-name-display");
+        const closeBtn = clone.querySelector(".btn-close-file");
+
+        // Atualizar os dados
+        nameDisplay.textContent = file.name;
+        nameDisplay.title = file.name;
+
+        // Popular o input escondido do template com o ficheiro selecionado
+        const hiddenInput = clone.querySelector(".real-file-input");
+        if (hiddenInput) {
+            const dt = new DataTransfer();
+            dt.items.add(file);
+            hiddenInput.files = dt.files;
+        }
+
+        // Lógica de remoção
+        closeBtn.addEventListener("click", () => {
+            card.remove();
+            if (window.validatePage2) window.validatePage2();
+        });
+
+        // Adicionar ao container
+        localUploadContainer.appendChild(clone);
+        if (window.validatePage2) window.validatePage2();
+    }
+}
+
+// Lógica de Upload de Documentos Genérica
+const uploadTemplate = document.getElementById("uploaded-file-template");
+const localUploadContainer = document.getElementById("uploaded-files-container");
+
+document.querySelectorAll(".file-upload-zone").forEach(zone => {
+    const targetId = zone.getAttribute("data-dropzone-target");
+    const textTargetId = zone.getAttribute("data-text-target");
+    let fileInput = targetId ? document.getElementById(targetId) : multiFileInput;
+    const isMulti = !targetId;
+
+    if (!fileInput) return;
+
+    // Abrir o file picker ao clicar na zona
+    zone.addEventListener("click", () => {
+        fileInput.click();
+    });
+
+    // Drag and Drop events
+    zone.addEventListener("dragover", (e) => {
+        e.preventDefault();
+        zone.style.borderColor = "var(--primary-500)";
+        zone.style.backgroundColor = "var(--primary-50)";
+    });
+
+    zone.addEventListener("dragleave", (e) => {
+        e.preventDefault();
+        zone.style.borderColor = "";
+        zone.style.backgroundColor = "";
+    });
+
+    zone.addEventListener("drop", (e) => {
+        e.preventDefault();
+        zone.style.borderColor = "";
+        zone.style.backgroundColor = "";
+
+        if (e.dataTransfer.files.length > 0) {
+            if (isMulti) {
+                if (typeof handleFiles === 'function') handleFiles(e.dataTransfer.files);
             } else {
-                submitBtn.setAttribute('disabled', 'true');
-            }
-        }
+                const file = e.dataTransfer.files[0];
+                const maxSize = 25 * 1024 * 1024; // 25MB
+                const allowedTypes = ["application/pdf", "image/jpeg", "image/png"];
 
-        // Validar no início
-        validateEditForm();
-
-        nameInput.addEventListener('input', validateEditForm);
-        nifInput.addEventListener('input', validateEditForm);
-        roleInput.addEventListener('change', validateEditForm);
-        deptInput.addEventListener('input', validateEditForm);
-        emailInput.addEventListener('input', validateEditForm);
-        phoneInput.addEventListener('input', validateEditForm);
-    }
-});
-
-// Lógica de Fornecedores
-document.addEventListener("DOMContentLoaded", function () {
-    const supplierForm = document.getElementById("supplier-creation-form");
-    if (supplierForm) {
-        const inputs = supplierForm.querySelectorAll("input[required], select[required]");
-        const submitButton = document.getElementById("btn-submit-modal");
-
-        if (submitButton) {
-            function checkFormValidity() {
-                let isValid = true;
-                inputs.forEach(input => {
-                    if (!input.value.trim() || !input.checkValidity()) {
-                        isValid = false;
-                    }
-                });
-                submitButton.disabled = !isValid;
-            }
-
-            inputs.forEach(input => {
-                input.addEventListener("input", checkFormValidity);
-                input.addEventListener("change", checkFormValidity);
-            });
-            checkFormValidity();
-        }
-    }
-
-    // Validação Componentes (Criar e Editar)
-    const componentForms = document.querySelectorAll("#form-create-component, .form-edit-component");
-
-    componentForms.forEach(form => {
-        const inputs = form.querySelectorAll("input[required], select[required]");
-        const stockActualInput = form.querySelector(".stock-actual-input, #component-stock-actual");
-        const stockMinInput = form.querySelector(".stock-min-input, #component-stock-min");
-        const submitButton = form.querySelector(".btn-submit-edit, #btn-submit-modal");
-
-        if (submitButton) {
-            function checkComponentFormValidity() {
-                let isValid = true;
-
-                inputs.forEach(input => {
-                    if (!input.value.trim() || !input.checkValidity()) {
-                        isValid = false;
-                    }
-                });
-
-                if (stockActualInput && stockMinInput) {
-                    const actual = parseInt(stockActualInput.value || "0", 10);
-                    const min = parseInt(stockMinInput.value || "0", 10);
-                    if (min > actual) {
-                        isValid = false;
-                        stockMinInput.setCustomValidity("O stock mínimo não pode ser superior ao stock atual.");
-                    } else {
-                        stockMinInput.setCustomValidity("");
-                    }
+                if (!allowedTypes.includes(file.type) && !file.name.match(/\.(pdf|jpe?g|png)$/i)) {
+                    alert(`O ficheiro "${file.name}" tem um formato inválido. Apenas PDF, JPG e PNG são permitidos.`);
+                    return;
                 }
 
-                submitButton.disabled = !isValid;
+                if (file.size > maxSize) {
+                    alert(`O ficheiro "${file.name}" excede o tamanho máximo de 25MB.`);
+                    return;
+                }
+
+                const dt = new DataTransfer();
+                dt.items.add(file);
+                fileInput.files = dt.files;
+                fileInput.dispatchEvent(new Event('change', { bubbles: true }));
             }
-
-            inputs.forEach(input => {
-                input.addEventListener("input", checkComponentFormValidity);
-                input.addEventListener("change", checkComponentFormValidity);
-            });
-            if (stockActualInput) stockActualInput.addEventListener("input", checkComponentFormValidity);
-            if (stockMinInput) stockMinInput.addEventListener("input", checkComponentFormValidity);
-
-            checkComponentFormValidity();
         }
     });
+
+    // Se for input único, atualiza o texto quando muda e valida
+    if (!isMulti && textTargetId) {
+        fileInput.addEventListener("change", (e) => {
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                const maxSize = 25 * 1024 * 1024; // 25MB
+                const allowedTypes = ["application/pdf", "image/jpeg", "image/png"];
+
+                if (!allowedTypes.includes(file.type) && !file.name.match(/\.(pdf|jpe?g|png)$/i)) {
+                    alert(`O ficheiro "${file.name}" tem um formato inválido. Apenas PDF, JPG e PNG são permitidos.`);
+                    e.target.value = ""; // Limpa o input
+                    return;
+                }
+
+                if (file.size > maxSize) {
+                    alert(`O ficheiro "${file.name}" excede o tamanho máximo de 25MB.`);
+                    e.target.value = ""; // Limpa o input
+                    return;
+                }
+
+                const textEl = document.getElementById(textTargetId);
+                if (textEl) {
+                    textEl.textContent = file.name;
+                    textEl.classList.remove("text-muted");
+                    textEl.classList.add("text-primary-700", "fw-600");
+                }
+            }
+        });
+    }
 });
 
-// Lógica de Paginação e Validação para Modais de Edição de Equipamento
+// - Input de Multi-Upload
+const multiFileInput = document.getElementById("document-upload-input");
+if (multiFileInput) {
+    multiFileInput.addEventListener("change", (e) => {
+        if (typeof handleFiles === 'function') handleFiles(e.target.files);
+        multiFileInput.value = "";
+    });
+}
+
+// - Renderização Dinâmica dos "Cards" de ficheiros anexados
+
+
+// ===================
+// 6. Validações e Formulários Base
+// ===================
+
+// - Lógica Completa de Equipamentos (Paginação, Filtros, Checkboxes e Validações Criar/Editar)
+// Lógica de Abertura, Fecho e Submissão do Modal
+const createEquipmentModal = document.getElementById(
+    "equipment-creation-modal",
+);
+const btnOpenCreateModal = document.getElementById(
+    "btn-open-create-equipment-modal",
+);
+const btnSubmitModal = document.getElementById("btn-submit-modal");
+
+// Lógica de Paginação e Validação do Modal de Criação de Equipamento
+const btnNextPage = document.getElementById("btn-next-page");
+const btnPrevPage = document.getElementById("btn-prev-page");
+const modalPage1 = document.getElementById("modal-page-1");
+const modalPage2 = document.getElementById("modal-page-2");
+
+let bsCreateEquipmentModal = null;
+if (createEquipmentModal) {
+    bsCreateEquipmentModal = new bootstrap.Modal(createEquipmentModal);
+
+    // Reset à primeira página do modal quando fechado
+    createEquipmentModal.addEventListener("hidden.bs.modal", () => {
+        if (modalPage1 && modalPage2) {
+            modalPage1.classList.remove("d-none");
+            modalPage1.classList.add("d-flex");
+            modalPage2.classList.remove("d-flex");
+            modalPage2.classList.add("d-none");
+        }
+    });
+}
+
+if (btnOpenCreateModal && bsCreateEquipmentModal) {
+    btnOpenCreateModal.addEventListener("click", () => {
+        bsCreateEquipmentModal.show();
+    });
+}
+
 document.addEventListener("DOMContentLoaded", () => {
     const editForms = document.querySelectorAll(".form-edit-equipment");
 
@@ -2457,16 +1491,675 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 });
 
-// Validação dos Forms de Editar Manutenção
-const editMaintenanceForms = document.querySelectorAll(".edit-maintenance-form");
-editMaintenanceForms.forEach((form) => {
-    const typeInput = form.querySelector(".edit-maintenance-type");
-    const responsibleInput = form.querySelector(".edit-maintenance-responsible");
-    const startDateInput = form.querySelector(".edit-maintenance-start-date");
-    const endDateInput = form.querySelector(".edit-maintenance-end-date");
-    const btnSubmit = form.querySelector(".btn-submit-edit-maintenance");
+const equipmentCodeInput = document.getElementById("equipment-code");
+const equipmentCategorySelect = document.getElementById("equipment-category");
+const equipmentSerialInput = document.getElementById("equipment-serial");
+const equipmentNameInput = document.getElementById("equipment-name");
+const equipmentBrandSelect = document.getElementById("equipment-brand");
+const equipmentStatusSelect = document.getElementById("equipment-status");
+const equipmentLocationSelect = document.getElementById("equipment-location");
 
-    if (typeInput && responsibleInput && startDateInput && btnSubmit) {
+if (btnNextPage && btnPrevPage && modalPage1 && modalPage2) {
+    // Validação da Página 1
+    const validatePage1 = () => {
+        if (
+            equipmentCodeInput?.value.trim() !== "" &&
+            equipmentCategorySelect?.value !== "" &&
+            equipmentSerialInput?.value.trim() !== "" &&
+            equipmentNameInput?.value.trim() !== "" &&
+            equipmentBrandSelect?.value !== "" &&
+            equipmentStatusSelect?.value !== "" &&
+            equipmentLocationSelect?.value !== ""
+        ) {
+            btnNextPage.removeAttribute("disabled");
+        } else {
+            btnNextPage.setAttribute("disabled", "true");
+        }
+    };
+
+    const attachValidation = (element, eventType) => {
+        if (element) {
+            element.addEventListener(eventType, validatePage1);
+        }
+    };
+
+    attachValidation(equipmentCodeInput, "input");
+    attachValidation(equipmentCategorySelect, "change");
+    attachValidation(equipmentSerialInput, "input");
+    attachValidation(equipmentNameInput, "input");
+    attachValidation(equipmentBrandSelect, "change");
+    attachValidation(equipmentStatusSelect, "change");
+    attachValidation(equipmentLocationSelect, "change");
+
+    // Filtragem de componentes pela categoria selecionada
+    if (equipmentCategorySelect) {
+        equipmentCategorySelect.addEventListener("change", (e) => {
+            const selectedCategoryId = e.target.value;
+            const componentItems = document.querySelectorAll(".multi-select-item[data-category-id]");
+            const noComponentsMsg = document.getElementById("no-components-msg");
+            let visibleCount = 0;
+
+            componentItems.forEach(item => {
+                const itemCategoryId = item.getAttribute("data-category-id");
+                // Se o componente não tiver categoria (vazio) ou pertencer à selecionada, mostra
+                if (selectedCategoryId === "" || itemCategoryId === selectedCategoryId || itemCategoryId === "") {
+                    item.classList.remove("d-none");
+                    item.classList.add("d-flex");
+                    visibleCount++;
+                } else {
+                    item.classList.remove("d-flex");
+                    item.classList.add("d-none");
+                    // Desmarcar componente se for escondido
+                    const checkbox = item.querySelector('input[type="checkbox"]');
+                    if (checkbox && checkbox.checked) {
+                        checkbox.checked = false;
+                        const qtyContainer = item.querySelector(".multi-select-qty-container");
+                        if (qtyContainer) {
+                            qtyContainer.classList.add("d-none");
+                        }
+                    }
+                }
+            });
+
+            if (noComponentsMsg) {
+                if (visibleCount === 0) {
+                    noComponentsMsg.classList.remove("d-none");
+                } else {
+                    noComponentsMsg.classList.add("d-none");
+                }
+            }
+        });
+
+        // Trigger inicial para aplicar o filtro e mostrar o empty state se necessário
+        equipmentCategorySelect.dispatchEvent(new Event("change"));
+    }
+
+    // Navegação
+    btnNextPage.addEventListener("click", () => {
+        modalPage1.classList.add("d-none");
+        modalPage2.classList.remove("d-none");
+    });
+
+    btnPrevPage.addEventListener("click", () => {
+        modalPage2.classList.add("d-none");
+        modalPage1.classList.remove("d-none");
+    });
+
+    // Validação de Datas de Manutenção
+    const maintenanceStartDate = document.getElementById("last-maintenance-start-date");
+    const maintenanceEndDate = document.getElementById("last-maintenance-end-date");
+
+    const validateMaintenanceDates = () => {
+        let valid = true;
+        if (maintenanceStartDate && maintenanceEndDate && maintenanceStartDate.value && maintenanceEndDate.value) {
+            const startDate = new Date(maintenanceStartDate.value);
+            const endDate = new Date(maintenanceEndDate.value);
+
+            if (startDate > endDate) {
+                maintenanceEndDate.setCustomValidity("A data de fim não pode ser anterior à data de início.");
+                maintenanceEndDate.reportValidity();
+                valid = false;
+            } else {
+                maintenanceEndDate.setCustomValidity("");
+            }
+        } else if (maintenanceEndDate) {
+            maintenanceEndDate.setCustomValidity("");
+        }
+        return valid;
+    };
+
+    const validatePage2 = () => {
+        let isPage2Valid = true;
+
+        if (!validateMaintenanceDates()) {
+            isPage2Valid = false;
+        }
+
+        const docTypes = document.querySelectorAll('#uploaded-files-container .doc-type-select');
+        docTypes.forEach(select => {
+            if (select.value === "") {
+                isPage2Valid = false;
+            }
+        });
+
+        if (btnSubmitModal) {
+            if (isPage2Valid) {
+                btnSubmitModal.removeAttribute("disabled");
+            } else {
+                btnSubmitModal.setAttribute("disabled", "true");
+            }
+        }
+    };
+    window.validatePage2 = validatePage2;
+
+    if (maintenanceStartDate) maintenanceStartDate.addEventListener("change", validatePage2);
+    if (maintenanceEndDate) maintenanceEndDate.addEventListener("change", validatePage2);
+
+    const localUploadContainer = document.getElementById("uploaded-files-container");
+    if (localUploadContainer) {
+        localUploadContainer.addEventListener("change", (e) => {
+            if (e.target.classList.contains("doc-type-select")) {
+                validatePage2();
+            }
+        });
+    }
+
+    const editMaintenanceForms = document.querySelectorAll(".edit-maintenance-form");
+    editMaintenanceForms.forEach((form) => {
+        const typeInput = form.querySelector(".edit-maintenance-type");
+        const responsibleInput = form.querySelector(".edit-maintenance-responsible");
+        const startDateInput = form.querySelector(".edit-maintenance-start-date");
+        const endDateInput = form.querySelector(".edit-maintenance-end-date");
+        const btnSubmit = form.querySelector(".btn-submit-edit-maintenance");
+
+        if (typeInput && responsibleInput && startDateInput && btnSubmit) {
+            const parseDate = (dateString) => {
+                if (!dateString) return null;
+                const parts = dateString.split("/");
+                if (parts.length === 3) {
+                    return new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
+                }
+                return null;
+            };
+
+            const validateForm = () => {
+                let isValid = false;
+                if (typeInput.value && responsibleInput.value && startDateInput.value) {
+                    isValid = true;
+
+                    if (endDateInput && endDateInput.value) {
+                        const startDate = parseDate(startDateInput.value);
+                        const endDate = parseDate(endDateInput.value);
+                        if (!startDate || !endDate || endDate <= startDate) {
+                            isValid = false;
+                        }
+                    }
+                }
+
+                if (isValid) {
+                    btnSubmit.removeAttribute("disabled");
+                } else {
+                    btnSubmit.setAttribute("disabled", "true");
+                }
+            };
+
+            validateForm();
+
+            typeInput.addEventListener("change", validateForm);
+            responsibleInput.addEventListener("change", validateForm);
+            startDateInput.addEventListener("change", validateForm);
+            startDateInput.addEventListener("input", validateForm);
+            if (endDateInput) {
+                endDateInput.addEventListener("change", validateForm);
+                endDateInput.addEventListener("input", validateForm);
+            }
+        }
+    });
+
+}
+
+const multiSelectCheckboxes = document.querySelectorAll(
+    '.multi-select-form input[type="checkbox"]',
+);
+multiSelectCheckboxes.forEach((checkbox) => {
+    checkbox.addEventListener("change", function () {
+        // Tenta encontrar o contentor de quantidade no item do componente
+        const item = this.closest(".multi-select-item");
+        if (item) {
+            const qtyContainer = item.querySelector(".multi-select-qty-container");
+            if (qtyContainer) {
+                if (this.checked) {
+                    qtyContainer.classList.remove("d-none");
+                } else {
+                    qtyContainer.classList.add("d-none");
+                }
+            }
+        }
+
+        // Atualizar o texto de contagem de checkboxes selecionadas
+        const formItem = this.closest(".form-item");
+        if (formItem) {
+            const countLabel = formItem.querySelector(".multi-select-count-label");
+            if (countLabel) {
+                const checkedCount = formItem.querySelectorAll('.multi-select-form input[type="checkbox"]:checked').length;
+                countLabel.textContent = `${checkedCount} selecionado(s)`;
+            }
+        }
+    });
+});
+
+document.querySelectorAll(".form-item").forEach(formItem => {
+    const countLabel = formItem.querySelector(".multi-select-count-label");
+    if (countLabel) {
+        const checkedCount = formItem.querySelectorAll('.multi-select-form input[type="checkbox"]:checked').length;
+        countLabel.textContent = `${checkedCount} selecionado(s)`;
+    }
+});
+
+// - Validação de Criação/Edição de Pessoas
+const personNameInput = document.getElementById("person-name");
+const personIdInput = document.getElementById("person-id");
+const personRoleInput = document.getElementById("person-role");
+const personDepartmentInput = document.getElementById("person-department");
+const personEmailInput = document.getElementById("person-email");
+const personPhoneInput = document.getElementById("person-phone");
+const personStartDateInput = document.getElementById("person-start-date");
+const personModalEl = document.getElementById("equipment-creation-modal");
+
+if (personNameInput && personIdInput && btnSubmitModal) {
+    const validatePersonForm = () => {
+        if (
+            personNameInput.value.trim() !== "" &&
+            personIdInput.value.trim() !== ""
+        ) {
+            btnSubmitModal.removeAttribute("disabled");
+        } else {
+            btnSubmitModal.setAttribute("disabled", "true");
+        }
+    };
+
+    validatePersonForm();
+
+    personNameInput.addEventListener("input", validatePersonForm);
+    personIdInput.addEventListener("input", validatePersonForm);
+
+    if (personModalEl) {
+        personModalEl.addEventListener("hidden.bs.modal", () => {
+            personNameInput.value = "";
+            personIdInput.value = "";
+            if (personRoleInput) personRoleInput.value = "";
+            if (personDepartmentInput) personDepartmentInput.value = "";
+            if (personEmailInput) personEmailInput.value = "";
+            if (personPhoneInput) personPhoneInput.value = "";
+            if (personStartDateInput) personStartDateInput.value = "";
+
+            // Resetar títulos e textos do modal
+            const modalTitleEl = document.getElementById("equipmentModalLabel");
+            const modalSubtitleEl = modalTitleEl
+                ? modalTitleEl.nextElementSibling
+                : null;
+            if (modalTitleEl) modalTitleEl.textContent = "Nova Pessoa";
+            if (modalSubtitleEl)
+                modalSubtitleEl.textContent = "Informações do colaborador";
+            if (btnSubmitModal) btnSubmitModal.textContent = "Criar Pessoa";
+
+            validatePersonForm();
+        });
+    }
+}
+
+const personEditForms = document.querySelectorAll('.person-edit-form');
+personEditForms.forEach(form => {
+    const nameInput = form.querySelector('[name="person-name"]');
+    const nifInput = form.querySelector('[name="person-nif"]');
+    const roleInput = form.querySelector('[name="person-role"]');
+    const deptInput = form.querySelector('[name="person-department"]');
+    const emailInput = form.querySelector('[name="person-email"]');
+    const phoneInput = form.querySelector('[name="person-phone"]');
+    const submitBtn = form.querySelector('.btn-edit-submit');
+
+    if (nameInput && nifInput && roleInput && deptInput && emailInput && phoneInput && submitBtn) {
+        function validateEditForm() {
+            const isNameValid = nameInput.value.trim() !== '';
+            const isNifValid = /^\d{9}$/.test(nifInput.value.trim());
+            const isRoleValid = roleInput.value !== '';
+            const isDeptValid = deptInput.value.trim() !== '';
+            const isEmailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value.trim());
+            const isPhoneValid = phoneInput.value.trim() !== '';
+
+            if (isNameValid && isNifValid && isRoleValid && isDeptValid && isEmailValid && isPhoneValid) {
+                submitBtn.removeAttribute('disabled');
+            } else {
+                submitBtn.setAttribute('disabled', 'true');
+            }
+        }
+
+        // Validar no início
+        validateEditForm();
+
+        nameInput.addEventListener('input', validateEditForm);
+        nifInput.addEventListener('input', validateEditForm);
+        roleInput.addEventListener('change', validateEditForm);
+        deptInput.addEventListener('input', validateEditForm);
+        emailInput.addEventListener('input', validateEditForm);
+        phoneInput.addEventListener('input', validateEditForm);
+    }
+});
+
+
+// - Validação Criação de Fornecedores
+const supplierNameInput = document.getElementById("supplier-name");
+const supplierNifInput = document.getElementById("supplier-nif");
+const supplierTypeSelect = document.getElementById("supplier-type");
+const supplierEmailInput = document.getElementById("supplier-email");
+const supplierPhoneInput = document.getElementById("supplier-phone");
+const supplierWebsiteInput = document.getElementById("supplier-website");
+const supplierContactPersonSelect = document.getElementById(
+    "supplier-contact-person",
+);
+const supplierModalEl = document.getElementById("equipment-creation-modal");
+
+if (supplierNameInput && supplierNifInput && btnSubmitModal) {
+    const validateSupplierForm = () => {
+        if (
+            supplierNameInput.value.trim() !== "" &&
+            supplierNifInput.value.trim() !== ""
+        ) {
+            btnSubmitModal.removeAttribute("disabled");
+        } else {
+            btnSubmitModal.setAttribute("disabled", "true");
+        }
+    };
+
+    validateSupplierForm();
+
+    supplierNameInput.addEventListener("input", validateSupplierForm);
+    supplierNifInput.addEventListener("input", validateSupplierForm);
+
+    if (supplierModalEl) {
+        supplierModalEl.addEventListener("hidden.bs.modal", () => {
+            supplierNameInput.value = "";
+            supplierNifInput.value = "";
+            if (supplierTypeSelect) supplierTypeSelect.value = "Fabricante";
+            if (supplierEmailInput) supplierEmailInput.value = "";
+            if (supplierPhoneInput) supplierPhoneInput.value = "";
+            if (supplierWebsiteInput) supplierWebsiteInput.value = "";
+            if (supplierContactPersonSelect) supplierContactPersonSelect.value = "";
+            validateSupplierForm();
+        });
+    }
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const supplierForm = document.getElementById("supplier-creation-form");
+    if (supplierForm) {
+        const inputs = supplierForm.querySelectorAll("input[required], select[required]");
+        const submitButton = document.getElementById("btn-submit-modal");
+
+        if (submitButton) {
+            function checkFormValidity() {
+                let isValid = true;
+                inputs.forEach(input => {
+                    if (!input.value.trim() || !input.checkValidity()) {
+                        isValid = false;
+                    }
+                });
+                submitButton.disabled = !isValid;
+            }
+
+            inputs.forEach(input => {
+                input.addEventListener("input", checkFormValidity);
+                input.addEventListener("change", checkFormValidity);
+            });
+            checkFormValidity();
+        }
+    }
+});
+
+// - Validação Criação/Edição de Componentes e Categorias
+// Validação Componentes (Criar e Editar)
+const componentForms = document.querySelectorAll("#form-create-component, .form-edit-component");
+
+componentForms.forEach(form => {
+    const inputs = form.querySelectorAll("input[required], select[required]");
+    const stockActualInput = form.querySelector(".stock-actual-input, #component-stock-actual");
+    const stockMinInput = form.querySelector(".stock-min-input, #component-stock-min");
+    const submitButton = form.querySelector(".btn-submit-edit, #btn-submit-modal");
+
+    if (submitButton) {
+        function checkComponentFormValidity() {
+            let isValid = true;
+
+            inputs.forEach(input => {
+                if (!input.value.trim() || !input.checkValidity()) {
+                    isValid = false;
+                }
+            });
+
+            if (stockActualInput && stockMinInput) {
+                const actual = parseInt(stockActualInput.value || "0", 10);
+                const min = parseInt(stockMinInput.value || "0", 10);
+                if (min > actual) {
+                    isValid = false;
+                    stockMinInput.setCustomValidity("O stock mínimo não pode ser superior ao stock atual.");
+                } else {
+                    stockMinInput.setCustomValidity("");
+                }
+            }
+
+            submitButton.disabled = !isValid;
+        }
+
+        inputs.forEach(input => {
+            input.addEventListener("input", checkComponentFormValidity);
+            input.addEventListener("change", checkComponentFormValidity);
+        });
+        if (stockActualInput) stockActualInput.addEventListener("input", checkComponentFormValidity);
+        if (stockMinInput) stockMinInput.addEventListener("input", checkComponentFormValidity);
+
+        checkComponentFormValidity();
+    }
+});
+
+const componentNameInput = document.getElementById("component-name");
+const componentSkuInput = document.getElementById("component-sku");
+
+if (componentNameInput && componentSkuInput && btnSubmitModal) {
+    const validateComponentForm = () => {
+        if (
+            componentNameInput.value.trim() !== "" &&
+            componentSkuInput.value.trim() !== ""
+        ) {
+            btnSubmitModal.removeAttribute("disabled");
+        } else {
+            btnSubmitModal.setAttribute("disabled", "true");
+        }
+    };
+
+    validateComponentForm();
+
+    componentNameInput.addEventListener("input", validateComponentForm);
+    componentSkuInput.addEventListener("input", validateComponentForm);
+}
+
+const categoryNameInput = document.getElementById("category-name");
+const categoryCodeInput = document.getElementById("category-code");
+const categoryDescriptionInput = document.getElementById(
+    "category-description",
+);
+const categoryModalEl = document.getElementById("category-creation-modal");
+
+if (categoryNameInput && categoryCodeInput && categoryDescriptionInput && btnSubmitModal) {
+    const validateCategoryForm = () => {
+        if (
+            categoryNameInput.value.trim() !== "" &&
+            categoryCodeInput.value.trim() !== "" &&
+            categoryDescriptionInput.value.trim() !== ""
+        ) {
+            btnSubmitModal.removeAttribute("disabled");
+        } else {
+            btnSubmitModal.setAttribute("disabled", "true");
+        }
+    };
+
+    validateCategoryForm();
+
+    categoryNameInput.addEventListener("input", validateCategoryForm);
+    categoryCodeInput.addEventListener("input", validateCategoryForm);
+    categoryDescriptionInput.addEventListener("input", validateCategoryForm);
+
+    if (categoryModalEl) {
+        categoryModalEl.addEventListener("hidden.bs.modal", () => {
+            categoryNameInput.value = "";
+            categoryCodeInput.value = "";
+            if (categoryDescriptionInput) {
+                categoryDescriptionInput.value = "";
+            }
+            validateCategoryForm();
+        });
+    }
+}
+
+document.querySelectorAll(".edit-category-form").forEach(form => {
+    const nameInput = form.querySelector('input[name="category-name"]');
+    const codeInput = form.querySelector('input[name="category-code"]');
+    const descInput = form.querySelector('textarea[name="category-description"]');
+    const submitBtn = form.querySelector('button[name="editar_categoria"]');
+
+    if (nameInput && codeInput && descInput && submitBtn) {
+        const validateEditForm = () => {
+            if (
+                nameInput.value.trim() !== "" &&
+                codeInput.value.trim() !== "" &&
+                descInput.value.trim() !== ""
+            ) {
+                submitBtn.removeAttribute("disabled");
+            } else {
+                submitBtn.setAttribute("disabled", "true");
+            }
+        };
+
+        validateEditForm();
+
+        nameInput.addEventListener("input", validateEditForm);
+        codeInput.addEventListener("input", validateEditForm);
+        descInput.addEventListener("input", validateEditForm);
+    }
+});
+
+// - Validação Criação/Edição de Edifícios, Pisos, Serviços, Salas
+const buildingNameInput = document.getElementById("building-name");
+const buildingModalEl = document.getElementById("equipment-creation-modal");
+
+if (buildingNameInput && btnSubmitModal) {
+    const validateBuildingForm = () => {
+        if (buildingNameInput.value.trim() !== "") {
+            btnSubmitModal.removeAttribute("disabled");
+        } else {
+            btnSubmitModal.setAttribute("disabled", "true");
+        }
+    };
+
+    validateBuildingForm();
+
+    buildingNameInput.addEventListener("input", validateBuildingForm);
+
+    if (buildingModalEl) {
+        buildingModalEl.addEventListener("hidden.bs.modal", () => {
+            buildingNameInput.value = "";
+            validateBuildingForm();
+        });
+    }
+}
+
+// - Validação Criação/Edição de Utilizadores
+const userFullnameInput = document.getElementById("user-fullname");
+const userUsernameInput = document.getElementById("user-username");
+const userEmailInput = document.getElementById("user-email");
+const userPasswordInput = document.getElementById("user-password");
+const userRoleSelect = document.getElementById("user-role");
+const userModalEl = document.getElementById("equipment-creation-modal");
+
+if (
+    userFullnameInput &&
+    userUsernameInput &&
+    userEmailInput &&
+    userPasswordInput &&
+    btnSubmitModal
+) {
+    const validateUserForm = () => {
+        const fullnameValid = userFullnameInput.value.trim() !== "";
+        const usernameValid = userUsernameInput.value.trim() !== "";
+        const emailValue = userEmailInput.value.trim();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        const emailValid = emailRegex.test(emailValue);
+        const passwordValid = userPasswordInput.value.trim() !== "";
+
+        if (fullnameValid && usernameValid && emailValid && passwordValid) {
+            btnSubmitModal.removeAttribute("disabled");
+        } else {
+            btnSubmitModal.setAttribute("disabled", "true");
+        }
+    };
+
+    validateUserForm();
+
+    userFullnameInput.addEventListener("input", validateUserForm);
+    userUsernameInput.addEventListener("input", validateUserForm);
+    userEmailInput.addEventListener("input", validateUserForm);
+    userPasswordInput.addEventListener("input", validateUserForm);
+
+    if (userModalEl) {
+        userModalEl.addEventListener("hidden.bs.modal", () => {
+            userFullnameInput.value = "";
+            userUsernameInput.value = "";
+            userEmailInput.value = "";
+            userPasswordInput.value = "";
+            if (userRoleSelect) userRoleSelect.value = "Consulta";
+            validateUserForm();
+        });
+    }
+}
+
+
+// - Validação Criação/Edição de Garantias/Contratos e Manutenções
+const warrantyForm = document.getElementById("add-warranty-form");
+if (warrantyForm) {
+    const typeInput = document.getElementById("warranty-type");
+    const periodicityInput = document.getElementById("warranty-periodicity");
+    const startDateInput = document.getElementById("warranty-start-date");
+    const endDateInput = document.getElementById("warranty-end-date");
+    const btnSubmitWarranty = document.getElementById("btn-submit-warranty");
+
+    if (typeInput && periodicityInput && startDateInput && endDateInput && btnSubmitWarranty) {
+        // Função para converter dd/mm/yyyy para objeto Date
+        const parseDate = (dateString) => {
+            if (!dateString) return null;
+            const parts = dateString.split("/");
+            if (parts.length === 3) {
+                return new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
+            }
+            return null;
+        };
+
+        const validateWarrantyForm = () => {
+            let isValid = false;
+            if (typeInput.value && periodicityInput.value && startDateInput.value && endDateInput.value) {
+                const startDate = parseDate(startDateInput.value);
+                const endDate = parseDate(endDateInput.value);
+
+                if (startDate && endDate && endDate > startDate) {
+                    isValid = true;
+                }
+            }
+
+            if (isValid) {
+                btnSubmitWarranty.removeAttribute("disabled");
+            } else {
+                btnSubmitWarranty.setAttribute("disabled", "true");
+            }
+        };
+
+        validateWarrantyForm();
+
+        typeInput.addEventListener("change", validateWarrantyForm);
+        periodicityInput.addEventListener("change", validateWarrantyForm);
+        startDateInput.addEventListener("change", validateWarrantyForm);
+        endDateInput.addEventListener("change", validateWarrantyForm);
+        startDateInput.addEventListener("input", validateWarrantyForm);
+        endDateInput.addEventListener("input", validateWarrantyForm);
+    }
+}
+
+const editWarrantyForms = document.querySelectorAll(".edit-warranty-form");
+editWarrantyForms.forEach((form) => {
+    const typeInput = form.querySelector(".edit-warranty-type");
+    const periodicityInput = form.querySelector(".edit-warranty-periodicity");
+    const startDateInput = form.querySelector(".edit-warranty-start-date");
+    const endDateInput = form.querySelector(".edit-warranty-end-date");
+    const btnSubmit = form.querySelector(".btn-submit-edit-warranty");
+
+    if (typeInput && periodicityInput && startDateInput && endDateInput && btnSubmit) {
         const parseDate = (dateString) => {
             if (!dateString) return null;
             const parts = dateString.split("/");
@@ -2478,9 +2171,65 @@ editMaintenanceForms.forEach((form) => {
 
         const validateForm = () => {
             let isValid = false;
+            if (typeInput.value && periodicityInput.value && startDateInput.value && endDateInput.value) {
+                const startDate = parseDate(startDateInput.value);
+                const endDate = parseDate(endDateInput.value);
+                if (startDate && endDate && endDate > startDate) {
+                    isValid = true;
+                }
+            }
+            if (isValid) {
+                btnSubmit.disabled = false;
+            } else {
+                btnSubmit.disabled = true;
+            }
+        };
+
+        // Initialize flatpickr on this form's date inputs
+        flatpickr(startDateInput, {
+            dateFormat: "d/m/Y",
+            allowInput: true,
+            onChange: validateForm
+        });
+        flatpickr(endDateInput, {
+            dateFormat: "d/m/Y",
+            allowInput: true,
+            onChange: validateForm
+        });
+
+        validateForm();
+
+        typeInput.addEventListener("change", validateForm);
+        periodicityInput.addEventListener("change", validateForm);
+        startDateInput.addEventListener("input", validateForm);
+        endDateInput.addEventListener("input", validateForm);
+    }
+});
+
+const maintenanceForm = document.getElementById("add-maintenance-form");
+if (maintenanceForm) {
+    const typeInput = document.getElementById("maintenance-type");
+    const responsibleInput = document.getElementById("maintenance-responsible");
+    const startDateInput = document.getElementById("maintenance-start-date");
+    const endDateInput = document.getElementById("maintenance-end-date");
+    const btnSubmitMaintenance = document.getElementById("btn-submit-maintenance");
+
+    if (typeInput && responsibleInput && startDateInput && btnSubmitMaintenance) {
+        const parseDate = (dateString) => {
+            if (!dateString) return null;
+            const parts = dateString.split("/");
+            if (parts.length === 3) {
+                return new Date(parseInt(parts[2], 10), parseInt(parts[1], 10) - 1, parseInt(parts[0], 10));
+            }
+            return null;
+        };
+
+        const validateMaintenanceForm = () => {
+            let isValid = false;
             if (typeInput.value && responsibleInput.value && startDateInput.value) {
                 isValid = true;
 
+                // Se houver data de fim preenchida, tem de ser maior que a data de início
                 if (endDateInput && endDateInput.value) {
                     const startDate = parseDate(startDateInput.value);
                     const endDate = parseDate(endDateInput.value);
@@ -2491,276 +2240,336 @@ editMaintenanceForms.forEach((form) => {
             }
 
             if (isValid) {
-                btnSubmit.removeAttribute("disabled");
+                btnSubmitMaintenance.removeAttribute("disabled");
             } else {
-                btnSubmit.setAttribute("disabled", "true");
+                btnSubmitMaintenance.setAttribute("disabled", "true");
             }
         };
 
-        validateForm();
+        validateMaintenanceForm();
 
-        typeInput.addEventListener("change", validateForm);
-        responsibleInput.addEventListener("change", validateForm);
-        startDateInput.addEventListener("change", validateForm);
-        startDateInput.addEventListener("input", validateForm);
+        typeInput.addEventListener("change", validateMaintenanceForm);
+        responsibleInput.addEventListener("change", validateMaintenanceForm);
+        startDateInput.addEventListener("change", validateMaintenanceForm);
+        startDateInput.addEventListener("input", validateMaintenanceForm);
         if (endDateInput) {
-            endDateInput.addEventListener("change", validateForm);
-            endDateInput.addEventListener("input", validateForm);
+            endDateInput.addEventListener("change", validateMaintenanceForm);
+            endDateInput.addEventListener("input", validateMaintenanceForm);
         }
-    }
-});
-
-// Inicializar DataTables (Global Audit Logs)
-if (
-    document.getElementById("globalAuditTable") &&
-    typeof simpleDatatables !== "undefined"
-) {
-    const table = new simpleDatatables.DataTable("#globalAuditTable", {
-        searchable: true,
-        perPage: 10,
-        perPageSelect: [10, 25, 50, 100],
-        labels: {
-            placeholder: "Pesquisar...",
-            perPage: "entradas por página",
-            noRows: "Nenhum registo encontrado",
-            noResults: "Nenhum resultado corresponde à sua pesquisa",
-            info: "A mostrar {start}–{end} de {rows}",
-        },
-    });
-
-    table.on('datatable.page', initTooltips);
-    table.on('datatable.sort', initTooltips);
-    table.on('datatable.search', initTooltips);
-    table.on('datatable.update', initTooltips);
-
-    // Custom search binding
-    const searchInput = document.getElementById("search-global-audit");
-    const filterType = document.getElementById("filter-global-audit-type");
-
-    function applyGlobalAuditFilters() {
-        const searchVal = searchInput ? searchInput.value.trim() : "";
-        const typeVal = filterType ? filterType.value : "";
-
-        if (typeof table.multiSearch === 'function') {
-            let queries = [];
-            if (searchVal) queries.push({ terms: [searchVal] });
-            if (typeVal) queries.push({ terms: [typeVal], columns: [1] });
-
-            if (queries.length > 0) {
-                table.multiSearch(queries);
-            } else {
-                table.search("");
-            }
-        } else {
-            let terms = [];
-            if (searchVal) terms.push(searchVal);
-            if (typeVal) terms.push(typeVal);
-            table.search(terms.join(" "));
-        }
-    }
-
-    if (searchInput) {
-        searchInput.addEventListener("input", applyGlobalAuditFilters);
-    }
-
-    if (filterType) {
-        filterType.addEventListener("change", applyGlobalAuditFilters);
     }
 }
 
-// Inicializar DataTables (Reciclagem)
-if (document.getElementById("recyclingTable") && typeof simpleDatatables !== "undefined") {
-    const table = new simpleDatatables.DataTable("#recyclingTable", {
-        searchable: true,
-        perPage: 10,
-        perPageSelect: false,
-        labels: {
-            placeholder: "Pesquisar...",
-            perPage: "entradas por página",
-            noRows: "Nenhum registo encontrado",
-            noResults: "Nenhum resultado corresponde à sua pesquisa",
-            info: "A mostrar {start}–{end} de {rows}",
-        },
-    });
+// - Validação Edição de Permissões
+const permissionKeyInput = document.getElementById("permission-key");
+const permissionDescInput = document.getElementById("permission-description");
+const btnSubmitPermission = document.getElementById("btn-submit-permission");
+const permissionForm = document.getElementById("permission-creation-form");
+const permissionModal = document.getElementById("permission-creation-modal");
 
-    table.on('datatable.page', initTooltips);
-    table.on('datatable.sort', initTooltips);
-    table.on('datatable.search', initTooltips);
-    table.on('datatable.update', initTooltips);
+if (permissionKeyInput && permissionDescInput && btnSubmitPermission) {
+    const validatePermissionForm = () => {
+        const keyValid = permissionKeyInput.value.trim() !== "";
+        const descValid = permissionDescInput.value.trim() !== "";
 
-    const searchInput = document.getElementById("search-input-recycling");
-    const filterType = document.getElementById("filter-type-recycling");
-
-    function applyRecyclingFilters() {
-        const searchVal = searchInput ? searchInput.value.trim() : "";
-        const typeVal = filterType ? filterType.value : "";
-
-        if (typeof table.multiSearch === 'function') {
-            let queries = [];
-            if (searchVal) queries.push({ terms: [searchVal] });
-            if (typeVal) queries.push({ terms: [typeVal], columns: [1] });
-
-            if (queries.length > 0) {
-                table.multiSearch(queries);
-            } else {
-                table.search("");
-            }
+        if (keyValid && descValid) {
+            btnSubmitPermission.removeAttribute("disabled");
         } else {
-            let terms = [];
-            if (searchVal) terms.push(searchVal);
-            if (typeVal) terms.push(typeVal);
-            table.search(terms.join(" "));
+            btnSubmitPermission.setAttribute("disabled", "true");
         }
-    }
+    };
 
-    if (searchInput) searchInput.addEventListener("input", applyRecyclingFilters);
-    if (filterType) filterType.addEventListener("change", applyRecyclingFilters);
+    validatePermissionForm();
+
+    permissionKeyInput.addEventListener("input", validatePermissionForm);
+    permissionDescInput.addEventListener("input", validatePermissionForm);
+
+    if (permissionModal) {
+        permissionModal.addEventListener("hidden.bs.modal", () => {
+            permissionKeyInput.value = "";
+            permissionDescInput.value = "";
+            validatePermissionForm();
+        });
+    }
 }
 
-// Disparar o evento "input" em todas as barras de pesquisa preenchidas
-window.addEventListener("DOMContentLoaded", () => {
-    document.querySelectorAll(".search-bar-input, .person-search-input").forEach(input => {
-        if (input.value.trim() !== "") {
-            input.dispatchEvent(new Event("input", { bubbles: true }));
+const editPermissionForms = document.querySelectorAll(".permission-edit-form");
+if (editPermissionForms.length > 0) {
+    editPermissionForms.forEach(form => {
+        const keyInput = form.querySelector(".permission-edit-key");
+        const descInput = form.querySelector(".permission-edit-description");
+        const submitBtn = form.querySelector(".btn-edit-submit");
+
+        if (keyInput && descInput && submitBtn) {
+            const validateEditForm = () => {
+                const keyValid = keyInput.value.trim() !== "";
+                const descValid = descInput.value.trim() !== "";
+                if (keyValid && descValid) {
+                    submitBtn.removeAttribute("disabled");
+                } else {
+                    submitBtn.setAttribute("disabled", "true");
+                }
+            };
+
+            // Executar inicialmente
+            validateEditForm();
+
+            // Escutar inputs
+            keyInput.addEventListener("input", validateEditForm);
+            descInput.addEventListener("input", validateEditForm);
         }
     });
+}
 
-    const overlay = document.getElementById('page-loading-overlay');
-    if (overlay) {
-        overlay.classList.add('hidden');
-        if (overlay) overlay.remove();
-        document.body.classList.remove("overflow-hidden");
+function togglePermission(permissionId) {
+    const permissionBadge = document.getElementById(
+        `permission-badge-${permissionId}`,
+    );
+    if (permissionBadge) {
+        permissionBadge.classList.toggle("has-permission");
+    }
+
+    const permissionInput = document.getElementById(
+        `permission-input-${permissionId}`,
+    );
+    if (permissionInput) {
+        permissionInput.value = permissionInput.value === "1" ? "0" : "1";
+    }
+
+    const bar = document.querySelector(".inbox-changes-container");
+    if (bar) {
+        bar.style.setProperty("display", "flex", "important");
+    }
+}
+
+
+// - Contact Form (Área Pública)
+document.addEventListener("DOMContentLoaded", function () {
+    const nameInput = document.getElementById("name");
+    const emailInput = document.getElementById("email");
+    const organizationInput = document.getElementById("organization");
+    const msgInput = document.getElementById("message");
+    const submitBtn = document.getElementById("cta-submit-btn");
+
+    if (nameInput && emailInput && organizationInput && msgInput && submitBtn) {
+        const validateForm = () => {
+            const isNameValid = nameInput.value.trim().length > 0 && !/\d/.test(nameInput.value);
+            const isEmailValid = emailInput.value.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailInput.value);
+            const isOrgValid = organizationInput.value.trim().length > 0;
+            const isMsgValid = msgInput.value.length <= 400;
+
+            if (isNameValid && isEmailValid && isOrgValid && isMsgValid) {
+                submitBtn.removeAttribute("disabled");
+            } else {
+                submitBtn.setAttribute("disabled", "true");
+            }
+        };
+
+        [nameInput, emailInput, organizationInput, msgInput].forEach(input => {
+            input.addEventListener("input", validateForm);
+            input.addEventListener("change", validateForm);
+        });
+
+        // Executa a validação ao carregar a página para habilitar o botão se estiver preenchido corretamente
+        // No caso de terem havidos erros de validação 
+        validateForm();
     }
 });
 
-// ==========================================
-// Funcionalidades de QR Code
-// ==========================================
+// Lógica de Contagem de Caracteres (Form Area Publica)
+document.addEventListener("DOMContentLoaded", () => {
+    const msgInput = document.getElementById("message");
+    const charCount = document.getElementById("message-char-count");
+    if (msgInput && charCount) {
+        msgInput.addEventListener("input", () => {
+            const currentLength = msgInput.value.length;
+            charCount.textContent = `${currentLength} / 400`;
+        });
+    }
+});
 
-// Modal de visualização de QR Code para impressão
-function openQRPrintModal(encryptedId, code, designation) {
-    const codeElement = document.getElementById('qrEquipCode');
-    const designationElement = document.getElementById('qrEquipDesignation');
+// ===================
+// 7. Inbox e Gestão de Conteúdos
+// ===================
 
-    codeElement.textContent = code;
-    designationElement.textContent = designation;
+function changeInboxState(requestId, stateName, stateClass) {
+    const btn = document.getElementById(`inbox-state-btn-${requestId}`);
+    if (btn) {
+        btn.className = `d-inline-flex align-items-center equipment-badge ${stateClass} gap-1 mw-0 border-0`;
+        const span = btn.querySelector("span");
+        if (span) {
+            span.textContent = stateName;
+        }
 
-    // Use SITE_BASE_URL se estiver definido, senao default
-    const base = window.SITE_BASE_URL || '/Projeto-SIBDAS/';
-    const urlBase = window.location.origin + base + 'private/inventory/equipments/detailed_view.php?id=';
-    const finalUrl = urlBase + encodeURIComponent(encryptedId);
-
-    if (typeof QRCode !== 'undefined') {
-        QRCode.toDataURL(finalUrl, {
-            width: 200,
-            margin: 2,
-            color: {
-                dark: '#0F172A',
-                light: '#FFFFFF'
+        // Fechar o dropdown
+        if (typeof bootstrap !== "undefined") {
+            const bsDropdown = bootstrap.Dropdown.getInstance(btn);
+            if (bsDropdown) {
+                bsDropdown.hide();
             }
-        }, function (error, url) {
-            if (error) {
-                console.error("Erro a gerar QR Code: ", error);
-                alert("Ocorreu um erro ao gerar o QR Code.");
+        }
+    }
+    const modalBadge = document.getElementById(`inbox-modal-badge-${requestId}`);
+    if (modalBadge) {
+        modalBadge.className = `equipment-badge ${stateClass} inbox-modal-footer-badge fw-400`;
+        modalBadge.textContent = `Tratamento atual: ${stateName}`;
+    }
+
+    // Atualizar o input hidden do form
+    const input = document.getElementById(`inbox-state-input-${requestId}`);
+    if (input) {
+        input.value = stateName;
+    }
+
+    // Mostrar a barra de alterações pendentes
+    const bar = document.querySelector(".inbox-changes-container");
+    if (bar) {
+        bar.style.setProperty("display", "flex", "important");
+    }
+}
+
+// ===================
+// 8. Pesquisa Global (AJAX)
+// ===================
+
+// Lógica do Modal de Pesquisa Global (AJAX)
+document.addEventListener("DOMContentLoaded", () => {
+    const searchModal = document.getElementById("search-modal");
+    if (searchModal) {
+        const searchInput = document.getElementById("global-search-input");
+        const quickAccess = document.getElementById("search-quick-access");
+        const searchResults = document.getElementById("search-results");
+        const searchEmpty = document.getElementById("search-empty");
+        const searchLoading = document.getElementById("search-loading");
+        const searchEmptyTerm = document.getElementById("search-empty-term");
+        const searchUrl = searchModal.getAttribute("data-search-url");
+
+        let debounceTimeout = null;
+
+        // Foco automático ao abrir o modal
+        searchModal.addEventListener("shown.bs.modal", () => {
+            if (searchInput) {
+                searchInput.focus();
+            }
+        });
+
+        // Alternar estados e fazer fetch ao escrever no input
+        if (searchInput && quickAccess && searchResults) {
+            searchInput.addEventListener("input", () => {
+                const term = searchInput.value.trim();
+
+                clearTimeout(debounceTimeout);
+
+                if (term.length > 0) {
+                    quickAccess.classList.add("d-none");
+                    searchResults.classList.add("d-none");
+                    searchEmpty.classList.add("d-none");
+                    searchLoading.classList.remove("d-none");
+
+                    // Debounce: esperar 300ms antes de pesquisar
+                    debounceTimeout = setTimeout(() => {
+                        performSearch(term);
+                    }, 300);
+                } else {
+                    quickAccess.classList.remove("d-none");
+                    searchResults.classList.add("d-none");
+                    searchEmpty.classList.add("d-none");
+                    searchLoading.classList.add("d-none");
+                    searchResults.innerHTML = "";
+                }
+            });
+        }
+
+        async function performSearch(term) {
+            try {
+                const response = await fetch(`${searchUrl}?q=${encodeURIComponent(term)}`);
+                if (!response.ok) throw new Error("Erro de rede ao pesquisar");
+
+                const data = await response.json();
+
+                searchLoading.classList.add("d-none");
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                if (data.length === 0) {
+                    if (searchEmptyTerm) searchEmptyTerm.textContent = term;
+                    searchEmpty.classList.remove("d-none");
+                    searchResults.classList.add("d-none");
+                } else {
+                    renderSearchResults(data);
+                    searchResults.classList.remove("d-none");
+                    searchEmpty.classList.add("d-none");
+                }
+
+            } catch (error) {
+                console.error("Erro na pesquisa:", error);
+                searchLoading.classList.add("d-none");
+                if (searchEmptyTerm) searchEmptyTerm.textContent = term + " (Ocorreu um erro)";
+                searchEmpty.classList.remove("d-none");
+            }
+        }
+
+        function renderSearchResults(sections) {
+            searchResults.innerHTML = "";
+            const sectionTemplate = document.getElementById("search-section-template");
+            const itemTemplate = document.getElementById("search-item-template");
+
+            if (!sectionTemplate || !itemTemplate) {
+                console.error("Templates de pesquisa não encontrados");
                 return;
             }
-            const img = document.getElementById('qrImage');
-            if (img) {
-                img.src = url;
+
+            sections.forEach(section => {
+                const sectionClone = sectionTemplate.content.cloneNode(true);
+                sectionClone.querySelector(".section-title-text").textContent = section.title;
+                const itemsContainer = sectionClone.querySelector(".section-items-container");
+
+                section.items.forEach(item => {
+                    const itemClone = itemTemplate.content.cloneNode(true);
+
+                    const link = itemClone.querySelector(".item-link");
+                    link.href = item.url;
+
+                    const iconWrapper = itemClone.querySelector(".item-icon-wrapper");
+                    iconWrapper.style.backgroundColor = section.bg;
+                    iconWrapper.style.color = section.color;
+                    iconWrapper.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${section.icon}</svg>`;
+
+                    itemClone.querySelector(".item-title").textContent = item.title;
+                    itemClone.querySelector(".item-subtitle").textContent = item.subtitle;
+
+                    itemsContainer.appendChild(itemClone);
+                });
+
+                searchResults.appendChild(sectionClone);
+            });
+        }
+
+        // Limpar pesquisa e restaurar estado inicial ao fechar o modal
+        searchModal.addEventListener("hidden.bs.modal", () => {
+            if (searchInput) {
+                searchInput.value = "";
             }
-            const modal = new bootstrap.Modal(document.getElementById('qrPrintModal'));
-            modal.show();
+            if (quickAccess && searchResults) {
+                quickAccess.classList.remove("d-none");
+                searchResults.classList.add("d-none");
+                searchEmpty.classList.add("d-none");
+                searchLoading.classList.add("d-none");
+                searchResults.innerHTML = "";
+            }
+            clearTimeout(debounceTimeout);
         });
-    } else {
-        console.error("QRCode library not loaded.");
     }
-}
+});
+
+// ===================
+// 9. Exportação e Utilidades
+// ===================
+
+// - Lógica do Modal de Exportação (Seleção Visual)
 
 document.addEventListener('DOMContentLoaded', () => {
-    // Botão de download do QR Code
-    const btnDownloadQR = document.getElementById('btnDownloadQR');
-    if (btnDownloadQR) {
-        btnDownloadQR.addEventListener('click', () => {
-            const img = document.getElementById('qrImage');
-            const equipCode = document.getElementById('qrEquipCode').textContent;
-            if (img && img.src) {
-                const a = document.createElement('a');
-                a.href = img.src;
-                a.download = `QR_${equipCode}.png`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-            }
-        });
-    }
-
-    // Selecionar equipamento para gerar QR Code
-    const btnProceedQRPrint = document.getElementById('btnProceedQRPrint');
-    if (btnProceedQRPrint) {
-        btnProceedQRPrint.addEventListener('click', () => {
-            const sel = document.getElementById('qrEquipamentoSelect');
-            if (!sel.value) {
-                alert('Selecione um equipamento primeiro.');
-                return;
-            }
-            const opt = sel.options[sel.selectedIndex];
-
-            const selectModalEl = document.getElementById('qrSelectModal');
-            const selectModal = bootstrap.Modal.getOrCreateInstance(selectModalEl);
-            selectModal.hide();
-
-            setTimeout(() => {
-                openQRPrintModal(sel.value, opt.getAttribute('data-code'), opt.getAttribute('data-desc'));
-            }, 400);
-        });
-    }
-
-    // Scanner de QR Code pela câmara
-    let html5QrcodeScanner = null;
-    const scanModalEl = document.getElementById('qrScanModal');
-
-    if (scanModalEl) {
-        scanModalEl.addEventListener('shown.bs.modal', function () {
-            if (!html5QrcodeScanner) {
-                if (typeof Html5QrcodeScanner !== 'undefined') {
-                    html5QrcodeScanner = new Html5QrcodeScanner(
-                        "reader",
-                        { fps: 10, qrbox: { width: 250, height: 250 } },
-                        false);
-                    html5QrcodeScanner.render(
-                        (decodedText, decodedResult) => {
-                            if (decodedText.includes('detailed_view.php?id=')) {
-                                if (html5QrcodeScanner) html5QrcodeScanner.pause(true);
-                                window.location.href = decodedText;
-                            } else {
-                                alert('Código QR não reconhecido ou inválido para este sistema.');
-                                if (html5QrcodeScanner) {
-                                    html5QrcodeScanner.pause(true);
-                                    setTimeout(() => html5QrcodeScanner.resume(), 3000);
-                                }
-                            }
-                        },
-                        (error) => { /* ignora frames vazios */ }
-                    );
-                } else {
-                    console.error("Html5QrcodeScanner library not loaded.");
-                }
-            }
-        });
-
-        scanModalEl.addEventListener('hidden.bs.modal', function () {
-            if (html5QrcodeScanner) {
-                html5QrcodeScanner.clear().catch(error => {
-                    console.error("Failed to clear html5QrcodeScanner. ", error);
-                });
-                html5QrcodeScanner = null;
-            }
-        });
-    }
-
-    // ==========================================
-    // Lógica do Modal de Exportação
-    // ==========================================
     const exportModal = document.getElementById('exportModal');
     if (exportModal) {
         const optionCards = exportModal.querySelectorAll('.export-option-card');
@@ -2822,6 +2631,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+
+// - Função Utilitária prefillFields
 function prefillFields(fields) {
     if (!fields || typeof fields !== 'object') return;
 
@@ -2839,4 +2650,142 @@ function prefillFields(fields) {
             console.warn(`prefillFields: Elemento '${idOrName}' não encontrado.`);
         }
     }
+}
+
+// - Bloqueio de Accions Collapse nas Localizações
+document.addEventListener(
+    "click",
+    (e) => {
+        const actionBtn = e.target.closest(
+            ".locations .action-buttons, .locations .action-buttons svg, .locations .action-buttons path",
+        );
+        if (actionBtn) {
+            e.stopPropagation();
+            e.preventDefault();
+        }
+    },
+    true,
+);
+
+// ===================
+// 10. Hardware: QR Codes
+// ===================
+
+// Modal de visualização de QR Code para impressão
+function openQRPrintModal(encryptedId, code, designation) {
+    const codeElement = document.getElementById('qrEquipCode');
+    const designationElement = document.getElementById('qrEquipDesignation');
+
+    codeElement.textContent = code;
+    designationElement.textContent = designation;
+
+    // Use SITE_BASE_URL se estiver definido, senao default
+    const base = window.SITE_BASE_URL || '/Projeto-SIBDAS/';
+    const urlBase = window.location.origin + base + 'private/inventory/equipments/detailed_view.php?id=';
+    const finalUrl = urlBase + encodeURIComponent(encryptedId);
+
+    if (typeof QRCode !== 'undefined') {
+        QRCode.toDataURL(finalUrl, {
+            width: 200,
+            margin: 2,
+            color: {
+                dark: '#0F172A',
+                light: '#FFFFFF'
+            }
+        }, function (error, url) {
+            if (error) {
+                console.error("Erro a gerar QR Code: ", error);
+                alert("Ocorreu um erro ao gerar o QR Code.");
+                return;
+            }
+            const img = document.getElementById('qrImage');
+            if (img) {
+                img.src = url;
+            }
+            const modal = new bootstrap.Modal(document.getElementById('qrPrintModal'));
+            modal.show();
+        });
+    } else {
+        console.error("QRCode library not loaded.");
+    }
+}
+
+const btnDownloadQR = document.getElementById('btnDownloadQR');
+if (btnDownloadQR) {
+    btnDownloadQR.addEventListener('click', () => {
+        const img = document.getElementById('qrImage');
+        const equipCode = document.getElementById('qrEquipCode').textContent;
+        if (img && img.src) {
+            const a = document.createElement('a');
+            a.href = img.src;
+            a.download = `QR_${equipCode}.png`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    });
+}
+
+// Selecionar equipamento para gerar QR Code
+const btnProceedQRPrint = document.getElementById('btnProceedQRPrint');
+if (btnProceedQRPrint) {
+    btnProceedQRPrint.addEventListener('click', () => {
+        const sel = document.getElementById('qrEquipamentoSelect');
+        if (!sel.value) {
+            alert('Selecione um equipamento primeiro.');
+            return;
+        }
+        const opt = sel.options[sel.selectedIndex];
+
+        const selectModalEl = document.getElementById('qrSelectModal');
+        const selectModal = bootstrap.Modal.getOrCreateInstance(selectModalEl);
+        selectModal.hide();
+
+        setTimeout(() => {
+            openQRPrintModal(sel.value, opt.getAttribute('data-code'), opt.getAttribute('data-desc'));
+        }, 400);
+    });
+}
+
+// Scanner de QR Code pela câmara
+let html5QrcodeScanner = null;
+const scanModalEl = document.getElementById('qrScanModal');
+
+if (scanModalEl) {
+    scanModalEl.addEventListener('shown.bs.modal', function () {
+        if (!html5QrcodeScanner) {
+            if (typeof Html5QrcodeScanner !== 'undefined') {
+                html5QrcodeScanner = new Html5QrcodeScanner(
+                    "reader",
+                    { fps: 10, qrbox: { width: 250, height: 250 } },
+                    false);
+                html5QrcodeScanner.render(
+                    (decodedText, decodedResult) => {
+                        if (decodedText.includes('detailed_view.php?id=')) {
+                            if (html5QrcodeScanner) html5QrcodeScanner.pause(true);
+                            window.location.href = decodedText;
+                        } else {
+                            alert('Código QR não reconhecido ou inválido para este sistema.');
+                            if (html5QrcodeScanner) {
+                                html5QrcodeScanner.pause(true);
+                                setTimeout(() => html5QrcodeScanner.resume(), 3000);
+                            }
+                        }
+                    },
+                    (error) => { /* ignora frames vazios */ }
+                );
+            } else {
+                console.error("Html5QrcodeScanner library not loaded.");
+            }
+        }
+    });
+
+    scanModalEl.addEventListener('hidden.bs.modal', function () {
+        if (html5QrcodeScanner) {
+            html5QrcodeScanner.clear().catch(error => {
+                console.error("Failed to clear html5QrcodeScanner. ", error);
+            });
+            html5QrcodeScanner = null;
+        }
+    });
 }
