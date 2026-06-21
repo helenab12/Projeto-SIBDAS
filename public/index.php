@@ -288,10 +288,10 @@ try {
                         if ($cartao->getAtivo()):
                             ?>
                             <div
-                                class="bento-card <?= $cartao->getTitulo() == 'Assistente IA' ? 'bento-ai-card' : '' ?> padding-8 d-flex flex-column gap-3 align-items-start text-start">
+                                class="bento-card padding-8 d-flex flex-column gap-3 align-items-start text-start">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
                                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                    class="lucide <?= $cartao->getTitulo() == 'Assistente IA' ? 'stroke-white' : 'text-primary-500' ?> padding-3">
+                                    class="lucide text-primary-500 padding-3">
                                     <?= $cartao->getIcone() ?>
                                 </svg>
                                 <h2 class="font-mono">

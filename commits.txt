@@ -1,0 +1,97 @@
+b47c9bb - Helena Barbosa - 2026-06-21 21:41:42 +0100 - Backend: Organização e Limpeza do Javascript
+696ecf6 - Helena Barbosa - 2026-06-21 17:39:42 +0100 - Backend: Otimização e Redução do CSS
+8971308 - Helena Barbosa - 2026-06-21 13:55:26 +0100 - Backend: Botões de Debug para testes
+8a38e30 - Helena Barbosa - 2026-06-21 12:52:35 +0100 - Backend: Fechar ligações depois de acabar de usar e rever sanitizações
+c90484d - Helena Barbosa - 2026-06-21 08:59:29 +0100 - Backend: Exportação de dados como CSV, JSON e PDF
+d53e1ca - Helena Barbosa - 2026-06-20 18:49:45 +0100 - Backend: Sistema de QR Codes
+0988a61 - Helena Barbosa - 2026-06-20 17:56:26 +0100 - Backend: Sistema de Transações
+403c114 - Helena Barbosa - 2026-06-20 17:00:26 +0100 - Backend: Eventos para Notificações Automáticas e Sistema de Backups
+2bcc77c - Helena Barbosa - 2026-06-20 15:11:06 +0100 - Backend: Criar Logs de Auditoria
+4fd60ab - Helena Barbosa - 2026-06-20 09:41:18 +0100 - Backend: Implementar sistema de Permissões
+45dfa48 - Helena Barbosa - 2026-06-19 22:26:13 +0100 - Backend: Remoção de Empty States nas Tabelas
+3928603 - Helena Barbosa - 2026-06-19 20:39:27 +0100 - Backend: Paginação via PHP com filtros em todas as tabelas
+ceb7ad0 - Helena Barbosa - 2026-06-19 16:00:12 +0100 - Backend: Implementação da barra de pesquisa global + Calendário
+0be3f00 - Helena Barbosa - 2026-06-19 00:14:11 +0100 - Backend: Transição para o Servidor do ISEP + Spinner
+dc69806 - Helena Barbosa - 2026-06-18 23:03:22 +0100 - Backend: CRUD da Dashboard
+2f3adfe - Helena Barbosa - 2026-06-18 19:28:13 +0100 - Backend: CRUD de Página de Notificações
+b94944c - Helena Barbosa - 2026-06-18 18:45:02 +0100 - Backend: CRUD de Página de Reciclagem
+ce17477 - Helena Barbosa - 2026-06-18 18:12:45 +0100 - Backend: CRUD do Sistema de Auditoria
+be7cf57 - Helena Barbosa - 2026-06-17 00:11:13 +0100 - Backend: CRUD de Manutenções
+383dbff - Helena Barbosa - 2026-06-16 23:34:33 +0100 - Backend: Read de Componentes associados na Vista Detalhada de Equipamento
+d8c9f60 - Helena Barbosa - 2026-06-16 22:54:48 +0100 - Backend: CRUD de Garantias e Contratos na Vista Detalhada de Equipamento
+44dc504 - Helena Barbosa - 2026-06-16 20:37:06 +0100 - Backend: Read de Fornecedores na Vista Detalhada de Equipamento
+6ba6d2f - Helena Barbosa - 2026-06-16 19:37:08 +0100 - Backend: CRUD de Documentos
+8d42918 - Helena Barbosa - 2026-06-16 10:45:12 +0100 - Backend: Read de Equipamento na Vista Detalhada de Equipamento
+3756a67 - Helena Barbosa - 2026-06-16 09:43:42 +0100 - Backend: CRUD de equipamentos arquivados
+163b837 - Helena Barbosa - 2026-06-16 09:24:16 +0100 - Backend: CRUD de Equipamentos
+b553394 - Helena Barbosa - 2026-06-14 13:35:24 +0100 - Backend: CRUD de componentes
+01f2f1d - Helena Barbosa - 2026-06-14 11:57:53 +0100 - Backend: CRUD de categorias de equipamento
+dcf3248 - Helena Barbosa - 2026-06-14 00:29:41 +0100 - Backend: CRUD de Fornecedores
+c64bb55 - Helena Barbosa - 2026-06-13 12:50:26 +0100 - Backend: CRUD de Localizações
+2139464 - Helena Barbosa - 2026-06-13 00:43:40 +0100 - Backend: CRUD de Gestão de Pessoas
+2aa5c1c - Helena Barbosa - 2026-06-12 13:02:49 +0100 - Backend: CRUD de Utilizadores + Instalar Bibliotecas e Fontes Localmente
+db92166 - Helena Barbosa - 2026-06-12 11:09:36 +0100 - Backend: Remoção total de Hard Deletes
+d5b3b7e - Helena Barbosa - 2026-06-08 19:00:38 +0100 - Backend: CRUD de Perfis
+b9cf7f1 - Helena Barbosa - 2026-06-08 18:01:38 +0100 - Backend: CRUD de Permissões de Perfis
+cd50381 - Helena Barbosa - 2026-06-08 17:26:03 +0100 - Backend: CRUD de Gestão de Conteúdos do Front-Office
+7699a2c - Helena Barbosa - 2026-06-07 19:56:19 +0100 - Backend: CRUD do Formulário de contacto do Front-Office
+410fa00 - Helena Barbosa - 2026-06-07 12:33:16 +0100 - Backend: Correção de erro sobre sessões
+dcbac4b - Helena Barbosa - 2026-06-06 16:20:54 +0100 - Backend: Implementação de Gestão da Área Pública
+2dbccec - Helena Barbosa - 2026-06-06 14:53:49 +0100 - Backend: Criação de dados  dummy para facilitar desenvolvimento
+f45240b - Helena Barbosa - 2026-06-05 22:34:57 +0100 - Backend: Classes POO e Flow de Login
+9ded429 - Helena Barbosa - 2026-06-05 19:16:00 +0100 - Backend: Funções de Ligação à BD e Gestão de Sessões
+5492cec - Helena Barbosa - 2026-06-05 17:25:06 +0100 - Backend: Importar o Modelo ERD como Ficheiro .sql
+6c8a548 - Helena Barbosa - 2026-06-05 17:23:46 +0100 - Backend: Criação do Modelo ERD
+f4c1c0d - Helena Barbosa - 2026-06-05 14:11:17 +0100 - Frontend: Barra de Pesquisa Global
+4caa07d - Helena Barbosa - 2026-06-05 13:39:49 +0100 - Frontend: Página de Vista Detalhada de Equipamento
+3e8de23 - Helena Barbosa - 2026-06-05 13:07:15 +0100 - Frontend: Página de Vista Detalhada de Equipamento - Manutenções
+59291e1 - Helena Barbosa - 2026-06-05 10:56:43 +0100 - Frontend: Página de Vista Detalhada de Equipamento - Componentes
+9884e1f - Helena Barbosa - 2026-06-05 10:39:28 +0100 - Frontend: Página de Vista Detalhada de Equipamento - Garantias & Contratos
+ce3fd8c - Helena Barbosa - 2026-06-05 00:23:55 +0100 - Frontend: Página de Vista Detalhada de Equipamento - Fornecedores
+5ff5f32 - Helena Barbosa - 2026-06-04 23:17:09 +0100 - Frontend: Página de Vista Detalhada de Equipamento - Documentos
+f6539a8 - Helena Barbosa - 2026-06-04 20:54:19 +0100 - Frontend: Página de Vista Detalhada de Equipamento - Visão Geral
+3f2d645 - Helena Barbosa - 2026-06-04 19:35:46 +0100 - Frontend: Página de Gestão de Conteúdos
+e535a1e - Helena Barbosa - 2026-06-04 11:11:11 +0100 - Frontend: Página de Inbox do Front-Office
+8654187 - Helena Barbosa - 2026-06-03 22:43:03 +0100 - Frontend: Página de Notificações
+089868c - Helena Barbosa - 2026-06-03 17:57:36 +0100 - Frontend: Gestão de Logs de Auditoria
+87982a8 - Helena Barbosa - 2026-06-01 22:10:37 +0100 - Frontend: Página de Reciclagem
+93fc0f1 - Helena Barbosa - 2026-05-31 19:29:47 +0100 - Frontend: Página de Perfis
+4bc7ae2 - Helena Barbosa - 2026-05-31 18:33:50 +0100 - Frontend: Criação de Includes e Ficheiros em PHP
+29a3659 - Helena Barbosa - 2026-05-20 18:34:35 +0100 - Transicao para XAMPP: Mudanca de caminhos absolutos
+eedd54c - Helena Barbosa - 2026-05-18 22:28:02 +0100 - Frontend: Pagina de Gestao de Permissoes
+7bf3486 - Helena Barbosa - 2026-05-18 21:23:11 +0100 - Frontend: Pagina de Gestao de Utilizadores
+53dd028 - Helena Barbosa - 2026-05-18 20:37:37 +0100 - Frontend: Pagina de Gestao de Localizacoes
+4020cb0 - Helena Barbosa - 2026-05-17 22:46:10 +0100 - Frontend: Pagina de Gestao de Pessoas e melhorias gerais
+87003a2 - Helena Barbosa - 2026-05-17 20:15:30 +0100 - Frontend: Pagina de Fornecedores
+1583f45 - Helena Barbosa - 2026-05-17 19:12:19 +0100 - Frontend: Pagina de Categorias
+e8e0ada - Helena Barbosa - 2026-05-17 18:46:17 +0100 - Frontend: Pagina de Componentes
+e1895cc - Helena Barbosa - 2026-05-17 17:57:33 +0100 - Frontend: Pagina Equipamentos Arquivados
+c4f270b - Helena Barbosa - 2026-05-16 21:04:06 +0100 - Frontend: Listagem de Equipamentos com Modal
+1130c27 - Helena Barbosa - 2026-04-23 23:58:39 +0100 - Frontend: Dashboard Finalizada com Gráficos do Chart.js
+a116b99 - Helena Barbosa - 2026-04-23 10:07:41 +0100 - Frontend: Cartões de estatísticas rápidas da Dashboard
+020a06c - Helena Barbosa - 2026-04-22 21:51:11 +0100 - Frontend: Layout base, sidebar, navbar e página em branco
+6e25a96 - Helena Barbosa - 2026-04-20 17:40:17 +0100 - Backend: Página de Login
+5d721a0 - Helena Barbosa - 2026-04-19 12:24:41 +0100 - Frontend: Footer e página finalizada
+8710eba - Helena Barbosa - 2026-04-19 11:23:07 +0100 - Frontend: Secção do CTA (call-to-action)
+57447b5 - Helena Barbosa - 2026-04-19 10:44:15 +0100 - Frontend: Secção dos Clientes
+8f9a099 - Helena Barbosa - 2026-04-18 19:28:02 +0100 - Frontend: Secção das Vantagens
+b514141 - Helena Barbosa - 2026-04-18 18:41:32 +0100 - Frontend: Secção das Features
+2281784 - Helena Barbosa - 2026-04-18 17:48:03 +0100 - Frontend: Fix do dark mode da secção principal e nav bar
+98ca51a - Helena Barbosa - 2026-04-18 17:40:31 +0100 - Frontend: Secção principal e mudanças pequenas na nav bar
+be7083b - Helena Barbosa - 2026-04-18 16:17:57 +0100 - Frontend: Navbar funcional para todos os dispositivos com dark/light mode
+5ca4078 - Helena Barbosa - 2026-04-18 12:09:14 +0100 - Frontend: Criação de variáveis para bordas e espaçamentos
+4e69f66 - Helena Barbosa - 2026-04-18 11:51:06 +0100 - Frontend: Criação da tipografia no CSS com tamanhos variáveis consoante dispositivos
+5292d7d - Helena Barbosa - 2026-04-18 11:22:20 +0100 - Frontend: Criação das cores do Design System usando variáveis de CSS
+0cb3475 - Helena Barbosa - 2026-04-15 12:16:42 +0100 - Design: Back Office Hospitalar - Reciclagem
+2f12288 - Helena Barbosa - 2026-04-14 21:55:34 +0100 - Design: Back Office Hospitalar - Permissões
+7c41293 - Helena Barbosa - 2026-04-14 19:54:42 +0100 - Design: Back Office Hospitalar - Gestão de Pessoas
+d7a0118 - Helena Barbosa - 2026-04-13 18:12:22 +0100 - Design: Back Office Hospitalar - Localizações
+72574c6 - Helena Barbosa - 2026-04-13 15:46:33 +0100 - Design: Back Office Hospitalar - Listagem de Equipamentos
+5b95c08 - Helena Barbosa - 2026-04-12 21:34:01 +0100 - Design: Estrutura Base e Dashboard
+971e0b1 - Helena Barbosa - 2026-04-12 18:43:36 +0100 - Config: Adicionar .gitignore para omitir .DS_Store
+1313865 - Helena Barbosa - 2026-04-12 18:22:25 +0100 - Design: Front Office (Site institucional da empresa)
+a2e3914 - Helena Barbosa - 2026-04-12 17:29:27 +0100 - Design: Definir o Design System (Cores, Tipografia e Espaçamentos)
+fdfa199 - Helena Barbosa - 2026-04-12 17:20:49 +0100 - Criação Inicial da Estrutura de Diretórios
+294c04c - Helena Barbosa - 2026-04-12 17:15:01 +0100 - Resolver conflito do ficheiro README.md
+b00e3bd - Helena Barbosa - 2026-04-12 17:12:29 +0100 - Commit Inicial: Criação do Repositório
+55b3326 - helenab12 - 2026-04-12 17:10:29 +0100 - Initial commit

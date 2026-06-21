@@ -2680,7 +2680,7 @@ function openQRPrintModal(encryptedId, code, designation) {
     designationElement.textContent = designation;
 
     // Use SITE_BASE_URL se estiver definido, senao default
-    const base = window.SITE_BASE_URL || '/Projeto-SIBDAS/';
+    const base = window.SITE_BASE_URL || '/sibdas/1240961/projeto-heba/';
     const urlBase = window.location.origin + base + 'private/inventory/equipments/detailed_view.php?id=';
     const finalUrl = urlBase + encodeURIComponent(encryptedId);
 

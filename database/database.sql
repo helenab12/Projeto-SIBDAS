@@ -74,7 +74,11 @@ CREATE TABLE `Equipamento` (
   `arquivado` boolean DEFAULT false,
   `ativo` boolean DEFAULT true,
   `dataCriacao` timestamp DEFAULT (CURRENT_TIMESTAMP),
-  `dataAtualizacao` timestamp
+  `dataAtualizacao` timestamp,
+  CONSTRAINT `chk_Equipamento_custo` CHECK (custoAquisicao >= 0),
+  CONSTRAINT `chk_Equipamento_dataFabrico` CHECK (YEAR(dataFabrico) >= 1950 OR dataFabrico IS NULL),
+  CONSTRAINT `chk_Equipamento_dataAquisicao` CHECK (YEAR(dataAquisicao) >= 1950 OR dataAquisicao IS NULL),
+  CONSTRAINT `chk_Equipamento_datas` CHECK (dataFabrico IS NULL OR dataAquisicao IS NULL OR dataFabrico <= dataAquisicao)
 );
 
 CREATE TABLE `FornecedorEquipamento` (
@@ -110,7 +114,10 @@ CREATE TABLE `Componente` (
   `idLocalizacao` integer,
   `ativo` boolean DEFAULT true,
   `dataCriacao` timestamp DEFAULT (CURRENT_TIMESTAMP),
-  `dataAtualizacao` timestamp
+  `dataAtualizacao` timestamp,
+  CONSTRAINT `chk_Componente_stock` CHECK (stock >= 0),
+  CONSTRAINT `chk_Componente_stockMinimo` CHECK (stockMinimo >= 0),
+  CONSTRAINT `chk_Componente_preco` CHECK (preco >= 0)
 );
 
 CREATE TABLE `ComponenteEquipamento` (
@@ -158,7 +165,11 @@ CREATE TABLE `Pessoa` (
   `departamento` varchar(100),
   `ativo` boolean DEFAULT true,
   `dataCriacao` timestamp DEFAULT (CURRENT_TIMESTAMP),
-  `dataAtualizacao` timestamp
+  `dataAtualizacao` timestamp,
+  CONSTRAINT `chk_Pessoa_nome` CHECK (nome NOT REGEXP '[0-9]'),
+  CONSTRAINT `chk_Pessoa_nif` CHECK (nif REGEXP '^[0-9]{9}$'),
+  CONSTRAINT `chk_Pessoa_email` CHECK (email LIKE '%@%.%'),
+  CONSTRAINT `chk_Pessoa_contacto` CHECK (LENGTH(TRIM(contactoTelefonico)) > 0)
 );
 
 CREATE TABLE `Utilizador` (
@@ -183,7 +194,11 @@ CREATE TABLE `Fornecedor` (
   `tipoFornecedor` ENUM ('Fabricante', 'Distribuidor', 'Assistência Técnica', 'Consumíveis'),
   `ativo` boolean DEFAULT true,
   `dataCriacao` timestamp DEFAULT (CURRENT_TIMESTAMP),
-  `dataAtualizacao` timestamp
+  `dataAtualizacao` timestamp,
+  CONSTRAINT `chk_Fornecedor_nome` CHECK (LENGTH(TRIM(nome)) > 0),
+  CONSTRAINT `chk_Fornecedor_nif` CHECK (nifFornecedor REGEXP '^[0-9]{9}$'),
+  CONSTRAINT `chk_Fornecedor_email` CHECK (email LIKE '%@%.%'),
+  CONSTRAINT `chk_Fornecedor_contacto` CHECK (LENGTH(TRIM(contactoTelefonico)) > 0)
 );
 
 CREATE TABLE `Documento` (
@@ -198,7 +213,8 @@ CREATE TABLE `Documento` (
   `idFornecedor` integer,
   `ativo` boolean DEFAULT true,
   `dataCriacao` timestamp DEFAULT (CURRENT_TIMESTAMP),
-  `dataAtualizacao` timestamp
+  `dataAtualizacao` timestamp,
+  CONSTRAINT `chk_Documento_datas` CHECK (dataValidade IS NULL OR dataDocumento IS NULL OR dataValidade >= dataDocumento)
 );
 
 CREATE TABLE `GarantiaContrato` (
@@ -263,7 +279,8 @@ CREATE TABLE `CartaoFuncionalidade` (
   `ordem` integer,
   `ativo` boolean DEFAULT true,
   `dataCriacao` timestamp DEFAULT (CURRENT_TIMESTAMP),
-  `dataAtualizacao` timestamp
+  `dataAtualizacao` timestamp,
+  CONSTRAINT `chk_Cartao_ordem` CHECK (ordem >= 0)
 );
 
 CREATE TABLE `PedidoDemonstracao` (
@@ -275,7 +292,10 @@ CREATE TABLE `PedidoDemonstracao` (
   `estado` ENUM ('Novo', 'Em Contacto', 'Fechado') DEFAULT 'Novo',
   `ativo` boolean DEFAULT true,
   `dataCriacao` timestamp DEFAULT (CURRENT_TIMESTAMP),
-  `dataAtualizacao` timestamp
+  `dataAtualizacao` timestamp,
+  CONSTRAINT `chk_Pedido_nome` CHECK (nomeContacto NOT REGEXP '[0-9]'),
+  CONSTRAINT `chk_Pedido_email` CHECK (emailContacto LIKE '%@%.%'),
+  CONSTRAINT `chk_Pedido_mensagem` CHECK (CHAR_LENGTH(mensagem) <= 400)
 );
 
 CREATE UNIQUE INDEX `Piso_index_0` ON `Piso` (`idEdificio`, `nome`);

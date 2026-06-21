@@ -328,7 +328,7 @@ if (!empty($_SESSION['server_error'])) {
                 </div>
             </div>
 
-            <!-- Graficos de Tendencias de Manutencoes + Chat AI -->
+            <!-- Graficos de Tendencias de Manutencoes -->
             <div class="d-flex flex-row gap-4 graphs-container">
                 <div class="bento-card bento-card-move-up d-flex flex-column padding-6 gap-6">
                     <div class="d-flex flex-column gap-1">

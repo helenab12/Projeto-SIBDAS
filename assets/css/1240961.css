@@ -791,10 +791,6 @@ label {
     box-sizing: content-box;
 }
 
-.pa-features .bento-card.bento-ai-card svg {
-    background-color: var(--primary-500);
-}
-
 @media (max-width: 1024px) {
     .pa-features .bento-grid {
         grid-template-columns: repeat(2, 1fr);

@@ -12,7 +12,7 @@ if (!function_exists('isDropdownActive')) {
 <aside class="mobile-sidebar d-flex d-md-none position-fixed top-0 left-0 bottom-0 vh-100 flex-column overflow-auto">
     <div class="navbar-brand d-flex align-items-center justify-content-between nav-brand padding-4">
         <div class="d-flex align-items-center gap-3">
-            <img src="<?= BASE_URL ?>assets/img/logo.svg" alt="HEBA Logo" width="36" height="36">
+            <img src="<?= BASE_URL ?>assets/img/logo.png" alt="HEBA Logo" width="36" height="36">
             <div class="d-flex flex-column">
                 <h2 class="text-primary m-0">HEBA</h2>
                 <label class="text-secondary text-uppercase m-0">Biomédica</label>
