@@ -1,21 +1,28 @@
 <?php
-
+// Carregar dependências
 require_once(__DIR__ . "/../../config/funcoes.php");
 
+// Iniciar sessão
 start_session();
 
+// Validar sessão ativa
 if (check_session()) {
+    // Redirecionar
     header('Location: ' . BASE_URL . 'private/index.php');
     exit;
 }
 
+// Inicializar variáveis de erro
 $validation_errors = [];
+// Recolher erros da sessão
 if (!empty($_SESSION['validation_errors'])) {
     $validation_errors = $_SESSION['validation_errors'];
     unset($_SESSION['validation_errors']);
 }
 
+// Inicializar erro do servidor
 $server_error = null;
+// Recolher erro da sessão
 if (!empty($_SESSION['server_error'])) {
     $server_error = $_SESSION['server_error'];
     unset($_SESSION['server_error']);
@@ -32,6 +39,8 @@ if (!empty($_SESSION['server_error'])) {
     <title>HEBA - Login</title>
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="<?= BASE_URL ?>assets/css/1240961.css">
+    <!-- Favicon -->
+    <link rel="shortcut icon" href="<?= BASE_URL ?>assets/img/logo.png" type="image/x-icon">
 </head>
 
 <body class="overflow-hidden">
@@ -43,15 +52,19 @@ if (!empty($_SESSION['server_error'])) {
     <?php ob_flush();
     flush(); ?>
 
+    <!-- Wrapper Principal -->
     <main class="login-page-container position-relative vh-100">
+        <!-- Botão Alternar Tema -->
         <button
             class="pa-theme-toggle position-absolute top-0 end-0 m-4 z-3 cursor-pointer border-0 bg-transparent p-0 d-inline-flex align-items-center text-secondary"
             aria-label="Alternar tema">
+            <!-- SVG Lua -->
             <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path
                     d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />
             </svg>
+            <!-- SVG Sol -->
             <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="4" />
@@ -74,8 +87,11 @@ if (!empty($_SESSION['server_error'])) {
                     <div class="background-decoration-item position-absolute background-decoration-3"></div>
                     <div class="background-decoration-item position-absolute background-decoration-4"></div>
                 </div>
+                <!-- Wrapper Cabeçalho -->
                 <div class="d-flex gap-4">
+                    <!-- Wrapper Logo -->
                     <div class="d-flex align-items-center justify-content-center svg-container">
+                        <!-- SVG Logo -->
                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="lucide lucide-heart-pulse-icon lucide-heart-pulse stroke-white">
@@ -85,30 +101,36 @@ if (!empty($_SESSION['server_error'])) {
                         </svg>
                     </div>
                     <div class="d-flex flex-column">
+                        <!-- Título HEBA -->
                         <h1 class="text-white text-uppercase pa-informative-section-title">HEBA</h1>
+                        <!-- Subtítulo HEBA -->
                         <p class="text-uppercase pa-informative-section-subtitle">Health Base</p>
                     </div>
                 </div>
+                <!-- Wrapper Descrição -->
                 <div class="d-flex flex-column gap-6">
+                    <!-- Título Descrição -->
                     <h1 class="text-white pa-informative-section-header-title">Gestão Inteligente de <div
                             style="color: #54EAFD;">Inventário
                             Hospitalar</div>
                     </h1>
+                    <!-- Texto Descrição -->
                     <h2 class="fw-400 pa-informative-section-header-description">
-                        Plataforma integrada para gestão, monitorização e manutenção de equipamento biomédico hospitalar
-                        com assistente de IA.
+                        Plataforma integrada para gestão, monitorização e manutenção de equipamento biomédico
+                        hospitalar.
                     </h2>
                 </div>
+                <!-- Wrapper Badges -->
                 <div class="d-flex flex-row flex-wrap gap-3">
+                    <!-- Badge 1 -->
                     <p class="badge fw-400">
                         Inventário em Tempo Real
                     </p>
+                    <!-- Badge 2 -->
                     <p class="badge fw-400">
                         Manutenção Preventiva
                     </p>
-                    <p class="badge fw-400">
-                        IA Integrada
-                    </p>
+                    <!-- Badge 3 -->
                     <p class="badge fw-400">
                         Rastreabilidade
                     </p>
@@ -116,50 +138,60 @@ if (!empty($_SESSION['server_error'])) {
                 </div>
 
             </div>
-            <div
-                class="col-12 col-md-6 d-flex flex-column justify-content-center padding-16 login-section">
+            <div class="col-12 col-md-6 d-flex flex-column justify-content-center padding-16 login-section">
                 <div class="background-decorations position-absolute overflow-hidden z-0">
                     <div class="background-decoration-item position-absolute background-decoration-1"></div>
                     <div class="background-decoration-item position-absolute background-decoration-2"></div>
                     <div class="background-decoration-item position-absolute background-decoration-3"></div>
                     <div class="background-decoration-item position-absolute background-decoration-4"></div>
                 </div>
-                <div
-                    class="d-flex align-self-center justify-content-center flex-column gap-8 login-section-content">
+                <div class="d-flex align-self-center justify-content-center flex-column gap-8 login-section-content">
                     <div class="d-flex flex-column gap-1">
+                        <!-- Título Formulário -->
                         <h1>Bem-vindo de volta</h1>
+                        <!-- Texto Informativo -->
                         <p class="text-secondary fw-400">Introduza as suas credenciais para aceder ao sistema.</p>
                     </div>
+                    <!-- Formulário -->
                     <form action="process_login.php" class="d-flex flex-column gap-6" method="POST" novalidate>
                         <div class="d-flex flex-column gap-4">
                             <div class="d-flex flex-column form-item">
+                                <!-- Label Email -->
                                 <label for="email">Email</label>
+                                <!-- Input Email -->
                                 <input type="email" id="email" name="email" placeholder="nome@hospital.pt" required>
                             </div>
                             <div class="d-flex flex-column form-item">
+                                <!-- Label Password -->
                                 <label for="password">Password</label>
+                                <!-- Input Password -->
                                 <input type="password" id="password" name="password" placeholder="********" required>
                             </div>
                         </div>
 
                         <?php if (SHOW_DEBUG_BUTTONS): ?>
                             <div class="d-flex flex-wrap gap-2">
+                                <!-- Botão Admin -->
                                 <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
                                     onclick="prefillFields({'email': 'admin@hospital.pt', 'password': 'password01'})">
                                     Admin
                                 </button>
+                                <!-- Botão Eng Biomédico -->
                                 <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
                                     onclick="prefillFields({'email': 'eng.bio@hospital.pt', 'password': 'password02'})">
                                     Eng. Biomédico
                                 </button>
+                                <!-- Botão Técnico -->
                                 <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
                                     onclick="prefillFields({'email': 'tecnico@hospital.pt', 'password': 'password03'})">
                                     Técnico
                                 </button>
+                                <!-- Botão Aprovisionamento -->
                                 <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
                                     onclick="prefillFields({'email': 'aprovisionamento@hospital.pt', 'password': 'password04'})">
                                     Aprovisionamento
                                 </button>
+                                <!-- Botão Consulta -->
                                 <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
                                     onclick="prefillFields({'email': 'consulta@hospital.pt', 'password': 'password05'})">
                                     Consulta
@@ -168,8 +200,10 @@ if (!empty($_SESSION['server_error'])) {
                         <?php endif; ?>
 
 
+                        <!-- Botão Entrar -->
                         <button type="submit" class="btn btn-primary btn-large btn-glowing fw-700 gap-1">
                             Entrar
+                            <!-- SVG Seta -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round" class="lucide lucide-arrow-right-icon lucide-arrow-right">
@@ -185,7 +219,7 @@ if (!empty($_SESSION['server_error'])) {
 
     <!-- Toast Container -->
     <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3 mt-4 error-toast"
-        style="z-index: 100;">
+        style="z-index: 9999;">
         <?php if (!empty($validation_errors) || !empty($server_error)): ?>
             <?php
             $all_errors = [];
@@ -203,8 +237,10 @@ if (!empty($_SESSION['server_error'])) {
                         <div class="toast-body fw-500 p-0">
                             <?= htmlspecialchars($error) ?>
                         </div>
+                        <!-- Botão Fechar -->
                         <button type="button" class="text-error border-0 p-0 bg-transparent ms-auto" data-bs-dismiss="toast"
                             aria-label="Close">
+                            <!-- SVG Fechar -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                                 class="lucide lucide-x-icon lucide-x">

@@ -1,25 +1,37 @@
 <?php
+// Carregar dependências
 require_once(__DIR__ . "/../../../../config/funcoes.php");
 
+// Restringir acesso
 redirect_if_not_logged('private/login/login.php', ['equipments.edit']);
 
+// Validar método POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
+        // Ligar à BD
         $ligacao = connect_to_db();
         $ligacao->beginTransaction();
 
+        // Recolher dados do POST
         $encryptedId = trim($_POST['equipment-id'] ?? '');
+        
+        // Validar dados
         if (empty($encryptedId)) {
             throw new Exception("ID de equipamento não fornecido.");
         }
         
+        // Desencriptar ID
         $idEquipamento = aes_decrypt($encryptedId);
+        
+        // Validar desencriptação
         if ($idEquipamento === false) {
             throw new Exception("ID de equipamento inválido.");
         }
+        
+        // Converter para número
         $idEquipamento = (int) $idEquipamento;
 
-        // 1. Dados do Equipamento
+        // Recolher formulário
         $codigoInterno = trim($_POST['equipment-code'] ?? '');
         $idCategoria = trim($_POST['equipment-category'] ?? '');
         $numeroSerie = trim($_POST['equipment-serial'] ?? '');
@@ -27,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $idMarca = trim($_POST['equipment-brand'] ?? '');
         $modelo = trim($_POST['equipment-model'] ?? '');
         
-        // Função auxiliar para conversão de datas (DD/MM/YYYY -> YYYY-MM-DD)
+        // Declarar função conversão data
         $formatDate = function($dateStr) {
             if (empty($dateStr)) return null;
             if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateStr)) return $dateStr;
@@ -39,6 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             return null;
         };
 
+        // Formatar e recolher restante formulário
         $dataAquisicao = $formatDate(trim($_POST['equipment-purchase-date'] ?? ''));
         $dataFabrico = $formatDate(trim($_POST['equipment-manufacture-date'] ?? ''));
         $custo = isset($_POST['equipment-cost']) && $_POST['equipment-cost'] !== '' ? (float)$_POST['equipment-cost'] : 0.00;
@@ -48,8 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $idLocalizacao = trim($_POST['equipment-location'] ?? '');
         $observacoes = trim($_POST['equipment-notes'] ?? '');
         
-        
-        // Sanitização usando a classe Equipamento
+        // Sanitizar dados
         $dadosSanitizados = Equipamento::sanitizarDados([
             'codigoInterno' => $codigoInterno,
             'idCategoria' => $idCategoria,
@@ -82,12 +94,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $idLocalizacao = $dadosSanitizados['idLocalizacao'] ?? $idLocalizacao;
         $observacoes = $dadosSanitizados['observacoes'] ?? $observacoes;
 
-        // Validação básica
+        // Validar dados básicos
         if (empty($codigoInterno) || empty($idCategoria) || empty($numeroSerie) || empty($nome) || empty($idMarca) || empty($idLocalizacao)) {
             throw new Exception("Por favor preencha todos os campos obrigatórios da primeira página.");
         }
 
-        // Verificar se codigoInterno já existe noutro equipamento
+        // Verificar código único
         $stmt = execute_query(
             "SELECT idEquipamento FROM Equipamento WHERE codigoInterno = :codigo AND idEquipamento != :id", 
             ['codigo' => $codigoInterno, 'id' => $idEquipamento], 
@@ -97,7 +109,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception("O código interno $codigoInterno já se encontra registado noutro equipamento.");
         }
 
-        // Ler o estado antigo antes do Update para Auditoria
+        // Obter estado antigo
         $stmtAntigo = execute_query(
             "SELECT idCategoria, codigoInterno, designacao, idMarca, modelo, numeroSerie, dataAquisicao, dataFabrico, custoAquisicao, tipoEntrada, estadoAtual, criticidade, idLocalizacao, observacoes FROM Equipamento WHERE idEquipamento = :id",
             ['id' => $idEquipamento],
@@ -162,7 +174,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'observacoes' => $observacoes
         ]);
 
-        // 2. Fornecedores (Fabricante, Distribuidor, Assistentes, Consumíveis)
+        // Recolher fornecedores
         $fornecedoresIds = [];
         
         $fabricante = trim($_POST['equipment-manufacturer'] ?? '');
@@ -183,7 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $fornecedoresIds = array_unique($fornecedoresIds);
 
-        // Remover antigas associações e inserir novas
+        // Atualizar fornecedores
         execute_query("DELETE FROM FornecedorEquipamento WHERE idEquipamento = :idEq", ['idEq' => $idEquipamento], $ligacao);
         foreach ($fornecedoresIds as $idForn) {
             execute_query(
@@ -193,11 +205,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             );
         }
 
-        // 3. Componentes
+        // Recolher componentes
         $componentes = $_POST['equipment-components'] ?? [];
         $componentesQty = $_POST['equipment-components-qty'] ?? [];
         
-        // Remover antigas associações e inserir novas
+        // Atualizar componentes
         execute_query("DELETE FROM ComponenteEquipamento WHERE idEquipamento = :idEq", ['idEq' => $idEquipamento], $ligacao);
         foreach ($componentes as $idComp) {
             if (!empty($idComp)) {
@@ -212,12 +224,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
+        // Submeter transação
         $ligacao->commit();
+        
+        // Definir mensagem de sucesso
         $_SESSION['success_message'] = "Equipamento '$nome' atualizado com sucesso!";
 
+        // Limpar variável de ligação
         $ligacao = null;
 
     } catch (Exception $e) {
+        // Capturar erro
         if (isset($ligacao) && $ligacao->inTransaction()) {
             $ligacao->rollBack();
         }
@@ -225,5 +242,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+// Redirecionar
 header("Location: ../equipment_list.php");
 exit;

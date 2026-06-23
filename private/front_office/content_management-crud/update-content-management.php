@@ -1,13 +1,17 @@
 <?php
+// Carregar dependências
 require_once(__DIR__ . "/../../../config/funcoes.php");
 
 start_session();
+// Restringir acesso
 redirect_if_not_logged('private/login/login.php', ['content.edit']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar_textos'])) {
     try {
+        // Ligar à BD
         $ligacao = connect_to_db();
         $ligacao->beginTransaction();
+        // Recolher dados do POST
         $novosTextos = $_POST['textos'] ?? [];
 
         $mudancas = false;
@@ -16,16 +20,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar_textos'])) {
             $chaveDecriptada = aes_decrypt($chaveEncriptada);
             if ($chaveDecriptada === false) continue;
             
-            // Sanitização usando a classe
+            // Sanitizar dados
             $dadosSanitizados = ConteudoTexto::sanitizarDados(['valor' => $novoValor]);
             $novoValor = $dadosSanitizados['valor'] ?? $novoValor;
 
-            // Obter valor antigo e id
+            // Consultar registos
             $stmtSelect = execute_query("SELECT idConteudo, valor FROM ConteudoFrontOffice WHERE chaveSecao = :id", ['id' => $chaveDecriptada], $ligacao);
             $antigo = $stmtSelect->fetch(PDO::FETCH_ASSOC);
 
             if ($antigo && $antigo['valor'] !== $novoValor) {
-                // Atualizar na base de dados
+                // Atualizar registo
                 execute_query(
                     "UPDATE ConteudoFrontOffice SET valor = :valor, dataAtualizacao = NOW() WHERE chaveSecao = :chaveSecao",
                     ['valor' => $novoValor, 'chaveSecao' => $chaveDecriptada],
@@ -52,6 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar_textos'])) {
         }
         $ligacao = null;
     } catch (Exception $e) {
+        // Capturar erro
         if (isset($ligacao) && $ligacao->inTransaction()) {
             $ligacao->rollBack();
         }
@@ -59,5 +64,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['guardar_textos'])) {
     }
 }
 
+// Redirecionar
 header("Location: ../content_management.php");
 exit;

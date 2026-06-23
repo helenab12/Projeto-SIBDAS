@@ -6,14 +6,17 @@
             <div
                 class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
                 <div class="d-flex flex-column">
+                    <!-- Título -->
                     <h2 class="equipment-creation-modal-title modal-title" id="exportModalLabel">
                         Exportar Dados
                     </h2>
                     <span class="text-secondary fw-400">Selecione o formato pretendido para exportação</span>
                 </div>
 
+                <!-- Botão -->
                 <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
                     data-bs-dismiss="modal" aria-label="Close">
+                    <!-- SVG -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-x-icon lucide-x stroke-secondary">
@@ -26,6 +29,7 @@
             <!-- Body -->
             <div class="modal-body p-0">
                 <div class="padding-6 pt-2 pb-2">
+                    <!-- Input -->
                     <input type="hidden" id="exportTypeInput" value="csv">
 
                     <div class="d-flex flex-column gap-3">
@@ -33,6 +37,7 @@
                         <div class="export-option-card cursor-pointer  bento-card p-3 d-flex align-items-center gap-3 selected-csv"
                             data-export-type="csv">
                             <div class="export-icon-wrapper d-flex align-items-center justify-content-center padding-2 icon-csv">
+                                <!-- SVG -->
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round" class="lucide lucide-file-spreadsheet text-primary-500">
@@ -54,6 +59,7 @@
                         <div class="export-option-card cursor-pointer  bento-card p-3 d-flex align-items-center gap-3"
                             data-export-type="json">
                             <div class="export-icon-wrapper d-flex align-items-center justify-content-center padding-2 icon-json">
+                                <!-- SVG -->
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round" class="lucide lucide-file-json text-warning">
@@ -73,6 +79,7 @@
                         <div class="export-option-card cursor-pointer  bento-card p-3 d-flex align-items-center gap-3"
                             data-export-type="pdf">
                             <div class="export-icon-wrapper d-flex align-items-center justify-content-center padding-2 icon-pdf">
+                                <!-- SVG -->
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round" class="lucide lucide-file-text text-error">
@@ -94,9 +101,12 @@
 
             <!-- Footer -->
             <div class="modal-footer border-0 padding-6 pt-4 pb-6 d-flex justify-content-end gap-4">
+                <!-- Botão -->
                 <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                     data-bs-dismiss="modal">Cancelar</button>
+                <!-- Botão -->
                 <button type="button" id="btnConfirmExport" class="btn btn-primary gap-2">
+                    <!-- SVG -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-download">

@@ -1,4 +1,5 @@
 <?php
+// Consultar manutenções do equipamento
 $stmtManutencoes = execute_query(
     "SELECT m.*, p.nome AS pessoaNome, f.nome AS fornecedorNome 
      FROM Manutencao m 
@@ -10,6 +11,7 @@ $stmtManutencoes = execute_query(
     $ligacao
 );
 
+// Construir lista de objetos
 $listaManutencoes = [];
 while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
     $listaManutencoes[] = new Manutencao(
@@ -30,28 +32,38 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
     );
 }
 ?>
+<!-- Tab Manutenções -->
 <div class="tab-pane fade <?= $activeTab === 'manutencoes' ? 'show active' : '' ?>" id="nav-manutencoes" role="tabpanel"
     aria-labelledby="nav-manutencoes-tab">
+    <!-- Card Principal -->
     <div class="card bento-card padding-6 d-flex flex-column gap-4">
+        <!-- Cabeçalho -->
         <div class="d-flex justify-content-between align-items-center">
+            <!-- Título -->
             <h2 class="fw-700 m-0 text-primary">Manutenções</h2>
             <?php if (tem_permissao('maintenances.create')): ?>
+                <!-- Botão Nova Manutenção -->
                 <button class="btn btn-primary-outline d-flex align-items-center gap-2" data-bs-toggle="modal"
                     data-bs-target="#add-maintenance-modal">
+                    <!-- SVG Plus -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-plus">
                         <line x1="12" y1="5" x2="12" y2="19" />
                         <line x1="5" y1="12" x2="19" y2="12" />
                     </svg>
+                    <!-- Texto Botão -->
                     <span>Nova Manutenção</span>
                 </button>
             <?php endif; ?>
         </div>
 
         <?php if (empty($listaManutencoes)): ?>
+            <!-- Estado Vazio -->
             <div class="padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4 w-100">
+                <!-- Wrapper Ícone -->
                 <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                    <!-- SVG Chave -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-wrench">
@@ -59,74 +71,111 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                             d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z" />
                     </svg>
                 </div>
+                <!-- Wrapper Textos -->
                 <div class="d-flex flex-column gap-2">
+                    <!-- Título -->
                     <h3 class="fw-700 m-0">Sem Manutenções</h3>
+                    <!-- Texto -->
                     <p class="text-secondary m-0">Ainda não existem manutenções associadas a este equipamento.</p>
                 </div>
             </div>
         <?php else: ?>
+            <!-- Tabela Manutenções -->
             <table id="maintenancesTable" class="heba-table w-100 display border-0">
+                <!-- Cabeçalho Tabela -->
                 <thead>
                     <tr>
+                        <!-- Coluna Tipo -->
                         <th>TIPO</th>
+                        <!-- Coluna Data Início -->
                         <th>DATA INÍCIO</th>
+                        <!-- Coluna Data Fim -->
                         <th>DATA FIM</th>
+                        <!-- Coluna Responsável -->
                         <th>RESPONSÁVEL</th>
+                        <!-- Coluna Fornecedor -->
                         <th>FORNECEDOR</th>
+                        <!-- Coluna Custo -->
                         <th>CUSTO</th>
+                        <!-- Coluna Observações -->
                         <th>OBSERVAÇÕES</th>
                         <?php if (tem_permissao('maintenances.edit') || tem_permissao('maintenances.delete')): ?>
+                            <!-- Coluna Ações -->
                             <th class="text-end">AÇÕES</th>
                         <?php endif; ?>
                     </tr>
                 </thead>
+                <!-- Corpo Tabela -->
                 <tbody>
                     <?php foreach ($listaManutencoes as $item): ?>
-                        <?php $encId = aes_encrypt($item->getIdManutencao()); ?>
+                        <?php 
+                        // Encriptar ID
+                        $encId = aes_encrypt($item->getIdManutencao()); 
+                        ?>
+                        <!-- Linha Manutenção -->
                         <tr>
+                            <!-- Célula Tipo -->
                             <td>
+                                <!-- Texto -->
                                 <span
                                     class="text-secondary fw-500"><?= htmlspecialchars($item->getTipoManutencao()->value) ?></span>
                             </td>
+                            <!-- Célula Data Início -->
                             <td>
+                                <!-- Texto -->
                                 <span
                                     class="text-secondary fw-400"><?= htmlspecialchars($item->getDataInicio()->format('d/m/Y')) ?></span>
                             </td>
+                            <!-- Célula Data Fim -->
                             <td>
+                                <!-- Texto -->
                                 <span
                                     class="text-secondary fw-400"><?= $item->getDataFim() ? htmlspecialchars($item->getDataFim()->format('d/m/Y')) : '—' ?></span>
                             </td>
+                            <!-- Célula Responsável -->
                             <td>
+                                <!-- Link Pessoa -->
                                 <a href="../../entities/people_management.php?search=<?= urlencode(aes_encrypt($item->getIdPessoaResponsavel())) ?>"
                                     class="text-primary-500 fw-700 text-decoration-none hover-underline">
                                     <?= htmlspecialchars($item->getPessoaNome() ?? 'Desconhecido') ?>
                                 </a>
                             </td>
+                            <!-- Célula Fornecedor -->
                             <td>
+                                <!-- Texto -->
                                 <span
                                     class="text-secondary fw-400"><?= htmlspecialchars($item->getFornecedorNome() ?? '—') ?></span>
                             </td>
+                            <!-- Célula Custo -->
                             <td>
+                                <!-- Texto -->
                                 <span
                                     class="text-secondary fw-400"><?= $item->getCustoManutencao() !== null ? htmlspecialchars(number_format($item->getCustoManutencao(), 2, ',', ' ')) . ' €' : '—' ?></span>
                             </td>
+                            <!-- Célula Observações -->
                             <td class="max-width-200">
                                 <?php
+                                // Limitar observações
                                 $obs = $item->getObservacoes() ?? '';
                                 $shortObs = mb_strlen($obs) > 50 ? mb_substr($obs, 0, 50) . '...' : $obs;
                                 ?>
+                                <!-- Texto -->
                                 <span class="text-secondary fw-400 d-inline-block w-100" title="<?= htmlspecialchars($obs) ?>">
                                     <?= htmlspecialchars($shortObs ?: '—') ?>
                                 </span>
                             </td>
                             <?php if (tem_permissao('maintenances.edit') || tem_permissao('maintenances.delete')): ?>
+                                <!-- Célula Ações -->
                                 <td class="text-end">
+                                    <!-- Wrapper Ações -->
                                     <div class="d-flex justify-content-end gap-3 align-items-center">
                                         <?php if (tem_permissao('maintenances.edit')): ?>
+                                            <!-- Botão Editar -->
                                             <button
                                                 class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
                                                 type="button" title="Editar" data-bs-toggle="modal"
                                                 data-bs-target="#edit-maintenance-modal-<?= $encId ?>">
+                                                <!-- SVG Lápis -->
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                                     stroke-linejoin="round" class="lucide lucide-pencil">
@@ -136,10 +185,12 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                                             </button>
                                         <?php endif; ?>
                                         <?php if (tem_permissao('maintenances.delete')): ?>
+                                            <!-- Botão Eliminar -->
                                             <button
                                                 class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
                                                 type="button" title="Eliminar" data-bs-toggle="modal"
                                                 data-bs-target="#delete-maintenance-modal-<?= $encId ?>">
+                                                <!-- SVG Lixo -->
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                                     stroke-linejoin="round" class="lucide lucide-trash-2 text-secondary">
@@ -160,20 +211,26 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
     </div>
 </div>
 
-<!-- Modal de Nova Manutenção -->
+<!-- Modal Nova Manutenção -->
 <?php if (tem_permissao('maintenances.create')): ?>
+    <!-- Modal -->
     <div class="modal fade" id="add-maintenance-modal" tabindex="-1" aria-labelledby="addMaintenanceModalLabel"
         aria-hidden="true">
+        <!-- Dialog -->
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
+            <!-- Content -->
             <div class="modal-content custom-modal-content d-flex flex-column">
                 <!-- Header -->
                 <div
                     class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
+                    <!-- Título -->
                     <h2 class="equipment-creation-modal-title modal-title fw-700 text-primary"
                         id="addMaintenanceModalLabel">
                         Nova Manutenção</h2>
+                    <!-- Botão Fechar -->
                     <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
                         data-bs-dismiss="modal" aria-label="Close">
+                        <!-- SVG X -->
                         <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="lucide lucide-x stroke-secondary">
@@ -185,14 +242,18 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
 
                 <!-- Body -->
                 <div class="modal-body p-0">
+                    <!-- Formulário -->
                     <form id="add-maintenance-form" action="equipments-crud/create-maintenance.php" method="POST"
                         class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
+                        <!-- Input ID Equipamento -->
                         <input type="hidden" name="equipment-id" value="<?= htmlspecialchars($encryptedId) ?>">
 
-                        <!-- Tipo de Manutenção -->
+                        <!-- Wrapper Tipo Manutenção -->
                         <div class="d-flex flex-column form-item w-100">
+                            <!-- Label -->
                             <div class="d-flex gap-1">
                                 <label for="maintenance-type">Tipo de Manutenção</label>
+                                <!-- SVG Asterisco -->
                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round" class="lucide lucide-asterisk text-error">
@@ -201,21 +262,26 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                                     <path d="m6.804 9 10.392 6" />
                                 </svg>
                             </div>
+                            <!-- Select Tipo Manutenção -->
                             <select id="maintenance-type" name="maintenance-type" class="form-select w-100" required>
+                                <!-- Opção Placeholder -->
                                 <option value="" disabled selected>Selecionar...</option>
                                 <?php foreach (TipoManutencao::cases() as $t): ?>
+                                    <!-- Opção -->
                                     <option value="<?= htmlspecialchars($t->value) ?>"><?= htmlspecialchars($t->value) ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
 
-                        <!-- Row: Datas -->
+                        <!-- Wrapper Row Datas -->
                         <div class="d-flex flex-column flex-md-row gap-4 w-100">
-                            <!-- Data Inicio -->
+                            <!-- Wrapper Data Início -->
                             <div class="d-flex flex-column form-item w-100 w-md-50">
+                                <!-- Label -->
                                 <div class="d-flex gap-1">
                                     <label for="maintenance-start-date">Data Início</label>
+                                    <!-- SVG Asterisco -->
                                     <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                         stroke-linejoin="round" class="lucide lucide-asterisk text-error">
@@ -224,9 +290,12 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                                         <path d="m6.804 9 10.392 6" />
                                     </svg>
                                 </div>
+                                <!-- Wrapper Input -->
                                 <div class="position-relative w-100 date-input">
+                                    <!-- Input Data -->
                                     <input type="text" id="maintenance-start-date" name="maintenance-start-date"
                                         class="w-100" placeholder="dd/mm/yyyy" required>
+                                    <!-- SVG Calendário -->
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                         stroke-linejoin="round"
@@ -239,12 +308,16 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                                 </div>
                             </div>
 
-                            <!-- Data Fim -->
+                            <!-- Wrapper Data Fim -->
                             <div class="d-flex flex-column form-item w-100 w-md-50">
+                                <!-- Label -->
                                 <label for="maintenance-end-date">Data Fim</label>
+                                <!-- Wrapper Input -->
                                 <div class="position-relative w-100 date-input">
+                                    <!-- Input Data -->
                                     <input type="text" id="maintenance-end-date" name="maintenance-end-date" class="w-100"
                                         placeholder="dd/mm/yyyy">
+                                    <!-- SVG Calendário -->
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                         stroke-linejoin="round"
@@ -258,10 +331,12 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                             </div>
                         </div>
 
-                        <!-- Pessoa Responsavel -->
+                        <!-- Wrapper Pessoa Responsável -->
                         <div class="d-flex flex-column form-item w-100">
+                            <!-- Label -->
                             <div class="d-flex gap-1">
                                 <label for="maintenance-responsible">Pessoa Responsável</label>
+                                <!-- SVG Asterisco -->
                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round" class="lucide lucide-asterisk text-error">
@@ -270,10 +345,13 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                                     <path d="m6.804 9 10.392 6" />
                                 </svg>
                             </div>
+                            <!-- Select Responsável -->
                             <select id="maintenance-responsible" name="maintenance-responsible" class="form-select w-100"
                                 required>
+                                <!-- Opção Placeholder -->
                                 <option value="" disabled selected>Selecionar...</option>
                                 <?php foreach ($pessoasDisponiveis as $pessoa): ?>
+                                    <!-- Opção -->
                                     <option value="<?= htmlspecialchars($pessoa['idPessoa']) ?>">
                                         <?= htmlspecialchars($pessoa['nome'] . ' — ' . $pessoa['funcao']) ?>
                                     </option>
@@ -281,13 +359,18 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                             </select>
                         </div>
 
-                        <!-- Fornecedor & Custo -->
+                        <!-- Wrapper Row Fornecedor & Custo -->
                         <div class="d-flex flex-column flex-md-row gap-4 w-100">
+                            <!-- Wrapper Fornecedor -->
                             <div class="d-flex flex-column form-item w-100 w-md-50">
+                                <!-- Label -->
                                 <label for="maintenance-supplier">Fornecedor Associado</label>
+                                <!-- Select Fornecedor -->
                                 <select id="maintenance-supplier" name="maintenance-supplier" class="form-select w-100">
+                                    <!-- Opção Placeholder -->
                                     <option value="" selected>Nenhum</option>
                                     <?php foreach ($fornecedoresDisponiveis as $f): ?>
+                                        <!-- Opção -->
                                         <option value="<?= htmlspecialchars($f['idFornecedor']) ?>">
                                             <?= htmlspecialchars($f['nome']) ?>
                                         </option>
@@ -295,38 +378,50 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                                 </select>
                             </div>
 
+                            <!-- Wrapper Custo -->
                             <div class="d-flex flex-column form-item w-100 w-md-50">
+                                <!-- Label -->
                                 <label for="maintenance-cost">Custo da Manutenção</label>
+                                <!-- Input Custo -->
                                 <input type="number" step="0.01" min="0" id="maintenance-cost" name="maintenance-cost"
                                     class="w-100" placeholder="0.00">
                             </div>
                         </div>
 
-                        <!-- Observações -->
+                        <!-- Wrapper Observações -->
                         <div class="d-flex flex-column form-item w-100">
+                            <!-- Label -->
                             <label for="maintenance-obs">Observações</label>
+                            <!-- Textarea -->
                             <textarea id="maintenance-obs" name="maintenance-notes" class="w-100 no-resize" rows="3"
                                 placeholder="Detalhes da manutenção..."></textarea>
                         </div>
 
                         <?php if (SHOW_DEBUG_BUTTONS): ?>
+                            <!-- Wrapper Debug Buttons -->
                             <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light">
+                                <!-- Texto -->
                                 <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido
                                     (Debug)</span>
+                                <!-- Botão Debug 1 -->
                                 <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
                                     onclick="prefillMaintenance('Preventiva', '10/05/2026', '12/05/2026', '1', '1', '150.00', 'Manutenção preventiva anual.')">
                                     Preventiva Completa
                                 </button>
+                                <!-- Botão Debug 2 -->
                                 <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
                                     onclick="prefillMaintenance('Corretiva', '15/05/2026', '', '1', '', '', 'Aguardar peça de substituição.')">
                                     Corretiva em Curso
                                 </button>
+                                <!-- Botão Debug 3 -->
                                 <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
                                     onclick="prefillMaintenance('Calibração', '20/05/2026', '20/05/2026', '1', '2', '80.00', 'Calibração efetuada com sucesso.')">
                                     Calibração
                                 </button>
                             </div>
+                            <!-- Script Debug -->
                             <script>
+                                // Preencher formulário
                                 function prefillMaintenance(type, start, end, responsible, supplier, cost, notes) {
                                     document.getElementById('maintenance-type').value = type;
                                     document.getElementById('maintenance-start-date').value = start;
@@ -336,7 +431,7 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                                     document.getElementById('maintenance-cost').value = cost;
                                     document.getElementById('maintenance-obs').value = notes;
 
-                                    // Dispatch events
+                                    // Disparar eventos
                                     ['maintenance-type', 'maintenance-start-date', 'maintenance-end-date', 'maintenance-responsible'].forEach(id => {
                                         const el = document.getElementById(id);
                                         if (el) {
@@ -348,17 +443,21 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                             </script>
                         <?php endif; ?>
 
-                        <!-- Footer -->
+                        <!-- Footer Formulário -->
                         <div class="d-flex justify-content-end gap-3 align-items-center mt-3">
+                            <!-- Botão Cancelar -->
                             <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                                 data-bs-dismiss="modal">Cancelar</button>
+                            <!-- Botão Submit -->
                             <button type="submit" id="btn-submit-maintenance"
                                 class="btn btn-primary btn-glowing d-flex align-items-center gap-2" disabled>
+                                <!-- SVG Check -->
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
                                     stroke-linejoin="round" class="lucide lucide-check">
                                     <polyline points="20 6 9 17 4 12" />
                                 </svg>
+                                <!-- Texto Botão -->
                                 Registar Manutenção
                             </button>
                         </div>
@@ -371,6 +470,7 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
 
 <?php foreach ($listaManutencoes as $item): ?>
     <?php
+    // Encriptar ID
     $encId = aes_encrypt($item->getIdManutencao());
     ?>
     <?php if (tem_permissao('maintenances.edit')): ?>
@@ -398,9 +498,12 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
 
                     <!-- Body -->
                     <div class="modal-body p-0">
+                        <!-- Formulário -->
                         <form action="equipments-crud/edit-maintenance.php" method="POST"
                             class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column edit-maintenance-form">
+                            <!-- Input ID Equipamento -->
                             <input type="hidden" name="equipment-id" value="<?= htmlspecialchars($encryptedId) ?>">
+                            <!-- Input ID Manutenção -->
                             <input type="hidden" name="maintenance-id" value="<?= htmlspecialchars($encId) ?>">
 
                             <!-- Tipo de Manutenção -->
@@ -576,7 +679,7 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                         <div class="d-flex flex-column">
                             <h2 class="equipment-creation-modal-title modal-title fw-700 text-primary"
                                 id="deleteMaintenanceModalLabel-<?= htmlspecialchars($encId) ?>">Eliminar Registo</h2>
-                            <span class="text-secondary fw-400">Esta ação moverá o registo para o arquivo.</span>
+                            <span class="text-secondary fw-400">A manutenção será movida para a reciclagem.</span>
                         </div>
                         <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
                             data-bs-dismiss="modal" aria-label="Close">
@@ -588,13 +691,20 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                             </svg>
                         </button>
                     </div>
+                    <!-- Body -->
                     <div class="modal-body p-0">
+                        <!-- Formulário -->
                         <form method="POST" action="equipments-crud/delete-maintenance.php">
+                            <!-- Input ID Equipamento -->
                             <input type="hidden" name="equipment-id" value="<?= htmlspecialchars($encryptedId) ?>">
+                            <!-- Input ID Manutenção -->
                             <input type="hidden" name="maintenance-id" value="<?= htmlspecialchars($encId) ?>">
+                            <!-- Conteúdo Principal -->
                             <div
                                 class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
+                                <!-- Wrapper Ícone e Texto -->
                                 <div class="d-flex flex-column align-items-center gap-4">
+                                    <!-- Wrapper Ícone -->
                                     <div class="d-flex padding-3 danger-icon">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
                                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"

@@ -1210,7 +1210,7 @@ label {
 }
 
 /* Sidebar Dropdowns */
-.nav-dropdown-toggle {
+.nav-collapse-toggle {
     justify-content: flex-start;
 }
 
@@ -1218,12 +1218,12 @@ label {
     transition: transform 0.2s ease-in-out;
 }
 
-.nav-dropdown-toggle:not(.collapsed) .nav-chevron {
+.nav-collapse-toggle:not(.collapsed) .nav-chevron {
     transform: rotate(180deg);
 }
 
 /* Menu escondido por defeito */
-.private-area aside nav ul.nav-dropdown-menu {
+.private-area aside nav ul.nav-collapse-menu {
     margin-top: var(--space-1);
     margin-left: var(--space-4);
     padding-left: var(--space-1);
@@ -1231,7 +1231,7 @@ label {
 }
 
 /* Dropdown aberto fica com hover background */
-.nav-dropdown-toggle:not(.collapsed) {
+.nav-collapse-toggle:not(.collapsed) {
     background-color: light-dark(var(--app-bg), color-mix(in srgb, #FFF 10%, transparent));
 }
 

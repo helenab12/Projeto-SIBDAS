@@ -141,7 +141,7 @@ DO BEGIN
               SELECT 1 FROM Notificacao n
               WHERE n.tabelaReferencia = 'Componente'
                 AND n.idRegistoReferencia = Componente.idComponente
-                AND n.dataCriacao >= CURDATE() - INTERVAL 1 DAY
+                AND n.dataCriacao >= CURDATE() - INTERVAL 7 DAY
           );
         
     DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;

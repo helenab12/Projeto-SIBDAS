@@ -1,15 +1,18 @@
 <?php
+// Carregar dependências
 require_once(__DIR__ . "/../../../../config/funcoes.php");
 
+// Restringir acesso
 redirect_if_not_logged('private/login/login.php', ['maintenances.edit']);
 
+// Validar método POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-
-        // 1. Desencriptar IDs
+        // Desencriptar IDs
         $encryptedEqId = trim($_POST['equipment-id'] ?? '');
         $encryptedManId = trim($_POST['maintenance-id'] ?? '');
 
+        // Validar IDs
         if (empty($encryptedEqId) || empty($encryptedManId)) {
             throw new Exception("IDs não fornecidos.");
         }
@@ -17,14 +20,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $idEquipamento = aes_decrypt($encryptedEqId);
         $idManutencao = aes_decrypt($encryptedManId);
 
+        // Validar desencriptação
         if ($idEquipamento === false || $idManutencao === false) {
             throw new Exception("IDs inválidos.");
         }
 
+        // Converter para número
         $idEquipamento = (int) $idEquipamento;
         $idManutencao = (int) $idManutencao;
 
-        // 2. Recolher dados
+        // Recolher formulário
         $tipoManutencaoRaw = trim($_POST['maintenance-type'] ?? '');
         $dataInicioRaw = trim($_POST['maintenance-start-date'] ?? '');
         $dataFimRaw = trim($_POST['maintenance-end-date'] ?? '');
@@ -40,13 +45,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $dFim = DateTime::createFromFormat('d/m/Y', $dataFimRaw);
         $dataFim = $dFim ? $dFim->format('Y-m-d') : '';
 
+        // Tratar ID de fornecedor
         if (empty($idFornecedor)) {
             $idFornecedor = null;
         }
 
+        // Formatar custo
         $custoManutencao = $custoManutencaoRaw !== '' ? (float) $custoManutencaoRaw : null;
 
-        // 3. Validar
+        // Sanitizar dados
         $dadosSanitizados = Manutencao::sanitizarDados([
             'idManutencao' => (string)$idManutencao,
             'tipoManutencao' => $tipoManutencaoRaw,
@@ -60,19 +67,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $dataFim = $dadosSanitizados['dataFim'] ?? $dataFim;
         $idPessoaResponsavel = $dadosSanitizados['idPessoaResponsavel'] ?? $idPessoaResponsavel;
         $custoManutencao = $dadosSanitizados['custoManutencao'] ?? $custoManutencao;
+        
+        // Validar dados sanitizados
         $erros = Manutencao::validarDados($dadosSanitizados);
 
+        // Lançar erro
         if (!empty($erros)) {
             throw new Exception(implode("<br>", $erros));
         }
 
-        // Ler o estado antigo antes do Update para Auditoria
+        // Obter estado antigo
         $stmtAntigo = execute_query(
             "SELECT tipoManutencao, dataInicio, dataFim, idPessoaResponsavel, idFornecedor, custoManutencao, observacoes FROM Manutencao WHERE idManutencao = :idMan AND idEquipamento = :idEq",
             ['idMan' => $idManutencao, 'idEq' => $idEquipamento]);
         $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
 
-        // 4. Atualizar DB
+        // Atualizar DB
         execute_query(
             "UPDATE Manutencao SET 
                 tipoManutencao = :tipo, 
@@ -107,17 +117,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'observacoes' => !empty($observacoes) ? $observacoes : null
         ]);
 
+        // Definir mensagem de sucesso
         $_SESSION['success_message'] = "Registo de manutenção atualizado com sucesso!";
 
     } catch (Exception $e) {
+        // Capturar erro
         $_SESSION['server_error'] = "Erro: " . $e->getMessage();
     }
 }
 
-// Redirecionar
+// Construir link
 $redirectUrl = isset($encryptedEqId) && !empty($encryptedEqId)
     ? "../detailed_view.php?id=" . urlencode($encryptedEqId) . "&nav=manutencoes"
     : "../equipment_list.php";
 
+// Redirecionar
 header("Location: " . $redirectUrl);
 exit;

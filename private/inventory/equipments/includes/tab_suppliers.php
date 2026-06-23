@@ -1,5 +1,5 @@
 <?php
-// Buscar todos os fornecedores associados a este equipamento e agrupar por tipo usando a classe Fornecedor
+// Inicializar variáveis
 $fornecedoresPorTipo = [
     'Fabricante' => [],
     'Distribuidor' => [],
@@ -8,11 +8,12 @@ $fornecedoresPorTipo = [
 ];
 
 try {
-    // A ligação à BD já deve estar aberta ($ligacao) a partir do detailed_view.php, mas caso não:
+    // Ligar à BD
     if (!isset($ligacao)) {
         $ligacao = connect_to_db();
     }
 
+    // Consultar fornecedores
     $stmtFornecedoresTab = execute_query(
         "SELECT f.* FROM Fornecedor f
          INNER JOIN FornecedorEquipamento fe ON f.idFornecedor = fe.idFornecedor
@@ -22,6 +23,7 @@ try {
         $ligacao
     );
 
+    // Processar resultados
     while ($row = $stmtFornecedoresTab->fetch(PDO::FETCH_ASSOC)) {
         $fornecedor = new Fornecedor(
             (string) $row['idFornecedor'],
@@ -43,9 +45,10 @@ try {
         }
     }
 } catch (Exception $e) {
-    // Em caso de erro, os arrays permanecem vazios e os cartões exibirão "Não definido"
+    // Capturar erro
 }
 
+// Definir configuração
 $cardsConfig = [
     [
         'tipo' => 'Fabricante',
@@ -74,69 +77,93 @@ $cardsConfig = [
 ];
 ?>
 
+<!-- Tab Fornecedores -->
 <div class="tab-pane fade <?= $activeTab === 'fornecedores' ? 'show active' : '' ?>" id="nav-fornecedores"
     role="tabpanel" aria-labelledby="nav-fornecedores-tab">
+    <!-- Grid Fornecedores -->
     <div class="row g-4">
         <?php foreach ($cardsConfig as $config): ?>
+            <!-- Coluna Card -->
             <div class="col-12 col-lg-6">
+                <!-- Card Fornecedor -->
                 <div class="card bento-card supplier-card padding-6 d-flex flex-column gap-4 h-100">
+                    <!-- Header -->
                     <div class="d-flex align-items-center justify-content-between w-100">
                         <div class="d-flex align-items-center gap-3">
+                            <!-- Wrapper Ícone -->
                             <div
                                 class="table-icon-wrapper padding-2 d-flex align-items-center justify-content-center flex-shrink-0 <?= $config['iconClass'] ?> padding-2">
+                                <!-- SVG Ícone -->
                                 <?= $config['iconSvg'] ?>
                             </div>
+                            <!-- Título -->
                             <h3 class="fw-700 m-0 text-primary"><?= $config['titulo'] ?></h3>
                         </div>
                     </div>
 
+                    <!-- Corpo Card -->
                     <div class="d-flex flex-column gap-4 flex-grow-1">
                         <?php $suppliers = $fornecedoresPorTipo[$config['tipo']]; ?>
                         <?php if (!empty($suppliers)): ?>
                             <?php foreach ($suppliers as $index => $sup): ?>
                                 <?php if ($index > 0): ?>
+                                    <!-- Separador -->
                                     <hr class="m-0 text-secondary opacity-25">
                                 <?php endif; ?>
+                                <!-- Informação Fornecedor -->
                                 <div class="d-flex flex-column gap-1">
+                                    <!-- Nome Fornecedor -->
                                     <h4 class="fw-700 text-primary m-0 fs-5"><?= htmlspecialchars($sup->getNome()) ?></h4>
 
+                                    <!-- Contactos -->
                                     <div class="d-flex flex-column gap-1 mt-2">
                                         <?php if (!empty($sup->getNifFornecedor())): ?>
+                                            <!-- Wrapper NIF -->
                                             <p class="text-secondary fw-500 m-0 d-flex align-items-center gap-2">
+                                                <!-- Rótulo -->
                                                 <span class="text-muted fw-700">NIF</span>
+                                                <!-- Texto -->
                                                 <?= htmlspecialchars($sup->getNifFornecedor()) ?>
                                             </p>
                                         <?php endif; ?>
 
                                         <?php if (!empty($sup->getEmail())): ?>
+                                            <!-- Email -->
                                             <p class="text-secondary fw-500 m-0 d-flex align-items-center gap-2">
+                                                <!-- SVG Email -->
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                                     stroke-linejoin="round" class="lucide lucide-mail text-muted">
                                                     <rect width="20" height="16" x="2" y="4" rx="2" />
                                                     <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
                                                 </svg>
+                                                <!-- Link Email -->
                                                 <a href="mailto:<?= htmlspecialchars($sup->getEmail()) ?>"
                                                     class="text-secondary text-decoration-none"><?= htmlspecialchars($sup->getEmail()) ?></a>
                                             </p>
                                         <?php endif; ?>
 
                                         <?php if (!empty($sup->getContactoTelefonico())): ?>
+                                            <!-- Telefone -->
                                             <p class="text-secondary fw-500 m-0 d-flex align-items-center gap-2">
+                                                <!-- SVG Telefone -->
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                                     stroke-linejoin="round" class="lucide lucide-phone text-muted">
                                                     <path
                                                         d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
                                                 </svg>
+                                                <!-- Texto Telefone -->
                                                 <?= htmlspecialchars($sup->getContactoTelefonico()) ?>
                                             </p>
                                         <?php endif; ?>
                                     </div>
 
                                     <?php if (!empty($sup->getWebsite())): ?>
+                                        <!-- Link Website -->
                                         <a href="<?= htmlspecialchars($sup->getWebsite()) ?>" target="_blank"
                                             class="d-flex align-items-center gap-1 text-primary-500 text-decoration-none fw-500 mt-2">
+                                            <!-- SVG Link -->
                                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
                                                 fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
                                                 stroke-linejoin="round" class="lucide lucide-external-link">
@@ -144,12 +171,14 @@ $cardsConfig = [
                                                 <path d="M10 14 21 3" />
                                                 <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
                                             </svg>
+                                            <!-- Texto -->
                                             Website
                                         </a>
                                     <?php endif; ?>
                                 </div>
                             <?php endforeach; ?>
                         <?php else: ?>
+                            <!-- Estado Vazio -->
                             <p class="text-secondary opacity-75 fw-500 m-0">Não definido</p>
                         <?php endif; ?>
                     </div>

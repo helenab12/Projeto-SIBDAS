@@ -1,11 +1,17 @@
+<!-- Tab Documentos -->
 <div class="tab-pane fade <?= $activeTab === 'documentos' ? 'show active' : '' ?>" id="nav-documentos" role="tabpanel"
     aria-labelledby="nav-documentos-tab">
+    <!-- Wrapper Layout -->
     <div class="d-flex flex-column gap-6 w-100">
 
-        <?php if ($totalEmFalta > 0): ?>
-            <!-- Card 1: Documentos em Falta -->
+        <?php 
+        // Verificar documentos em falta
+        if ($totalEmFalta > 0): ?>
+            <!-- Card Documentos em Falta -->
             <div class="card bento-card padding-6 d-flex flex-column gap-4">
+                <!-- Wrapper Título -->
                 <div class="d-flex align-items-center gap-2 text-primary">
+                    <!-- SVG Alerta -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-alert-circle">
@@ -13,16 +19,23 @@
                         <line x1="12" y1="8" x2="12" y2="12" />
                         <line x1="12" y1="16" x2="12.01" y2="16" />
                     </svg>
+                    <!-- Título -->
                     <h2 class="fw-700 m-0 text-primary">Documentos em Falta (<?= $totalEmFalta ?> de <?= $totalTipos ?>)
                     </h2>
                 </div>
 
+                <!-- Grelha de Documentos -->
                 <div class="document-grid d-grid gap-4">
-                    <?php foreach ($tiposEmFalta as $index => $tipoFalta): ?>
+                    <?php 
+                    // Iterar tipos em falta
+                    foreach ($tiposEmFalta as $index => $tipoFalta): ?>
+                        <!-- Card Documento Pendente -->
                         <div class="missing-doc-card d-flex align-items-center justify-content-between padding-4">
+                            <!-- Wrapper Info -->
                             <div class="d-flex align-items-center gap-3">
-                                <div
-                                    class="missing-doc-icon-wrapper d-flex align-items-center justify-content-center text-warning">
+                                <!-- Wrapper Ícone -->
+                                <div class="missing-doc-icon-wrapper d-flex align-items-center justify-content-center text-warning">
+                                    <!-- SVG Ficheiro -->
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                         stroke-linejoin="round" class="lucide lucide-file-text">
@@ -33,16 +46,23 @@
                                         <path d="M16 17H8" />
                                     </svg>
                                 </div>
+                                <!-- Wrapper Texto -->
                                 <div class="d-flex flex-column gap-half">
+                                    <!-- Texto Nome -->
                                     <p class="fw-700"><?= htmlspecialchars($tipoFalta->value) ?></p>
+                                    <!-- Badge Estado -->
                                     <span class="fw-600 text-warning">Pendente</span>
                                 </div>
                             </div>
-                            <?php if (tem_permissao('documents.create')): ?>
+                            <?php 
+                            // Verificar permissão
+                            if (tem_permissao('documents.create')): ?>
+                                <!-- Botão Adicionar Documento -->
                                 <button
                                     class="btn p-0 border-0 bg-transparent text-warning opacity-75 hover-opacity-100 transition-opacity"
                                     data-bs-toggle="modal" data-bs-target="#add-document-modal-<?= $index ?>"
                                     title="Adicionar <?= htmlspecialchars($tipoFalta->value) ?>">
+                                    <!-- SVG Upload -->
                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
                                         stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"
                                         class="lucide lucide-upload">
@@ -58,8 +78,13 @@
             </div>
 
             <!-- Modais de Adicionar (Em Falta) gerados logo a seguir ao cartão para manter a organização -->
-            <?php if (tem_permissao('documents.create')): ?>
-                <?php foreach ($tiposEmFalta as $index => $tipoFalta): ?>
+            <?php 
+            // Verificar permissão
+            if (tem_permissao('documents.create')): ?>
+                <?php 
+                // Iterar modais de tipos em falta
+                foreach ($tiposEmFalta as $index => $tipoFalta): ?>
+                    <!-- Modal Adicionar Documento -->
                     <div class="modal fade" id="add-document-modal-<?= $index ?>" tabindex="-1"
                         aria-labelledby="addDocumentModalLabel<?= $index ?>" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
@@ -82,11 +107,14 @@
                                 <div class="modal-body p-0">
                                     <form action="equipments-crud/create-document.php" method="POST" enctype="multipart/form-data"
                                         class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
+                                        <!-- Input ID -->
                                         <input type="hidden" name="equipment-id" value="<?= htmlspecialchars($encryptedId) ?>">
 
                                         <div class="d-flex flex-column form-item w-100">
                                             <div class="d-flex gap-1">
+                                                <!-- Label Nome -->
                                                 <label for="doc-name-<?= $index ?>">Nome do Documento</label>
+                                                <!-- SVG Obrigatório -->
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                                     stroke-linejoin="round" class="lucide lucide-asterisk text-error">
@@ -95,13 +123,16 @@
                                                     <path d="m6.804 9 10.392 6" />
                                                 </svg>
                                             </div>
+                                            <!-- Input Nome -->
                                             <input type="text" id="doc-name-<?= $index ?>" name="doc-name"
                                                 placeholder="Ex: Manual de Utilizador V2" required>
                                         </div>
 
                                         <div class="d-flex flex-column form-item w-100">
                                             <div class="d-flex gap-1">
+                                                <!-- Label Tipo -->
                                                 <label for="doc-type-<?= $index ?>">Tipo</label>
+                                                <!-- SVG Obrigatório -->
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                                     stroke-linejoin="round" class="lucide lucide-asterisk text-error">
@@ -110,9 +141,14 @@
                                                     <path d="m6.804 9 10.392 6" />
                                                 </svg>
                                             </div>
+                                            <!-- Select Tipo -->
                                             <select id="doc-type-<?= $index ?>" name="doc-type" class="form-select w-100" required>
+                                                <!-- Option Placeholder -->
                                                 <option value="" disabled>Selecionar tipo...</option>
-                                                <?php foreach (TipoDocumento::cases() as $t): ?>
+                                                <?php 
+                                                // Iterar tipos de documento
+                                                foreach (TipoDocumento::cases() as $t): ?>
+                                                    <!-- Option Tipo -->
                                                     <option value="<?= htmlspecialchars($t->value) ?>" <?= $t->value === $tipoFalta->value ? 'selected' : '' ?>>
                                                         <?= htmlspecialchars($t->value) ?>
                                                     </option>
@@ -121,10 +157,16 @@
                                         </div>
 
                                         <div class="d-flex flex-column form-item w-100">
+                                            <!-- Label Fornecedor -->
                                             <label for="doc-supplier-<?= $index ?>">Fornecedor Associado</label>
+                                            <!-- Select Fornecedor -->
                                             <select id="doc-supplier-<?= $index ?>" name="doc-supplier" class="form-select w-100">
+                                                <!-- Option Nenhum -->
                                                 <option value="" selected>Nenhum</option>
-                                                <?php foreach ($fornecedoresDisponiveis as $f): ?>
+                                                <?php 
+                                                // Iterar fornecedores
+                                                foreach ($fornecedoresDisponiveis as $f): ?>
+                                                    <!-- Option Fornecedor -->
                                                     <option value="<?= htmlspecialchars($f['idFornecedor']) ?>">
                                                         <?= htmlspecialchars($f['nome']) ?>
                                                     </option>
@@ -132,9 +174,11 @@
                                             </select>
                                         </div>
 
+                                        <!-- Wrapper Dropzone -->
                                         <div class="file-upload-zone w-100 cursor-pointer bg-transparent  d-flex flex-column align-items-center justify-content-center gap-2"
                                             id="add-dropzone-<?= $index ?>" data-dropzone-target="doc-file-<?= $index ?>"
                                             data-text-target="add-dropzone-text-<?= $index ?>">
+                                            <!-- SVG Upload -->
                                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                                 stroke-linejoin="round" class="lucide lucide-upload file-upload-icon">
@@ -142,21 +186,27 @@
                                                 <polyline points="17 8 12 3 7 8" />
                                                 <line x1="12" x2="12" y1="3" y2="15" />
                                             </svg>
+                                            <!-- Texto Dropzone -->
                                             <p class="file-upload-text fw-500 text-secondary m-0">Arraste ficheiros ou
                                                 <span class="file-upload-text-action text-primary-500 text-primary-500">clique para
                                                     selecionar</span>
                                             </p>
+                                            <!-- Texto Limite -->
                                             <span class="m-0 text-muted" id="add-dropzone-text-<?= $index ?>">PDF, JPG, PNG — máx.
                                                 25MB</span>
+                                            <!-- Input File -->
                                             <input type="file" id="doc-file-<?= $index ?>" name="doc-file" class="d-none"
                                                 accept=".pdf,.jpg,.jpeg,.png" required>
                                         </div>
 
                                         <div class="d-flex justify-content-end gap-3 align-items-center mt-3">
+                                            <!-- Botão Cancelar -->
                                             <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                                                 data-bs-dismiss="modal">Cancelar</button>
+                                            <!-- Botão Guardar -->
                                             <button type="submit"
                                                 class="btn btn-primary btn-glowing d-flex align-items-center gap-2">
+                                                <!-- SVG Check -->
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                                     fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"
                                                     stroke-linejoin="round" class="lucide lucide-check">
@@ -165,7 +215,9 @@
                                                 Guardar
                                             </button>
                                         </div>
-                                        <?php if (SHOW_DEBUG_BUTTONS): ?>
+                                        <?php 
+                                        // Verificar permissão
+                                        if (SHOW_DEBUG_BUTTONS): ?>
                                             <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
                                                 <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido
                                                     (Debug)</span>
@@ -188,7 +240,9 @@
         <div class="card bento-card padding-6 d-flex flex-column gap-4">
             <div class="d-flex justify-content-between align-items-center">
                 <h2 class="fw-700 m-0 text-primary">Documentos Associados</h2>
-                <?php if (tem_permissao('documents.create')): ?>
+                <?php 
+                // Verificar permissão
+                if (tem_permissao('documents.create')): ?>
                     <button class="btn btn-primary-outline d-flex align-items-center gap-2" data-bs-toggle="modal"
                         data-bs-target="#add-document-modal-generic">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
@@ -202,7 +256,9 @@
                 <?php endif; ?>
             </div>
 
-            <?php if (count($documentos) === 0): ?>
+            <?php 
+            // Verificar existência de documentos
+            if (count($documentos) === 0): ?>
                 <div class="padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4 w-100">
                     <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
                         <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
@@ -231,7 +287,9 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($documentos as $doc): ?>
+                        <?php 
+                        // Iterar documentos associados
+                        foreach ($documentos as $doc): ?>
                             <tr>
                                 <td>
                                     <span class="fw-700"><?= htmlspecialchars($doc->getNome()) ?></span>
@@ -249,7 +307,10 @@
                                 </td>
                                 <td class="text-end">
                                     <div class="d-flex justify-content-end gap-3 align-items-center">
-                                        <?php if ($doc->getCaminhoFicheiro()): ?>
+                                        <?php 
+                                        // Verificar caminho do ficheiro
+                                        if ($doc->getCaminhoFicheiro()): ?>
+                                            <!-- Botão Download -->
                                             <a href="<?= BASE_URL . htmlspecialchars($doc->getCaminhoFicheiro()) ?>" download
                                                 class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
                                                 title="Download">
@@ -263,7 +324,10 @@
                                             </a>
                                         <?php endif; ?>
 
-                                        <?php if (tem_permissao('documents.edit')): ?>
+                                        <?php 
+                                        // Verificar permissão
+                                        if (tem_permissao('documents.edit')): ?>
+                                            <!-- Botão Editar -->
                                             <button
                                                 class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
                                                 type="button" title="Editar" data-bs-toggle="modal"
@@ -277,7 +341,10 @@
                                             </button>
                                         <?php endif; ?>
 
-                                        <?php if (tem_permissao('documents.delete')): ?>
+                                        <?php 
+                                        // Verificar permissão
+                                        if (tem_permissao('documents.delete')): ?>
+                                            <!-- Botão Eliminar -->
                                             <button
                                                 class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
                                                 type="button" title="Eliminar" data-bs-toggle="modal"
@@ -304,7 +371,9 @@
 </div>
 
 <!-- Modal Adicionar Genérico -->
-<?php if (tem_permissao('documents.create')): ?>
+<?php 
+// Verificar permissão
+if (tem_permissao('documents.create')): ?>
     <div class="modal fade" id="add-document-modal-generic" tabindex="-1" aria-labelledby="addDocumentModalLabelGeneric"
         aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
@@ -327,11 +396,14 @@
                 <div class="modal-body p-0">
                     <form action="equipments-crud/create-document.php" method="POST" enctype="multipart/form-data"
                         class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
+                        <!-- Input ID -->
                         <input type="hidden" name="equipment-id" value="<?= htmlspecialchars($encryptedId) ?>">
 
                         <div class="d-flex flex-column form-item w-100">
                             <div class="d-flex gap-1">
+                                <!-- Label Nome -->
                                 <label for="doc-name-generic">Nome do Documento</label>
+                                <!-- SVG Obrigatório -->
                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round" class="lucide lucide-asterisk text-error">
@@ -340,13 +412,16 @@
                                     <path d="m6.804 9 10.392 6" />
                                 </svg>
                             </div>
+                            <!-- Input Nome -->
                             <input type="text" id="doc-name-generic" name="doc-name" placeholder="Ex: Manual de Utilizador"
                                 required>
                         </div>
 
                         <div class="d-flex flex-column form-item w-100">
                             <div class="d-flex gap-1">
+                                <!-- Label Tipo -->
                                 <label for="doc-type-generic">Tipo</label>
+                                <!-- SVG Obrigatório -->
                                 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round" class="lucide lucide-asterisk text-error">
@@ -355,9 +430,14 @@
                                     <path d="m6.804 9 10.392 6" />
                                 </svg>
                             </div>
+                            <!-- Select Tipo -->
                             <select id="doc-type-generic" name="doc-type" class="form-select w-100" required>
+                                <!-- Option Placeholder -->
                                 <option value="" disabled selected>Selecionar tipo...</option>
-                                <?php foreach (TipoDocumento::cases() as $t): ?>
+                                <?php 
+                                // Iterar tipos de documento
+                                foreach (TipoDocumento::cases() as $t): ?>
+                                    <!-- Option Tipo -->
                                     <option value="<?= htmlspecialchars($t->value) ?>">
                                         <?= htmlspecialchars($t->value) ?>
                                     </option>
@@ -366,10 +446,16 @@
                         </div>
 
                         <div class="d-flex flex-column form-item w-100">
+                            <!-- Label Fornecedor -->
                             <label for="doc-supplier-generic">Fornecedor Associado</label>
+                            <!-- Select Fornecedor -->
                             <select id="doc-supplier-generic" name="doc-supplier" class="form-select w-100">
+                                <!-- Option Nenhum -->
                                 <option value="" selected>Nenhum</option>
-                                <?php foreach ($fornecedoresDisponiveis as $f): ?>
+                                <?php 
+                                // Iterar fornecedores
+                                foreach ($fornecedoresDisponiveis as $f): ?>
+                                    <!-- Option Fornecedor -->
                                     <option value="<?= htmlspecialchars($f['idFornecedor']) ?>">
                                         <?= htmlspecialchars($f['nome']) ?>
                                     </option>
@@ -424,10 +510,14 @@
     </div>
 <?php endif; ?>
 
-<?php foreach ($documentos as $doc): ?>
+<?php 
+// Iterar documentos para modais
+foreach ($documentos as $doc): ?>
     <?php $encDocId = htmlspecialchars(aes_encrypt($doc->getIdDocumento())); ?>
 
-    <?php if (tem_permissao('documents.edit')): ?>
+    <?php 
+    // Verificar permissão
+    if (tem_permissao('documents.edit')): ?>
         <!-- Modal Editar Documento -->
         <div class="modal fade" id="edit-document-modal-<?= $encDocId ?>" tabindex="-1"
             aria-labelledby="editDocumentModalLabel<?= $encDocId ?>" aria-hidden="true">
@@ -531,7 +621,9 @@
 
     <?php endif; ?>
 
-    <?php if (tem_permissao('documents.delete')): ?>
+    <?php 
+    // Verificar permissão
+    if (tem_permissao('documents.delete')): ?>
         <!-- Modal Eliminar Documento -->
         <div class="modal fade" id="delete-document-modal-<?= $encDocId ?>" tabindex="-1"
             aria-labelledby="deleteDocumentModalLabel<?= $encDocId ?>" aria-hidden="true">
@@ -542,7 +634,7 @@
                         <div class="d-flex flex-column">
                             <h2 class="equipment-creation-modal-title modal-title fw-700 text-primary"
                                 id="deleteDocumentModalLabel<?= $encDocId ?>">Eliminar Documento</h2>
-                            <span class="text-secondary fw-400">Esta ação não pode ser revertida.</span>
+                            <span class="text-secondary fw-400">O documento será movido para a reciclagem.</span>
                         </div>
                         <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
                             data-bs-dismiss="modal" aria-label="Close">

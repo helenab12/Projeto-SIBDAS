@@ -1,6 +1,9 @@
 <?php
+// Carregar dependências
 require_once(__DIR__ . "/../../config/funcoes.php");
+// Restringir acesso
 redirect_if_not_logged('private/login/login.php', ['view.recycling']);
+// Carregar dependências
 include_once BASE_PATH . 'private/includes/head.php';
 include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 
@@ -91,6 +94,7 @@ $items_per_page = 8;
 $objetosReciclados = [];
 
 try {
+    // Ligar à BD
     $ligacao = connect_to_db();
 
     $queries = [];
@@ -140,10 +144,12 @@ try {
     }
 
     $countSqlTotal = "SELECT COUNT(*) as total FROM ($unionQuery) as combined";
+    // Query BD
     $stmtCountTotal = execute_query($countSqlTotal, [], $ligacao);
     $totalRecicladosAll = (int) $stmtCountTotal->fetch(PDO::FETCH_ASSOC)['total'];
 
     $countSql = "SELECT COUNT(*) as total FROM ($unionQuery) as combined WHERE $outerWhere";
+    // Query BD
     $stmtCount = execute_query($countSql, $params, $ligacao);
     $totalReciclados = (int) $stmtCount->fetch(PDO::FETCH_ASSOC)['total'];
 
@@ -164,6 +170,7 @@ try {
     $sort_dir = strtoupper($dir_param);
 
     $dataSql = "SELECT * FROM ($unionQuery) as combined WHERE $outerWhere ORDER BY $sort_field $sort_dir LIMIT " . (int) $items_per_page . " OFFSET " . (int) $offset;
+    // Query BD
     $stmt = execute_query($dataSql, $params, $ligacao);
     $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
@@ -198,20 +205,24 @@ try {
     }
 
 } catch (Exception $e) {
+    // Capturar erro
     error_log("Erro ao carregar reciclagem: " . $e->getMessage());
 }
 ?>
 
 <div class="d-flex flex-column flex-grow-1 overflow-x-hidden mw-0">
 
-    <?php include_once BASE_PATH . 'private/includes/headers.php'; ?>
+    <?php // Carregar dependências
+    include_once BASE_PATH . 'private/includes/headers.php'; ?>
 
     <!-- Conteúdo -->
     <section class="gap-6 d-flex  flex-column padding-6 recycling">
         <!-- Titulo -->
         <div class="d-flex justify-content-between align-items-center w-100 dashboard-title flex-column flex-md-row">
             <div class="d-flex flex-column gap-1">
+                <!-- Título -->
                 <h1>Reciclagem</h1>
+                <!-- Texto -->
                 <p class="text-secondary fw-400">Registos removidos do sistema (Soft Delete).</p>
             </div>
         </div>
@@ -219,14 +230,17 @@ try {
         <!-- Barra de Pesquisa -->
         <div
             class="bento-card padding-4 gap-4 d-flex flex-column flex-lg-row align-items-stretch align-items-lg-center w-100 equipment-list-search-bar">
+            <!-- Formulário -->
             <form action="" method="GET" style="display: contents;">
                 <div class="form-item position-relative flex-grow-1">
+                    <!-- SVG -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-search-icon lucide-search search-bar-icon position-absolute text-secondary">
                         <path d="m21 21-4.34-4.34" />
                         <circle cx="11" cy="11" r="8" />
                     </svg>
+                    <!-- Input -->
                     <input type="search" class="form-item w-100 search-bar-input" name="search" id="search-input-field"
                         placeholder="Pesquisar..." value="<?= htmlspecialchars($search_query) ?>">
                     <?php if ($search_query !== ''): ?>
@@ -244,6 +258,7 @@ try {
                     <?php endif; ?>
                 </div>
                 <div class="d-flex gap-2 equipment-list-search-bar-filters flex-column flex-md-row">
+                    <!-- Select -->
                     <select class="form-select" name="tipo" aria-label="Filtro de Tipo" onchange="this.form.submit()">
                         <option value="" <?= $tipo_filter === '' ? 'selected' : '' ?>>Todos os Tipos</option>
                         <option value="Equipamentos" <?= $tipo_filter === 'Equipamentos' ? 'selected' : '' ?>>Equipamentos
@@ -264,6 +279,7 @@ try {
             <div
                 class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
                 <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                    <!-- SVG -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-bell-off-icon lucide-bell-off">
@@ -273,7 +289,9 @@ try {
                     </svg>
                 </div>
                 <div class="d-flex flex-column gap-2">
+                    <!-- Título -->
                     <h3 class="fw-700 m-0">Sem objetos reciclados</h3>
+                    <!-- Texto -->
                     <p class="text-secondary m-0">De momento não existe nenhum objeto reciclado.</p>
                 </div>
             </div>
@@ -281,6 +299,7 @@ try {
             <div
                 class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
                 <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                    <!-- SVG -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-search-x">
@@ -291,7 +310,9 @@ try {
                     </svg>
                 </div>
                 <div class="d-flex flex-column gap-2">
+                    <!-- Título -->
                     <h3 class="fw-700 m-0">Sem resultados</h3>
+                    <!-- Texto -->
                     <p class="text-secondary m-0">Nenhum registo encontrado correspondente à sua pesquisa.</p>
                 </div>
             </div>
@@ -319,22 +340,37 @@ try {
                             return $dir_param === 'asc' ? ' ↑' : ' ↓';
                         };
                         ?>
+                        <!-- Tabela -->
                         <table id="recyclingTable" class="heba-table w-100 display datatable-table">
                             <thead>
+                                <!-- Linha -->
                                 <tr>
+                                    <!-- Coluna -->
                                     <th><a href="<?= $buildSortUrl('nome') ?>"
-                                            class="datatable-sorter text-decoration-none text-inherit">Entidade<?= $getSortIcon('nome') ?></a>
+                                            class="datatable-sorter text-decoration-none text-inherit">Entidade
+                                            <?= $getSortIcon('nome') ?>
+                                        </a>
                                     </th>
+                                    <!-- Coluna -->
                                     <th><a href="<?= $buildSortUrl('nomeTabela') ?>"
-                                            class="datatable-sorter text-decoration-none text-inherit">Tipo<?= $getSortIcon('nomeTabela') ?></a>
+                                            class="datatable-sorter text-decoration-none text-inherit">Tipo
+                                            <?= $getSortIcon('nomeTabela') ?>
+                                        </a>
                                     </th>
+                                    <!-- Coluna -->
                                     <th><a href="<?= $buildSortUrl('descricao') ?>"
-                                            class="datatable-sorter text-decoration-none text-inherit">Descrição<?= $getSortIcon('descricao') ?></a>
+                                            class="datatable-sorter text-decoration-none text-inherit">Descrição
+                                            <?= $getSortIcon('descricao') ?>
+                                        </a>
                                     </th>
+                                    <!-- Coluna -->
                                     <th><a href="<?= $buildSortUrl('removidoA') ?>"
                                             class="datatable-sorter text-decoration-none text-inherit">Removido
-                                            a<?= $getSortIcon('removidoA') ?></a></th>
+                                            a
+                                            <?= $getSortIcon('removidoA') ?>
+                                        </a></th>
                                     <?php if (tem_permissao('recycling.restore')): ?>
+                                        <!-- Coluna -->
                                         <th>Ações</th>
                                     <?php endif; ?>
                                 </tr>
@@ -342,11 +378,14 @@ try {
                             <tbody>
 
                                 <?php foreach ($objetosReciclados as $object): ?>
+                                    <!-- Linha -->
                                     <tr>
+                                        <!-- Coluna -->
                                         <td>
                                             <div class="d-flex align-items-center gap-3">
                                                 <div class="recycle-type-icon d-flex align-items-center justify-content-center padding-2"
                                                     style="background-color: color-mix(in srgb, <?php echo $object->tipo->cor; ?> 10%, transparent); color: <?php echo $object->tipo->cor; ?>; width: 36px; height: 36px; border-radius: 8px;">
+                                                    <!-- SVG -->
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                         stroke-linecap="round" stroke-linejoin="round" class="lucide">
@@ -354,30 +393,46 @@ try {
                                                     </svg>
                                                 </div>
                                                 <div class="d-flex flex-column">
-                                                    <span
-                                                        class="fw-600 item-name"><?php echo htmlspecialchars($object->nome); ?></span>
-                                                    <span
-                                                        class="visually-hidden item-hidden-id"><?php echo htmlspecialchars($object->idEncriptado); ?></span>
+                                                    <!-- Texto -->
+                                                    <span class="fw-600 item-name">
+                                                        <?php echo htmlspecialchars($object->nome); ?>
+                                                    </span>
+                                                    <!-- Texto -->
+                                                    <span class="visually-hidden item-hidden-id">
+                                                        <?php echo htmlspecialchars($object->idEncriptado); ?>
+                                                    </span>
                                                 </div>
                                             </div>
                                         </td>
+                                        <!-- Coluna -->
                                         <td>
-                                            <span
-                                                class="text-secondary fw-500"><?php echo htmlspecialchars($object->tipo->nome); ?></span>
+                                            <!-- Texto -->
+                                            <span class="text-secondary fw-500">
+                                                <?php echo htmlspecialchars($object->tipo->nome); ?>
+                                            </span>
                                         </td>
+                                        <!-- Coluna -->
                                         <td>
-                                            <span
-                                                class="text-secondary"><?php echo htmlspecialchars($object->descricao); ?></span>
+                                            <!-- Texto -->
+                                            <span class="text-secondary">
+                                                <?php echo htmlspecialchars($object->descricao); ?>
+                                            </span>
                                         </td>
+                                        <!-- Coluna -->
                                         <td>
-                                            <span
-                                                class="text-secondary"><?php echo $object->removidoA->format('Y-m-d H:i'); ?></span>
+                                            <!-- Texto -->
+                                            <span class="text-secondary">
+                                                <?php echo $object->removidoA->format('Y-m-d H:i'); ?>
+                                            </span>
                                         </td>
                                         <?php if (tem_permissao('recycling.restore')): ?>
+                                            <!-- Coluna -->
                                             <td>
+                                                <!-- Botão -->
                                                 <button type="button" data-bs-toggle="modal"
                                                     data-bs-target="#restore-modal-<?php echo htmlspecialchars($object->idEncriptado); ?>"
                                                     class="btn btn-small text-success d-flex align-items-center gap-2 restore badge badge-success">
+                                                    <!-- SVG -->
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                                                         stroke-linecap="round" stroke-linejoin="round"
@@ -385,6 +440,7 @@ try {
                                                         <path d="M9 14 4 9l5-5" />
                                                         <path d="M4 9h10.5a5.5 5.5 0 0 1 5.5 5.5a5.5 5.5 0 0 1-5.5 5.5H11" />
                                                     </svg>
+                                                    <!-- Texto -->
                                                     <span class="fw-700 ">Restaurar</span>
                                                 </button>
                                             </td>
@@ -399,10 +455,13 @@ try {
                     <div class="d-flex justify-content-between align-items-center padding-4 datatable-bottom">
                         <div class="datatable-info">
                             A mostrar
-                            <?= $totalReciclados > 0 ? $offset + 1 : 0 ?>–<?= min($offset + $items_per_page, $totalReciclados) ?>
-                            de <?= $totalReciclados ?> registos
+                            <?= $totalReciclados > 0 ? $offset + 1 : 0 ?>–
+                            <?= min($offset + $items_per_page, $totalReciclados) ?>
+                            de
+                            <?= $totalReciclados ?> registos
                         </div>
                         <nav class="datatable-pagination">
+                            <!-- Lista -->
                             <ul class="datatable-pagination-list">
                                 <?php
                                 $buildQueryString = function ($newPage) use ($search_query, $tipo_filter, $sort_param, $dir_param) {
@@ -420,6 +479,7 @@ try {
                                 ?>
 
                                 <?php if ($current_page > 1): ?>
+                                    <!-- Item -->
                                     <li class="datatable-pagination-list-item pager"><a
                                             href="<?= $buildQueryString($current_page - 1) ?>">‹</a></li>
                                 <?php endif; ?>
@@ -427,11 +487,15 @@ try {
                                 <?php for ($i = max(1, $current_page - 2); $i <= min($totalPages, $current_page + 2); $i++): ?>
                                     <li
                                         class="datatable-pagination-list-item <?= $i === $current_page ? 'datatable-active' : '' ?>">
-                                        <a href="<?= $buildQueryString($i) ?>"><?= $i ?></a>
+                                        <!-- Link -->
+                                        <a href="<?= $buildQueryString($i) ?>">
+                                            <?= $i ?>
+                                        </a>
                                     </li>
                                 <?php endfor; ?>
 
                                 <?php if ($current_page < $totalPages): ?>
+                                    <!-- Item -->
                                     <li class="datatable-pagination-list-item pager"><a
                                             href="<?= $buildQueryString($current_page + 1) ?>">›</a></li>
                                 <?php endif; ?>
@@ -450,20 +514,32 @@ try {
 <?php if (tem_permissao('recycling.restore')): ?>
     <?php foreach ($objetosReciclados as $object): ?>
         <!-- Modal de Restauro de Registo -->
+        <!-- Modal -->
+
         <div class="modal fade" id="restore-modal-<?= htmlspecialchars($object->idEncriptado) ?>" tabindex="-1"
             aria-labelledby="restoreModalLabel-<?= htmlspecialchars($object->idEncriptado) ?>" aria-hidden="true">
+            <!-- Modal -->
+
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
+                <!-- Modal -->
+
                 <div class="modal-content custom-modal-content d-flex flex-column">
                     <div
                         class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
                         <div class="d-flex flex-column">
+                            <!-- Subtítulo -->
+
+                            <!-- Título -->
                             <h2 class="equipment-creation-modal-title modal-title"
                                 id="restoreModalLabel-<?= htmlspecialchars($object->idEncriptado) ?>">
                                 Restaurar Registo</h2>
+                            <!-- Texto -->
                             <span class="text-secondary fw-400">O registo será restaurado no sistema principal.</span>
                         </div>
+                        <!-- Botão -->
                         <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
                             data-bs-dismiss="modal" aria-label="Close">
+                            <!-- SVG -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                                 class="lucide lucide-x-icon lucide-x stroke-secondary">
@@ -472,15 +548,21 @@ try {
                             </svg>
                         </button>
                     </div>
+                    <!-- Modal -->
+
                     <div class="modal-body p-0">
+                        <!-- Formulário -->
                         <form method="POST" action="<?php echo BASE_URL; ?>/private/security/restore_item.php">
+                            <!-- Input -->
                             <input type="hidden" name="id" value="<?= htmlspecialchars($object->idEncriptado) ?>">
+                            <!-- Input -->
                             <input type="hidden" name="table" value="<?= htmlspecialchars($object->nomeTabela) ?>">
                             <div
                                 class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
                                 <div class="d-flex flex-column align-items-center gap-4">
                                     <div class="d-flex padding-3 danger-icon"
                                         style="background-color: var(--primary-100); color: var(--primary-500);">
+                                        <!-- SVG -->
                                         <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
                                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                             stroke-linejoin="round" class="lucide lucide-archive-restore">
@@ -494,15 +576,26 @@ try {
                                     <div class="d-flex flex-column align-items-center justify-content-center gap-3">
                                         <div
                                             class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
+                                            <!-- Texto -->
                                             <p class="text-secondary">Tem a certeza que deseja restaurar este registo?</p>
-                                            <h2 class="fw-700">"<?= htmlspecialchars($object->nome) ?>"</h2>
-                                            <span class="text-muted">Tipo: <?= htmlspecialchars($object->tipo->nome) ?></span>
+                                            <!-- Subtítulo -->
+
+                                            <!-- Título -->
+                                            <h2 class="fw-700">"
+                                                <?= htmlspecialchars($object->nome) ?>"
+                                            </h2>
+                                            <!-- Texto -->
+                                            <span class="text-muted">Tipo:
+                                                <?= htmlspecialchars($object->tipo->nome) ?>
+                                            </span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row ">
+                                    <!-- Botão -->
                                     <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                                         data-bs-dismiss="modal">Cancelar</button>
+                                    <!-- Botão -->
                                     <button type="submit" class="btn btn-primary btn-glowing text-white">Sim, Restaurar</button>
                                 </div>
                             </div>
@@ -516,7 +609,7 @@ try {
 
 
 <!-- Toast Container -->
-<div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3 mt-4" style="z-index: 100;">
+<div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3 mt-4" style="z-index: 9999;">
     <?php if (!empty($success_message)): ?>
         <div class="toast align-items-center border-0 shadow-sm toast-success w-auto padding-4 show" role="alert"
             aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
@@ -524,8 +617,10 @@ try {
                 <div class="toast-body fw-500 p-0">
                     <?= htmlspecialchars($success_message) ?>
                 </div>
+                <!-- Botão -->
                 <button type="button" class="text-success border-0 p-0 bg-transparent ms-auto" data-bs-dismiss="toast"
                     aria-label="Close">
+                    <!-- SVG -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-x-icon lucide-x">
@@ -544,8 +639,10 @@ try {
                 <div class="toast-body fw-500 p-0">
                     <?= htmlspecialchars($server_error) ?>
                 </div>
+                <!-- Botão -->
                 <button type="button" class="text-error border-0 p-0 bg-transparent ms-auto" data-bs-dismiss="toast"
                     aria-label="Close">
+                    <!-- SVG -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-x-icon lucide-x">
@@ -559,6 +656,8 @@ try {
 </div>
 
 <?php
+// Carregar dependências
 include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
+// Carregar dependências
 include_once BASE_PATH . 'private/includes/footer.php';
 ?>

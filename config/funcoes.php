@@ -1,6 +1,8 @@
 <?php
 
+// Carregar dependências
 require_once __DIR__ . '/config.php';
+// Carregar dependências
 require_once __DIR__ . '/classes.php';
 
 // ============================================================
@@ -19,6 +21,7 @@ function check_session()
     return isset($_SESSION['utilizador']);
 }
 
+// Restringir acesso
 function redirect_if_not_logged($redirect_to = 'private/login/login.php', ?array $required_permissions = null)
 {
     start_session();
@@ -30,6 +33,7 @@ function redirect_if_not_logged($redirect_to = 'private/login/login.php', ?array
     // Carregar as instâncias de Pessoa e Utilizador para a sessão, caso ainda não existam
     if ((!isset($_SESSION['pessoaAtual']) || !isset($_SESSION['userAtual'])) && isset($_SESSION['id_utilizador'])) {
         try {
+            // Ligar à BD
             $ligacao = connect_to_db();
             $stmt = execute_query(
                 "SELECT u.idUtilizador, u.idPessoa, u.emailAutenticacao, u.password, u.idPerfil, u.ativo as utilizador_ativo, u.dataCriacao as utilizador_dataCriacao, u.dataAtualizacao as utilizador_dataAtualizacao,
@@ -37,7 +41,7 @@ function redirect_if_not_logged($redirect_to = 'private/login/login.php', ?array
                         pf.idPerfil as perfil_id, pf.nome as perfil_nome, pf.dataCriacao as perfil_dataCriacao, pf.dataAtualizacao as perfil_dataAtualizacao
                 FROM Utilizador u
                 INNER JOIN Pessoa p ON u.idPessoa = p.idPessoa
-                LEFT JOIN Perfil pf ON u.idPerfil = pf.idPerfil
+                INNER JOIN Perfil pf ON u.idPerfil = pf.idPerfil
                 WHERE u.idUtilizador = :id",
                 ['id' => $_SESSION['id_utilizador']],
                 $ligacao
@@ -93,7 +97,9 @@ function redirect_if_not_logged($redirect_to = 'private/login/login.php', ?array
                 $_SESSION['permissoes'] = $permissoes;
             }
             $ligacao = null;
-        } catch (Exception $e) {
+        }
+// Capturar erro
+catch (Exception $e) {
             // Ignorar silenciosamente
         }
     }
@@ -101,6 +107,7 @@ function redirect_if_not_logged($redirect_to = 'private/login/login.php', ?array
     // Caso as permissões ainda não estejam carregadas (ex: sessão antiga sem o userAtual a ser null)
     if (!isset($_SESSION['permissoes']) && isset($_SESSION['userAtual'])) {
         try {
+            // Ligar à BD
             $ligacao = connect_to_db();
             $stmtPerms = execute_query(
                 "SELECT pm.chave, pp.possui
@@ -116,7 +123,9 @@ function redirect_if_not_logged($redirect_to = 'private/login/login.php', ?array
             }
             $_SESSION['permissoes'] = $permissoes;
             $ligacao = null;
-        } catch (Exception $e) {
+        }
+// Capturar erro
+catch (Exception $e) {
             $_SESSION['permissoes'] = [];
         }
     }
@@ -187,7 +196,9 @@ function connect_to_db(): PDO
             [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
         );
         return $pdo;
-    } catch (PDOException $e) {
+    }
+// Capturar erro
+catch (PDOException $e) {
         die("Erro de conexão à base de dados. Tente novamente mais tarde.");
     }
 }

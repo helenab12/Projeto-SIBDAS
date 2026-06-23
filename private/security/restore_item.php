@@ -1,26 +1,34 @@
 <?php
+// Carregar dependências
 require_once(__DIR__ . "/../../config/funcoes.php");
+// Restringir acesso
 redirect_if_not_logged('private/login/login.php', ['recycling.restore']);
 
+// Verificar método POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Recolher dados do POST
     $idStr = $_POST['id'] ?? '';
     $tableName = $_POST['table'] ?? '';
 
     if (empty($idStr) || empty($tableName)) {
         $_SESSION['server_error'] = "Dados inválidos para o restauro.";
-        header("Location: " . BASE_URL . "/private/security/recycling.php");
+        // Redirecionar
+header("Location: " . BASE_URL . "/private/security/recycling.php");
         exit;
     }
 
+    // Desencriptar ID
     $id = aes_decrypt($idStr);
     if (!$id) {
         $_SESSION['server_error'] = "ID inválido ou corrompido.";
+        // Redirecionar
         header("Location: " . BASE_URL . "/private/security/recycling.php");
         exit;
     }
 
     try {
-        $ligacao = connect_to_db();
+        // Ligar à BD
+$ligacao = connect_to_db();
         
         $sql = "";
         switch ($tableName) {
@@ -43,6 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 throw new Exception("Entidade desconhecida para restauro.");
         }
 
+        // Executar query
         execute_query($sql, ['id' => $id], $ligacao);
 
         // Registar auditoria
@@ -51,13 +60,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['success_message'] = "Registo de $tableName restaurado com sucesso!";
 
     } catch (Exception $e) {
-        error_log("Erro no restauro: " . $e->getMessage());
+        // Capturar erro
+error_log("Erro no restauro: " . $e->getMessage());
         $_SESSION['server_error'] = "Ocorreu um erro ao restaurar o registo.";
     }
 
+    // Redirecionar
     header("Location: " . BASE_URL . "/private/security/recycling.php");
     exit;
 }
 
+// Redirecionar
 header("Location: " . BASE_URL . "/private/security/recycling.php");
 exit;

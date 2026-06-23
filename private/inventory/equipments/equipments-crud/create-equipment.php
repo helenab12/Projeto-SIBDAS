@@ -1,24 +1,29 @@
 <?php
+// Carregar dependências
 require_once(__DIR__ . "/../../../../config/funcoes.php");
 
+// Restringir acesso
 redirect_if_not_logged('private/login/login.php', ['equipments.create']);
 
+// Validar método POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
+        // Ligar à BD
         $ligacao = connect_to_db();
+        // Iniciar transação
         $ligacao->beginTransaction();
 
-        // 1. Dados do Equipamento
+        // Recolher dados do POST
         $codigoInterno = trim($_POST['equipment-code'] ?? '');
         $idCategoria = trim($_POST['equipment-category'] ?? '');
         $numeroSerie = trim($_POST['equipment-serial'] ?? '');
         $nome = trim($_POST['equipment-name'] ?? '');
         $idMarca = trim($_POST['equipment-brand'] ?? '');
         $modelo = trim($_POST['equipment-model'] ?? '');
-        // Função auxiliar para conversão de datas (DD/MM/YYYY -> YYYY-MM-DD)
+        // Criar função auxiliar
         $formatDate = function($dateStr) {
             if (empty($dateStr)) return null;
-            // Se já vier no formato Y-m-d (dependendo do browser), retorna como está
+            
             if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $dateStr)) return $dateStr;
             
             $d = DateTime::createFromFormat('d/m/Y', $dateStr);
@@ -37,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $idLocalizacao = trim($_POST['equipment-location'] ?? '');
         $observacoes = trim($_POST['equipment-notes'] ?? '');
         
-        // Sanitização usando a classe Equipamento
+        // Sanitizar dados
         $dadosSanitizados = Equipamento::sanitizarDados([
             'codigoInterno' => $codigoInterno,
             'idCategoria' => $idCategoria,
@@ -70,18 +75,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $idLocalizacao = $dadosSanitizados['idLocalizacao'] ?? $idLocalizacao;
         $observacoes = $dadosSanitizados['observacoes'] ?? $observacoes;
 
-        // Validação básica
+        // Validar campos obrigatórios
         if (empty($codigoInterno) || empty($idCategoria) || empty($numeroSerie) || empty($nome) || empty($idMarca) || empty($idLocalizacao)) {
             throw new Exception("Por favor preencha todos os campos obrigatórios da primeira página.");
         }
 
-        // Verificar se codigoInterno já existe
+        // Verificar duplicados
         $stmt = execute_query("SELECT idEquipamento FROM Equipamento WHERE codigoInterno = :codigo", ['codigo' => $codigoInterno], $ligacao);
         if ($stmt->fetch()) {
             throw new Exception("O código interno $codigoInterno já se encontra registado noutro equipamento.");
         }
 
-        // Insert Equipamento
+        // Inserir equipamento
         execute_query(
             "INSERT INTO Equipamento (
                 idCategoria, codigoInterno, designacao, idMarca, modelo, numeroSerie,
@@ -112,9 +117,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         );
 
         $idEquipamento = $ligacao->lastInsertId();
+        // Registar auditoria
         registar_auditoria($ligacao, 'Equipamento', $idEquipamento, 'Criação');
 
-        // 2. Fornecedores (Fabricante, Distribuidor, Assistentes, Consumíveis)
+        // Recolher fornecedores
         $fornecedoresIds = [];
         
         $fabricante = trim($_POST['equipment-manufacturer'] ?? '');
@@ -133,9 +139,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!empty($con)) $fornecedoresIds[] = $con;
         }
 
-        // Remover duplicados
+        // Remover fornecedores duplicados
         $fornecedoresIds = array_unique($fornecedoresIds);
 
+        // Inserir fornecedores
         foreach ($fornecedoresIds as $idForn) {
             execute_query(
                 "INSERT INTO FornecedorEquipamento (idEquipamento, idFornecedor, ativo) VALUES (:idEq, :idForn, 1)",
@@ -144,10 +151,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             );
         }
 
-        // 3. Componentes
+        // Recolher componentes
         $componentes = $_POST['equipment-components'] ?? [];
         $componentesQty = $_POST['equipment-components-qty'] ?? [];
         
+        // Inserir componentes
         foreach ($componentes as $idComp) {
             if (!empty($idComp)) {
                 $qty = isset($componentesQty[$idComp]) ? (int)$componentesQty[$idComp] : 1;
@@ -161,10 +169,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // 4. Manutenção
+        // Recolher manutenção inicial
         $maintStart = $formatDate(trim($_POST['last-maintenance-start-date'] ?? ''));
         $maintEnd = $formatDate(trim($_POST['last-maintenance-end-date'] ?? ''));
         
+        // Inserir manutenção
         if (!empty($maintStart) && !empty($maintEnd)) {
             execute_query(
                 "INSERT INTO Manutencao (idEquipamento, tipoManutencao, dataInicio, dataFim, observacoes, ativo)
@@ -178,11 +187,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             );
         }
 
-        // 5. Documentos
+        // Tratar ficheiros
         if (isset($_FILES['doc-files']) && is_array($_FILES['doc-files']['name'])) {
+            // Recolher dados do POST
             $docTypes = $_POST['doc-type'] ?? [];
             $docSuppliers = $_POST['doc-supplier'] ?? [];
             
+            // Iterar ficheiros
             $fileCount = count($_FILES['doc-files']['name']);
             for ($i = 0; $i < $fileCount; $i++) {
                 if ($_FILES['doc-files']['error'][$i] === UPLOAD_ERR_OK) {
@@ -193,24 +204,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $nomeDoc = $_FILES['doc-files']['name'][$i];
                     
                     $dadosSanitizados = Documento::sanitizarDados([
-            'nome' => $nomeDoc,
+                        'nome' => $nomeDoc,
                         'tipo' => $tipo
-        ]);
-        $nomeDoc = $dadosSanitizados['nome'] ?? $nomeDoc;
-        $tipo = $dadosSanitizados['tipo'] ?? $tipo;
-        $erros = Documento::validarDados($dadosSanitizados);
+                    ]);
+                    
+                    $nomeDoc = $dadosSanitizados['nome'] ?? $nomeDoc;
+                    $tipo = $dadosSanitizados['tipo'] ?? $tipo;
+                    
+                    // Validar dados sanitizados
+                    $erros = Documento::validarDados($dadosSanitizados);
 
                     if (!empty($erros)) {
                         throw new Exception("Erro no documento '$nomeDoc': " . implode(", ", $erros));
                     }
                     
-                    // Validação de Tamanho (25MB)
+                    // Validar tamanho do ficheiro
                     $maxSize = 25 * 1024 * 1024;
                     if ($_FILES['doc-files']['size'][$i] > $maxSize) {
                         throw new Exception("O documento '$nomeDoc' excede o tamanho máximo permitido de 25MB.");
                     }
 
-                    // Validação de Formato
+                    // Validar formato do ficheiro
                     $allowedExtensions = ['pdf', 'jpg', 'jpeg', 'png'];
                     $fileInfo = pathinfo($nomeDoc);
                     $extension = strtolower($fileInfo['extension'] ?? '');
@@ -218,21 +232,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         throw new Exception("O documento '$nomeDoc' tem um formato inválido. Apenas PDF, JPG, JPEG e PNG.");
                     }
 
+                    // Definir diretório
                     $uploadDir = BASE_PATH . 'files/documents/';
+                    
                     if (!is_dir($uploadDir)) {
                         if (!mkdir($uploadDir, 0777, true)) {
                             throw new Exception("Erro ao criar diretório para documentos.");
                         }
                     }
 
+                    // Gerar nome único
                     $newFileName = uniqid('doc_') . '_' . preg_replace('/[^a-zA-Z0-9.-]/', '_', $fileInfo['basename']);
                     $destinationPath = $uploadDir . $newFileName;
                     $dbPath = 'files/documents/' . $newFileName;
 
+                    // Mover ficheiro
                     if (!move_uploaded_file($_FILES['doc-files']['tmp_name'][$i], $destinationPath)) {
                         throw new Exception("Erro ao guardar o ficheiro '$nomeDoc' no servidor.");
                     }
 
+                    // Inserir documento
                     execute_query(
                         "INSERT INTO Documento (tipo, nome, caminhoFicheiro, dataDocumento, idEquipamento, idFornecedor, ativo)
                          VALUES (:tipo, :nome, :caminho, CURDATE(), :idEq, :idForn, 1)",
@@ -249,18 +268,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
+        // Confirmar transação
         $ligacao->commit();
+        
+        // Definir mensagem de sucesso
         $_SESSION['success_message'] = "Equipamento '$nome' criado com sucesso!";
 
+        // Desligar da BD
         $ligacao = null;
 
     } catch (Exception $e) {
+        // Reverter transação
         if (isset($ligacao) && $ligacao->inTransaction()) {
             $ligacao->rollBack();
         }
+        // Capturar erro
         $_SESSION['server_error'] = "Erro ao criar equipamento: " . $e->getMessage();
     }
 }
 
+// Redirecionar
 header("Location: ../equipment_list.php");
 exit;

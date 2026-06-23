@@ -40,6 +40,7 @@ class Pessoa implements Validavel, Sanitizavel
 
     public function __construct(string $id, string $nome, string $email, string $contactoTelefonico, string $nif, Funcao $funcao, string $departamento, bool $ativo, DateTime $dataCriacao, DateTime $dataAtualizacao)
     {
+        // Validar dados
         $erros = self::validarDados([
             "id" => $id,
             "nome" => $nome,
@@ -54,6 +55,7 @@ class Pessoa implements Validavel, Sanitizavel
         ]);
 
         if (!empty($erros)) {
+            // Lançar exceção
             throw new Exception("Erro ao criar pessoa: " . implode(", ", $erros));
         }
 
@@ -71,51 +73,61 @@ class Pessoa implements Validavel, Sanitizavel
 
     public function getId(): string
     {
+        // Obter id
         return $this->id;
     }
 
     public function getNome(): string
     {
+        // Obter nome
         return $this->nome;
     }
 
     public function getEmail(): string
     {
+        // Obter email
         return $this->email;
     }
 
     public function getContactoTelefonico(): string
     {
+        // Obter contacto telefonico
         return $this->contactoTelefonico;
     }
 
     public function getNif(): string
     {
+        // Obter nif
         return $this->nif;
     }
 
     public function getFuncao(): Funcao
     {
+        // Obter funcao
         return $this->funcao;
     }
 
     public function getDepartamento(): string
     {
+        // Obter departamento
         return $this->departamento;
     }
 
     public function getAtivo(): bool
     {
+        // Obter ativo
         return $this->ativo;
     }
 
     public function getDataCriacao(): DateTime
     {
+        // Obter data criacao
         return $this->dataCriacao;
     }
 
     public function getDataAtualizacao(): DateTime
     {
+        // Obter data atualizacao
         return $this->dataAtualizacao;
     }
     public static function sanitizarDados(array $dados): array
@@ -125,6 +137,7 @@ class Pessoa implements Validavel, Sanitizavel
 
     public static function validarDados(array $dados): array
     {
+        // Inicializar array de erros
         $erros = [];
         if (empty($dados["id"])) {
             $erros[] = "O ID é obrigatório.";
@@ -222,6 +235,7 @@ class Utilizador implements Validavel, Sanitizavel
         ]);
 
         if (!empty($erros)) {
+            // Lançar exceção
             throw new Exception("Erro ao criar utilizador: " . implode(", ", $erros));
         }
 
@@ -238,46 +252,55 @@ class Utilizador implements Validavel, Sanitizavel
 
     public function getIdUtilizador(): string
     {
+        // Obter id utilizador
         return $this->idUtilizador;
     }
 
     public function getIdPessoa(): string
     {
+        // Obter id pessoa
         return $this->idPessoa;
     }
 
     public function getEmailAutenticacao(): string
     {
+        // Obter email autenticacao
         return $this->emailAutenticacao;
     }
 
     public function getPassword(): string
     {
+        // Obter password
         return $this->password;
     }
 
     public function getIdPerfil(): string
     {
+        // Obter id perfil
         return $this->idPerfil;
     }
 
     public function getAtivo(): bool
     {
+        // Obter ativo
         return $this->ativo;
     }
 
     public function getDataCriacao(): DateTime
     {
+        // Obter data criacao
         return $this->dataCriacao;
     }
 
     public function getDataAtualizacao(): DateTime
     {
+        // Obter data atualizacao
         return $this->dataAtualizacao;
     }
 
     public function getPerfil(): Perfil
     {
+        // Obter perfil
         return $this->perfil;
     }
     public static function sanitizarDados(array $dados): array
@@ -287,6 +310,7 @@ class Utilizador implements Validavel, Sanitizavel
 
     public static function validarDados(array $dados): array
     {
+        // Inicializar array de erros
         $erros = [];
 
         if (empty(trim($dados["idUtilizador"]))) {
@@ -351,6 +375,7 @@ class Perfil implements Validavel, Sanitizavel
 
     public function __construct(string $idPerfil, string $nome, DateTime $dataCriacao, DateTime $dataAtualizacao, array $permissoes = [])
     {
+        // Validar dados
         $erros = self::validarDados([
             "idPerfil" => $idPerfil,
             "nome" => $nome,
@@ -360,6 +385,7 @@ class Perfil implements Validavel, Sanitizavel
         ]);
 
         if (!empty($erros)) {
+            // Lançar exceção
             throw new Exception("Erro ao criar perfil: " . implode(", ", $erros));
         }
 
@@ -372,26 +398,31 @@ class Perfil implements Validavel, Sanitizavel
 
     public function getIdPerfil(): string
     {
+        // Obter id perfil
         return $this->idPerfil;
     }
 
     public function getNome(): string
     {
+        // Obter nome
         return $this->nome;
     }
 
     public function getDataCriacao(): DateTime
     {
+        // Obter data criacao
         return $this->dataCriacao;
     }
 
     public function getDataAtualizacao(): DateTime
     {
+        // Obter data atualizacao
         return $this->dataAtualizacao;
     }
 
     public function getPermissoes(): array
     {
+        // Obter permissoes
         return $this->permissoes;
     }
     public static function sanitizarDados(array $dados): array
@@ -401,6 +432,7 @@ class Perfil implements Validavel, Sanitizavel
 
     public static function validarDados(array $dados): array
     {
+        // Inicializar array de erros
         $erros = [];
 
         if (empty(trim($dados["idPerfil"]))) {
@@ -454,6 +486,7 @@ class Permissao implements Validavel, Sanitizavel
 
     public function __construct(int $idPermissao, string $chave, string $descricao)
     {
+        // Validar dados
         $erros = self::validarDados([
             "idPermissao" => $idPermissao,
             "chave" => $chave,
@@ -461,6 +494,7 @@ class Permissao implements Validavel, Sanitizavel
         ]);
 
         if (!empty($erros)) {
+            // Lançar exceção
             throw new Exception("Erro ao criar permissão: " . implode(", ", $erros));
         }
 
@@ -471,16 +505,19 @@ class Permissao implements Validavel, Sanitizavel
 
     public function getIdPermissao(): int
     {
+        // Obter id permissao
         return $this->idPermissao;
     }
 
     public function getChave(): string
     {
+        // Obter chave
         return $this->chave;
     }
 
     public function getDescricao(): string
     {
+        // Obter descricao
         return $this->descricao;
     }
     public static function sanitizarDados(array $dados): array
@@ -490,6 +527,7 @@ class Permissao implements Validavel, Sanitizavel
 
     public static function validarDados(array $dados): array
     {
+        // Inicializar array de erros
         $erros = [];
 
         if (!isset($dados["idPermissao"]) || !is_int($dados["idPermissao"])) {
@@ -563,6 +601,7 @@ class Fornecedor implements Validavel, Sanitizavel
         ]);
 
         if (!empty($erros)) {
+            // Lançar exceção
             throw new Exception("Erro ao criar fornecedor: " . implode(", ", $erros));
         }
 
@@ -582,61 +621,73 @@ class Fornecedor implements Validavel, Sanitizavel
 
     public function getIdFornecedor(): string
     {
+        // Obter id fornecedor
         return $this->idFornecedor;
     }
 
     public function getNome(): string
     {
+        // Obter nome
         return $this->nome;
     }
 
     public function getNifFornecedor(): string
     {
+        // Obter nif fornecedor
         return $this->nifFornecedor;
     }
 
     public function getContactoTelefonico(): string
     {
+        // Obter contacto telefonico
         return $this->contactoTelefonico;
     }
 
     public function getEmail(): string
     {
+        // Obter email
         return $this->email;
     }
 
     public function getWebsite(): string
     {
+        // Obter website
         return $this->website;
     }
 
     public function getIdPessoaResponsavel(): ?string
     {
+        // Obter id pessoa responsavel
         return $this->idPessoaResponsavel;
     }
 
     public function getTipoFornecedor(): TipoFornecedor
     {
+        // Obter tipo fornecedor
         return $this->tipoFornecedor;
     }
 
     public function getAtivo(): bool
     {
+        // Obter ativo
         return $this->ativo;
     }
 
     public function getDataCriacao(): DateTime
     {
+        // Obter data criacao
         return $this->dataCriacao;
     }
 
     public function getDataAtualizacao(): DateTime
     {
+        // Obter data atualizacao
         return $this->dataAtualizacao;
     }
 
     public function getPessoaResponsavel(): ?Pessoa
     {
+        // Obter pessoa responsavel
         return $this->pessoaResponsavel;
     }
     public static function sanitizarDados(array $dados): array
@@ -646,6 +697,7 @@ class Fornecedor implements Validavel, Sanitizavel
 
     public static function validarDados(array $dados): array
     {
+        // Inicializar array de erros
         $erros = [];
 
         if (empty(trim($dados["idFornecedor"]))) {
@@ -712,6 +764,7 @@ class ConteudoTexto implements Validavel, Sanitizavel
 
     public function __construct(int $idConteudo, string $chaveSecao, string $valor, string $descricao = '')
     {
+        // Validar dados
         $erros = self::validarDados([
             'idConteudo' => $idConteudo,
             'chaveSecao' => $chaveSecao,
@@ -720,29 +773,34 @@ class ConteudoTexto implements Validavel, Sanitizavel
         ]);
 
         if (!empty($erros)) {
+            // Lançar exceção
             throw new Exception("Erro ao criar conteúdo de texto: " . implode(", ", $erros));
         }
 
         $this->idConteudo = $idConteudo;
-        $this->chaveSecao = $chaveSecao;
-        $this->valor = $valor;
-        $this->descricao = $descricao;
+        $this->chaveSecao = htmlspecialchars($chaveSecao, ENT_QUOTES, 'UTF-8');
+        $this->valor = htmlspecialchars($valor, ENT_QUOTES, 'UTF-8');
+        $this->descricao = htmlspecialchars($descricao, ENT_QUOTES, 'UTF-8');
     }
 
     public function getIdConteudo(): int
     {
+        // Obter id conteudo
         return $this->idConteudo;
     }
     public function getChaveSecao(): string
     {
+        // Obter chave secao
         return $this->chaveSecao;
     }
     public function getValor(): string
     {
+        // Obter valor
         return $this->valor;
     }
     public function getDescricao(): string
     {
+        // Obter descricao
         return $this->descricao;
     }
 
@@ -758,6 +816,7 @@ class ConteudoTexto implements Validavel, Sanitizavel
 
     public static function validarDados(array $dados): array
     {
+        // Inicializar array de erros
         $erros = [];
 
         if (empty($dados['idConteudo'])) {
@@ -825,6 +884,7 @@ class CartaoFuncionalidade implements Validavel, Sanitizavel
 
     public function __construct(int $idCartao, string $titulo, string $descricao, string $icone, int $ordem, bool $ativo = true)
     {
+        // Validar dados
         $erros = self::validarDados([
             'idCartao' => $idCartao,
             'titulo' => $titulo,
@@ -834,6 +894,7 @@ class CartaoFuncionalidade implements Validavel, Sanitizavel
         ]);
 
         if (!empty($erros)) {
+            // Lançar exceção
             throw new Exception("Erro ao criar cartão de funcionalidade: " . implode(", ", $erros));
         }
 
@@ -847,26 +908,32 @@ class CartaoFuncionalidade implements Validavel, Sanitizavel
 
     public function getIdCartao(): int
     {
+        // Obter id cartao
         return $this->idCartao;
     }
     public function getTitulo(): string
     {
+        // Obter titulo
         return $this->titulo;
     }
     public function getDescricao(): string
     {
+        // Obter descricao
         return $this->descricao;
     }
     public function getIcone(): string
     {
+        // Obter icone
         return $this->icone;
     }
     public function getOrdem(): int
     {
+        // Obter ordem
         return $this->ordem;
     }
     public function getAtivo(): bool
     {
+        // Obter ativo
         return $this->ativo;
     }
     public static function sanitizarDados(array $dados): array
@@ -876,6 +943,7 @@ class CartaoFuncionalidade implements Validavel, Sanitizavel
 
     public static function validarDados(array $dados): array
     {
+        // Inicializar array de erros
         $erros = [];
 
         if (empty($dados['idCartao'])) {
@@ -921,6 +989,7 @@ class ConteudoPagina implements ArrayAccess
 
     public function getTextos(): array
     {
+        // Obter textos
         return $this->textos;
     }
 
@@ -932,6 +1001,7 @@ class ConteudoPagina implements ArrayAccess
 
     public function getCartoes(): array
     {
+        // Obter cartoes
         return $this->cartoes;
     }
 
@@ -1023,11 +1093,13 @@ class EstadoPedidoDemonstracao
 
     public function getName(): string
     {
+        // Obter name
         return $this->name;
     }
 
     public function getClass(): string
     {
+        // Obter class
         return $this->class;
     }
 
@@ -1052,6 +1124,7 @@ class PedidoDemonstracao implements Validavel, Sanitizavel
 
     public function __construct(int $id, EstadoPedidoDemonstracao $state, string $date, string $name, string $institution, string $email, string $message)
     {
+        // Validar dados
         $erros = self::validarDados([
             'id' => $id,
             'date' => $date,
@@ -1062,6 +1135,7 @@ class PedidoDemonstracao implements Validavel, Sanitizavel
         ]);
 
         if (!empty($erros)) {
+            // Lançar exceção
             throw new Exception("Erro ao criar pedido de demonstração: " . implode(", ", $erros));
         }
 
@@ -1076,30 +1150,37 @@ class PedidoDemonstracao implements Validavel, Sanitizavel
 
     public function getId(): int
     {
+        // Obter id
         return $this->id;
     }
     public function getState(): EstadoPedidoDemonstracao
     {
+        // Obter state
         return $this->state;
     }
     public function getDate(): string
     {
+        // Obter date
         return $this->date;
     }
     public function getName(): string
     {
+        // Obter name
         return $this->name;
     }
     public function getInstitution(): string
     {
+        // Obter institution
         return $this->institution;
     }
     public function getEmail(): string
     {
+        // Obter email
         return $this->email;
     }
     public function getMessage(): string
     {
+        // Obter message
         return $this->message;
     }
 
@@ -1117,6 +1198,7 @@ class PedidoDemonstracao implements Validavel, Sanitizavel
 
     public static function validarDados(array $dados): array
     {
+        // Inicializar array de erros
         $erros = [];
 
         if (empty($dados['id'])) {
@@ -1157,12 +1239,14 @@ class Edificio implements Validavel, Sanitizavel
 
     public function __construct(int $idEdificio, string $nome)
     {
+        // Validar dados
         $erros = self::validarDados([
             'idEdificio' => (string) $idEdificio,
             'nome' => $nome
         ]);
 
         if (!empty($erros)) {
+            // Lançar exceção
             throw new Exception("Erro ao criar edifício: " . implode(", ", $erros));
         }
 
@@ -1176,6 +1260,7 @@ class Edificio implements Validavel, Sanitizavel
 
     public static function validarDados(array $dados): array
     {
+        // Inicializar array de erros
         $erros = [];
         if (empty(trim($dados['nome'] ?? ''))) {
             $erros[] = "O nome do edifício é obrigatório.";
@@ -1185,11 +1270,13 @@ class Edificio implements Validavel, Sanitizavel
 
     public function getIdEdificio(): int
     {
+        // Obter id edificio
         return $this->idEdificio;
     }
 
     public function getNome(): string
     {
+        // Obter nome
         return $this->nome;
     }
 
@@ -1200,6 +1287,7 @@ class Edificio implements Validavel, Sanitizavel
 
     public function getPisos(): array
     {
+        // Obter pisos
         return $this->pisos;
     }
 }
@@ -1213,6 +1301,7 @@ class Piso implements Validavel, Sanitizavel
 
     public function __construct(int $idPiso, int $idEdificio, string $nome)
     {
+        // Validar dados
         $erros = self::validarDados([
             'idPiso' => (string) $idPiso,
             'idEdificio' => (string) $idEdificio,
@@ -1220,6 +1309,7 @@ class Piso implements Validavel, Sanitizavel
         ]);
 
         if (!empty($erros)) {
+            // Lançar exceção
             throw new Exception("Erro ao criar piso: " . implode(", ", $erros));
         }
 
@@ -1234,6 +1324,7 @@ class Piso implements Validavel, Sanitizavel
 
     public static function validarDados(array $dados): array
     {
+        // Inicializar array de erros
         $erros = [];
         if (empty(trim($dados['idEdificio'] ?? ''))) {
             $erros[] = "O ID do edifício é obrigatório.";
@@ -1246,16 +1337,19 @@ class Piso implements Validavel, Sanitizavel
 
     public function getIdPiso(): int
     {
+        // Obter id piso
         return $this->idPiso;
     }
 
     public function getIdEdificio(): int
     {
+        // Obter id edificio
         return $this->idEdificio;
     }
 
     public function getNome(): string
     {
+        // Obter nome
         return $this->nome;
     }
 
@@ -1266,6 +1360,7 @@ class Piso implements Validavel, Sanitizavel
 
     public function getServicos(): array
     {
+        // Obter servicos
         return $this->servicos;
     }
 }
@@ -1279,6 +1374,7 @@ class Servico implements Validavel, Sanitizavel
 
     public function __construct(int $idServico, int $idPiso, string $nome)
     {
+        // Validar dados
         $erros = self::validarDados([
             'idServico' => (string) $idServico,
             'idPiso' => (string) $idPiso,
@@ -1286,6 +1382,7 @@ class Servico implements Validavel, Sanitizavel
         ]);
 
         if (!empty($erros)) {
+            // Lançar exceção
             throw new Exception("Erro ao criar serviço: " . implode(", ", $erros));
         }
 
@@ -1300,6 +1397,7 @@ class Servico implements Validavel, Sanitizavel
 
     public static function validarDados(array $dados): array
     {
+        // Inicializar array de erros
         $erros = [];
         if (empty(trim($dados['idPiso'] ?? ''))) {
             $erros[] = "O ID do piso é obrigatório.";
@@ -1312,16 +1410,19 @@ class Servico implements Validavel, Sanitizavel
 
     public function getIdServico(): int
     {
+        // Obter id servico
         return $this->idServico;
     }
 
     public function getIdPiso(): int
     {
+        // Obter id piso
         return $this->idPiso;
     }
 
     public function getNome(): string
     {
+        // Obter nome
         return $this->nome;
     }
 
@@ -1332,6 +1433,7 @@ class Servico implements Validavel, Sanitizavel
 
     public function getSalas(): array
     {
+        // Obter salas
         return $this->salas;
     }
 }
@@ -1344,6 +1446,7 @@ class Localizacao implements Validavel, Sanitizavel
 
     public function __construct(int $idLocalizacao, int $idServico, string $nomeSala)
     {
+        // Validar dados
         $erros = self::validarDados([
             'idLocalizacao' => (string) $idLocalizacao,
             'idServico' => (string) $idServico,
@@ -1351,6 +1454,7 @@ class Localizacao implements Validavel, Sanitizavel
         ]);
 
         if (!empty($erros)) {
+            // Lançar exceção
             throw new Exception("Erro ao criar localização: " . implode(", ", $erros));
         }
 
@@ -1365,6 +1469,7 @@ class Localizacao implements Validavel, Sanitizavel
 
     public static function validarDados(array $dados): array
     {
+        // Inicializar array de erros
         $erros = [];
         if (empty(trim($dados['idServico'] ?? ''))) {
             $erros[] = "O ID do serviço é obrigatório.";
@@ -1377,16 +1482,19 @@ class Localizacao implements Validavel, Sanitizavel
 
     public function getIdLocalizacao(): int
     {
+        // Obter id localizacao
         return $this->idLocalizacao;
     }
 
     public function getIdServico(): int
     {
+        // Obter id servico
         return $this->idServico;
     }
 
     public function getNomeSala(): string
     {
+        // Obter nome sala
         return $this->nomeSala;
     }
 }
@@ -1405,6 +1513,7 @@ class Categoria implements Validavel, Sanitizavel
 
     public function __construct(string $idCategoria, string $nome, string $codigo, string $descricao, bool $ativo, DateTime $dataCriacao, DateTime $dataAtualizacao)
     {
+        // Validar dados
         $erros = self::validarDados([
             "idCategoria" => $idCategoria,
             "nome" => $nome,
@@ -1416,6 +1525,7 @@ class Categoria implements Validavel, Sanitizavel
         ]);
 
         if (!empty($erros)) {
+            // Lançar exceção
             throw new Exception("Erro ao criar categoria: " . implode(", ", $erros));
         }
 
@@ -1430,42 +1540,50 @@ class Categoria implements Validavel, Sanitizavel
 
     public function getIdCategoria(): string
     {
+        // Obter id categoria
         return $this->idCategoria;
     }
 
     public function getNome(): string
     {
+        // Obter nome
         return $this->nome;
     }
 
     public function getCodigo(): string
     {
+        // Obter codigo
         return $this->codigo;
     }
 
     public function getDescricao(): string
     {
+        // Obter descricao
         return $this->descricao;
     }
 
     public function getAtivo(): bool
     {
+        // Obter ativo
         return $this->ativo;
     }
 
     public function getDataCriacao(): DateTime
     {
+        // Obter data criacao
         return $this->dataCriacao;
     }
 
     public function getDataAtualizacao(): DateTime
     {
+        // Obter data atualizacao
         return $this->dataAtualizacao;
     }
 
     public function getEquipamentosCount(): int
     {
         try {
+            // Ligar à BD
             $ligacao = connect_to_db();
 
             $stmt = execute_query(
@@ -1476,7 +1594,9 @@ class Categoria implements Validavel, Sanitizavel
 
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             return $row['count'];
-        } catch (Exception $e) {
+        }
+// Capturar erro
+catch (Exception $e) {
             return 0;
         }
     }
@@ -1487,6 +1607,7 @@ class Categoria implements Validavel, Sanitizavel
 
     public static function validarDados(array $dados): array
     {
+        // Inicializar array de erros
         $erros = [];
         if (empty(trim($dados["nome"] ?? ''))) {
             $erros[] = "O campo Nome da Categoria é obrigatório.";
@@ -1558,6 +1679,7 @@ class Marca implements Validavel, Sanitizavel
 
     public function __construct(string $idMarca, string $nome, bool $ativo, DateTime $dataCriacao, DateTime $dataAtualizacao)
     {
+        // Validar dados
         $erros = self::validarDados([
             "idMarca" => $idMarca,
             "nome" => $nome,
@@ -1567,6 +1689,7 @@ class Marca implements Validavel, Sanitizavel
         ]);
 
         if (!empty($erros)) {
+            // Lançar exceção
             throw new Exception("Erro ao criar marca: " . implode(", ", $erros));
         }
 
@@ -1579,26 +1702,31 @@ class Marca implements Validavel, Sanitizavel
 
     public function getIdMarca(): string
     {
+        // Obter id marca
         return $this->idMarca;
     }
 
     public function getNome(): string
     {
+        // Obter nome
         return $this->nome;
     }
 
     public function getAtivo(): bool
     {
+        // Obter ativo
         return $this->ativo;
     }
 
     public function getDataCriacao(): DateTime
     {
+        // Obter data criacao
         return $this->dataCriacao;
     }
 
     public function getDataAtualizacao(): DateTime
     {
+        // Obter data atualizacao
         return $this->dataAtualizacao;
     }
     public static function sanitizarDados(array $dados): array
@@ -1608,6 +1736,7 @@ class Marca implements Validavel, Sanitizavel
 
     public static function validarDados(array $dados): array
     {
+        // Inicializar array de erros
         $erros = [];
         if (empty(trim($dados["nome"] ?? ''))) {
             $erros[] = "O campo Nome é obrigatório.";
@@ -1675,6 +1804,7 @@ class Equipamento implements Validavel, Sanitizavel
         ]);
 
         if (!empty($erros)) {
+            // Lançar exceção
             throw new Exception("Erro ao criar equipamento: " . implode(", ", $erros));
         }
 
@@ -1702,82 +1832,102 @@ class Equipamento implements Validavel, Sanitizavel
 
     public function getIdEquipamento(): string
     {
+        // Obter id equipamento
         return $this->idEquipamento;
     }
     public function getIdCategoria(): ?string
     {
+        // Obter id categoria
         return $this->idCategoria;
     }
     public function getCodigoInterno(): string
     {
+        // Obter codigo interno
         return $this->codigoInterno;
     }
     public function getDesignacao(): string
     {
+        // Obter designacao
         return $this->designacao;
     }
     public function getIdMarca(): ?string
     {
+        // Obter id marca
         return $this->idMarca;
     }
     public function getModelo(): string
     {
+        // Obter modelo
         return $this->modelo;
     }
     public function getNumeroSerie(): string
     {
+        // Obter numero serie
         return $this->numeroSerie;
     }
     public function getDataAquisicao(): ?DateTime
     {
+        // Obter data aquisicao
         return $this->dataAquisicao;
     }
     public function getDataFabrico(): ?DateTime
     {
+        // Obter data fabrico
         return $this->dataFabrico;
     }
     public function getCustoAquisicao(): float
     {
+        // Obter custo aquisicao
         return $this->custoAquisicao;
     }
     public function getTipoEntrada(): TipoEntrada
     {
+        // Obter tipo entrada
         return $this->tipoEntrada;
     }
     public function getEstadoAtual(): EstadoEquipamento
     {
+        // Obter estado atual
         return $this->estadoAtual;
     }
     public function getCriticidade(): CriticidadeEquipamento
     {
+        // Obter criticidade
         return $this->criticidade;
     }
     public function getObservacoes(): string
     {
+        // Obter observacoes
         return $this->observacoes;
     }
     public function getIdLocalizacao(): ?string
     {
+        // Obter id localizacao
         return $this->idLocalizacao;
     }
     public function getArquivado(): bool
     {
+        // Obter arquivado
         return $this->arquivado;
     }
     public function getAtivo(): bool
     {
+        // Obter ativo
         return $this->ativo;
     }
     public function getDataCriacao(): DateTime
     {
+        // Obter data criacao
         return $this->dataCriacao;
     }
     public function getDataAtualizacao(): DateTime
     {
+        // Obter data atualizacao
         return $this->dataAtualizacao;
     }
     public function getMarcaNome(): ?string
     {
+        // Obter marca nome
         return $this->marcaNome;
     }
     public static function sanitizarDados(array $dados): array
@@ -1787,6 +1937,7 @@ class Equipamento implements Validavel, Sanitizavel
 
     public static function validarDados(array $dados): array
     {
+        // Inicializar array de erros
         $erros = [];
         if (empty(trim($dados["codigoInterno"] ?? ''))) {
             $erros[] = "O campo Código Interno é obrigatório.";
@@ -1912,6 +2063,7 @@ class Documento implements Validavel, Sanitizavel
         ]);
 
         if (!empty($erros)) {
+            // Lançar exceção
             throw new Exception("Erro ao criar documento: " . implode(", ", $erros));
         }
 
@@ -1931,50 +2083,62 @@ class Documento implements Validavel, Sanitizavel
 
     public function getIdDocumento(): string
     {
+        // Obter id documento
         return $this->idDocumento;
     }
     public function getTipo(): TipoDocumento
     {
+        // Obter tipo
         return $this->tipo;
     }
     public function getNome(): string
     {
+        // Obter nome
         return $this->nome;
     }
     public function getCaminhoFicheiro(): ?string
     {
+        // Obter caminho ficheiro
         return $this->caminhoFicheiro;
     }
     public function getDataDocumento(): ?DateTime
     {
+        // Obter data documento
         return $this->dataDocumento;
     }
     public function getDataValidade(): ?DateTime
     {
+        // Obter data validade
         return $this->dataValidade;
     }
     public function getIdEquipamento(): ?string
     {
+        // Obter id equipamento
         return $this->idEquipamento;
     }
     public function getIdFornecedor(): ?string
     {
+        // Obter id fornecedor
         return $this->idFornecedor;
     }
     public function getAtivo(): bool
     {
+        // Obter ativo
         return $this->ativo;
     }
     public function getDataCriacao(): DateTime
     {
+        // Obter data criacao
         return $this->dataCriacao;
     }
     public function getDataAtualizacao(): DateTime
     {
+        // Obter data atualizacao
         return $this->dataAtualizacao;
     }
     public function getFornecedorNome(): ?string
     {
+        // Obter fornecedor nome
         return $this->fornecedorNome;
     }
     public static function sanitizarDados(array $dados): array
@@ -1984,6 +2148,7 @@ class Documento implements Validavel, Sanitizavel
 
     public static function validarDados(array $dados): array
     {
+        // Inicializar array de erros
         $erros = [];
 
         if (empty(trim($dados['nome'] ?? ''))) {
@@ -2065,6 +2230,7 @@ class Componente implements Validavel, Sanitizavel
 
     public function __construct(string $idComponente, string $codigoInterno, string $descricao, int $stock, int $stockMinimo, float $preco, string $idLocalizacao, bool $ativo, DateTime $dataCriacao, DateTime $dataAtualizacao, ?string $idCategoria = null)
     {
+        // Validar dados
         $erros = self::validarDados([
             "idComponente" => $idComponente,
             "codigoInterno" => $codigoInterno,
@@ -2079,6 +2245,7 @@ class Componente implements Validavel, Sanitizavel
         ]);
 
         if (!empty($erros)) {
+            // Lançar exceção
             throw new Exception("Erro ao criar componente: " . implode(", ", $erros));
         }
 
@@ -2097,56 +2264,67 @@ class Componente implements Validavel, Sanitizavel
 
     public function getIdComponente(): string
     {
+        // Obter id componente
         return $this->idComponente;
     }
 
     public function getCodigoInterno(): string
     {
+        // Obter codigo interno
         return $this->codigoInterno;
     }
 
     public function getDescricao(): string
     {
+        // Obter descricao
         return $this->descricao;
     }
 
     public function getStock(): int
     {
+        // Obter stock
         return $this->stock;
     }
 
     public function getStockMinimo(): int
     {
+        // Obter stock minimo
         return $this->stockMinimo;
     }
 
     public function getPreco(): float
     {
+        // Obter preco
         return $this->preco;
     }
 
     public function getIdCategoria(): ?string
     {
+        // Obter id categoria
         return $this->idCategoria;
     }
 
     public function getIdLocalizacao(): string
     {
+        // Obter id localizacao
         return $this->idLocalizacao;
     }
 
     public function getAtivo(): bool
     {
+        // Obter ativo
         return $this->ativo;
     }
 
     public function getDataCriacao(): DateTime
     {
+        // Obter data criacao
         return $this->dataCriacao;
     }
 
     public function getDataAtualizacao(): DateTime
     {
+        // Obter data atualizacao
         return $this->dataAtualizacao;
     }
     public static function sanitizarDados(array $dados): array
@@ -2156,6 +2334,7 @@ class Componente implements Validavel, Sanitizavel
 
     public static function validarDados(array $dados): array
     {
+        // Inicializar array de erros
         $erros = [];
         if (empty(trim($dados["codigoInterno"] ?? '')) || strlen(trim($dados['codigoInterno'])) > 20) {
             $erros[] = "O campo Código Interno é obrigatório e não pode ter mais de 20 caracteres.";
@@ -2258,6 +2437,7 @@ class GarantiaContrato implements Validavel, Sanitizavel
         ]);
 
         if (!empty($erros)) {
+            // Lançar exceção
             throw new Exception("Erro ao criar garantia/contrato: " . implode(", ", $erros));
         }
 
@@ -2279,58 +2459,72 @@ class GarantiaContrato implements Validavel, Sanitizavel
 
     public function getIdGarantiaContrato(): string
     {
+        // Obter id garantia contrato
         return $this->idGarantiaContrato;
     }
     public function getIdEquipamento(): ?string
     {
+        // Obter id equipamento
         return $this->idEquipamento;
     }
     public function getIdFornecedor(): ?string
     {
+        // Obter id fornecedor
         return $this->idFornecedor;
     }
     public function getIdDocumento(): ?string
     {
+        // Obter id documento
         return $this->idDocumento;
     }
     public function getTipoRegisto(): TipoRegisto
     {
+        // Obter tipo registo
         return $this->tipoRegisto;
     }
     public function getDataInicio(): ?DateTime
     {
+        // Obter data inicio
         return $this->dataInicio;
     }
     public function getDataFim(): ?DateTime
     {
+        // Obter data fim
         return $this->dataFim;
     }
     public function getPeriodicidade(): Periodicidade
     {
+        // Obter periodicidade
         return $this->periodicidade;
     }
     public function getObservacoes(): ?string
     {
+        // Obter observacoes
         return $this->observacoes;
     }
     public function getAtivo(): bool
     {
+        // Obter ativo
         return $this->ativo;
     }
     public function getDataCriacao(): DateTime
     {
+        // Obter data criacao
         return $this->dataCriacao;
     }
     public function getDataAtualizacao(): DateTime
     {
+        // Obter data atualizacao
         return $this->dataAtualizacao;
     }
     public function getFornecedorNome(): ?string
     {
+        // Obter fornecedor nome
         return $this->fornecedorNome;
     }
     public function getDocumentoCaminho(): ?string
     {
+        // Obter documento caminho
         return $this->documentoCaminho;
     }
 
@@ -2348,6 +2542,7 @@ class GarantiaContrato implements Validavel, Sanitizavel
 
     public static function validarDados(array $dados): array
     {
+        // Inicializar array de erros
         $erros = [];
 
         if (empty(trim($dados['tipoRegisto'] ?? ''))) {
@@ -2468,6 +2663,7 @@ class Manutencao implements Validavel, Sanitizavel
         ]);
 
         if (!empty($erros)) {
+            // Lançar exceção
             throw new Exception(implode(", ", $erros));
         }
 
@@ -2489,58 +2685,72 @@ class Manutencao implements Validavel, Sanitizavel
 
     public function getIdManutencao(): string
     {
+        // Obter id manutencao
         return $this->idManutencao;
     }
     public function getIdEquipamento(): string
     {
+        // Obter id equipamento
         return $this->idEquipamento;
     }
     public function getTipoManutencao(): TipoManutencao
     {
+        // Obter tipo manutencao
         return $this->tipoManutencao;
     }
     public function getDataInicio(): DateTime
     {
+        // Obter data inicio
         return $this->dataInicio;
     }
     public function getDataFim(): ?DateTime
     {
+        // Obter data fim
         return $this->dataFim;
     }
     public function getIdPessoaResponsavel(): ?string
     {
+        // Obter id pessoa responsavel
         return $this->idPessoaResponsavel;
     }
     public function getIdFornecedor(): ?string
     {
+        // Obter id fornecedor
         return $this->idFornecedor;
     }
     public function getCustoManutencao(): ?float
     {
+        // Obter custo manutencao
         return $this->custoManutencao;
     }
     public function getObservacoes(): ?string
     {
+        // Obter observacoes
         return $this->observacoes;
     }
     public function getAtivo(): bool
     {
+        // Obter ativo
         return $this->ativo;
     }
     public function getDataCriacao(): DateTime
     {
+        // Obter data criacao
         return $this->dataCriacao;
     }
     public function getDataAtualizacao(): DateTime
     {
+        // Obter data atualizacao
         return $this->dataAtualizacao;
     }
     public function getPessoaNome(): ?string
     {
+        // Obter pessoa nome
         return $this->pessoaNome;
     }
     public function getFornecedorNome(): ?string
     {
+        // Obter fornecedor nome
         return $this->fornecedorNome;
     }
     public static function sanitizarDados(array $dados): array
@@ -2550,6 +2760,7 @@ class Manutencao implements Validavel, Sanitizavel
 
     public static function validarDados(array $dados): array
     {
+        // Inicializar array de erros
         $erros = [];
 
         if (empty(trim($dados['tipoManutencao'] ?? ''))) {

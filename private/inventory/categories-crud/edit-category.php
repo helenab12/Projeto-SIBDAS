@@ -1,10 +1,14 @@
 <?php
+// Carregar dependências
 require_once(__DIR__ . "/../../../config/funcoes.php");
 
+// Restringir acesso
 redirect_if_not_logged('private/login/login.php', ['categories.edit']);
 
+// Processar pedido
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
+        // Desencriptar ID
         $encryptedId = $_POST['category-id'] ?? null;
         if (!$encryptedId) {
             throw new Exception("ID inválido.");
@@ -15,11 +19,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $id = (int) $id;
 
+        // Recolher dados do POST
         $codigo = strtoupper(trim($_POST['category-code'] ?? ''));
         $nome = ucfirst(trim($_POST['category-name'] ?? ''));
         $descricao = ucfirst(trim($_POST['category-description'] ?? ''));
 
-        // Validação básica
+        // Sanitizar dados
         $dadosSanitizados = Categoria::sanitizarDados([
             'idCategoria' => (string) $id,
             'codigo' => $codigo,
@@ -29,16 +34,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'dataCriacao' => new DateTime(),
             'dataAtualizacao' => new DateTime()
         ]);
+        // Atualizar variáveis
         $codigo = $dadosSanitizados['codigo'] ?? $codigo;
         $nome = $dadosSanitizados['nome'] ?? $nome;
         $descricao = $dadosSanitizados['descricao'] ?? $descricao;
+        // Validar dados
         $erros = Categoria::validarDados($dadosSanitizados);
 
         if (!empty($erros)) {
             throw new Exception(implode(", ", $erros));
         }
 
-        // Verificar se o código ou nome já existe noutra categoria
+        // Verificar unicidade
         $stmt = execute_query(
             "SELECT idCategoria FROM CategoriaEquipamento WHERE (codigoPrefix = :codigo OR nome = :nome) AND idCategoria != :id",
             ['codigo' => $codigo, 'nome' => $nome, 'id' => $id]);
@@ -46,12 +53,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception("O código ou nome da categoria já existe noutro registo.");
         }
 
-        // Ler o estado antigo antes do Update para Auditoria
+        // Ler estado antigo
         $stmtAntigo = execute_query(
             "SELECT codigoPrefix, nome, descricao FROM CategoriaEquipamento WHERE idCategoria = :id",
             ['id' => $id]);
         $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
 
+        // Atualizar registo
         execute_query(
             "UPDATE CategoriaEquipamento SET codigoPrefix = :codigo, nome = :nome, descricao = :descricao WHERE idCategoria = :id",
             ['codigo' => $codigo, 'nome' => $nome, 'descricao' => $descricao, 'id' => $id]);
@@ -63,11 +71,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'descricao' => $descricao
         ]);
 
+        // Definir sucesso
         $_SESSION['success_message'] = "Categoria editada com sucesso!";
     } catch (Exception $e) {
+        // Capturar erro
         $_SESSION['server_error'] = "Erro ao editar categoria: " . $e->getMessage();
     }
 }
 
+// Redirecionar utilizador
 header("Location: ../categories.php");
 exit;

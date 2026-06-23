@@ -1,16 +1,21 @@
 <?php
+// Carregar dependências
 require_once(__DIR__ . "/../../../config/funcoes.php");
 
+// Restringir acesso
 redirect_if_not_logged('private/login/login.php', ['users.delete']);
 
+// Verificar método POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
+        // Recolher dados do POST
         $encryptedUserId = $_POST['user-id'] ?? '';
 
         if (empty(trim($encryptedUserId))) {
             throw new Exception("ID de utilizador não fornecido.");
         }
 
+        // Desencriptar ID
         $idUtilizador = aes_decrypt($encryptedUserId);
         if (!$idUtilizador) {
             throw new Exception("ID de utilizador inválido.");
@@ -26,9 +31,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $_SESSION['success_message'] = "Utilizador desativado com sucesso (movido para a reciclagem).";
     } catch (Exception $e) {
-        $_SESSION['server_error'] = "Erro ao desativar utilizador: " . $e->getMessage();
+        // Capturar erro
+$_SESSION['server_error'] = "Erro ao desativar utilizador: " . $e->getMessage();
     }
 }
 
+// Redirecionar
 header("Location: ../users.php");
 exit;

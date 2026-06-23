@@ -55,6 +55,31 @@ dropdownToggles.forEach((toggle) => {
     });
 });
 
+// - Sidebar Collapse
+const collapseBtn = document.querySelector(".sidebar-collapse-btn");
+if (collapseBtn) {
+    collapseBtn.addEventListener("click", () => {
+        const sidebar = document.querySelector(".desktop-sidebar");
+        if (sidebar) {
+            sidebar.classList.toggle("collapsed");
+
+            if (sidebar.classList.contains("collapsed")) {
+                const openCollapses = sidebar.querySelectorAll(".collapse.show");
+                openCollapses.forEach((collapseEl) => {
+                    if (typeof bootstrap !== "undefined") {
+                        const bsCollapse = bootstrap.Collapse.getInstance(collapseEl);
+                        if (bsCollapse) {
+                            bsCollapse.hide();
+                        } else {
+                            new bootstrap.Collapse(collapseEl, { toggle: false }).hide();
+                        }
+                    }
+                });
+            }
+        }
+    });
+}
+
 const mobileSidebar = document.querySelector(".mobile-sidebar");
 const sidebarBackground = document.querySelector(".sidebar-background");
 
@@ -1226,6 +1251,15 @@ function handleFiles(files) {
     }
 }
 
+// - Input de Multi-Upload
+const multiFileInput = document.getElementById("document-upload-input");
+if (multiFileInput) {
+    multiFileInput.addEventListener("change", (e) => {
+        if (typeof handleFiles === 'function') handleFiles(e.target.files);
+        multiFileInput.value = "";
+    });
+}
+
 // Lógica de Upload de Documentos Genérica
 const uploadTemplate = document.getElementById("uploaded-file-template");
 const localUploadContainer = document.getElementById("uploaded-files-container");
@@ -1318,18 +1352,6 @@ document.querySelectorAll(".file-upload-zone").forEach(zone => {
     }
 });
 
-// - Input de Multi-Upload
-const multiFileInput = document.getElementById("document-upload-input");
-if (multiFileInput) {
-    multiFileInput.addEventListener("change", (e) => {
-        if (typeof handleFiles === 'function') handleFiles(e.target.files);
-        multiFileInput.value = "";
-    });
-}
-
-// - Renderização Dinâmica dos "Cards" de ficheiros anexados
-
-
 // ===================
 // 6. Validações e Formulários Base
 // ===================
@@ -1370,6 +1392,7 @@ if (btnOpenCreateModal && bsCreateEquipmentModal) {
         bsCreateEquipmentModal.show();
     });
 }
+
 
 document.addEventListener("DOMContentLoaded", () => {
     const editForms = document.querySelectorAll(".form-edit-equipment");
@@ -1578,6 +1601,7 @@ if (btnNextPage && btnPrevPage && modalPage1 && modalPage2) {
     btnNextPage.addEventListener("click", () => {
         modalPage1.classList.add("d-none");
         modalPage2.classList.remove("d-none");
+        if (typeof validatePage2 === 'function') validatePage2();
     });
 
     btnPrevPage.addEventListener("click", () => {
@@ -2680,7 +2704,7 @@ function openQRPrintModal(encryptedId, code, designation) {
     designationElement.textContent = designation;
 
     // Use SITE_BASE_URL se estiver definido, senao default
-    const base = window.SITE_BASE_URL || '/sibdas/1240961/projeto-heba/';
+    const base = window.SITE_BASE_URL || '/sibdas/1240961/heba/';
     const urlBase = window.location.origin + base + 'private/inventory/equipments/detailed_view.php?id=';
     const finalUrl = urlBase + encodeURIComponent(encryptedId);
 

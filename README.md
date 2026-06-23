@@ -8,16 +8,16 @@
 
 ### 1. Colocação dos ficheiros
 Coloque o projeto na diretoria `htdocs` do seu servidor local (XAMPP, MAMP, WAMP, etc) ou equivalente. A estrutura de pastas final deverá permitir o acesso via *localhost* ou *127.0.0.1*. 
-*Exemplo do caminho esperado:* `htdocs/sibdas/1240961/projeto-heba/`
+*Exemplo do caminho esperado:* `htdocs/sibdas/1240961/heba/`
 
 ### 2. Configuração do URL da aplicação
 Edite o ficheiro `/config/config.php` e altere a constante `BASE_URL` para o caminho em que colocou o projeto:
 ```php
 define('BASE_URL', '/caminho/do/seu/projeto/');
 ```
-Exemplo se o projeto estiver na diretoria `htdocs/projeto-heba/`:
+Exemplo se o projeto estiver na diretoria `htdocs/heba/`:
 ```php
-define('BASE_URL', '/projeto-heba/');
+define('BASE_URL', '/heba/');
 ```
 **Nota:** O ficheiro `config.php` também possui o modo de depuração ativado (`SHOW_DEBUG_BUTTONS = true`), o qual mostra botões de acesso rápido aos diferentes perfis no ecrã de login para facilitar os testes. Para ambiente de produção, modifique para `false`. Também precisará de adaptar os detalhes de conexão (host, database, username, password) de acordo com o seu servidor MySQL.
 
@@ -30,7 +30,7 @@ Para o correto funcionamento do sistema, é necessário inicializar a base de da
 
 ## Instruções para Realização dos Principais Testes da Aplicação
 
-1. Aceda à página principal (Front-Office) através do browser (ex: `http://localhost/sibdas/1240961/projeto-heba/`).
+1. Aceda à página principal (Front-Office) através do browser (ex: `http://localhost/sibdas/1240961/heba/`).
 2. Explore o design dinâmico, conteúdo da marca "HEBA" e seções públicas.
 3. No final da página (roda-pé), clique em **Aceder ao Backoffice** (que reencaminha para `/login.php`).
 4. Irá reparar que existem *botões de depuração de acesso rápido* no ecrã de login se o modo debug estiver ativado. Pode clicar num deles para preencher automaticamente as credenciais para diferentes níveis de permissões, ou escrever manualmente utilizando as credenciais abaixo.

@@ -1,23 +1,26 @@
 <?php
+// Carregar dependências
 require_once(__DIR__ . "/../../../config/funcoes.php");
 
+// Restringir acesso
 redirect_if_not_logged('private/login/login.php', ['locations.edit']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
+        // Recolher dados
         $idLocalizacao = (int) aes_decrypt($_POST['room-id']);
         $nomeSala = trim($_POST['room-name'] ?? '');
 
-        // Sanitização usando a classe Localizacao
+        // Sanitizar dados
         $dadosSanitizados = Localizacao::sanitizarDados(['nomeSala' => $nomeSala]);
         $nomeSala = $dadosSanitizados['nomeSala'] ?? $nomeSala;
 
-        // Validação
+        // Validar dados
         if (empty($nomeSala)) {
             throw new Exception("O nome da sala não pode estar vazio.");
         }
 
-        // Buscar o idServico desta sala para verificação de duplicados
+        // Consultar registos
         $stmtSala = execute_query(
             "SELECT idServico FROM Localizacao WHERE idLocalizacao = :id",
             ['id' => $idLocalizacao]);
@@ -29,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $idServico = $salaRow['idServico'];
 
-        // Verificar se já existe outra Sala com o mesmo nome no mesmo Serviço
+        // Consultar registos
         $stmtVerificar = execute_query(
             "SELECT idLocalizacao FROM Localizacao WHERE nomeSala = :nome AND idServico = :idServico AND idLocalizacao != :id",
             ['nome' => $nomeSala, 'idServico' => $idServico, 'id' => $idLocalizacao]);
@@ -38,13 +41,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception("Já existe uma sala (ativa ou inativa) com este nome neste serviço.");
         }
 
-        // Ler o estado antigo antes do Update para Auditoria
+        // Consultar registos
         $stmtAntigo = execute_query(
             "SELECT nomeSala FROM Localizacao WHERE idLocalizacao = :id",
             ['id' => $idLocalizacao]);
         $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
 
-        // Fazer o update
+        // Atualizar registo
         execute_query(
             "UPDATE Localizacao SET nomeSala = :nome WHERE idLocalizacao = :id",
             ['nome' => $nomeSala, 'id' => $idLocalizacao]);
@@ -56,9 +59,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $_SESSION['success_message'] = "Sala editada com sucesso!";
     } catch (Exception $e) {
+        // Capturar erro
         $_SESSION['server_error'] = "Erro ao editar sala: " . $e->getMessage();
     }
 }
 
+// Redirecionar
 header("Location: ../locations.php");
 exit;

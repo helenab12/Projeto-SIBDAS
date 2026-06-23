@@ -1,23 +1,26 @@
 <?php
+// Carregar dependências
 require_once(__DIR__ . "/../../../config/funcoes.php");
 
+// Restringir acesso
 redirect_if_not_logged('private/login/login.php', ['locations.edit']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
+        // Recolher dados
         $idServico = (int) aes_decrypt($_POST['service-id']);
         $nomeServico = trim($_POST['service-name'] ?? '');
 
-        // Sanitização usando a classe Servico
+        // Sanitizar dados
         $dadosSanitizados = Servico::sanitizarDados(['nome' => $nomeServico]);
         $nomeServico = $dadosSanitizados['nome'] ?? $nomeServico;
 
-        // Validação
+        // Validar dados
         if (empty($nomeServico)) {
             throw new Exception("O nome do serviço não pode estar vazio.");
         }
 
-        // Buscar o idPiso deste serviço para verificação de duplicados
+        // Consultar registos
         $stmtServico = execute_query(
             "SELECT idPiso FROM Servico WHERE idServico = :id",
             ['id' => $idServico]);
@@ -29,7 +32,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $idPiso = $servicoRow['idPiso'];
 
-        // Verificar se já existe outro Serviço com o mesmo nome no mesmo Piso
+        // Consultar registos
         $stmtVerificar = execute_query(
             "SELECT idServico FROM Servico WHERE nome = :nome AND idPiso = :idPiso AND idServico != :id",
             ['nome' => $nomeServico, 'idPiso' => $idPiso, 'id' => $idServico]);
@@ -38,13 +41,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception("Já existe um serviço (ativo ou inativo) com este nome neste piso.");
         }
 
-        // Ler o estado antigo antes do Update para Auditoria
+        // Consultar registos
         $stmtAntigo = execute_query(
             "SELECT nome FROM Servico WHERE idServico = :id",
             ['id' => $idServico]);
         $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
 
-        // Fazer o update
+        // Atualizar registo
         execute_query(
             "UPDATE Servico SET nome = :nome WHERE idServico = :id",
             ['nome' => $nomeServico, 'id' => $idServico]);
@@ -56,9 +59,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $_SESSION['success_message'] = "Serviço editado com sucesso!";
     } catch (Exception $e) {
+        // Capturar erro
         $_SESSION['server_error'] = "Erro ao editar serviço: " . $e->getMessage();
     }
 }
 
+// Redirecionar
 header("Location: ../locations.php");
 exit;

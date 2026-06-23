@@ -1,10 +1,14 @@
 <?php
+// Carregar dependências
 require_once(__DIR__ . "/../../../config/funcoes.php");
 
+// Restringir acesso
 redirect_if_not_logged('private/login/login.php', ['users.create']);
 
+// Verificar método POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
+        // Recolher dados do POST
         $emailPessoa = strtolower(trim($_POST['user-email'] ?? ''));
         $emailAutenticacao = strtolower(trim($_POST['user-auth-email'] ?? ''));
         $password = $_POST['user-password'] ?? '';
@@ -36,7 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception(implode(", ", $erros));
         }
 
-        $ligacao = connect_to_db();
+        // Ligar à BD
+$ligacao = connect_to_db();
 
         // 1. Procurar Pessoa pelo Email
         $stmtPessoa = execute_query(
@@ -114,9 +119,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $_SESSION['success_message'] = "Utilizador criado com sucesso!";
         $ligacao = null;
     } catch (Exception $e) {
-        $_SESSION['server_error'] = "Erro ao criar utilizador: " . $e->getMessage();
+        // Capturar erro
+$_SESSION['server_error'] = "Erro ao criar utilizador: " . $e->getMessage();
     }
 }
 
+// Redirecionar
 header("Location: ../users.php");
 exit;

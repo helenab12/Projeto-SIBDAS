@@ -1,32 +1,45 @@
 <?php
+// Inicializar variáveis
 $numeroNotificacoesNaoLidas = 0;
+// Verificar sessão
 if (isset($_SESSION['id_utilizador'])) {
     try {
+        // Ligar à BD
         $ligacaoHeaders = connect_to_db();
+        // Contar notificações não lidas
         $stmtHeaders = execute_query(
             "SELECT COUNT(*) as count FROM NotificacaoUtilizador WHERE idUtilizador = :idUtilizador AND lida = 0",
             ['idUtilizador' => $_SESSION['id_utilizador']],
             $ligacaoHeaders
         );
+        // Atribuir valor
         if ($row = $stmtHeaders->fetch(PDO::FETCH_ASSOC)) {
             $numeroNotificacoesNaoLidas = (int) $row['count'];
         }
+        // Fechar ligação
         $ligacaoHeaders = null;
-    } catch (Exception $e) {
+    }
+// Capturar erro
+catch (Exception $e) {
+        // Ignorar erro
     }
 }
 ?>
 <!-- Header Desktop + Tablet -->
 <header class="d-flex flex-row w-100 padding-4 desktop-header d-none d-md-flex justify-content-between sticky-top">
     <?php if (tem_permissao('view.searchbar')): ?>
+        <!-- Formulário de Pesquisa -->
         <form action="" class="d-flex flex-column" style="width: 400px;">
+            <!-- Wrapper Pesquisa -->
             <div class="form-item nav-search-bar position-relative d-flex align-items-center">
+                <!-- SVG Lupa -->
                 <svg class="search-icon position-absolute text-secondary" xmlns="http://www.w3.org/2000/svg" width="20"
                     height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                     stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-search-icon lucide-search">
                     <path d="m21 21-4.34-4.34" />
                     <circle cx="11" cy="11" r="8" />
                 </svg>
+                <!-- Input Pesquisa -->
                 <input type="search" class="w-100" id="search" name="search"
                     placeholder="Pesquisar equipamentos, fornecedores..." data-bs-toggle="modal"
                     data-bs-target="#search-modal" readonly>
@@ -34,14 +47,17 @@ if (isset($_SESSION['id_utilizador'])) {
         </form>
     <?php endif; ?>
     <div class="d-flex flex-row align-items-center gap-6 ">
+        <!-- Botão Tema -->
         <button
             class="pa-theme-toggle cursor-pointer  border-0 bg-transparent p-0 d-inline-flex align-items-center text-secondary"
             aria-label="Alternar tema">
+            <!-- SVG Lua -->
             <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <path
                     d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />
             </svg>
+            <!-- SVG Sol -->
             <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                 <circle cx="12" cy="12" r="4" />
@@ -55,8 +71,11 @@ if (isset($_SESSION['id_utilizador'])) {
                 <path d="m19.07 4.93-1.41 1.41" />
             </svg>
         </button>
+        <!-- Link Notificações -->
+        <!-- Link -->
         <a href="<?php echo BASE_URL; ?>/private/notifications.php"
             class="text-decoration-none d-flex align-items-center position-relative">
+            <!-- SVG Sino -->
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                 class="lucide lucide-bell-icon lucide-bell stroke-secondary">
@@ -91,8 +110,10 @@ if (isset($_SESSION['id_utilizador'])) {
             </div>
             <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu padding-2">
                 <li>
+                    <!-- Link -->
                     <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none  text-error"
                         href="<?= BASE_URL ?>private/login/logout.php">
+                        <!-- SVG -->
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                             class="lucide lucide-log-out-icon lucide-log-out">
@@ -114,9 +135,11 @@ if (isset($_SESSION['id_utilizador'])) {
 
 
         <div class="d-flex flex-row align-items-center gap-6 ">
+            <!-- Botão -->
             <button
                 class="pa-hamburger bg-transparent border-0 cursor-pointer p-0 d-inline-flex align-items-center text-primary"
                 id="mobile-menu-toggle" aria-label="Menu">
+                <!-- SVG -->
                 <svg class="icon-menu stroke-secondary" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                     viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                     stroke-linejoin="round">
@@ -127,8 +150,10 @@ if (isset($_SESSION['id_utilizador'])) {
             </button>
 
             <?php if (tem_permissao('view.searchbar')): ?>
+                <!-- Botão -->
                 <button class="btn p-0 border-0 bg-transparent d-flex align-items-center" data-bs-toggle="modal"
                     data-bs-target="#search-modal" aria-label="Pesquisar">
+                    <!-- SVG -->
                     <svg class="search-icon stroke-secondary m-0" xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                         stroke-linejoin="round" class="lucide lucide-search-icon lucide-search">
@@ -140,14 +165,17 @@ if (isset($_SESSION['id_utilizador'])) {
         </div>
 
         <div class="d-flex flex-row align-items-center gap-6 ">
+            <!-- Botão -->
             <button
                 class="pa-theme-toggle cursor-pointer  border-0 bg-transparent p-0 d-inline-flex align-items-center text-secondary"
                 aria-label="Alternar tema">
+                <!-- SVG -->
                 <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <path
                         d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" />
                 </svg>
+                <!-- SVG -->
                 <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24"
                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="4" />
@@ -161,8 +189,10 @@ if (isset($_SESSION['id_utilizador'])) {
                     <path d="m19.07 4.93-1.41 1.41" />
                 </svg>
             </button>
+            <!-- Link -->
             <a href="<?php echo BASE_URL; ?>/private/notifications.php"
                 class="text-decoration-none d-flex align-items-center position-relative">
+                <!-- SVG -->
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                     class="lucide lucide-bell-icon lucide-bell stroke-secondary">
@@ -189,8 +219,10 @@ if (isset($_SESSION['id_utilizador'])) {
                 </div>
                 <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu padding-2">
                     <li>
+                        <!-- Link -->
                         <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none  text-error"
                             href="<?= BASE_URL ?>private/login/logout.php">
+                            <!-- SVG -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                 stroke-linejoin="round" class="lucide lucide-log-out-icon lucide-log-out">
@@ -264,15 +296,18 @@ if (tem_permissao('view.categorias')) {
             <div class="modal-content">
                 <!-- Header Search Bar -->
                 <div class="modal-header-search d-flex align-items-center gap-3">
+                    <!-- SVG -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-search text-secondary">
                         <path d="m21 21-4.34-4.34" />
                         <circle cx="11" cy="11" r="8" />
                     </svg>
+                    <!-- Input -->
                     <input type="text" id="global-search-input"
                         placeholder="Pesquisar equipamentos, fornecedores, pessoas..." autocomplete="off"
                         class="border-0 bg-transparent w-100 outline-0 fw-500 text-primary" style="">
+                    <!-- Label -->
                     <label class="esc-badge fw-700">ESC</label>
                 </div>
 
@@ -283,8 +318,10 @@ if (tem_permissao('view.categorias')) {
                         <span class="search-section-title fw-700 text-muted text-uppercase">Acesso Rápido</span>
                         <div class="d-flex flex-column gap-1">
                             <?php foreach ($quickAccessItems as $item): ?>
+                                <!-- Link -->
                                 <a href="<?= $item['url'] ?>"
                                     class="search-item d-flex align-items-center gap-3 padding-3 cursor-pointer text-decoration-none">
+                                    <!-- SVG -->
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                         stroke-linejoin="round" class="search-item-icon">
@@ -306,6 +343,7 @@ if (tem_permissao('view.categorias')) {
                         id="search-empty">
                         <div class="d-flex flex-column align-items-center justify-content-center text-center gap-4 w-100">
                             <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                                <!-- SVG -->
                                 <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"
                                     fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                     stroke-linejoin="round" class="lucide lucide-search-x">
@@ -316,6 +354,7 @@ if (tem_permissao('view.categorias')) {
                                 </svg>
                             </div>
                             <div class="d-flex flex-column gap-2">
+                                <!-- Título -->
                                 <h3 class="fw-700 m-0">Sem resultados</h3>
                                 <p class="text-secondary m-0">Não foi encontrado nenhum resultado para "<span
                                         id="search-empty-term" class="fw-700"></span>".</p>
@@ -337,12 +376,14 @@ if (tem_permissao('view.categorias')) {
     <!-- Templates for Global Search -->
     <template id="search-section-template">
         <div class="search-section">
+            <!-- Título -->
             <h6 class="section-title-text text-secondary mb-3 small fw-bold text-uppercase tracking-wider"></h6>
             <div class="section-items-container d-flex flex-column gap-2"></div>
         </div>
     </template>
 
     <template id="search-item-template">
+        <!-- Link -->
         <a href="#"
             class="item-link text-decoration-none p-3 rounded-3 d-flex align-items-center gap-3 bg-surface-hover transition-all">
             <div class="item-icon-wrapper d-flex align-items-center justify-content-center rounded-3 shrink-0"

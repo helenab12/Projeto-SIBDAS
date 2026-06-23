@@ -1,7 +1,10 @@
 <?php
+// Carregar dependências
 require_once(__DIR__ . "/../../config/funcoes.php");
+// Carregar dependências
 require_once BASE_PATH . 'vendor/fpdf/fpdf.php';
 
+// Restringir acesso
 redirect_if_not_logged('private/login/login.php', ['security.backups']);
 
 $format = isset($_GET['format']) ? strtolower(trim($_GET['format'])) : 'csv';
@@ -12,7 +15,8 @@ if (!in_array($format, $allowedFormats)) {
 }
 
 try {
-    $ligacao = connect_to_db();
+    // Ligar à BD
+$ligacao = connect_to_db();
 
     // 1. Equipamentos
     $sqlEquipamentos = "SELECT e.*, m.nome as marcaNome, c.nome as categoriaNome,
@@ -187,6 +191,7 @@ try {
         $pdfDash->AddPage();
 
         // Calcular Métricas usando o helper real da dashboard
+        // Carregar dependências
         require_once BASE_PATH . 'private/includes/dashboard_stats.php';
         
         $totalEq = $dashboardStats['totalEquipamentos']['count'] ?? 0;
@@ -335,6 +340,7 @@ try {
     readfile($zipFile);
     unlink($zipFile); // Limpar ficheiro temp após envio
 
-} catch (Exception $e) {
-    die("Erro ao exportar dados do sistema: " . $e->getMessage());
+    } catch (Exception $e) {
+        // Capturar erro
+die("Erro ao exportar dados do sistema: " . $e->getMessage());
 }

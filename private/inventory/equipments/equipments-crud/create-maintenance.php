@@ -1,25 +1,34 @@
 <?php
+// Carregar dependências
 require_once(__DIR__ . "/../../../../config/funcoes.php");
 
+// Restringir acesso
 redirect_if_not_logged('private/login/login.php', ['maintenances.create']);
 
+// Verificar método
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
+        // Ligar à BD
         $ligacao = connect_to_db();
 
-        // 1. Desencriptar e validar o ID do Equipamento
+        // Recolher dados do POST
         $encryptedId = trim($_POST['equipment-id'] ?? '');
+        
+        // Validar dados
         if (empty($encryptedId)) {
             throw new Exception("ID de equipamento não fornecido.");
         }
 
+        // Desencriptar ID
         $idEquipamento = aes_decrypt($encryptedId);
+        
+        // Validar dados
         if ($idEquipamento === false) {
             throw new Exception("ID de equipamento inválido.");
         }
         $idEquipamento = (int) $idEquipamento;
 
-        // 2. Recolher dados do formulário
+        // Recolher dados do POST
         $tipoManutencaoRaw = trim($_POST['maintenance-type'] ?? '');
         $dataInicioRaw = trim($_POST['maintenance-start-date'] ?? '');
         $dataFimRaw = trim($_POST['maintenance-end-date'] ?? '');
@@ -28,7 +37,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $custoManutencaoRaw = trim($_POST['maintenance-cost'] ?? '');
         $observacoes = trim($_POST['maintenance-notes'] ?? '');
 
-        // Converter datas de d/m/Y para Y-m-d
+        // Inicializar variáveis
         $dInicio = DateTime::createFromFormat('d/m/Y', $dataInicioRaw);
         $dataInicio = $dInicio ? $dInicio->format('Y-m-d') : '';
 
@@ -41,27 +50,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $custoManutencao = $custoManutencaoRaw !== '' ? (float) $custoManutencaoRaw : null;
 
-        // 3. Validar dados com a classe Manutencao
+        // Sanitizar dados
         $dadosSanitizados = Manutencao::sanitizarDados([
-            'idManutencao' => '-1',  // ID fictício para validação
+            'idManutencao' => '-1',
             'tipoManutencao' => $tipoManutencaoRaw,
             'dataInicio' => $dataInicio,
             'dataFim' => $dataFim,
             'idPessoaResponsavel' => $idPessoaResponsavel,
             'custoManutencao' => $custoManutencao
         ]);
+        
+        // Inicializar variáveis
         $tipoManutencaoRaw = $dadosSanitizados['tipoManutencao'] ?? $tipoManutencaoRaw;
         $dataInicio = $dadosSanitizados['dataInicio'] ?? $dataInicio;
         $dataFim = $dadosSanitizados['dataFim'] ?? $dataFim;
         $idPessoaResponsavel = $dadosSanitizados['idPessoaResponsavel'] ?? $idPessoaResponsavel;
         $custoManutencao = $dadosSanitizados['custoManutencao'] ?? $custoManutencao;
+        
+        // Validar dados
         $erros = Manutencao::validarDados($dadosSanitizados);
 
         if (!empty($erros)) {
             throw new Exception(implode("<br>", $erros));
         }
 
-        // 4. Inserir na base de dados
+        // Inserir manutenção
         execute_query(
             "INSERT INTO Manutencao (idEquipamento, tipoManutencao, dataInicio, dataFim, idPessoaResponsavel, idFornecedor, custoManutencao, observacoes, ativo)
              VALUES (:idEq, :tipo, :dataInicio, :dataFim, :idPessoa, :idForn, :custo, :obs, 1)",
@@ -78,22 +91,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ligacao
         );
 
+        // Registar auditoria
         $novoId = $ligacao->lastInsertId();
         registar_auditoria($ligacao, 'Manutencao', $novoId, 'Criação');
 
+        // Inicializar mensagem sucesso
         $_SESSION['success_message'] = "Registo de manutenção adicionado com sucesso!";
 
+        // Desligar da BD
         $ligacao = null;
 
     } catch (Exception $e) {
+        // Capturar erro
         $_SESSION['server_error'] = "Erro: " . $e->getMessage();
     }
 }
 
-// Redirecionar para a vista detalhada, tab de manutenções
+// Inicializar variáveis
 $redirectUrl = isset($encryptedId) && !empty($encryptedId)
     ? "../detailed_view.php?id=" . urlencode($encryptedId) . "&nav=manutencoes"
     : "../equipment_list.php";
 
+// Redirecionar
 header("Location: " . $redirectUrl);
 exit;

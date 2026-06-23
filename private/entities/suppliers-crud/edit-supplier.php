@@ -1,10 +1,13 @@
 <?php
+// Carregar dependências
 require_once(__DIR__ . "/../../../config/funcoes.php");
 
+// Restringir acesso
 redirect_if_not_logged('private/login/login.php', ['suppliers.edit']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_fornecedor'])) {
     try {
+        // Recolher dados do POST
         $encryptedId = $_POST['supplier-id'] ?? null;
         if (!$encryptedId) {
             throw new Exception("ID inválido.");
@@ -15,6 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_fornecedor']))
         }
         $id = (int)$id;
 
+        // Recolher dados do POST
         $nome = $_POST['supplier-name'] ?? '';
         $nif = $_POST['supplier-nif'] ?? '';
         $email = strtolower(trim($_POST['supplier-email'] ?? ''));
@@ -23,20 +27,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_fornecedor']))
         $tipo = $_POST['supplier-type'] ?? '';
         $idPessoa = $_POST['supplier-contact-person'] ?? '';
 
-        // Sanitização
+        // Sanitizar dados
         $nome = capitalize_name(trim($nome));
         $nif = trim($nif);
         $telefone = trim($telefone);
         $website = trim($website);
         $idPessoa = empty($idPessoa) ? null : $idPessoa;
 
-        // Tipo Enum
+        // Validar tipo de fornecedor
         $tipoEnum = TipoFornecedor::tryFrom($tipo);
         if (!$tipoEnum) {
             throw new Exception("Tipo de fornecedor inválido.");
         }
 
-        // Validação usando a classe Fornecedor
+        // Sanitizar e validar dados
         $dadosSanitizados = Fornecedor::sanitizarDados([
             'idFornecedor' => (string)$id,
             'nome' => $nome,
@@ -63,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_fornecedor']))
             throw new Exception(implode(", ", $erros));
         }
 
-        // Verificar duplicados (NIF ou email noutro registo)
+        // Consultar registos
         $stmtVerificar = execute_query(
             "SELECT nifFornecedor, email FROM Fornecedor WHERE (nifFornecedor = :nif OR email = :email) AND idFornecedor != :id",
             ['nif' => $nif, 'email' => $email, 'id' => $id]);
@@ -78,13 +82,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_fornecedor']))
             }
         }
 
-        // Ler o estado antigo antes do Update para Auditoria
+        // Consultar registo antigo
         $stmtAntigo = execute_query(
             "SELECT nome, nifFornecedor, contactoTelefonico, email, website, idPessoaResponsavel, tipoFornecedor FROM Fornecedor WHERE idFornecedor = :id",
             ['id' => $id]);
         $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
 
-        // Atualizar na base de dados
+        // Atualizar registo
         execute_query(
             "UPDATE Fornecedor 
              SET nome = :nome, nifFornecedor = :nif, contactoTelefonico = :telefone, email = :email, 
@@ -114,9 +118,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_fornecedor']))
 
         $_SESSION['success_message'] = "Fornecedor editado com sucesso!";
     } catch (Exception $e) {
+        // Capturar erro
         $_SESSION['server_error'] = "Erro ao editar fornecedor: " . $e->getMessage();
     }
 }
 
+// Redirecionar
 header("Location: ../suppliers.php");
 exit;

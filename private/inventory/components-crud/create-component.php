@@ -1,10 +1,14 @@
 <?php
+// Carregar dependências
 require_once(__DIR__ . "/../../../config/funcoes.php");
 
+// Restringir acesso
 redirect_if_not_logged('private/login/login.php', ['components.create']);
 
+// Processar pedido
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
+        // Recolher dados do POST
         $nome = ucfirst(trim($_POST['component-name'] ?? ''));
         $sku = strtoupper(trim($_POST['component-sku'] ?? ''));
         $idCategoria = trim($_POST['component-category'] ?? '');
@@ -14,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stockMin = isset($_POST['component-stock-min']) && $_POST['component-stock-min'] !== '' ? (int)$_POST['component-stock-min'] : 0;
         $preco = isset($_POST['component-price']) && $_POST['component-price'] !== '' ? (float)$_POST['component-price'] : 0.00;
 
-        // Validação usando o método do Componente
+        // Sanitizar dados
         $dadosSanitizados = Componente::sanitizarDados([
             'codigoInterno' => $sku,
             'descricao' => $nome,
@@ -32,6 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stockMin = $dadosSanitizados['stockMinimo'] ?? $stockMin;
         $preco = $dadosSanitizados['preco'] ?? $preco;
         $idLocalizacao = $dadosSanitizados['idLocalizacao'] ?? $idLocalizacao;
+        
+        // Validar dados
         $erros = Componente::validarDados($dadosSanitizados);
 
         if (empty($idCategoria)) {
@@ -46,15 +52,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception(implode("<br>", $erros));
         }
 
+        // Ligar à BD
         $ligacao = connect_to_db();
 
-        // Verificar se o SKU já existe
+        // Verificar unicidade
         $stmt = execute_query("SELECT idComponente FROM Componente WHERE codigoInterno = :sku", ['sku' => $sku], $ligacao);
         if ($stmt->fetch()) {
             throw new Exception("Já existe um componente com este SKU.");
         }
 
-        // Inserir o novo Componente
+        // Inserir registo
         execute_query(
             "INSERT INTO Componente (codigoInterno, descricao, stock, stockMinimo, preco, idLocalizacao, ativo) 
              VALUES (:sku, :descricao, :stock, :stockMinimo, :preco, :idLocalizacao, 1)",
@@ -71,7 +78,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $idComponente = $ligacao->lastInsertId();
 
-        // Inserir o mapeamento do Componente com a Categoria
+        // Mapear categoria
         execute_query(
             "INSERT INTO ComponenteCategoria (idComponente, idCategoria) VALUES (:idComponente, :idCategoria)",
             [
@@ -81,14 +88,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $ligacao
         );
 
+        // Registar auditoria
         registar_auditoria($ligacao, 'Componente', $idComponente, 'Criação');
 
+        // Definir sucesso
         $_SESSION['success_message'] = "Componente criado com sucesso!";
         $ligacao = null;
     } catch (Exception $e) {
+        // Capturar erro
         $_SESSION['server_error'] = "Erro ao criar componente: " . $e->getMessage();
     }
 }
 
+// Redirecionar utilizador
 header("Location: ../components.php");
 exit;

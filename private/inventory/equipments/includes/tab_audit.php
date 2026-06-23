@@ -1,11 +1,11 @@
 <?php
 try {
-    // A ligação à BD já deve estar aberta ($ligacao) a partir do detailed_view.php, mas caso não:
+    // Ligar à BD
     if (!isset($ligacao)) {
         $ligacao = connect_to_db();
     }
 
-    // Pre-fetch IDs para evitar consultas MySQL IN (SELECT) lentas
+    // Pre-fetch IDs
     $stmtM = execute_query("SELECT idManutencao FROM Manutencao WHERE idEquipamento = :id", ['id' => $id], $ligacao);
     $idManutencoes = array_column($stmtM->fetchAll(PDO::FETCH_ASSOC), 'idManutencao');
 
@@ -15,6 +15,7 @@ try {
     $stmtD = execute_query("SELECT idDocumento FROM Documento WHERE idEquipamento = :id", ['id' => $id], $ligacao);
     $idDocumentos = array_column($stmtD->fetchAll(PDO::FETCH_ASSOC), 'idDocumento');
 
+    // Definir condições
     $whereConditions = ["(ha.tabelaAfetada = 'Equipamento' AND ha.idRegistoAfetado = :id)"];
     $params = ['id' => $id];
 
@@ -33,6 +34,7 @@ try {
 
     $whereSQL = implode(" OR ", $whereConditions);
 
+    // Consultar auditoria
     $stmtAuditoria = execute_query(
         "SELECT ha.*, p.nome AS nomeUtilizador 
          FROM HistoricoAuditoria ha
@@ -44,6 +46,7 @@ try {
         $ligacao
     );
 
+    // Processar resultados
     $auditoria = [];
     while ($row = $stmtAuditoria->fetch(PDO::FETCH_ASSOC)) {
         $data = new DateTime($row['dataCriacao']);
@@ -90,20 +93,27 @@ try {
         ];
     }
 } catch (Exception $e) {
-    // Em caso de erro, a auditoria fica vazia
+    // Capturar erro
     $auditoria = [];
 }
 ?>
+<!-- Tab Auditoria -->
 <div class="tab-pane fade <?= $activeTab === 'auditoria' ? 'show active' : '' ?>" id="nav-auditoria" role="tabpanel"
     aria-labelledby="nav-auditoria-tab">
+    <!-- Card Histórico -->
     <div class="card bento-card padding-6 d-flex flex-column gap-4">
+        <!-- Header -->
         <div class="d-flex justify-content-between align-items-center">
+            <!-- Título -->
             <h2 class="fw-700 m-0 text-primary">Histórico de Auditoria</h2>
         </div>
 
         <?php if (empty($auditoria)): ?>
+            <!-- Estado Vazio -->
             <div class="padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4 w-100">
+                <!-- Wrapper Ícone -->
                 <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                    <!-- SVG Relógio -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                         class="lucide lucide-history">
@@ -112,35 +122,54 @@ try {
                         <path d="M12 7v5l4 2" />
                     </svg>
                 </div>
+                <!-- Conteúdo -->
                 <div class="d-flex flex-column gap-2">
+                    <!-- Título -->
                     <h3 class="fw-700 m-0">Sem Registos de Auditoria</h3>
+                    <!-- Texto -->
                     <p class="text-secondary m-0">Ainda não existem registos de auditoria associados a este equipamento.</p>
                 </div>
             </div>
         <?php else: ?>
+            <!-- Tabela de Auditoria -->
             <table id="auditTable" class="heba-table w-100 display border-0">
+                <!-- Cabeçalho -->
                 <thead>
                     <tr>
+                        <!-- Coluna Data -->
                         <th>DATA</th>
+                        <!-- Coluna Ação -->
                         <th>AÇÃO</th>
+                        <!-- Coluna Utilizador -->
                         <th>UTILIZADOR</th>
+                        <!-- Coluna Detalhes -->
                         <th>DETALHES</th>
                     </tr>
                 </thead>
+                <!-- Corpo da Tabela -->
                 <tbody>
                     <?php foreach ($auditoria as $item): ?>
+                        <!-- Linha de Registo -->
                         <tr>
+                            <!-- Data -->
                             <td>
+                                <!-- Texto -->
                                 <span class="text-secondary fw-400"><?= htmlspecialchars($item['data']) ?></span>
                             </td>
+                            <!-- Ação -->
                             <td>
+                                <!-- Badge -->
                                 <span
                                     class="badge <?= htmlspecialchars($item['badgeClass']) ?>"><?= htmlspecialchars($item['acao']) ?></span>
                             </td>
+                            <!-- Utilizador -->
                             <td>
+                                <!-- Texto -->
                                 <span class="text-secondary fw-400"><?= htmlspecialchars($item['utilizador']) ?></span>
                             </td>
+                            <!-- Detalhes -->
                             <td>
+                                <!-- Texto -->
                                 <span class="text-secondary fw-400"><?= $item['detalhes'] ?></span>
                             </td>
                         </tr>

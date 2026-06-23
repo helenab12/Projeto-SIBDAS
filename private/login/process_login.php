@@ -1,32 +1,39 @@
 <?php
+// Carregar dependências
 require_once __DIR__ . "/../../config/funcoes.php";
+// Iniciar sessão
 start_session();
 
+// Verificar método POST
 if ($_SERVER['REQUEST_METHOD'] != 'POST') {
     $_SESSION['server_error'] = 'Método não permitido.';
+    // Redirecionar
     header("Location: " . BASE_URL . "private/login/login.php");
     exit;
 }
 
 try {
-    // 1. Verificar se os campos estão preenchidos
+    // Recolher dados do POST
     $email = $_POST["email"] ?? null;
     $password = $_POST["password"] ?? null;
 
-    // Sanitizar o email para garantir match com a base de dados
+    // Sanitizar dados
     if (!empty($email)) {
         $email = sanitizar_array_dados(['email' => $email])['email'];
     }
 
+    // Validar preenchimento
     if (empty($email) || empty($password)) {
         $_SESSION['server_error'] = 'Preencha todos os campos.';
+        // Redirecionar
         header("Location: " . BASE_URL . "private/login/login.php");
         exit;
     }
 
-    $ligacao = connect_to_db();
+    // Ligar à BD
+$ligacao = connect_to_db();
 
-    // 2. Verificar Utilizador e Pessoa
+    // Consultar utilizador
     $comando = execute_query(
         "SELECT u.*, p.email as pessoa_email, AES_DECRYPT(u.password, :key) as clear_password
         FROM Utilizador u
@@ -37,25 +44,28 @@ try {
     );
     $utilizador = $comando->fetch(PDO::FETCH_OBJ);
 
-    // 3. Validação de senha
+    // Validar existência
     if (!$utilizador) {
         $_SESSION['server_error'] = 'Login inválido';
+        // Redirecionar
         header('Location: ' . BASE_URL . 'private/login/login.php');
         exit;
     }
 
+    // Verificar senha
     $db_pass = $utilizador->clear_password ?? $utilizador->password;
     if (!password_verify($password, $db_pass) && $password !== $db_pass) {
         $_SESSION['server_error'] = 'Login inválido';
+        // Redirecionar
         header('Location: ' . BASE_URL . 'private/login/login.php');
         exit;
     }
 
-    // 3. Guarda os campos na sessão (usando os nomes corretos das colunas da tabela)
+    // Guardar na sessão
     $_SESSION['utilizador'] = $utilizador->emailAutenticacao;
     $_SESSION['id_utilizador'] = $utilizador->idUtilizador;
 
-    // Carregar permissões do perfil
+    // Carregar permissões
     $stmtPerms = execute_query(
         "SELECT pm.chave, pp.possui
          FROM PerfilPermissao pp
@@ -70,10 +80,13 @@ try {
     }
     $_SESSION['permissoes'] = $permissoes;
 
+    // Redirecionar
     header('Location: ' . BASE_URL . 'private/index.php');
     exit;
 } catch (PDOException $err) {
-    $_SESSION['server_error'] = "Erro ao gravar os dados: " . $err->getMessage();
+        // Capturar erro
+$_SESSION['server_error'] = "Erro ao gravar os dados: " . $err->getMessage();
+    // Redirecionar
     header('Location: ' . BASE_URL . 'private/login/login.php');
     exit;
 }

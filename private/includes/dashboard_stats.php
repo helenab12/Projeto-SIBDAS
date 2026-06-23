@@ -1,5 +1,5 @@
 <?php
-// Helper para formatar crescimento (variação percentual)
+// Calcular variação percentual
 function get_growth_array($atual, $passado)
 {
     if ($passado == 0) {
@@ -18,12 +18,14 @@ function get_growth_array($atual, $passado)
     ];
 }
 
+// Inicializar variáveis
 $dashboardStats = [];
 
 try {
+    // Ligar à BD
     $ligacaoStats = connect_to_db();
 
-    // 1. Total de Equipamentos
+    // Obter total de equipamentos
     $stmt = execute_query("SELECT COUNT(*) as count FROM Equipamento WHERE ativo = 1", [], $ligacaoStats);
     $totalEquipamentos = (int) $stmt->fetch(PDO::FETCH_ASSOC)['count'];
 
@@ -35,11 +37,11 @@ try {
         'growth' => get_growth_array($totalEquipamentos, $totalEquipamentosPassado)
     ];
 
-    // 2. Equipamentos Ativos
+    // Obter equipamentos ativos
     $stmt = execute_query("SELECT COUNT(*) as count FROM Equipamento WHERE ativo = 1 AND estadoAtual = 'Ativo'", [], $ligacaoStats);
     $dashboardStats['equipamentosAtivos'] = ['count' => (int) $stmt->fetch(PDO::FETCH_ASSOC)['count'], 'growth' => null];
 
-    // 3. Em Manutenção
+    // Obter equipamentos em manutenção
     $stmt = execute_query("SELECT COUNT(*) as count FROM Equipamento WHERE ativo = 1 AND estadoAtual = 'Em manutenção'", [], $ligacaoStats);
     $equipamentosManutencao = (int) $stmt->fetch(PDO::FETCH_ASSOC)['count'];
 
@@ -54,23 +56,23 @@ try {
         'growth' => get_growth_array($manutencoesAtuais, $manutencoesPassadas)
     ];
 
-    // 4. Garantias a Expirar
+    // Obter garantias a expirar
     $stmt = execute_query("SELECT COUNT(*) as count FROM GarantiaContrato WHERE ativo = 1 AND dataFim BETWEEN CURDATE() AND DATE_ADD(CURDATE(), INTERVAL 1 MONTH)", [], $ligacaoStats);
     $dashboardStats['garantiasAExpirar'] = ['count' => (int) $stmt->fetch(PDO::FETCH_ASSOC)['count'], 'growth' => null];
 
-    // 5. Equipamentos Inativos
+    // Obter equipamentos inativos
     $stmt = execute_query("SELECT COUNT(*) as count FROM Equipamento WHERE ativo = 1 AND estadoAtual = 'Inativo'", [], $ligacaoStats);
     $dashboardStats['equipamentosInativos'] = ['count' => (int) $stmt->fetch(PDO::FETCH_ASSOC)['count']];
 
-    // 6. Garantias Expiradas
+    // Obter garantias expiradas
     $stmt = execute_query("SELECT COUNT(*) as count FROM GarantiaContrato WHERE ativo = 1 AND dataFim < CURDATE()", [], $ligacaoStats);
     $dashboardStats['garantiasExpiradas'] = ['count' => (int) $stmt->fetch(PDO::FETCH_ASSOC)['count']];
 
-    // 7. Criticidade Elevada
+    // Obter equipamentos com criticidade elevada
     $stmt = execute_query("SELECT COUNT(*) as count FROM Equipamento WHERE ativo = 1 AND criticidade IN ('Alta', 'Crítico')", [], $ligacaoStats);
     $dashboardStats['criticidadeElevada'] = ['count' => (int) $stmt->fetch(PDO::FETCH_ASSOC)['count']];
 
-    // 8. Sem Documentos
+    // Obter equipamentos sem documentos
     $stmt = execute_query("
         SELECT COUNT(*) as count FROM (
             SELECT e.idEquipamento
@@ -83,9 +85,9 @@ try {
     ", [], $ligacaoStats);
     $dashboardStats['semDocumentos'] = ['count' => (int) $stmt->fetch(PDO::FETCH_ASSOC)['count']];
 
-    // GRÁFICOS
+    // Preparar dados para gráficos
 
-    // G1: Distribuição por Categoria
+    // Obter distribuição por categoria
     $stmt = execute_query("SELECT c.nome, COUNT(e.idEquipamento) as total FROM CategoriaEquipamento c LEFT JOIN Equipamento e ON c.idCategoria = e.idCategoria AND e.ativo = 1 WHERE c.ativo = 1 GROUP BY c.idCategoria, c.nome ORDER BY total DESC", [], $ligacaoStats);
     $rowsCat = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $dashboardStats['graficoCategoria'] = [
@@ -93,7 +95,7 @@ try {
         'data' => array_column($rowsCat, 'total')
     ];
 
-    // G2: Equipamentos por Serviço
+    // Obter equipamentos por serviço
     $stmt = execute_query("SELECT s.nome, COUNT(e.idEquipamento) as total FROM Servico s LEFT JOIN Localizacao l ON s.idServico = l.idServico AND l.ativo = 1 LEFT JOIN Equipamento e ON l.idLocalizacao = e.idLocalizacao AND e.ativo = 1 WHERE s.ativo = 1 GROUP BY s.idServico, s.nome ORDER BY total DESC", [], $ligacaoStats);
     $rowsServ = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $dashboardStats['graficoServico'] = [
@@ -101,7 +103,7 @@ try {
         'data' => array_column($rowsServ, 'total')
     ];
 
-    // G3: Tendência de Manutenção (Últimos 12 meses)
+    // Obter tendência de manutenção
     $stmt = execute_query("
         SELECT 
             MONTH(dataInicio) as mes, 
@@ -116,12 +118,13 @@ try {
     ", [], $ligacaoStats);
     $rowsMan = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+    // Inicializar variáveis do gráfico
     $mesesNomes = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
     $labels = [];
     $preventivaDataDict = [];
     $corretivaDataDict = [];
 
-    // Pre-fill the last 12 months
+    // Preencher últimos 12 meses
     for ($i = 11; $i >= 0; $i--) {
         $timestamp = strtotime("-$i months");
         $mesNum = (int) date('n', $timestamp);
@@ -133,6 +136,7 @@ try {
         $corretivaDataDict[$key] = 0;
     }
 
+    // Processar dados de manutenção
     foreach ($rowsMan as $r) {
         $key = $r['ano'] . '-' . $r['mes'];
         if (isset($preventivaDataDict[$key])) {
@@ -150,7 +154,7 @@ try {
         'corretiva' => array_values($corretivaDataDict)
     ];
 
-    // Próximas 4 manutenções agendadas (dataInicio >= hoje)
+    // Obter próximas manutenções agendadas
     $stmt = execute_query("
         SELECT 
             m.idManutencao,
@@ -170,9 +174,13 @@ try {
         LIMIT 4
     ", [], $ligacaoStats);
     $dashboardStats['proximasManutencoes'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Fechar ligação à BD
     $ligacaoStats = null;
 
-} catch (Exception $e) {
+}
+// Capturar erro
+catch (Exception $e) {
+    // Capturar erro
     error_log("Erro ao calcular estatísticas do dashboard: " . $e->getMessage());
     $dashboardStats = [];
 }

@@ -1,10 +1,13 @@
 <?php
+// Carregar dependências
 require_once(__DIR__ . "/../../../config/funcoes.php");
 
+// Restringir acesso
 redirect_if_not_logged('private/login/login.php', ['suppliers.create']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['criar_fornecedor'])) {
     try {
+        // Recolher dados do POST
         $nome = $_POST['supplier-name'] ?? '';
         $nif = $_POST['supplier-nif'] ?? '';
         $email = strtolower(trim($_POST['supplier-email'] ?? ''));
@@ -13,20 +16,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['criar_fornecedor'])) 
         $tipo = $_POST['supplier-type'] ?? '';
         $idPessoa = $_POST['supplier-contact-person'] ?? '';
 
-        // Sanitização
+        // Sanitizar dados
         $nome = capitalize_name(trim($nome));
         $nif = trim($nif);
         $telefone = trim($telefone);
         $website = trim($website);
         $idPessoa = empty($idPessoa) ? null : $idPessoa;
 
-        // Tipo Enum
+        // Validar tipo de fornecedor
         $tipoEnum = TipoFornecedor::tryFrom($tipo);
         if (!$tipoEnum) {
             throw new Exception("Tipo de fornecedor inválido.");
         }
 
-        // Validação usando a classe Fornecedor
+        // Sanitizar e validar dados
         $dadosSanitizados = Fornecedor::sanitizarDados([
             'idFornecedor' => '-1', // ID fictício para validação
             'nome' => $nome,
@@ -53,9 +56,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['criar_fornecedor'])) 
             throw new Exception(implode(", ", $erros));
         }
 
+        // Ligar à BD
         $ligacao = connect_to_db();
 
-        // Verificar duplicados (NIF ou email)
+        // Consultar registos
         $stmtVerificar = execute_query(
             "SELECT nifFornecedor, email FROM Fornecedor WHERE nifFornecedor = :nif OR email = :email",
             ['nif' => $nif, 'email' => $email],
@@ -72,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['criar_fornecedor'])) 
             }
         }
 
-        // Inserir na base de dados
+        // Inserir registo
         execute_query(
             "INSERT INTO Fornecedor (nome, nifFornecedor, contactoTelefonico, email, website, idPessoaResponsavel, tipoFornecedor, ativo, dataCriacao)
              VALUES (:nome, :nif, :telefone, :email, :website, :idPessoa, :tipo, 1, NOW())",
@@ -89,14 +93,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['criar_fornecedor'])) 
         );
 
         $novoId = $ligacao->lastInsertId();
+        // Registar auditoria
         registar_auditoria($ligacao, 'Fornecedor', $novoId, 'Criação');
 
         $_SESSION['success_message'] = "Fornecedor criado com sucesso!";
         $ligacao = null;
     } catch (Exception $e) {
+        // Capturar erro
         $_SESSION['server_error'] = "Erro ao criar fornecedor: " . $e->getMessage();
     }
 }
 
+// Redirecionar
 header("Location: ../suppliers.php");
 exit;

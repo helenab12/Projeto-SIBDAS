@@ -1,25 +1,29 @@
 <?php
+// Carregar dependências
 require_once(__DIR__ . "/../../../config/funcoes.php");
 
+// Restringir acesso
 redirect_if_not_logged('private/login/login.php', ['locations.create']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
+        // Recolher dados
         $idEdificio = (int) aes_decrypt($_POST['building-id']);
         $nomePiso = trim($_POST['floor-name'] ?? '');
 
-        // Sanitização usando a classe Piso
+        // Sanitizar dados
         $dadosSanitizados = Piso::sanitizarDados(['nome' => $nomePiso]);
         $nomePiso = $dadosSanitizados['nome'] ?? $nomePiso;
 
-        // Validação
+        // Validar dados
         if (empty($nomePiso)) {
             throw new Exception("O nome do piso não pode estar vazio.");
         }
 
+        // Ligar à BD
         $ligacao = connect_to_db();
 
-        // Verificar se já existe um Piso com o mesmo nome no mesmo Edifício
+        // Consultar registos
         $stmtVerificar = execute_query(
             "SELECT idPiso FROM Piso WHERE nome = :nome AND idEdificio = :idEdificio",
             ['nome' => $nomePiso, 'idEdificio' => $idEdificio],
@@ -30,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception("Já existe um piso (ativo ou inativo) com este nome neste edifício.");
         }
 
-        // Inserir o novo piso
+        // Inserir registo
         execute_query(
             "INSERT INTO Piso (idEdificio, nome, ativo) VALUES (:idEdificio, :nome, 1)",
             ['idEdificio' => $idEdificio, 'nome' => $nomePiso],
@@ -38,14 +42,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         );
 
         $novoId = $ligacao->lastInsertId();
+        // Registar auditoria
         registar_auditoria($ligacao, 'Piso', $novoId, 'Criação');
 
         $_SESSION['success_message'] = "Piso criado com sucesso!";
         $ligacao = null;
     } catch (Exception $e) {
+        // Capturar erro
         $_SESSION['server_error'] = "Erro ao criar piso: " . $e->getMessage();
     }
 }
 
+// Redirecionar
 header("Location: ../locations.php");
 exit;

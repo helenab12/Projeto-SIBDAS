@@ -191,7 +191,7 @@ $unreadCount = count(array_filter($notificacoes, function ($n) {
 
 
 <!-- Toast Container -->
-<div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3 mt-4" style="z-index: 100;">
+<div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3 mt-4" style="z-index: 9999;">
     <?php if (!empty($success_message)): ?>
         <div class="toast align-items-center border-0 shadow-sm toast-success w-auto padding-4 show" role="alert"
             aria-live="assertive" aria-atomic="true" data-bs-delay="5000">

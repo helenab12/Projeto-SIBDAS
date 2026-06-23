@@ -1,10 +1,14 @@
 <?php
+// Carregar dependências
 require_once(__DIR__ . "/../../../config/funcoes.php");
 
+// Restringir acesso
 redirect_if_not_logged('private/login/login.php', ['users.edit']);
 
+// Verificar método POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_utilizador'])) {
     try {
+        // Recolher dados do POST
         $encryptedUserId = $_POST['user-id'] ?? '';
         $emailAutenticacao = $_POST['user-auth-email'] ?? '';
         $password = $_POST['user-password'] ?? '';
@@ -19,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_utilizador'])) {
             throw new Exception("Por favor, preencha todos os campos obrigatórios.");
         }
 
+        // Desencriptar ID
         $idUtilizador = aes_decrypt($encryptedUserId);
         if (!$idUtilizador) {
             throw new Exception("ID de utilizador inválido.");
@@ -61,6 +66,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_utilizador'])) {
             }
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
+            // Executar query
             execute_query(
                 "UPDATE Utilizador 
                  SET emailAutenticacao = :email, 
@@ -76,6 +82,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_utilizador'])) {
                     'id' => $idUtilizador
                 ]);
         } else {
+            // Executar query
             execute_query(
                 "UPDATE Utilizador 
                  SET emailAutenticacao = :email, 
@@ -101,9 +108,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['edit_utilizador'])) {
 
         $_SESSION['success_message'] = "Utilizador atualizado com sucesso!";
     } catch (Exception $e) {
-        $_SESSION['server_error'] = "Erro ao atualizar utilizador: " . $e->getMessage();
+        // Capturar erro
+$_SESSION['server_error'] = "Erro ao atualizar utilizador: " . $e->getMessage();
     }
 }
 
+// Redirecionar
 header("Location: ../users.php");
 exit;

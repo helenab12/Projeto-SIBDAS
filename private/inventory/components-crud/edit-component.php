@@ -1,10 +1,14 @@
 <?php
+// Carregar dependências
 require_once(__DIR__ . "/../../../config/funcoes.php");
 
+// Restringir acesso
 redirect_if_not_logged('private/login/login.php', ['components.edit']);
 
+// Processar pedido
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
+        // Desencriptar ID
         $encryptedId = $_POST['component-id'] ?? null;
         if (!$encryptedId) {
             throw new Exception("ID inválido.");
@@ -15,6 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $idComponente = (int) $idComponente;
 
+        // Recolher dados do POST
         $nome = ucfirst(trim($_POST['component-name'] ?? ''));
         $sku = strtoupper(trim($_POST['component-sku'] ?? ''));
         $idCategoria = trim($_POST['component-category'] ?? '');
@@ -24,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stockMin = isset($_POST['component-stock-min']) && $_POST['component-stock-min'] !== '' ? (int) $_POST['component-stock-min'] : 0;
         $preco = isset($_POST['component-price']) && $_POST['component-price'] !== '' ? (float) $_POST['component-price'] : 0.00;
 
-        // Validação básica
+        // Sanitizar dados
         $dadosSanitizados = Componente::sanitizarDados([
             'codigoInterno' => $sku,
             'descricao' => $nome,
@@ -42,18 +47,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stockMin = $dadosSanitizados['stockMinimo'] ?? $stockMin;
         $preco = $dadosSanitizados['preco'] ?? $preco;
         $idLocalizacao = $dadosSanitizados['idLocalizacao'] ?? $idLocalizacao;
+        
+        // Validar dados
         $erros = Componente::validarDados($dadosSanitizados);
 
         if (empty($idCategoria)) {
             $erros[] = "A categoria é obrigatória.";
         }
 
-
         if (!empty($erros)) {
             throw new Exception(implode(",", $erros));
         }
 
-        // Verificar se o SKU já existe noutro componente
+        // Verificar unicidade
         $stmt = execute_query(
             "SELECT idComponente FROM Componente WHERE codigoInterno = :sku AND idComponente != :id",
             ['sku' => $sku, 'id' => $idComponente]);
@@ -61,13 +67,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception("O SKU inserido já existe noutro registo.");
         }
 
-        // Ler o estado antigo antes do Update para Auditoria
+        // Ler estado antigo
         $stmtAntigo = execute_query(
             "SELECT codigoInterno, descricao, stock, stockMinimo, preco, idLocalizacao FROM Componente WHERE idComponente = :id",
             ['id' => $idComponente]);
         $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
 
-        // Atualizar Componente
+        // Atualizar registo
         execute_query(
             "UPDATE Componente 
              SET codigoInterno = :sku, descricao = :descricao, stock = :stock, stockMinimo = :stockMinimo, preco = :preco, idLocalizacao = :idLocalizacao 
@@ -82,7 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'id' => $idComponente
             ]);
 
-        // Atualizar mapeamento do Componente com a Categoria
+        // Atualizar categoria
         $stmtCheckCat = execute_query("SELECT idCategoria FROM ComponenteCategoria WHERE idComponente = :idComponente", ['idComponente' => $idComponente]);
         if ($stmtCheckCat->fetch()) {
             execute_query(
@@ -104,11 +110,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'idLocalizacao' => $idLocalizacao
         ]);
 
+        // Definir sucesso
         $_SESSION['success_message'] = "Componente editado com sucesso!";
     } catch (Exception $e) {
+        // Capturar erro
         $_SESSION['server_error'] = "Erro ao editar componente: " . $e->getMessage();
     }
 }
 
+// Redirecionar utilizador
 header("Location: ../components.php");
 exit;

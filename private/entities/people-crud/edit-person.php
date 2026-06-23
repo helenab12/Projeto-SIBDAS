@@ -1,10 +1,13 @@
 <?php
+// Carregar dependências
 require_once(__DIR__ . "/../../../config/funcoes.php");
 
+// Restringir acesso
 redirect_if_not_logged('private/login/login.php', ['people.edit']);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
+        // Recolher dados do POST
         $encryptedId = $_POST['person-id'] ?? null;
         if (!$encryptedId) {
             throw new Exception("ID inválido.");
@@ -15,6 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         $id = (int) $id;
 
+        // Recolher dados
         $nome = capitalize_name(trim($_POST['person-name'] ?? ''));
         $nif = trim($_POST['person-nif'] ?? '');
         $funcao = trim($_POST['person-role'] ?? '');
@@ -22,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = strtolower(trim($_POST['person-email'] ?? ''));
         $telefone = trim($_POST['person-phone'] ?? '');
 
-        // Validação usando a classe Pessoa
+        // Validar e sanitizar dados
         $dadosSanitizados = Pessoa::sanitizarDados([
             'id' => (string) $id,
             'nome' => $nome,
@@ -46,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception(implode(", ", $erros));
         }
 
-        // Verificar se NIF ou Email já existem para outra pessoa
+        // Consultar registos
         $stmt = execute_query(
             "SELECT idPessoa, nif, email FROM Pessoa WHERE (nif = :nif OR email = :email) AND idPessoa != :id",
             ['nif' => $nif, 'email' => $email, 'id' => $id]);
@@ -60,12 +64,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // Ler o estado antigo antes do Update para Auditoria
+        // Consultar registo antigo
         $stmtAntigo = execute_query(
             "SELECT nome, email, contactoTelefonico, nif, funcao, departamento FROM Pessoa WHERE idPessoa = :id",
             ['id' => $id]);
         $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
 
+        // Atualizar registo
         execute_query(
             "UPDATE Pessoa 
              SET nome = :nome, email = :email, contactoTelefonico = :telefone, nif = :nif, funcao = :funcao, departamento = :departamento, dataAtualizacao = NOW() 
@@ -92,9 +97,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         $_SESSION['success_message'] = "Pessoa editada com sucesso!";
     } catch (Exception $e) {
+        // Capturar erro
         $_SESSION['server_error'] = "Erro ao editar pessoa: " . $e->getMessage();
     }
 }
 
+// Redirecionar
 header("Location: ../people_management.php");
 exit;

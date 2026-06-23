@@ -1,16 +1,21 @@
 <?php
+// Carregar dependências
 require_once(__DIR__ . "/../../../../config/funcoes.php");
 
+// Restringir acesso
 redirect_if_not_logged('private/login/login.php', ['warranties.edit']);
 
+// Validar método POST
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
+        // Ligar à BD
         $ligacao = connect_to_db();
 
-        // 1. Validar e Desencriptar os IDs
+        // Desencriptar IDs
         $encryptedEqId = trim($_POST['equipment-id'] ?? '');
         $encryptedWarId = trim($_POST['warranty-id'] ?? '');
 
+        // Validar IDs
         if (empty($encryptedEqId) || empty($encryptedWarId)) {
             throw new Exception("IDs não fornecidos.");
         }
@@ -18,11 +23,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $idEquipamento = aes_decrypt($encryptedEqId);
         $idGarantia = aes_decrypt($encryptedWarId);
 
+        // Validar desencriptação
         if ($idEquipamento === false || $idGarantia === false) {
             throw new Exception("IDs inválidos.");
         }
 
-        // 2. Recolher dados do formulário
+        // Recolher formulário
         $tipoRegisto = trim($_POST['warranty-type'] ?? '');
         $dataInicioRaw = trim($_POST['warranty-start-date'] ?? '');
         $dataFimRaw = trim($_POST['warranty-end-date'] ?? '');
@@ -30,18 +36,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $idFornecedor = trim($_POST['warranty-supplier'] ?? '');
         $observacoes = trim($_POST['warranty-notes'] ?? '');
 
-        // Converter datas de d/m/Y para Y-m-d
+        // Converter datas
         $dInicio = DateTime::createFromFormat('d/m/Y', $dataInicioRaw);
         $dataInicio = $dInicio ? $dInicio->format('Y-m-d') : '';
 
         $dFim = DateTime::createFromFormat('d/m/Y', $dataFimRaw);
         $dataFim = $dFim ? $dFim->format('Y-m-d') : '';
 
+        // Tratar ID de fornecedor
         if (empty($idFornecedor)) {
             $idFornecedor = null;
         }
 
-        // Validar dados com a classe GarantiaContrato
+        // Sanitizar dados
         $dadosSanitizados = GarantiaContrato::sanitizarDados([
             'idGarantiaContrato' => $idGarantia,
             'tipoRegisto' => $tipoRegisto,
@@ -54,19 +61,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $dataInicio = $dadosSanitizados['dataInicio'] ?? $dataInicio;
         $dataFim = $dadosSanitizados['dataFim'] ?? $dataFim;
         $periodicidade = $dadosSanitizados['periodicidade'] ?? $periodicidade;
+        
+        // Validar dados
         $erros = GarantiaContrato::validarDados($dadosSanitizados);
 
+        // Lançar erro
         if (!empty($erros)) {
             throw new Exception(implode("<br>", $erros));
         }
 
-        // Buscar dados atuais da Garantia para saber se já tem documento
+        // Obter estado antigo
         $stmtG = $ligacao->prepare("SELECT idDocumento FROM GarantiaContrato WHERE idGarantiaContrato = :id");
         $stmtG->execute(['id' => $idGarantia]);
         $rowG = $stmtG->fetch(PDO::FETCH_ASSOC);
         $idDocAntigo = $rowG ? $rowG['idDocumento'] : null;
 
-        // 3. Tratamento de Ficheiro (se houver novo)
+        // Tratar ficheiro
         $idDocumentoNovo = $idDocAntigo;
 
         if (isset($_FILES['edit-warranty-file']) && $_FILES['edit-warranty-file']['error'] === UPLOAD_ERR_OK) {
@@ -92,7 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Gerar nome único
             $newFileName = uniqid('garantia_') . '_' . time() . '.' . $ext;
             
-            // Usamos dirname de forma a chegar à raiz e entrar em files/documents
+            // Definir diretório
             $uploadDir = __DIR__ . "/../../../../files/documents/";
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0777, true);
@@ -105,7 +115,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 throw new Exception("Falha ao mover o ficheiro para o diretório de destino.");
             }
 
-            // Mapeamento do tipo de documento
+            // Mapear tipo de documento
             $tipoDoc = "Outros";
             if ($tipoRegisto === "Garantia") {
                 $tipoDoc = "Garantia";
@@ -113,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $tipoDoc = "Contrato de Manutenção";
             }
 
-            // Se existia um documento anterior, apaga fisicamente
+            // Tratar documento antigo
             if ($idDocAntigo) {
                 $stmtDocAntigo = $ligacao->prepare("SELECT caminhoFicheiro FROM Documento WHERE idDocumento = :id");
                 $stmtDocAntigo->execute(['id' => $idDocAntigo]);
@@ -126,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
 
-                // Atualizar o registo do documento
+                // Atualizar registo do documento
                 execute_query(
                     "UPDATE Documento 
                      SET tipo = :tipo, nome = :nome, caminhoFicheiro = :caminho, dataDocumento = :dataDoc, ativo = 1, dataAtualizacao = CURRENT_TIMESTAMP
@@ -159,7 +169,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // Ler o estado antigo antes do Update para Auditoria
+        // Obter estado antigo
         $stmtAntigo = execute_query(
             "SELECT tipoRegisto, dataInicio, dataFim, periodicidade, observacoes, idFornecedor, idDocumento FROM GarantiaContrato WHERE idGarantiaContrato = :id",
             ['id' => $idGarantia],
@@ -167,7 +177,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         );
         $antigo = $stmtAntigo->fetch(PDO::FETCH_ASSOC);
 
-        // 4. Inserir na tabela GarantiaContrato
+        // Atualizar DB
         execute_query(
             "UPDATE GarantiaContrato
              SET tipoRegisto = :tipo, dataInicio = :dInicio, dataFim = :dFim, periodicidade = :periodicidade, observacoes = :obs, idFornecedor = :idForn, idDocumento = :idDoc, dataAtualizacao = CURRENT_TIMESTAMP
@@ -196,18 +206,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'idDocumento' => $idDocumentoNovo
         ]);
 
+        // Definir mensagem de sucesso
         $_SESSION['success_message'] = "Registo atualizado com sucesso!";
 
+        // Fechar ligação
         $ligacao = null;
 
     } catch (Exception $e) {
+        // Capturar erro
         $_SESSION['server_error'] = "Erro: " . $e->getMessage();
     }
 }
 
+// Construir link
 $redirectUrl = isset($encryptedEqId) && !empty($encryptedEqId) 
     ? "../detailed_view.php?id=" . urlencode($encryptedEqId) . "&nav=garantias" 
     : "../equipment_list.php";
 
+// Redirecionar
 header("Location: " . $redirectUrl);
 exit;
