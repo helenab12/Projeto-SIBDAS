@@ -425,7 +425,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                             if ($idLoc !== null) {
                                                 foreach ($localizacoesDisponiveis as $locDisp) {
                                                     if ((string) $locDisp->getIdLocalizacao() === $idLoc) {
-                                                        $locNome = $locDisp->getNomeSala(); // A localizacao tem getNomeSala que na verdade usamos para passar a string inteira
+                                                        $locNome = $locDisp->getNomeSala(); // A localizacao tem getNomeSala que na verdade é usado para passar a string inteira
                                                         break;
                                                     }
                                                 }

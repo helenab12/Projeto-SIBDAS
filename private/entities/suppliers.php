@@ -178,18 +178,18 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
             </div>
             <div class="d-flex gap-2">
                 <?php if (tem_permissao('suppliers.create')): ?>
-                        <!-- Botão -->
-                        <button id="btn-open-create-supplier-modal" class="btn btn-primary btn-glowing gap-2"
-                            data-bs-toggle="modal" data-bs-target="#supplier-creation-modal">
-                            <!-- SVG -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                class="lucide lucide-plus-icon lucide-plus">
-                                <path d="M5 12h14" />
-                                <path d="M12 5v14" />
-                            </svg>
-                            Criar Fornecedor
-                        </button>
+                    <!-- Botão -->
+                    <button id="btn-open-create-supplier-modal" class="btn btn-primary btn-glowing gap-2"
+                        data-bs-toggle="modal" data-bs-target="#supplier-creation-modal">
+                        <!-- SVG -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-plus-icon lucide-plus">
+                            <path d="M5 12h14" />
+                            <path d="M12 5v14" />
+                        </svg>
+                        Criar Fornecedor
+                    </button>
                 <?php endif; ?>
             </div>
         </div>
@@ -212,17 +212,17 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         placeholder="Pesquisar por nome, email ou pessoa de contacto..."
                         value="<?= htmlspecialchars($search_query) ?>">
                     <?php if ($search_query !== ''): ?>
-                            <script>
-                                document.addEventListener("DOMContentLoaded", function () {
-                                    const searchInput = document.getElementById('search-input-field');
-                                    if (searchInput) {
-                                        searchInput.focus();
-                                        const val = searchInput.value;
-                                        searchInput.value = '';
-                                        searchInput.value = val;
-                                    }
-                                });
-                            </script>
+                        <script>
+                            document.addEventListener("DOMContentLoaded", function () {
+                                const searchInput = document.getElementById('search-input-field');
+                                if (searchInput) {
+                                    searchInput.focus();
+                                    const val = searchInput.value;
+                                    searchInput.value = '';
+                                    searchInput.value = val;
+                                }
+                            });
+                        </script>
                     <?php endif; ?>
                 </div>
                 <div class="d-flex gap-2 equipment-list-search-bar-filters flex-column flex-md-row">
@@ -242,288 +242,288 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
         </div>
 
         <?php if ($totalFornecedoresAll === 0): ?>
-                <div
-                    class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
-                    <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
-                        <!-- SVG -->
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-bell-off-icon lucide-bell-off">
-                            <path d="M9 10h.01" />
-                            <path d="M15 10h.01" />
-                            <path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z" />
-                        </svg>
-                    </div>
-                    <div class="d-flex flex-column gap-2">
-                        <!-- Título -->
-                        <h3 class="fw-700 m-0">Sem Fornecedores</h3>
-                        <p class="text-secondary m-0">De momento não existe nenhum fornecedor.</p>
-                    </div>
+            <div
+                class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
+                <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                    <!-- SVG -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-bell-off-icon lucide-bell-off">
+                        <path d="M9 10h.01" />
+                        <path d="M15 10h.01" />
+                        <path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z" />
+                    </svg>
                 </div>
+                <div class="d-flex flex-column gap-2">
+                    <!-- Título -->
+                    <h3 class="fw-700 m-0">Sem Fornecedores</h3>
+                    <p class="text-secondary m-0">De momento não existe nenhum fornecedor.</p>
+                </div>
+            </div>
         <?php elseif (empty($listaFornecedores)): ?>
-                <div
-                    class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
-                    <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
-                        <!-- SVG -->
-                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-search-x">
-                            <path d="m13.5 8.5-5 5" />
-                            <path d="m8.5 8.5 5 5" />
-                            <circle cx="11" cy="11" r="8" />
-                            <path d="m21 21-4.3-4.3" />
-                        </svg>
-                    </div>
-                    <div class="d-flex flex-column gap-2">
-                        <!-- Título -->
-                        <h3 class="fw-700 m-0">Sem resultados</h3>
-                        <p class="text-secondary m-0">Nenhum registo encontrado correspondente à sua pesquisa.</p>
-                    </div>
+            <div
+                class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
+                <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                    <!-- SVG -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-search-x">
+                        <path d="m13.5 8.5-5 5" />
+                        <path d="m8.5 8.5 5 5" />
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
+                    </svg>
                 </div>
+                <div class="d-flex flex-column gap-2">
+                    <!-- Título -->
+                    <h3 class="fw-700 m-0">Sem resultados</h3>
+                    <p class="text-secondary m-0">Nenhum registo encontrado correspondente à sua pesquisa.</p>
+                </div>
+            </div>
         <?php else: ?>
 
-                <!-- Tabela -->
-                <div class="bento-card w-100 p-0 border-0" id="table-container">
-                    <div class="datatable-wrapper no-footer sortable fixed-columns">
-                        <div class="datatable-container w-100 overflow-auto position-relative">
-                            <?php
-                            $buildSortUrl = function ($column) use ($search_query, $tipo_filter, $sort_param, $dir_param) {
-                                $params = [];
-                                if ($search_query !== '')
-                                    $params['search'] = $search_query;
-                                if ($tipo_filter !== '')
-                                    $params['tipo'] = $tipo_filter;
+            <!-- Tabela -->
+            <div class="bento-card w-100 p-0 border-0" id="table-container">
+                <div class="datatable-wrapper no-footer sortable fixed-columns">
+                    <div class="datatable-container w-100 overflow-auto position-relative">
+                        <?php
+                        $buildSortUrl = function ($column) use ($search_query, $tipo_filter, $sort_param, $dir_param) {
+                            $params = [];
+                            if ($search_query !== '')
+                                $params['search'] = $search_query;
+                            if ($tipo_filter !== '')
+                                $params['tipo'] = $tipo_filter;
 
-                                $params['sort'] = $column;
-                                $params['dir'] = ($sort_param === $column && $dir_param === 'asc') ? 'desc' : 'asc';
+                            $params['sort'] = $column;
+                            $params['dir'] = ($sort_param === $column && $dir_param === 'asc') ? 'desc' : 'asc';
 
-                                return '?' . http_build_query($params);
-                            };
+                            return '?' . http_build_query($params);
+                        };
 
-                            $getSortIcon = function ($column) use ($sort_param, $dir_param) {
-                                if ($sort_param !== $column)
-                                    return '';
-                                return $dir_param === 'asc' ? ' ↑' : ' ↓';
-                            };
-                            ?>
-                            <!-- Tabela -->
-                            <table id="suppliersTable" class="heba-table w-100 display datatable-table">
-                                <thead>
-                                    <tr>
-                                        <th><a href="<?= $buildSortUrl('nome') ?>"
-                                                class="datatable-sorter text-decoration-none text-inherit">FORNECEDOR<?= $getSortIcon('nome') ?></a>
-                                        </th>
-                                        <th><a href="<?= $buildSortUrl('tipo') ?>"
-                                                class="datatable-sorter text-decoration-none text-inherit">TIPO<?= $getSortIcon('tipo') ?></a>
-                                        </th>
-                                        <th><a href="<?= $buildSortUrl('contacto') ?>"
-                                                class="datatable-sorter text-decoration-none text-inherit">CONTACTO<?= $getSortIcon('contacto') ?></a>
-                                        </th>
-                                        <th><a href="<?= $buildSortUrl('telefone') ?>"
-                                                class="datatable-sorter text-decoration-none text-inherit">TELEFONE<?= $getSortIcon('telefone') ?></a>
-                                        </th>
-                                        <th><a href="<?= $buildSortUrl('website') ?>"
-                                                class="datatable-sorter text-decoration-none text-inherit">WEBSITE<?= $getSortIcon('website') ?></a>
-                                        </th>
-                                        <?php if (tem_permissao('suppliers.edit') || tem_permissao('suppliers.delete')): ?>
-                                                <th class="text-end">AÇÕES</th>
-                                        <?php endif; ?>
-                                    </tr>
-                                </thead>
-                                <tbody>
+                        $getSortIcon = function ($column) use ($sort_param, $dir_param) {
+                            if ($sort_param !== $column)
+                                return '';
+                            return $dir_param === 'asc' ? ' ↑' : ' ↓';
+                        };
+                        ?>
+                        <!-- Tabela -->
+                        <table id="suppliersTable" class="heba-table w-100 display datatable-table">
+                            <thead>
+                                <tr>
+                                    <th><a href="<?= $buildSortUrl('nome') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">FORNECEDOR<?= $getSortIcon('nome') ?></a>
+                                    </th>
+                                    <th><a href="<?= $buildSortUrl('tipo') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">TIPO<?= $getSortIcon('tipo') ?></a>
+                                    </th>
+                                    <th><a href="<?= $buildSortUrl('contacto') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">CONTACTO<?= $getSortIcon('contacto') ?></a>
+                                    </th>
+                                    <th><a href="<?= $buildSortUrl('telefone') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">TELEFONE<?= $getSortIcon('telefone') ?></a>
+                                    </th>
+                                    <th><a href="<?= $buildSortUrl('website') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">WEBSITE<?= $getSortIcon('website') ?></a>
+                                    </th>
+                                    <?php if (tem_permissao('suppliers.edit') || tem_permissao('suppliers.delete')): ?>
+                                        <th class="text-end">AÇÕES</th>
+                                    <?php endif; ?>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                                    <?php foreach ($listaFornecedores as $fornecedor):
-                                        $encryptedId = aes_encrypt($fornecedor->getIdFornecedor());
-                                        $tipoBadgeClass = '';
-                                        switch ($fornecedor->getTipoFornecedor()->value) {
-                                            case 'Fabricante':
-                                                $tipoBadgeClass = 'supplier-badge-supplier';
-                                                break;
-                                            case 'Distribuidor':
-                                                $tipoBadgeClass = 'supplier-badge-distributor';
-                                                break;
-                                            case 'Assistência Técnica':
-                                                $tipoBadgeClass = 'supplier-badge-tech-assistance';
-                                                break;
-                                            case 'Consumíveis':
-                                                $tipoBadgeClass = 'supplier-badge-consumable-supplier';
-                                                break;
-                                        }
-                                        ?>
-                                            <tr class="searchable-row"
-                                                data-search="<?= htmlspecialchars(strtolower($fornecedor->getNome() . ' ' . $fornecedor->getNifFornecedor() . ' ' . $fornecedor->getEmail() . ' ' . $fornecedor->getTipoFornecedor()->value)) ?>">
-                                                <td>
-                                                    <div class="d-flex align-items-center gap-3">
-                                                        <div
-                                                            class="table-icon-wrapper padding-2 d-flex align-items-center justify-content-center flex-shrink-0 equipment-icon-wrapper">
-                                                            <!-- SVG -->
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                                stroke-linecap="round" stroke-linejoin="round"
-                                                                class="lucide lucide-building2-icon lucide-building-2">
-                                                                <path d="M10 12h4" />
-                                                                <path d="M10 8h4" />
-                                                                <path d="M14 21v-3a2 2 0 0 0-4 0v3" />
-                                                                <path
-                                                                    d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2" />
-                                                                <path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16" />
-                                                            </svg>
-                                                        </div>
-                                                        <div class="d-flex flex-column">
-                                                            <p class="equipment-title fw-700 mb-0">
-                                                                <?= htmlspecialchars($fornecedor->getNome()) ?>
-                                                            </p>
-                                                            <span
-                                                                class="equipment-subtitle text-secondary fw-400"><?= htmlspecialchars($fornecedor->getEmail()) ?></span>
-                                                            <span class="visually-hidden"><?= htmlspecialchars($encryptedId) ?></span>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td>
+                                <?php foreach ($listaFornecedores as $fornecedor):
+                                    $encryptedId = aes_encrypt($fornecedor->getIdFornecedor());
+                                    $tipoBadgeClass = '';
+                                    switch ($fornecedor->getTipoFornecedor()->value) {
+                                        case 'Fabricante':
+                                            $tipoBadgeClass = 'supplier-badge-supplier';
+                                            break;
+                                        case 'Distribuidor':
+                                            $tipoBadgeClass = 'supplier-badge-distributor';
+                                            break;
+                                        case 'Assistência Técnica':
+                                            $tipoBadgeClass = 'supplier-badge-tech-assistance';
+                                            break;
+                                        case 'Consumíveis':
+                                            $tipoBadgeClass = 'supplier-badge-consumable-supplier';
+                                            break;
+                                    }
+                                    ?>
+                                    <tr class="searchable-row"
+                                        data-search="<?= htmlspecialchars(strtolower($fornecedor->getNome() . ' ' . $fornecedor->getNifFornecedor() . ' ' . $fornecedor->getEmail() . ' ' . $fornecedor->getTipoFornecedor()->value)) ?>">
+                                        <td>
+                                            <div class="d-flex align-items-center gap-3">
+                                                <div
+                                                    class="table-icon-wrapper padding-2 d-flex align-items-center justify-content-center flex-shrink-0 equipment-icon-wrapper">
+                                                    <!-- SVG -->
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round"
+                                                        class="lucide lucide-building2-icon lucide-building-2">
+                                                        <path d="M10 12h4" />
+                                                        <path d="M10 8h4" />
+                                                        <path d="M14 21v-3a2 2 0 0 0-4 0v3" />
+                                                        <path
+                                                            d="M6 10H4a2 2 0 0 0-2 2v7a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-2" />
+                                                        <path d="M6 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16" />
+                                                    </svg>
+                                                </div>
+                                                <div class="d-flex flex-column">
+                                                    <p class="equipment-title fw-700 mb-0">
+                                                        <?= htmlspecialchars($fornecedor->getNome()) ?>
+                                                    </p>
                                                     <span
-                                                        class="equipment-badge d-inline-flex align-items-center justify-content-center fw-500  <?= $tipoBadgeClass ?>">
-                                                        <?= htmlspecialchars($fornecedor->getTipoFornecedor()->value) ?>
-                                                    </span>
-                                                </td>
-                                                <td>
-                                                    <?php if ($fornecedor->getPessoaResponsavel()): ?>
-                                                            <?= htmlspecialchars($fornecedor->getPessoaResponsavel()->getNome()) ?>
-                                                    <?php else: ?>
-                                                            <span class="fst-italic text-muted">Sem contacto</span>
-                                                    <?php endif; ?>
-                                                </td>
-                                                <td>
-                                                    <a
-                                                        href="tel:<?= htmlspecialchars($fornecedor->getContactoTelefonico()) ?>"><?= htmlspecialchars($fornecedor->getContactoTelefonico()) ?></a>
-                                                </td>
-                                                <td>
-                                                    <?php if (!empty($fornecedor->getWebsite())): ?>
-                                                            <a href="<?= htmlspecialchars($fornecedor->getWebsite()) ?>" target="_blank"
-                                                                class="d-flex gap-1 align-items-center text-primary-500">
-                                                                <!-- SVG -->
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                                    stroke-linecap="round" stroke-linejoin="round"
-                                                                    class="lucide lucide-globe-icon lucide-globe stroke-primary-500">
-                                                                    <circle cx="12" cy="12" r="10" />
-                                                                    <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
-                                                                    <path d="M2 12h20" />
-                                                                </svg>
-                                                                <span>Website</span>
-                                                            </a>
-                                                    <?php else: ?>
-                                                            <span class="text-muted">&mdash;</span>
-                                                    <?php endif; ?>
-                                                </td>
-                                                <?php if (tem_permissao('suppliers.edit') || tem_permissao('suppliers.delete')): ?>
-                                                        <td class="text-end equipment-actions">
-                                                            <div class="dropdown">
-                                                                <!-- Botão -->
-                                                                <button
-                                                                    class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
-                                                                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        class="equipment-subtitle text-secondary fw-400"><?= htmlspecialchars($fornecedor->getEmail()) ?></span>
+                                                    <span class="visually-hidden"><?= htmlspecialchars($encryptedId) ?></span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <span
+                                                class="equipment-badge d-inline-flex align-items-center justify-content-center fw-500  <?= $tipoBadgeClass ?>">
+                                                <?= htmlspecialchars($fornecedor->getTipoFornecedor()->value) ?>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <?php if ($fornecedor->getPessoaResponsavel()): ?>
+                                                <?= htmlspecialchars($fornecedor->getPessoaResponsavel()->getNome()) ?>
+                                            <?php else: ?>
+                                                <span class="fst-italic text-muted">Sem contacto</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <a
+                                                href="tel:<?= htmlspecialchars($fornecedor->getContactoTelefonico()) ?>"><?= htmlspecialchars($fornecedor->getContactoTelefonico()) ?></a>
+                                        </td>
+                                        <td>
+                                            <?php if (!empty($fornecedor->getWebsite())): ?>
+                                                <a href="<?= htmlspecialchars($fornecedor->getWebsite()) ?>" target="_blank"
+                                                    class="d-flex gap-1 align-items-center text-primary-500">
+                                                    <!-- SVG -->
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round"
+                                                        class="lucide lucide-globe-icon lucide-globe stroke-primary-500">
+                                                        <circle cx="12" cy="12" r="10" />
+                                                        <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+                                                        <path d="M2 12h20" />
+                                                    </svg>
+                                                    <span>Website</span>
+                                                </a>
+                                            <?php else: ?>
+                                                <span class="text-muted">&mdash;</span>
+                                            <?php endif; ?>
+                                        </td>
+                                        <?php if (tem_permissao('suppliers.edit') || tem_permissao('suppliers.delete')): ?>
+                                            <td class="text-end equipment-actions">
+                                                <div class="dropdown">
+                                                    <!-- Botão -->
+                                                    <button
+                                                        class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
+                                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <!-- SVG -->
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round">
+                                                            <circle cx="12" cy="12" r="1" />
+                                                            <circle cx="19" cy="12" r="1" />
+                                                            <circle cx="5" cy="12" r="1" />
+                                                        </svg>
+                                                    </button>
+                                                    <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu padding-2">
+                                                        <?php if (tem_permissao('suppliers.edit')): ?>
+                                                            <li>
+                                                                <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none  text-primary"
+                                                                    href="#" data-bs-toggle="modal"
+                                                                    data-bs-target="#supplier-edit-modal-<?= $encryptedId ?>">
                                                                     <!-- SVG -->
                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                                        stroke-linecap="round" stroke-linejoin="round">
-                                                                        <circle cx="12" cy="12" r="1" />
-                                                                        <circle cx="19" cy="12" r="1" />
-                                                                        <circle cx="5" cy="12" r="1" />
+                                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                        class="lucide lucide-pencil">
+                                                                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                                                        <path d="m15 5 4 4" />
                                                                     </svg>
-                                                                </button>
-                                                                <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu padding-2">
-                                                                    <?php if (tem_permissao('suppliers.edit')): ?>
-                                                                            <li>
-                                                                                <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none  text-primary"
-                                                                                    href="#" data-bs-toggle="modal"
-                                                                                    data-bs-target="#supplier-edit-modal-<?= $encryptedId ?>">
-                                                                                    <!-- SVG -->
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                                                        class="lucide lucide-pencil">
-                                                                                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                                                        <path d="m15 5 4 4" />
-                                                                                    </svg>
-                                                                                    Editar
-                                                                                </a>
-                                                                            </li>
-                                                                    <?php endif; ?>
-                                                                    <?php if (tem_permissao('suppliers.delete')): ?>
-                                                                            <li>
-                                                                                <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none  text-error"
-                                                                                    href="#" data-bs-toggle="modal"
-                                                                                    data-bs-target="#delete-confirm-modal-<?= $encryptedId ?>">
-                                                                                    <!-- SVG Lixo -->
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                                                        class="lucide lucide-trash-2">
-                                                                                        <path d="M3 6h18" />
-                                                                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                                                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                                                                        <line x1="10" x2="10" y1="11" y2="17" />
-                                                                                        <line x1="14" x2="14" y1="11" y2="17" />
-                                                                                    </svg>
-                                                                                    Apagar
-                                                                                </a>
-                                                                            </li>
-                                                                    <?php endif; ?>
-                                                                </ul>
-                                                            </div>
-                                                        </td>
-                                                <?php endif; ?>
-                                            </tr>
-                                    <?php endforeach; ?>
+                                                                    Editar
+                                                                </a>
+                                                            </li>
+                                                        <?php endif; ?>
+                                                        <?php if (tem_permissao('suppliers.delete')): ?>
+                                                            <li>
+                                                                <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none  text-error"
+                                                                    href="#" data-bs-toggle="modal"
+                                                                    data-bs-target="#delete-confirm-modal-<?= $encryptedId ?>">
+                                                                    <!-- SVG Lixo -->
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                        class="lucide lucide-trash-2">
+                                                                        <path d="M3 6h18" />
+                                                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                                                        <line x1="10" x2="10" y1="11" y2="17" />
+                                                                        <line x1="14" x2="14" y1="11" y2="17" />
+                                                                    </svg>
+                                                                    Apagar
+                                                                </a>
+                                                            </li>
+                                                        <?php endif; ?>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        <?php endif; ?>
+                                    </tr>
+                                <?php endforeach; ?>
 
-                                </tbody>
-                            </table>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center padding-4 datatable-bottom">
+                        <div class="datatable-info">
+                            A mostrar
+                            <?= $totalFornecedoresFiltered > 0 ? $offset + 1 : 0 ?>–<?= min($offset + $items_per_page, $totalFornecedoresFiltered) ?>
+                            de <?= $totalFornecedoresFiltered ?> registos
                         </div>
+                        <nav class="datatable-pagination">
+                            <ul class="datatable-pagination-list">
+                                <?php
+                                $buildQueryString = function ($newPage) use ($search_query, $tipo_filter, $sort_param, $dir_param) {
+                                    $params = ['page' => $newPage];
+                                    if ($search_query !== '')
+                                        $params['search'] = $search_query;
+                                    if ($tipo_filter !== '')
+                                        $params['tipo'] = $tipo_filter;
+                                    if ($sort_param !== 'nome')
+                                        $params['sort'] = $sort_param;
+                                    if ($dir_param !== 'asc')
+                                        $params['dir'] = $dir_param;
+                                    return '?' . http_build_query($params);
+                                };
+                                ?>
 
-                        <div class="d-flex justify-content-between align-items-center padding-4 datatable-bottom">
-                            <div class="datatable-info">
-                                A mostrar
-                                <?= $totalFornecedoresFiltered > 0 ? $offset + 1 : 0 ?>–<?= min($offset + $items_per_page, $totalFornecedoresFiltered) ?>
-                                de <?= $totalFornecedoresFiltered ?> registos
-                            </div>
-                            <nav class="datatable-pagination">
-                                <ul class="datatable-pagination-list">
-                                    <?php
-                                    $buildQueryString = function ($newPage) use ($search_query, $tipo_filter, $sort_param, $dir_param) {
-                                        $params = ['page' => $newPage];
-                                        if ($search_query !== '')
-                                            $params['search'] = $search_query;
-                                        if ($tipo_filter !== '')
-                                            $params['tipo'] = $tipo_filter;
-                                        if ($sort_param !== 'nome')
-                                            $params['sort'] = $sort_param;
-                                        if ($dir_param !== 'asc')
-                                            $params['dir'] = $dir_param;
-                                        return '?' . http_build_query($params);
-                                    };
-                                    ?>
+                                <?php if ($current_page > 1): ?>
+                                    <li class="datatable-pagination-list-item pager"><a
+                                            href="<?= $buildQueryString($current_page - 1) ?>">‹</a></li>
+                                <?php endif; ?>
 
-                                    <?php if ($current_page > 1): ?>
-                                            <li class="datatable-pagination-list-item pager"><a
-                                                    href="<?= $buildQueryString($current_page - 1) ?>">‹</a></li>
-                                    <?php endif; ?>
+                                <?php for ($i = max(1, $current_page - 2); $i <= min($totalPages, $current_page + 2); $i++): ?>
+                                    <li
+                                        class="datatable-pagination-list-item <?= $i === $current_page ? 'datatable-active' : '' ?>">
+                                        <a href="<?= $buildQueryString($i) ?>"><?= $i ?></a>
+                                    </li>
+                                <?php endfor; ?>
 
-                                    <?php for ($i = max(1, $current_page - 2); $i <= min($totalPages, $current_page + 2); $i++): ?>
-                                            <li
-                                                class="datatable-pagination-list-item <?= $i === $current_page ? 'datatable-active' : '' ?>">
-                                                <a href="<?= $buildQueryString($i) ?>"><?= $i ?></a>
-                                            </li>
-                                    <?php endfor; ?>
-
-                                    <?php if ($current_page < $totalPages): ?>
-                                            <li class="datatable-pagination-list-item pager"><a
-                                                    href="<?= $buildQueryString($current_page + 1) ?>">›</a></li>
-                                    <?php endif; ?>
-                                </ul>
-                            </nav>
-                        </div>
+                                <?php if ($current_page < $totalPages): ?>
+                                    <li class="datatable-pagination-list-item pager"><a
+                                            href="<?= $buildQueryString($current_page + 1) ?>">›</a></li>
+                                <?php endif; ?>
+                            </ul>
+                        </nav>
                     </div>
                 </div>
+            </div>
 
         <?php endif; ?>
 
@@ -534,8 +534,378 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
 
 <!-- Modal -->
 <?php if (tem_permissao('suppliers.create')): ?>
-        <div class="modal fade" id="supplier-creation-modal" tabindex="-1" aria-labelledby="supplierModalLabel"
-            aria-hidden="true">
+    <div class="modal fade" id="supplier-creation-modal" tabindex="-1" aria-labelledby="supplierModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
+            <div class="modal-content custom-modal-content d-flex flex-column">
+                <!-- Título -->
+                <div
+                    class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
+                    <div class="d-flex flex-column">
+                        <!-- Título -->
+                        <h2 class="equipment-creation-modal-title modal-title" id="supplierModalLabel">Novo Fornecedor</h2>
+                        <span class="text-secondary fw-400">Informações do fornecedor</span>
+                    </div>
+                    <!-- Botão -->
+                    <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
+                        data-bs-dismiss="modal" aria-label="Close">
+                        <!-- SVG -->
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="lucide lucide-x-icon lucide-x stroke-secondary">
+                            <path d="M18 6 6 18" />
+                            <path d="m6 6 12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Wrapper Modal -->
+                <div class="modal-body p-0">
+                    <!-- Formulário -->
+                    <form id="supplier-creation-form" action="suppliers-crud/create-supplier.php" method="POST"
+                        class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
+
+                        <!-- Wrapper Linha -->
+                        <div class="d-flex gap-4 w-100">
+                            <div class="d-flex flex-column form-item w-100 mw-0">
+                                <div class="d-flex gap-1">
+                                    <!-- Label -->
+                                    <label for="supplier-name">Nome da Empresa</label>
+                                    <!-- SVG -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                        <path d="M12 6v12" />
+                                        <path d="M17.196 9 6.804 15" />
+                                        <path d="m6.804 9 10.392 6" />
+                                    </svg>
+                                </div>
+                                <!-- Input -->
+                                <input type="text" id="supplier-name" name="supplier-name"
+                                    placeholder="Ex: Dräger Portugal, Lda." required>
+                            </div>
+
+                            <div class="d-flex flex-column form-item w-100 mw-0">
+                                <div class="d-flex gap-1">
+                                    <!-- Label -->
+                                    <label for="supplier-nif">NIF</label>
+                                    <!-- SVG -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                        <path d="M12 6v12" />
+                                        <path d="M17.196 9 6.804 15" />
+                                        <path d="m6.804 9 10.392 6" />
+                                    </svg>
+                                </div>
+                                <!-- Input -->
+                                <input type="text" id="supplier-nif" name="supplier-nif" placeholder="501234567" required
+                                    maxlength="9" pattern="[0-9]{9}" title="O NIF deve conter 9 dígitos">
+                            </div>
+                        </div>
+
+                        <!-- Wrapper Linha -->
+                        <div class="d-flex flex-column form-item w-100 mw-0">
+                            <div class="d-flex gap-1">
+                                <!-- Label -->
+                                <label for="supplier-type">Tipo</label>
+                                <!-- SVG -->
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round" class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                    <path d="M12 6v12" />
+                                    <path d="M17.196 9 6.804 15" />
+                                    <path d="m6.804 9 10.392 6" />
+                                </svg>
+                            </div>
+                            <!-- Input Select -->
+                            <select id="supplier-type" name="supplier-type" class="form-select w-100" required>
+                                <option value="Fabricante" selected>Fabricante</option>
+                                <option value="Distribuidor">Distribuidor</option>
+                                <option value="Assistência Técnica">Assistência Técnica</option>
+                                <option value="Consumíveis">Consumíveis</option>
+                            </select>
+                        </div>
+
+                        <!-- Wrapper Linha -->
+                        <div class="d-flex gap-4 w-100">
+                            <div class="d-flex flex-column form-item w-100 mw-0">
+                                <div class="d-flex gap-1">
+                                    <!-- Label -->
+                                    <label for="supplier-email">Email</label>
+                                    <!-- SVG -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                        <path d="M12 6v12" />
+                                        <path d="M17.196 9 6.804 15" />
+                                        <path d="m6.804 9 10.392 6" />
+                                    </svg>
+                                </div>
+                                <!-- Input -->
+                                <input type="email" id="supplier-email" name="supplier-email"
+                                    placeholder="email@empresa.com" required>
+                            </div>
+
+                            <div class="d-flex flex-column form-item w-100 mw-0">
+                                <div class="d-flex gap-1">
+                                    <!-- Label -->
+                                    <label for="supplier-phone">Telefone de Contacto</label>
+                                    <!-- SVG -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                        <path d="M12 6v12" />
+                                        <path d="M17.196 9 6.804 15" />
+                                        <path d="m6.804 9 10.392 6" />
+                                    </svg>
+                                </div>
+                                <!-- Input -->
+                                <input type="text" id="supplier-phone" name="supplier-phone" placeholder="+351 21X XXX XXX"
+                                    required>
+                            </div>
+                        </div>
+
+                        <!-- Wrapper Linha -->
+                        <div class="d-flex flex-column form-item w-100 mw-0">
+                            <!-- Label -->
+                            <label for="supplier-website">Website</label>
+                            <!-- Input -->
+                            <input type="url" id="supplier-website" name="supplier-website"
+                                placeholder="https://www.empresa.pt">
+                        </div>
+
+                        <!-- Wrapper Linha -->
+                        <div class="d-flex flex-column form-item w-100 mw-0">
+                            <!-- Label -->
+                            <label for="supplier-contact-person">Pessoa Responsável</label>
+                            <!-- Input Select -->
+                            <select id="supplier-contact-person" name="supplier-contact-person" class="form-select w-100">
+                                <option value="" selected>Sem pessoa associada</option>
+                                <?php foreach ($pessoasDisponiveis as $pessoa): ?>
+                                    <option value="<?= htmlspecialchars($pessoa->getId()) ?>">
+                                        <?= htmlspecialchars($pessoa->getNome() . ' (' . ($pessoa->getFuncao() ? $pessoa->getFuncao()->value : 'Sem função') . ')') ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <!-- Rodapé Formulário -->
+                        <div class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row  mt-4">
+                            <!-- Botão -->
+                            <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
+                                data-bs-dismiss="modal">Cancelar</button>
+                            <!-- Botão -->
+                            <button type="submit" name="criar_fornecedor" id="btn-submit-modal"
+                                class="btn btn-primary btn-glowing" disabled>
+                                Criar Fornecedor
+                            </button>
+                        </div>
+                        <?php if (SHOW_DEBUG_BUTTONS): ?>
+                            <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
+                                <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido
+                                    (Debug)</span>
+                                <!-- Botão -->
+                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
+                                    onclick="prefillFields({'supplier-name': 'Dräger Portugal, Lda.', 'supplier-nif': '501234567', 'supplier-type': 'Fabricante', 'supplier-email': 'info@draeger.pt', 'supplier-phone': '211234567', 'supplier-website': 'https://www.draeger.pt'})">Dräger</button>
+                                <!-- Botão -->
+                                <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
+                                    onclick="prefillFields({'supplier-name': 'Medtronic Portugal', 'supplier-nif': '509876543', 'supplier-type': 'Distribuidor', 'supplier-email': 'contact@medtronic.pt', 'supplier-phone': '219876543', 'supplier-website': 'https://www.medtronic.pt'})">Medtronic</button>
+                            </div>
+                        <?php endif; ?>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php endif; ?>
+
+<?php foreach ($listaFornecedores as $fornecedor):
+    $encryptedId = aes_encrypt($fornecedor->getIdFornecedor());
+    ?>
+    <?php if (tem_permissao('suppliers.edit')): ?>
+        <!-- Modal -->
+        <div class="modal fade" id="supplier-edit-modal-<?= $encryptedId ?>" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
+                <div class="modal-content custom-modal-content d-flex flex-column">
+                    <div
+                        class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
+                        <div class="d-flex flex-column">
+                            <!-- Título -->
+                            <h2 class="equipment-creation-modal-title modal-title">Editar Fornecedor</h2>
+                            <span class="text-secondary fw-400">Atualizar informações do fornecedor</span>
+                        </div>
+                        <!-- Botão -->
+                        <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
+                            data-bs-dismiss="modal" aria-label="Close">
+                            <!-- SVG -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-x-icon lucide-x stroke-secondary">
+                                <path d="M18 6 6 18" />
+                                <path d="m6 6 12 12" />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="modal-body p-0">
+                        <!-- Formulário -->
+                        <form action="suppliers-crud/edit-supplier.php" method="POST"
+                            class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
+                            <!-- Input -->
+                            <input type="hidden" name="supplier-id" value="<?= $encryptedId ?>">
+
+                            <div class="d-flex gap-4 w-100">
+                                <div class="d-flex flex-column form-item w-100 mw-0">
+                                    <div class="d-flex gap-1">
+                                        <!-- Label -->
+                                        <label for="supplier-name-<?= $encryptedId ?>">Nome da Empresa</label>
+                                        <!-- SVG -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                            <path d="M12 6v12" />
+                                            <path d="M17.196 9 6.804 15" />
+                                            <path d="m6.804 9 10.392 6" />
+                                        </svg>
+                                    </div>
+                                    <!-- Input -->
+                                    <input type="text" id="supplier-name-<?= $encryptedId ?>" name="supplier-name"
+                                        value="<?= htmlspecialchars($fornecedor->getNome()) ?>" required>
+                                </div>
+                                <div class="d-flex flex-column form-item w-100 mw-0">
+                                    <div class="d-flex gap-1">
+                                        <!-- Label -->
+                                        <label for="supplier-nif-<?= $encryptedId ?>">NIF</label>
+                                        <!-- SVG -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                            <path d="M12 6v12" />
+                                            <path d="M17.196 9 6.804 15" />
+                                            <path d="m6.804 9 10.392 6" />
+                                        </svg>
+                                    </div>
+                                    <!-- Input -->
+                                    <input type="text" id="supplier-nif-<?= $encryptedId ?>" name="supplier-nif"
+                                        value="<?= htmlspecialchars($fornecedor->getNifFornecedor()) ?>" required maxlength="9"
+                                        pattern="[0-9]{9}">
+                                </div>
+                            </div>
+
+                            <div class="d-flex flex-column form-item w-100 mw-0">
+                                <div class="d-flex gap-1">
+                                    <!-- Label -->
+                                    <label for="supplier-type-<?= $encryptedId ?>">Tipo</label>
+                                    <!-- SVG -->
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                        <path d="M12 6v12" />
+                                        <path d="M17.196 9 6.804 15" />
+                                        <path d="m6.804 9 10.392 6" />
+                                    </svg>
+                                </div>
+                                <!-- Input Select -->
+                                <select id="supplier-type-<?= $encryptedId ?>" name="supplier-type" class="form-select w-100"
+                                    required>
+                                    <option value="Fabricante" <?= $fornecedor->getTipoFornecedor()->value === 'Fabricante' ? 'selected' : '' ?>>Fabricante</option>
+                                    <option value="Distribuidor" <?= $fornecedor->getTipoFornecedor()->value === 'Distribuidor' ? 'selected' : '' ?>>Distribuidor</option>
+                                    <option value="Assistência Técnica"
+                                        <?= $fornecedor->getTipoFornecedor()->value === 'Assistência Técnica' ? 'selected' : '' ?>>
+                                        Assistência Técnica</option>
+                                    <option value="Consumíveis" <?= $fornecedor->getTipoFornecedor()->value === 'Consumíveis' ? 'selected' : '' ?>>Consumíveis</option>
+                                </select>
+                            </div>
+
+                            <div class="d-flex gap-4 w-100">
+                                <div class="d-flex flex-column form-item w-100 mw-0">
+                                    <div class="d-flex gap-1">
+                                        <!-- Label -->
+                                        <label for="supplier-email-<?= $encryptedId ?>">Email</label>
+                                        <!-- SVG -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                            <path d="M12 6v12" />
+                                            <path d="M17.196 9 6.804 15" />
+                                            <path d="m6.804 9 10.392 6" />
+                                        </svg>
+                                    </div>
+                                    <!-- Input -->
+                                    <input type="email" id="supplier-email-<?= $encryptedId ?>" name="supplier-email"
+                                        value="<?= htmlspecialchars($fornecedor->getEmail()) ?>" required>
+                                </div>
+                                <div class="d-flex flex-column form-item w-100 mw-0">
+                                    <div class="d-flex gap-1">
+                                        <!-- Label -->
+                                        <label for="supplier-phone-<?= $encryptedId ?>">Telefone</label>
+                                        <!-- SVG -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                            stroke-linejoin="round"
+                                            class="lucide lucide-asterisk-icon lucide-asterisk text-error">
+                                            <path d="M12 6v12" />
+                                            <path d="M17.196 9 6.804 15" />
+                                            <path d="m6.804 9 10.392 6" />
+                                        </svg>
+                                    </div>
+                                    <!-- Input -->
+                                    <input type="text" id="supplier-phone-<?= $encryptedId ?>" name="supplier-phone"
+                                        value="<?= htmlspecialchars($fornecedor->getContactoTelefonico()) ?>" required>
+                                </div>
+                            </div>
+
+                            <div class="d-flex flex-column form-item w-100 mw-0">
+                                <!-- Label -->
+                                <label for="supplier-website-<?= $encryptedId ?>">Website</label>
+                                <!-- Input -->
+                                <input type="url" id="supplier-website-<?= $encryptedId ?>" name="supplier-website"
+                                    value="<?= htmlspecialchars($fornecedor->getWebsite()) ?>">
+                            </div>
+
+                            <div class="d-flex flex-column form-item w-100 mw-0">
+                                <!-- Label -->
+                                <label for="supplier-contact-person-<?= $encryptedId ?>">Pessoa Responsável</label>
+                                <!-- Input Select -->
+                                <select id="supplier-contact-person-<?= $encryptedId ?>" name="supplier-contact-person"
+                                    class="form-select w-100">
+                                    <option value="" <?= !$fornecedor->getIdPessoaResponsavel() ? 'selected' : '' ?>>Sem pessoa
+                                        associada</option>
+                                    <?php foreach ($pessoasDisponiveis as $pessoa): ?>
+                                        <option value="<?= htmlspecialchars($pessoa->getId()) ?>"
+                                            <?= $fornecedor->getIdPessoaResponsavel() == $pessoa->getId() ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($pessoa->getNome() . ' (' . ($pessoa->getFuncao() ? $pessoa->getFuncao()->value : 'Sem função') . ')') ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row  mt-4">
+                                <!-- Botão -->
+                                <button type="button" class="btn btn-ghost" data-bs-dismiss="modal">Cancelar</button>
+                                <!-- Botão -->
+                                <button type="submit" name="editar_fornecedor"
+                                    class="btn btn-primary btn-glowing">Guardar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
+    <?php if (tem_permissao('suppliers.delete')): ?>
+        <!-- Modal -->
+        <div class="modal fade" id="delete-confirm-modal-<?= $encryptedId ?>" tabindex="-1"
+            aria-labelledby="deleteModalLabel-<?= $encryptedId ?>" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
                 <div class="modal-content custom-modal-content d-flex flex-column">
                     <!-- Título -->
@@ -543,9 +913,11 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                         class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
                         <div class="d-flex flex-column">
                             <!-- Título -->
-                            <h2 class="equipment-creation-modal-title modal-title" id="supplierModalLabel">Novo Fornecedor</h2>
-                            <span class="text-secondary fw-400">Informações do fornecedor</span>
+                            <h2 class="equipment-creation-modal-title modal-title" id="deleteModalLabel-<?= $encryptedId ?>">
+                                Eliminar Fornecedor</h2>
+                            <span class="text-secondary fw-400">O fornecedor será movido para a reciclagem.</span>
                         </div>
+
                         <!-- Botão -->
                         <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
                             data-bs-dismiss="modal" aria-label="Close">
@@ -562,475 +934,103 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                     <!-- Wrapper Modal -->
                     <div class="modal-body p-0">
                         <!-- Formulário -->
-                        <form id="supplier-creation-form" action="suppliers-crud/create-supplier.php" method="POST"
-                            class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
+                        <form method="POST" action="suppliers-crud/delete-supplier.php">
+                            <!-- Input -->
+                            <input type="hidden" name="supplier-id" value="<?= $encryptedId ?>">
+                            <div
+                                class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
 
-                            <!-- Wrapper Linha -->
-                            <div class="d-flex gap-4 w-100">
-                                <div class="d-flex flex-column form-item w-100 mw-0">
-                                    <div class="d-flex gap-1">
-                                        <!-- Label -->
-                                        <label for="supplier-name">Nome da Empresa</label>
+                                <div class="d-flex flex-column align-items-center gap-4">
+                                    <div class="d-flex padding-3 danger-icon">
                                         <!-- SVG -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
                                             fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            class="lucide lucide-asterisk-icon lucide-asterisk text-error">
-                                            <path d="M12 6v12" />
-                                            <path d="M17.196 9 6.804 15" />
-                                            <path d="m6.804 9 10.392 6" />
+                                            stroke-linejoin="round" class="lucide lucide-triangle-alert">
+                                            <path
+                                                d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
+                                            <path d="M12 9v4" />
+                                            <path d="M12 17h.01" />
                                         </svg>
                                     </div>
-                                    <!-- Input -->
-                                    <input type="text" id="supplier-name" name="supplier-name"
-                                        placeholder="Ex: Dräger Portugal, Lda." required>
-                                </div>
-
-                                <div class="d-flex flex-column form-item w-100 mw-0">
-                                    <div class="d-flex gap-1">
-                                        <!-- Label -->
-                                        <label for="supplier-nif">NIF</label>
-                                        <!-- SVG -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            class="lucide lucide-asterisk-icon lucide-asterisk text-error">
-                                            <path d="M12 6v12" />
-                                            <path d="M17.196 9 6.804 15" />
-                                            <path d="m6.804 9 10.392 6" />
-                                        </svg>
+                                    <div class="d-flex flex-column align-items-center justify-content-center gap-3">
+                                        <div
+                                            class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
+                                            <p class="text-secondary">
+                                                Tem a certeza que deseja eliminar o fornecedor?
+                                            </p>
+                                            <!-- Título -->
+                                            <h2 class="fw-700">
+                                                "<?= htmlspecialchars($fornecedor->getNome()) ?>"
+                                            </h2>
+                                            <span class="text-muted">Tipo: Fornecedor</span>
+                                        </div>
                                     </div>
-                                    <!-- Input -->
-                                    <input type="text" id="supplier-nif" name="supplier-nif" placeholder="501234567" required
-                                        pattern="[0-9]{9}" title="O NIF deve conter 9 dígitos">
-                                </div>
-                            </div>
-
-                            <!-- Wrapper Linha -->
-                            <div class="d-flex flex-column form-item w-100 mw-0">
-                                <div class="d-flex gap-1">
-                                    <!-- Label -->
-                                    <label for="supplier-type">Tipo</label>
-                                    <!-- SVG -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-asterisk-icon lucide-asterisk text-error">
-                                        <path d="M12 6v12" />
-                                        <path d="M17.196 9 6.804 15" />
-                                        <path d="m6.804 9 10.392 6" />
-                                    </svg>
-                                </div>
-                                <!-- Input Select -->
-                                <select id="supplier-type" name="supplier-type" class="form-select w-100" required>
-                                    <option value="Fabricante" selected>Fabricante</option>
-                                    <option value="Distribuidor">Distribuidor</option>
-                                    <option value="Assistência Técnica">Assistência Técnica</option>
-                                    <option value="Consumíveis">Consumíveis</option>
-                                </select>
-                            </div>
-
-                            <!-- Wrapper Linha -->
-                            <div class="d-flex gap-4 w-100">
-                                <div class="d-flex flex-column form-item w-100 mw-0">
-                                    <div class="d-flex gap-1">
-                                        <!-- Label -->
-                                        <label for="supplier-email">Email</label>
-                                        <!-- SVG -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            class="lucide lucide-asterisk-icon lucide-asterisk text-error">
-                                            <path d="M12 6v12" />
-                                            <path d="M17.196 9 6.804 15" />
-                                            <path d="m6.804 9 10.392 6" />
-                                        </svg>
-                                    </div>
-                                    <!-- Input -->
-                                    <input type="email" id="supplier-email" name="supplier-email"
-                                        placeholder="email@empresa.com" required>
                                 </div>
 
-                                <div class="d-flex flex-column form-item w-100 mw-0">
-                                    <div class="d-flex gap-1">
-                                        <!-- Label -->
-                                        <label for="supplier-phone">Telefone de Contacto</label>
-                                        <!-- SVG -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                            fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                            stroke-linejoin="round"
-                                            class="lucide lucide-asterisk-icon lucide-asterisk text-error">
-                                            <path d="M12 6v12" />
-                                            <path d="M17.196 9 6.804 15" />
-                                            <path d="m6.804 9 10.392 6" />
-                                        </svg>
-                                    </div>
-                                    <!-- Input -->
-                                    <input type="text" id="supplier-phone" name="supplier-phone" placeholder="+351 21X XXX XXX"
-                                        required>
-                                </div>
-                            </div>
-
-                            <!-- Wrapper Linha -->
-                            <div class="d-flex flex-column form-item w-100 mw-0">
-                                <!-- Label -->
-                                <label for="supplier-website">Website</label>
-                                <!-- Input -->
-                                <input type="url" id="supplier-website" name="supplier-website"
-                                    placeholder="https://www.empresa.pt">
-                            </div>
-
-                            <!-- Wrapper Linha -->
-                            <div class="d-flex flex-column form-item w-100 mw-0">
-                                <!-- Label -->
-                                <label for="supplier-contact-person">Pessoa Responsável</label>
-                                <!-- Input Select -->
-                                <select id="supplier-contact-person" name="supplier-contact-person" class="form-select w-100">
-                                    <option value="" selected>Sem pessoa associada</option>
-                                    <?php foreach ($pessoasDisponiveis as $pessoa): ?>
-                                            <option value="<?= htmlspecialchars($pessoa->getId()) ?>">
-                                                <?= htmlspecialchars($pessoa->getNome() . ' (' . ($pessoa->getFuncao() ? $pessoa->getFuncao()->value : 'Sem função') . ')') ?>
-                                            </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-
-                            <!-- Rodapé Formulário -->
-                            <div class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row  mt-4">
                                 <!-- Botão -->
-                                <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
-                                    data-bs-dismiss="modal">Cancelar</button>
-                                <!-- Botão -->
-                                <button type="submit" name="criar_fornecedor" id="btn-submit-modal"
-                                    class="btn btn-primary btn-glowing" disabled>
-                                    Criar Fornecedor
-                                </button>
+                                <div class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row ">
+                                    <!-- Botão -->
+                                    <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
+                                        data-bs-dismiss="modal">Cancelar</button>
+                                    <!-- Botão -->
+                                    <button type="submit" name="apagar_fornecedor"
+                                        class="btn btn-danger btn-glowing text-white">
+                                        Sim, Apagar.
+                                    </button>
+                                </div>
                             </div>
-                            <?php if (SHOW_DEBUG_BUTTONS): ?>
-                                    <div class="d-flex flex-wrap gap-2 pt-2 border-top border-light mt-4">
-                                        <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido
-                                            (Debug)</span>
-                                        <!-- Botão -->
-                                        <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
-                                            onclick="prefillFields({'supplier-name': 'Dräger Portugal, Lda.', 'supplier-nif': '501234567', 'supplier-type': 'Fabricante', 'supplier-email': 'info@draeger.pt', 'supplier-phone': '211234567', 'supplier-website': 'https://www.draeger.pt'})">Dräger</button>
-                                        <!-- Botão -->
-                                        <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
-                                            onclick="prefillFields({'supplier-name': 'Medtronic Portugal', 'supplier-nif': '509876543', 'supplier-type': 'Distribuidor', 'supplier-email': 'contact@medtronic.pt', 'supplier-phone': '219876543', 'supplier-website': 'https://www.medtronic.pt'})">Medtronic</button>
-                                    </div>
-                            <?php endif; ?>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
-<?php endif; ?>
-
-<?php foreach ($listaFornecedores as $fornecedor):
-    $encryptedId = aes_encrypt($fornecedor->getIdFornecedor());
-    ?>
-        <?php if (tem_permissao('suppliers.edit')): ?>
-                <!-- Modal -->
-                <div class="modal fade" id="supplier-edit-modal-<?= $encryptedId ?>" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
-                        <div class="modal-content custom-modal-content d-flex flex-column">
-                            <div
-                                class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
-                                <div class="d-flex flex-column">
-                                    <!-- Título -->
-                                    <h2 class="equipment-creation-modal-title modal-title">Editar Fornecedor</h2>
-                                    <span class="text-secondary fw-400">Atualizar informações do fornecedor</span>
-                                </div>
-                                <!-- Botão -->
-                                <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
-                                    data-bs-dismiss="modal" aria-label="Close">
-                                    <!-- SVG -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-x-icon lucide-x stroke-secondary">
-                                        <path d="M18 6 6 18" />
-                                        <path d="m6 6 12 12" />
-                                    </svg>
-                                </button>
-                            </div>
-
-                            <div class="modal-body p-0">
-                                <!-- Formulário -->
-                                <form action="suppliers-crud/edit-supplier.php" method="POST"
-                                    class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
-                                    <!-- Input -->
-                                    <input type="hidden" name="supplier-id" value="<?= $encryptedId ?>">
-
-                                    <div class="d-flex gap-4 w-100">
-                                        <div class="d-flex flex-column form-item w-100 mw-0">
-                                            <div class="d-flex gap-1">
-                                                <!-- Label -->
-                                                <label for="supplier-name-<?= $encryptedId ?>">Nome da Empresa</label>
-                                                <!-- SVG -->
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    class="lucide lucide-asterisk-icon lucide-asterisk text-error">
-                                                    <path d="M12 6v12" />
-                                                    <path d="M17.196 9 6.804 15" />
-                                                    <path d="m6.804 9 10.392 6" />
-                                                </svg>
-                                            </div>
-                                            <!-- Input -->
-                                            <input type="text" id="supplier-name-<?= $encryptedId ?>" name="supplier-name"
-                                                value="<?= htmlspecialchars($fornecedor->getNome()) ?>" required>
-                                        </div>
-                                        <div class="d-flex flex-column form-item w-100 mw-0">
-                                            <div class="d-flex gap-1">
-                                                <!-- Label -->
-                                                <label for="supplier-nif-<?= $encryptedId ?>">NIF</label>
-                                                <!-- SVG -->
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    class="lucide lucide-asterisk-icon lucide-asterisk text-error">
-                                                    <path d="M12 6v12" />
-                                                    <path d="M17.196 9 6.804 15" />
-                                                    <path d="m6.804 9 10.392 6" />
-                                                </svg>
-                                            </div>
-                                            <!-- Input -->
-                                            <input type="text" id="supplier-nif-<?= $encryptedId ?>" name="supplier-nif"
-                                                value="<?= htmlspecialchars($fornecedor->getNifFornecedor()) ?>" required
-                                                pattern="[0-9]{9}">
-                                        </div>
-                                    </div>
-
-                                    <div class="d-flex flex-column form-item w-100 mw-0">
-                                        <div class="d-flex gap-1">
-                                            <!-- Label -->
-                                            <label for="supplier-type-<?= $encryptedId ?>">Tipo</label>
-                                            <!-- SVG -->
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round" class="lucide lucide-asterisk-icon lucide-asterisk text-error">
-                                                <path d="M12 6v12" />
-                                                <path d="M17.196 9 6.804 15" />
-                                                <path d="m6.804 9 10.392 6" />
-                                            </svg>
-                                        </div>
-                                        <!-- Input Select -->
-                                        <select id="supplier-type-<?= $encryptedId ?>" name="supplier-type" class="form-select w-100"
-                                            required>
-                                            <option value="Fabricante" <?= $fornecedor->getTipoFornecedor()->value === 'Fabricante' ? 'selected' : '' ?>>Fabricante</option>
-                                            <option value="Distribuidor" <?= $fornecedor->getTipoFornecedor()->value === 'Distribuidor' ? 'selected' : '' ?>>Distribuidor</option>
-                                            <option value="Assistência Técnica"
-                                                <?= $fornecedor->getTipoFornecedor()->value === 'Assistência Técnica' ? 'selected' : '' ?>>
-                                                Assistência Técnica</option>
-                                            <option value="Consumíveis" <?= $fornecedor->getTipoFornecedor()->value === 'Consumíveis' ? 'selected' : '' ?>>Consumíveis</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="d-flex gap-4 w-100">
-                                        <div class="d-flex flex-column form-item w-100 mw-0">
-                                            <div class="d-flex gap-1">
-                                                <!-- Label -->
-                                                <label for="supplier-email-<?= $encryptedId ?>">Email</label>
-                                                <!-- SVG -->
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    class="lucide lucide-asterisk-icon lucide-asterisk text-error">
-                                                    <path d="M12 6v12" />
-                                                    <path d="M17.196 9 6.804 15" />
-                                                    <path d="m6.804 9 10.392 6" />
-                                                </svg>
-                                            </div>
-                                            <!-- Input -->
-                                            <input type="email" id="supplier-email-<?= $encryptedId ?>" name="supplier-email"
-                                                value="<?= htmlspecialchars($fornecedor->getEmail()) ?>" required>
-                                        </div>
-                                        <div class="d-flex flex-column form-item w-100 mw-0">
-                                            <div class="d-flex gap-1">
-                                                <!-- Label -->
-                                                <label for="supplier-phone-<?= $encryptedId ?>">Telefone</label>
-                                                <!-- SVG -->
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24"
-                                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                    stroke-linejoin="round"
-                                                    class="lucide lucide-asterisk-icon lucide-asterisk text-error">
-                                                    <path d="M12 6v12" />
-                                                    <path d="M17.196 9 6.804 15" />
-                                                    <path d="m6.804 9 10.392 6" />
-                                                </svg>
-                                            </div>
-                                            <!-- Input -->
-                                            <input type="text" id="supplier-phone-<?= $encryptedId ?>" name="supplier-phone"
-                                                value="<?= htmlspecialchars($fornecedor->getContactoTelefonico()) ?>" required>
-                                        </div>
-                                    </div>
-
-                                    <div class="d-flex flex-column form-item w-100 mw-0">
-                                        <!-- Label -->
-                                        <label for="supplier-website-<?= $encryptedId ?>">Website</label>
-                                        <!-- Input -->
-                                        <input type="url" id="supplier-website-<?= $encryptedId ?>" name="supplier-website"
-                                            value="<?= htmlspecialchars($fornecedor->getWebsite()) ?>">
-                                    </div>
-
-                                    <div class="d-flex flex-column form-item w-100 mw-0">
-                                        <!-- Label -->
-                                        <label for="supplier-contact-person-<?= $encryptedId ?>">Pessoa Responsável</label>
-                                        <!-- Input Select -->
-                                        <select id="supplier-contact-person-<?= $encryptedId ?>" name="supplier-contact-person"
-                                            class="form-select w-100">
-                                            <option value="" <?= !$fornecedor->getIdPessoaResponsavel() ? 'selected' : '' ?>>Sem pessoa
-                                                associada</option>
-                                            <?php foreach ($pessoasDisponiveis as $pessoa): ?>
-                                                    <option value="<?= htmlspecialchars($pessoa->getId()) ?>"
-                                                        <?= $fornecedor->getIdPessoaResponsavel() == $pessoa->getId() ? 'selected' : '' ?>>
-                                                        <?= htmlspecialchars($pessoa->getNome() . ' (' . ($pessoa->getFuncao() ? $pessoa->getFuncao()->value : 'Sem função') . ')') ?>
-                                                    </option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
-
-                                    <div class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row  mt-4">
-                                        <!-- Botão -->
-                                        <button type="button" class="btn btn-ghost" data-bs-dismiss="modal">Cancelar</button>
-                                        <!-- Botão -->
-                                        <button type="submit" name="editar_fornecedor"
-                                            class="btn btn-primary btn-glowing">Guardar</button>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-        <?php endif; ?>
-
-        <?php if (tem_permissao('suppliers.delete')): ?>
-                <!-- Modal -->
-                <div class="modal fade" id="delete-confirm-modal-<?= $encryptedId ?>" tabindex="-1"
-                    aria-labelledby="deleteModalLabel-<?= $encryptedId ?>" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable equipment-creation-modal-dialog">
-                        <div class="modal-content custom-modal-content d-flex flex-column">
-                            <!-- Título -->
-                            <div
-                                class="d-flex flex-row justify-content-between align-items-center equipment-creation-modal-title-section padding-6 border-0">
-                                <div class="d-flex flex-column">
-                                    <!-- Título -->
-                                    <h2 class="equipment-creation-modal-title modal-title" id="deleteModalLabel-<?= $encryptedId ?>">
-                                        Eliminar Fornecedor</h2>
-                                    <span class="text-secondary fw-400">O fornecedor será movido para a reciclagem.</span>
-                                </div>
-
-                                <!-- Botão -->
-                                <button class="equipment-creation-modal-close-btn btn p-0 border-0 bg-transparent"
-                                    data-bs-dismiss="modal" aria-label="Close">
-                                    <!-- SVG -->
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                        class="lucide lucide-x-icon lucide-x stroke-secondary">
-                                        <path d="M18 6 6 18" />
-                                        <path d="m6 6 12 12" />
-                                    </svg>
-                                </button>
-                            </div>
-
-                            <!-- Wrapper Modal -->
-                            <div class="modal-body p-0">
-                                <!-- Formulário -->
-                                <form method="POST" action="suppliers-crud/delete-supplier.php">
-                                    <!-- Input -->
-                                    <input type="hidden" name="supplier-id" value="<?= $encryptedId ?>">
-                                    <div
-                                        class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
-
-                                        <div class="d-flex flex-column align-items-center gap-4">
-                                            <div class="d-flex padding-3 danger-icon">
-                                                <!-- SVG -->
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
-                                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                    stroke-linejoin="round" class="lucide lucide-triangle-alert">
-                                                    <path
-                                                        d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" />
-                                                    <path d="M12 9v4" />
-                                                    <path d="M12 17h.01" />
-                                                </svg>
-                                            </div>
-                                            <div class="d-flex flex-column align-items-center justify-content-center gap-3">
-                                                <div
-                                                    class="d-flex flex-column align-items-center justify-content-center gap-2 text-center">
-                                                    <p class="text-secondary">
-                                                        Tem a certeza que deseja eliminar o fornecedor?
-                                                    </p>
-                                                    <!-- Título -->
-                                                    <h2 class="fw-700">
-                                                        "<?= htmlspecialchars($fornecedor->getNome()) ?>"
-                                                    </h2>
-                                                    <span class="text-muted">Tipo: Fornecedor</span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Botão -->
-                                        <div class="d-flex w-100 justify-content-end gap-4 button-row flex-column flex-md-row ">
-                                            <!-- Botão -->
-                                            <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
-                                                data-bs-dismiss="modal">Cancelar</button>
-                                            <!-- Botão -->
-                                            <button type="submit" name="apagar_fornecedor"
-                                                class="btn btn-danger btn-glowing text-white">
-                                                Sim, Apagar.
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-        <?php endif; ?>
+    <?php endif; ?>
 <?php endforeach; ?>
 
 <!-- Toast Container -->
 <div class="toast-container position-fixed top-0 start-50 translate-middle-x p-3 mt-4" style="z-index: 9999;">
     <?php if (!empty($success_message)): ?>
-            <div class="toast align-items-center border-0 shadow-sm toast-success w-auto padding-4 show" role="alert"
-                aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
-                <div class="d-flex align-items-center gap-2">
-                    <div class="toast-body fw-500 p-0">
-                        <?= htmlspecialchars($success_message) ?>
-                    </div>
-                    <!-- Botão -->
-                    <button type="button" class="text-success border-0 p-0 bg-transparent ms-auto" data-bs-dismiss="toast"
-                        aria-label="Close">
-                        <!-- SVG -->
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-x-icon lucide-x">
-                            <path d="M18 6 6 18" />
-                            <path d="m6 6 12 12" />
-                        </svg>
-                    </button>
+        <div class="toast align-items-center border-0 shadow-sm toast-success w-auto padding-4 show" role="alert"
+            aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+            <div class="d-flex align-items-center gap-2">
+                <div class="toast-body fw-500 p-0">
+                    <?= htmlspecialchars($success_message) ?>
                 </div>
+                <!-- Botão -->
+                <button type="button" class="text-success border-0 p-0 bg-transparent ms-auto" data-bs-dismiss="toast"
+                    aria-label="Close">
+                    <!-- SVG -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-x-icon lucide-x">
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                    </svg>
+                </button>
             </div>
+        </div>
     <?php endif; ?>
 
     <?php if (!empty($server_error)): ?>
-            <div class="toast align-items-center border-0 shadow-sm toast-error w-auto padding-4 show" role="alert"
-                aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
-                <div class="d-flex align-items-center gap-2">
-                    <div class="toast-body fw-500 p-0">
-                        <?= htmlspecialchars($server_error) ?>
-                    </div>
-                    <!-- Botão -->
-                    <button type="button" class="text-error border-0 p-0 bg-transparent ms-auto" data-bs-dismiss="toast"
-                        aria-label="Close">
-                        <!-- SVG -->
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-x-icon lucide-x">
-                            <path d="M18 6 6 18" />
-                            <path d="m6 6 12 12" />
-                        </svg>
-                    </button>
+        <div class="toast align-items-center border-0 shadow-sm toast-error w-auto padding-4 show" role="alert"
+            aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+            <div class="d-flex align-items-center gap-2">
+                <div class="toast-body fw-500 p-0">
+                    <?= htmlspecialchars($server_error) ?>
                 </div>
+                <!-- Botão -->
+                <button type="button" class="text-error border-0 p-0 bg-transparent ms-auto" data-bs-dismiss="toast"
+                    aria-label="Close">
+                    <!-- SVG -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-x-icon lucide-x">
+                        <path d="M18 6 6 18" />
+                        <path d="m6 6 12 12" />
+                    </svg>
+                </button>
             </div>
+        </div>
     <?php endif; ?>
 </div>
 

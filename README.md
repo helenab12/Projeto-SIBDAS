@@ -51,11 +51,11 @@ As passwords dos utilizadores encontram-se encriptadas na base de dados (`AES_EN
 - **Técnico de Manutenção**
   - **Email:** tecnico@hospital.pt
   - **Password:** password03
-- **Aprovisionamento**
-  - **Email:** aprovisionamento@hospital.pt
+- **Logistica**
+  - **Email:** logistica@hospital.pt
   - **Password:** password04
-- **Consulta / Médico**
-  - **Email:** consulta@hospital.pt
+- **Convidado / Médico**
+  - **Email:** convidado@hospital.pt
   - **Password:** password05
 
 ## Informação Adicional Relevante

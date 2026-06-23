@@ -81,132 +81,135 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
             </div>
         <?php else: ?>
             <!-- Tabela Manutenções -->
-            <table id="maintenancesTable" class="heba-table w-100 display border-0">
-                <!-- Cabeçalho Tabela -->
-                <thead>
-                    <tr>
-                        <!-- Coluna Tipo -->
-                        <th>TIPO</th>
-                        <!-- Coluna Data Início -->
-                        <th>DATA INÍCIO</th>
-                        <!-- Coluna Data Fim -->
-                        <th>DATA FIM</th>
-                        <!-- Coluna Responsável -->
-                        <th>RESPONSÁVEL</th>
-                        <!-- Coluna Fornecedor -->
-                        <th>FORNECEDOR</th>
-                        <!-- Coluna Custo -->
-                        <th>CUSTO</th>
-                        <!-- Coluna Observações -->
-                        <th>OBSERVAÇÕES</th>
-                        <?php if (tem_permissao('maintenances.edit') || tem_permissao('maintenances.delete')): ?>
-                            <!-- Coluna Ações -->
-                            <th class="text-end">AÇÕES</th>
-                        <?php endif; ?>
-                    </tr>
-                </thead>
-                <!-- Corpo Tabela -->
-                <tbody>
-                    <?php foreach ($listaManutencoes as $item): ?>
-                        <?php 
-                        // Encriptar ID
-                        $encId = aes_encrypt($item->getIdManutencao()); 
-                        ?>
-                        <!-- Linha Manutenção -->
+            <div class="w-100 overflow-auto">
+                <table id="maintenancesTable" class="heba-table w-100 display border-0">
+                    <!-- Cabeçalho Tabela -->
+                    <thead>
                         <tr>
-                            <!-- Célula Tipo -->
-                            <td>
-                                <!-- Texto -->
-                                <span
-                                    class="text-secondary fw-500"><?= htmlspecialchars($item->getTipoManutencao()->value) ?></span>
-                            </td>
-                            <!-- Célula Data Início -->
-                            <td>
-                                <!-- Texto -->
-                                <span
-                                    class="text-secondary fw-400"><?= htmlspecialchars($item->getDataInicio()->format('d/m/Y')) ?></span>
-                            </td>
-                            <!-- Célula Data Fim -->
-                            <td>
-                                <!-- Texto -->
-                                <span
-                                    class="text-secondary fw-400"><?= $item->getDataFim() ? htmlspecialchars($item->getDataFim()->format('d/m/Y')) : '—' ?></span>
-                            </td>
-                            <!-- Célula Responsável -->
-                            <td>
-                                <!-- Link Pessoa -->
-                                <a href="../../entities/people_management.php?search=<?= urlencode(aes_encrypt($item->getIdPessoaResponsavel())) ?>"
-                                    class="text-primary-500 fw-700 text-decoration-none hover-underline">
-                                    <?= htmlspecialchars($item->getPessoaNome() ?? 'Desconhecido') ?>
-                                </a>
-                            </td>
-                            <!-- Célula Fornecedor -->
-                            <td>
-                                <!-- Texto -->
-                                <span
-                                    class="text-secondary fw-400"><?= htmlspecialchars($item->getFornecedorNome() ?? '—') ?></span>
-                            </td>
-                            <!-- Célula Custo -->
-                            <td>
-                                <!-- Texto -->
-                                <span
-                                    class="text-secondary fw-400"><?= $item->getCustoManutencao() !== null ? htmlspecialchars(number_format($item->getCustoManutencao(), 2, ',', ' ')) . ' €' : '—' ?></span>
-                            </td>
-                            <!-- Célula Observações -->
-                            <td class="max-width-200">
-                                <?php
-                                // Limitar observações
-                                $obs = $item->getObservacoes() ?? '';
-                                $shortObs = mb_strlen($obs) > 50 ? mb_substr($obs, 0, 50) . '...' : $obs;
-                                ?>
-                                <!-- Texto -->
-                                <span class="text-secondary fw-400 d-inline-block w-100" title="<?= htmlspecialchars($obs) ?>">
-                                    <?= htmlspecialchars($shortObs ?: '—') ?>
-                                </span>
-                            </td>
+                            <!-- Coluna Tipo -->
+                            <th>TIPO</th>
+                            <!-- Coluna Data Início -->
+                            <th>DATA INÍCIO</th>
+                            <!-- Coluna Data Fim -->
+                            <th>DATA FIM</th>
+                            <!-- Coluna Responsável -->
+                            <th>RESPONSÁVEL</th>
+                            <!-- Coluna Fornecedor -->
+                            <th>FORNECEDOR</th>
+                            <!-- Coluna Custo -->
+                            <th>CUSTO</th>
+                            <!-- Coluna Observações -->
+                            <th>OBSERVAÇÕES</th>
                             <?php if (tem_permissao('maintenances.edit') || tem_permissao('maintenances.delete')): ?>
-                                <!-- Célula Ações -->
-                                <td class="text-end">
-                                    <!-- Wrapper Ações -->
-                                    <div class="d-flex justify-content-end gap-3 align-items-center">
-                                        <?php if (tem_permissao('maintenances.edit')): ?>
-                                            <!-- Botão Editar -->
-                                            <button
-                                                class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
-                                                type="button" title="Editar" data-bs-toggle="modal"
-                                                data-bs-target="#edit-maintenance-modal-<?= $encId ?>">
-                                                <!-- SVG Lápis -->
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                    stroke-linejoin="round" class="lucide lucide-pencil">
-                                                    <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                    <path d="m15 5 4 4" />
-                                                </svg>
-                                            </button>
-                                        <?php endif; ?>
-                                        <?php if (tem_permissao('maintenances.delete')): ?>
-                                            <!-- Botão Eliminar -->
-                                            <button
-                                                class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
-                                                type="button" title="Eliminar" data-bs-toggle="modal"
-                                                data-bs-target="#delete-maintenance-modal-<?= $encId ?>">
-                                                <!-- SVG Lixo -->
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                    stroke-linejoin="round" class="lucide lucide-trash-2 text-secondary">
-                                                    <path d="M3 6h18" />
-                                                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                                </svg>
-                                            </button>
-                                        <?php endif; ?>
-                                    </div>
-                                </td>
+                                <!-- Coluna Ações -->
+                                <th class="text-end">AÇÕES</th>
                             <?php endif; ?>
                         </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                    </thead>
+                    <!-- Corpo Tabela -->
+                    <tbody>
+                        <?php foreach ($listaManutencoes as $item): ?>
+                            <?php
+                            // Encriptar ID
+                            $encId = aes_encrypt($item->getIdManutencao());
+                            ?>
+                            <!-- Linha Manutenção -->
+                            <tr>
+                                <!-- Célula Tipo -->
+                                <td>
+                                    <!-- Texto -->
+                                    <span
+                                        class="text-secondary fw-500"><?= htmlspecialchars($item->getTipoManutencao()->value) ?></span>
+                                </td>
+                                <!-- Célula Data Início -->
+                                <td>
+                                    <!-- Texto -->
+                                    <span
+                                        class="text-secondary fw-400"><?= htmlspecialchars($item->getDataInicio()->format('d/m/Y')) ?></span>
+                                </td>
+                                <!-- Célula Data Fim -->
+                                <td>
+                                    <!-- Texto -->
+                                    <span
+                                        class="text-secondary fw-400"><?= $item->getDataFim() ? htmlspecialchars($item->getDataFim()->format('d/m/Y')) : '—' ?></span>
+                                </td>
+                                <!-- Célula Responsável -->
+                                <td>
+                                    <!-- Link Pessoa -->
+                                    <a href="../../entities/people_management.php?search=<?= urlencode(aes_encrypt($item->getIdPessoaResponsavel())) ?>"
+                                        class="text-primary-500 fw-700 text-decoration-none hover-underline">
+                                        <?= htmlspecialchars($item->getPessoaNome() ?? 'Desconhecido') ?>
+                                    </a>
+                                </td>
+                                <!-- Célula Fornecedor -->
+                                <td>
+                                    <!-- Texto -->
+                                    <span
+                                        class="text-secondary fw-400"><?= htmlspecialchars($item->getFornecedorNome() ?? '—') ?></span>
+                                </td>
+                                <!-- Célula Custo -->
+                                <td>
+                                    <!-- Texto -->
+                                    <span
+                                        class="text-secondary fw-400"><?= $item->getCustoManutencao() !== null ? htmlspecialchars(number_format($item->getCustoManutencao(), 2, ',', ' ')) . ' €' : '—' ?></span>
+                                </td>
+                                <!-- Célula Observações -->
+                                <td class="max-width-200">
+                                    <?php
+                                    // Limitar observações
+                                    $obs = $item->getObservacoes() ?? '';
+                                    $shortObs = mb_strlen($obs) > 50 ? mb_substr($obs, 0, 50) . '...' : $obs;
+                                    ?>
+                                    <!-- Texto -->
+                                    <span class="text-secondary fw-400 d-inline-block w-100"
+                                        title="<?= htmlspecialchars($obs) ?>">
+                                        <?= htmlspecialchars($shortObs ?: '—') ?>
+                                    </span>
+                                </td>
+                                <?php if (tem_permissao('maintenances.edit') || tem_permissao('maintenances.delete')): ?>
+                                    <!-- Célula Ações -->
+                                    <td class="text-end">
+                                        <!-- Wrapper Ações -->
+                                        <div class="d-flex justify-content-end gap-3 align-items-center">
+                                            <?php if (tem_permissao('maintenances.edit')): ?>
+                                                <!-- Botão Editar -->
+                                                <button
+                                                    class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
+                                                    type="button" title="Editar" data-bs-toggle="modal"
+                                                    data-bs-target="#edit-maintenance-modal-<?= $encId ?>">
+                                                    <!-- SVG Lápis -->
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" class="lucide lucide-pencil">
+                                                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                                        <path d="m15 5 4 4" />
+                                                    </svg>
+                                                </button>
+                                            <?php endif; ?>
+                                            <?php if (tem_permissao('maintenances.delete')): ?>
+                                                <!-- Botão Eliminar -->
+                                                <button
+                                                    class="btn opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-secondary"
+                                                    type="button" title="Eliminar" data-bs-toggle="modal"
+                                                    data-bs-target="#delete-maintenance-modal-<?= $encId ?>">
+                                                    <!-- SVG Lixo -->
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
+                                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                                        stroke-linejoin="round" class="lucide lucide-trash-2 text-secondary">
+                                                        <path d="M3 6h18" />
+                                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                                    </svg>
+                                                </button>
+                                            <?php endif; ?>
+                                        </div>
+                                    </td>
+                                <?php endif; ?>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
         <?php endif; ?>
     </div>
 </div>
@@ -415,7 +418,7 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                                 </button>
                                 <!-- Botão Debug 3 -->
                                 <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
-                                    onclick="prefillMaintenance('Calibração', '20/05/2026', '20/05/2026', '1', '2', '80.00', 'Calibração efetuada com sucesso.')">
+                                    onclick="prefillMaintenance('Calibração', '20/05/2026', '21/05/2026', '1', '2', '80.00', 'Calibração efetuada com sucesso.')">
                                     Calibração
                                 </button>
                             </div>

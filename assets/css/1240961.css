@@ -1,7 +1,7 @@
 /* 
     Criação de variáveis CSS para o design system criado.
     Estas variáveis podem ser usadas em todo o projeto para garantir consistência e facilitar a manutenção do código.
-    Usamos a função light-dark() para criar variações de cor para light mode e dark mode.
+    Utiliza-se a função light-dark() para criar variações de cor para light mode e dark mode.
 */
 
 /* Fontes */
@@ -9,7 +9,6 @@
 
 :root {
 
-    /* https://www.youtube.com/shorts/1-yzpfTTGIg */
     /* Indicar que o site suporta ambos os temas de cor. */
     color-scheme: light dark;
 
@@ -839,6 +838,8 @@ label {
     background: light-dark(linear-gradient(135deg, #DBEAFE 0%, #FFF 100%), linear-gradient(135deg, #0F172A 0%, #1E293B 100%));
     border-radius: var(--radius-xl);
     aspect-ratio: 1 / 1;
+    align-self: center;
+    width: 100%;
 }
 
 .pa-advantages-image-background img {

@@ -70,7 +70,7 @@ $equipamentosQR = $stmtEquip->fetchAll(PDO::FETCH_ASSOC);
                             data-bs-dismiss="modal">Cancelar</button>
                         <!-- Botão Avançar -->
                         <button type="button" id="btnProceedQRPrint"
-                            class="btn-create-floor-submit btn btn-primary gap-2">
+                            class="btn-create-floor-submit btn btn-primary gap-2" disabled>
                             Avançar
                         </button>
                     </div>

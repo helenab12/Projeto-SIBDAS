@@ -276,7 +276,8 @@
                     </div>
                 </div>
             <?php else: ?>
-                <table id="documentsTable" class="heba-table w-100 display border-0">
+                <div class="w-100 overflow-auto">
+                    <table id="documentsTable" class="heba-table w-100 display border-0">
                     <thead>
                         <tr>
                             <th>NOME</th>
@@ -364,6 +365,7 @@
                         <?php endforeach; ?>
                     </tbody>
                 </table>
+                </div>
             <?php endif; ?>
         </div>
 

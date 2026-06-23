@@ -582,10 +582,10 @@ try {
                             </div>
                             <div class="d-flex flex-column align-items-start form-item">
                                 <!-- Label Mensagem -->
-                                <label for="message"><?= $conteudoPagina['cta.label_mensagem'] ?? 'Mensagem' ?></label>
+                                <label for="message"><?= $conteudoPagina['cta.label_mensagem'] ?? '' ?></label>
                                 <!-- Textarea Mensagem -->
                                 <textarea id="message" name="message" class="form-control" rows="4"
-                                    placeholder="<?= $conteudoPagina['cta.placeholder_mensagem'] ?? 'Escreva aqui a sua mensagem (máx. 400 caracteres)...' ?>"
+                                    placeholder="<?= $conteudoPagina['cta.placeholder_mensagem'] ?? '' ?>"
                                     maxlength="400"><?= htmlspecialchars($_POST['message'] ?? '') ?></textarea>
                                 <div class="w-100 d-flex justify-content-end mt-1">
                                     <!-- Texto Contador -->

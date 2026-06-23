@@ -552,7 +552,7 @@ try {
 
                     <div class="modal-body p-0">
                         <!-- Formulário -->
-                        <form method="POST" action="<?php echo BASE_URL; ?>/private/security/restore_item.php">
+                        <form method="POST" action="<?php echo BASE_URL; ?>private/security/restore_item.php">
                             <!-- Input -->
                             <input type="hidden" name="id" value="<?= htmlspecialchars($object->idEncriptado) ?>">
                             <!-- Input -->

@@ -186,22 +186,23 @@ if (!empty($_SESSION['server_error'])) {
                                     onclick="prefillFields({'email': 'tecnico@hospital.pt', 'password': 'password03'})">
                                     Técnico
                                 </button>
-                                <!-- Botão Aprovisionamento -->
+                                <!-- Botão Logistica -->
                                 <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
-                                    onclick="prefillFields({'email': 'aprovisionamento@hospital.pt', 'password': 'password04'})">
-                                    Aprovisionamento
+                                    onclick="prefillFields({'email': 'logistica@hospital.pt', 'password': 'password04'})">
+                                    Logistica
                                 </button>
-                                <!-- Botão Consulta -->
+                                <!-- Botão Convidado -->
                                 <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
-                                    onclick="prefillFields({'email': 'consulta@hospital.pt', 'password': 'password05'})">
-                                    Consulta
+                                    onclick="prefillFields({'email': 'convidado@hospital.pt', 'password': 'password05'})">
+                                    Convidado
                                 </button>
                             </div>
                         <?php endif; ?>
 
 
                         <!-- Botão Entrar -->
-                        <button type="submit" class="btn btn-primary btn-large btn-glowing fw-700 gap-1">
+                        <button type="submit" id="login-submit-btn"
+                            class="btn btn-primary btn-large btn-glowing fw-700 gap-1" disabled>
                             Entrar
                             <!-- SVG Seta -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"

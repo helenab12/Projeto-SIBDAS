@@ -672,7 +672,7 @@ if (
     table.on('datatable.search', initTooltips);
     table.on('datatable.update', initTooltips);
 
-    // Custom search binding
+    // Pesquisa personalizada global audit logs
     const searchInput = document.getElementById("search-global-audit");
     const filterType = document.getElementById("filter-global-audit-type");
 
@@ -762,12 +762,12 @@ if (document.getElementById("recyclingTable") && typeof simpleDatatables !== "un
 
 // - Inicialização do Flatpickr (Datas)
 if (typeof flatpickr !== "undefined") {
-    flatpickr("#purchase-date", {
+    flatpickr("#equipment-purchase-date, [id^='equipment-purchase-date-']", {
         dateFormat: "d/m/Y",
         allowInput: true,
         maxDate: "today",
     });
-    flatpickr("#manufacture-date", {
+    flatpickr("#equipment-manufacture-date, [id^='equipment-manufacture-date-']", {
         dateFormat: "d/m/Y",
         allowInput: true,
         maxDate: "today",
@@ -1095,7 +1095,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (authEmailInput && passwordInput && roleInput && submitBtn) {
             function validateEditForm() {
                 const isAuthEmailValid = authEmailInput.value.trim() !== '' && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(authEmailInput.value);
-                // Password can be empty (meaning no change) or >= 8 chars
                 const isPasswordValid = passwordInput.value === '' || passwordInput.value.length >= 8;
                 const isRoleValid = roleInput.value !== '';
 
@@ -1277,7 +1276,7 @@ document.querySelectorAll(".file-upload-zone").forEach(zone => {
         fileInput.click();
     });
 
-    // Drag and Drop events
+    // Eventos Drag Drop
     zone.addEventListener("dragover", (e) => {
         e.preventDefault();
         zone.style.borderColor = "var(--primary-500)";
@@ -1355,6 +1354,130 @@ document.querySelectorAll(".file-upload-zone").forEach(zone => {
 // ===================
 // 6. Validações e Formulários Base
 // ===================
+
+// Tab documentos
+document.addEventListener("DOMContentLoaded", function () {
+    const addDocModals = document.querySelectorAll('div[id^="add-document-modal-"]');
+
+    addDocModals.forEach(modal => {
+        const form = modal.querySelector('form');
+        if (!form) return;
+
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const nameInput = form.querySelector('input[name="doc-name"]');
+        const typeSelect = form.querySelector('select[name="doc-type"]');
+        const fileInput = form.querySelector('input[type="file"][name="doc-file"]');
+
+        if (!submitBtn || !nameInput || !typeSelect || !fileInput) return;
+
+        const validateDocForm = () => {
+            const isNameValid = nameInput.value.trim().length > 0;
+            const isTypeValid = typeSelect.value !== "";
+            const isFileValid = fileInput.files && fileInput.files.length > 0;
+
+            if (isNameValid && isTypeValid && isFileValid) {
+                submitBtn.removeAttribute("disabled");
+            } else {
+                submitBtn.setAttribute("disabled", "true");
+            }
+        };
+
+        // Listeners
+        nameInput.addEventListener("input", validateDocForm);
+        typeSelect.addEventListener("change", validateDocForm);
+        fileInput.addEventListener("change", validateDocForm);
+
+        // Resetar o formulário quando o modal é fechado
+        modal.addEventListener("hidden.bs.modal", () => {
+            form.reset();
+
+            // Resetar o texto de exibição do arquivo personalizado
+            const dropzone = modal.querySelector('.file-upload-zone');
+            if (dropzone) {
+                const textTargetId = dropzone.getAttribute('data-text-target');
+                if (textTargetId) {
+                    const textEl = document.getElementById(textTargetId);
+                    if (textEl) {
+                        textEl.textContent = "PDF, JPG, PNG — máx. 25MB";
+                        textEl.classList.remove("text-primary-700", "fw-600");
+                        textEl.classList.add("text-muted");
+                    }
+                }
+            }
+
+            validateDocForm();
+        });
+
+        // Validação inicial
+        validateDocForm();
+    });
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+    const editDocModals = document.querySelectorAll('div[id^="edit-document-modal-"]');
+
+    editDocModals.forEach(modal => {
+        const form = modal.querySelector('form');
+        if (!form) return;
+
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const nameInput = form.querySelector('input[name="doc-name"]');
+        const typeSelect = form.querySelector('select[name="doc-type"]');
+
+        if (!submitBtn || !nameInput || !typeSelect) return;
+
+        const validateDocEditForm = () => {
+            const isNameValid = nameInput.value.trim().length > 0;
+            const isTypeValid = typeSelect.value !== "";
+
+            if (isNameValid && isTypeValid) {
+                submitBtn.removeAttribute("disabled");
+            } else {
+                submitBtn.setAttribute("disabled", "true");
+            }
+        };
+
+        // Listeners
+        nameInput.addEventListener("input", validateDocEditForm);
+        typeSelect.addEventListener("change", validateDocEditForm);
+
+        // Resetar o formulário quando o modal é fechado
+        modal.addEventListener("hidden.bs.modal", () => {
+            form.reset();
+            validateDocEditForm();
+        });
+
+        // Validação inicial
+        validateDocEditForm();
+    });
+});
+
+// Formulário de login
+document.addEventListener("DOMContentLoaded", function () {
+    const loginEmailInput = document.getElementById("email");
+    const loginPasswordInput = document.getElementById("password");
+    const loginSubmitBtn = document.getElementById("login-submit-btn");
+
+    if (loginEmailInput && loginPasswordInput && loginSubmitBtn) {
+        const validateLoginForm = () => {
+            const isEmailValid = loginEmailInput.value.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(loginEmailInput.value);
+            const isPasswordValid = loginPasswordInput.value.trim().length > 0;
+
+            if (isEmailValid && isPasswordValid) {
+                loginSubmitBtn.removeAttribute("disabled");
+            } else {
+                loginSubmitBtn.setAttribute("disabled", "true");
+            }
+        };
+
+        [loginEmailInput, loginPasswordInput].forEach(input => {
+            input.addEventListener("input", validateLoginForm);
+            input.addEventListener("change", validateLoginForm);
+        });
+
+        validateLoginForm();
+    }
+});
 
 // - Lógica Completa de Equipamentos (Paginação, Filtros, Checkboxes e Validações Criar/Editar)
 // Lógica de Abertura, Fecho e Submissão do Modal
@@ -1439,8 +1562,22 @@ document.addEventListener("DOMContentLoaded", () => {
         const brandSelect = form.querySelector(`#equipment-brand-${eqId}`);
         const statusSelect = form.querySelector(`#equipment-status-${eqId}`);
         const locationSelect = form.querySelector(`#equipment-location-${eqId}`);
+        const purchaseDateInput = form.querySelector(`#equipment-purchase-date-${eqId}`);
+        const manufactureDateInput = form.querySelector(`#equipment-manufacture-date-${eqId}`);
 
         const validatePage1 = () => {
+            const parseDMY = (dateStr) => {
+                if (!dateStr) return null;
+                const parts = dateStr.split("/");
+                if (parts.length === 3) {
+                    return new Date(parts[2], parts[1] - 1, parts[0]);
+                }
+                return null;
+            };
+            const pDate = purchaseDateInput ? parseDMY(purchaseDateInput.value) : null;
+            const mDate = manufactureDateInput ? parseDMY(manufactureDateInput.value) : null;
+            const isDateValid = !(pDate && mDate && mDate > pDate);
+
             if (
                 codeInput?.value.trim() !== "" &&
                 categorySelect?.value !== "" &&
@@ -1448,7 +1585,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 nameInput?.value.trim() !== "" &&
                 brandSelect?.value !== "" &&
                 statusSelect?.value !== "" &&
-                locationSelect?.value !== ""
+                locationSelect?.value !== "" &&
+                isDateValid
             ) {
                 btnNextPage?.removeAttribute("disabled");
             } else {
@@ -1469,6 +1607,8 @@ document.addEventListener("DOMContentLoaded", () => {
         attachValidation(brandSelect, "change");
         attachValidation(statusSelect, "change");
         attachValidation(locationSelect, "change");
+        attachValidation(purchaseDateInput, "change");
+        attachValidation(manufactureDateInput, "change");
 
         // Chamada inicial para preencher corretamente o estado ativado/desativado do form
         validatePage1();
@@ -1482,8 +1622,9 @@ document.addEventListener("DOMContentLoaded", () => {
                 let visibleCount = 0;
 
                 componentItems.forEach(item => {
-                    const itemCategoryId = item.getAttribute("data-category-id");
-                    if (selectedCategoryId === "" || itemCategoryId === selectedCategoryId || itemCategoryId === "") {
+                    const itemCategoryId = item.getAttribute("data-category-id") || "";
+                    const categoryIds = itemCategoryId.split(",");
+                    if (selectedCategoryId === "" || categoryIds.includes(selectedCategoryId) || itemCategoryId === "") {
                         item.style.setProperty("display", "flex", "important");
                         visibleCount++;
                     } else {
@@ -1521,10 +1662,24 @@ const equipmentNameInput = document.getElementById("equipment-name");
 const equipmentBrandSelect = document.getElementById("equipment-brand");
 const equipmentStatusSelect = document.getElementById("equipment-status");
 const equipmentLocationSelect = document.getElementById("equipment-location");
+const equipmentPurchaseDateInput = document.getElementById("equipment-purchase-date");
+const equipmentManufactureDateInput = document.getElementById("equipment-manufacture-date");
 
 if (btnNextPage && btnPrevPage && modalPage1 && modalPage2) {
     // Validação da Página 1
     const validatePage1 = () => {
+        const parseDMY = (dateStr) => {
+            if (!dateStr) return null;
+            const parts = dateStr.split("/");
+            if (parts.length === 3) {
+                return new Date(parts[2], parts[1] - 1, parts[0]);
+            }
+            return null;
+        };
+        const pDate = equipmentPurchaseDateInput ? parseDMY(equipmentPurchaseDateInput.value) : null;
+        const mDate = equipmentManufactureDateInput ? parseDMY(equipmentManufactureDateInput.value) : null;
+        const isDateValid = !(pDate && mDate && mDate > pDate);
+
         if (
             equipmentCodeInput?.value.trim() !== "" &&
             equipmentCategorySelect?.value !== "" &&
@@ -1532,7 +1687,8 @@ if (btnNextPage && btnPrevPage && modalPage1 && modalPage2) {
             equipmentNameInput?.value.trim() !== "" &&
             equipmentBrandSelect?.value !== "" &&
             equipmentStatusSelect?.value !== "" &&
-            equipmentLocationSelect?.value !== ""
+            equipmentLocationSelect?.value !== "" &&
+            isDateValid
         ) {
             btnNextPage.removeAttribute("disabled");
         } else {
@@ -1553,6 +1709,8 @@ if (btnNextPage && btnPrevPage && modalPage1 && modalPage2) {
     attachValidation(equipmentBrandSelect, "change");
     attachValidation(equipmentStatusSelect, "change");
     attachValidation(equipmentLocationSelect, "change");
+    attachValidation(equipmentPurchaseDateInput, "change");
+    attachValidation(equipmentManufactureDateInput, "change");
 
     // Filtragem de componentes pela categoria selecionada
     if (equipmentCategorySelect) {
@@ -1563,9 +1721,10 @@ if (btnNextPage && btnPrevPage && modalPage1 && modalPage2) {
             let visibleCount = 0;
 
             componentItems.forEach(item => {
-                const itemCategoryId = item.getAttribute("data-category-id");
+                const itemCategoryId = item.getAttribute("data-category-id") || "";
+                const categoryIds = itemCategoryId.split(",");
                 // Se o componente não tiver categoria (vazio) ou pertencer à selecionada, mostra
-                if (selectedCategoryId === "" || itemCategoryId === selectedCategoryId || itemCategoryId === "") {
+                if (selectedCategoryId === "" || categoryIds.includes(selectedCategoryId) || itemCategoryId === "") {
                     item.classList.remove("d-none");
                     item.classList.add("d-flex");
                     visibleCount++;
@@ -1934,22 +2093,21 @@ componentForms.forEach(form => {
         function checkComponentFormValidity() {
             let isValid = true;
 
-            inputs.forEach(input => {
-                if (!input.value.trim() || !input.checkValidity()) {
-                    isValid = false;
-                }
-            });
-
             if (stockActualInput && stockMinInput) {
                 const actual = parseInt(stockActualInput.value || "0", 10);
                 const min = parseInt(stockMinInput.value || "0", 10);
                 if (min > actual) {
-                    isValid = false;
                     stockMinInput.setCustomValidity("O stock mínimo não pode ser superior ao stock atual.");
                 } else {
                     stockMinInput.setCustomValidity("");
                 }
             }
+
+            inputs.forEach(input => {
+                if (!input.value.trim() || !input.checkValidity()) {
+                    isValid = false;
+                }
+            });
 
             submitButton.disabled = !isValid;
         }
@@ -1964,27 +2122,6 @@ componentForms.forEach(form => {
         checkComponentFormValidity();
     }
 });
-
-const componentNameInput = document.getElementById("component-name");
-const componentSkuInput = document.getElementById("component-sku");
-
-if (componentNameInput && componentSkuInput && btnSubmitModal) {
-    const validateComponentForm = () => {
-        if (
-            componentNameInput.value.trim() !== "" &&
-            componentSkuInput.value.trim() !== ""
-        ) {
-            btnSubmitModal.removeAttribute("disabled");
-        } else {
-            btnSubmitModal.setAttribute("disabled", "true");
-        }
-    };
-
-    validateComponentForm();
-
-    componentNameInput.addEventListener("input", validateComponentForm);
-    componentSkuInput.addEventListener("input", validateComponentForm);
-}
 
 const categoryNameInput = document.getElementById("category-name");
 const categoryCodeInput = document.getElementById("category-code");
@@ -2119,7 +2256,7 @@ if (
             userUsernameInput.value = "";
             userEmailInput.value = "";
             userPasswordInput.value = "";
-            if (userRoleSelect) userRoleSelect.value = "Consulta";
+            if (userRoleSelect) userRoleSelect.value = "Convidado";
             validateUserForm();
         });
     }
@@ -2209,7 +2346,7 @@ editWarrantyForms.forEach((form) => {
             }
         };
 
-        // Initialize flatpickr on this form's date inputs
+        // Inicializar flatpickr neste formulário
         flatpickr(startDateInput, {
             dateFormat: "d/m/Y",
             allowInput: true,
@@ -2703,7 +2840,7 @@ function openQRPrintModal(encryptedId, code, designation) {
     codeElement.textContent = code;
     designationElement.textContent = designation;
 
-    // Use SITE_BASE_URL se estiver definido, senao default
+    // Usar SITE_BASE_URL se estiver definido, senao default
     const base = window.SITE_BASE_URL || '/sibdas/1240961/heba/';
     const urlBase = window.location.origin + base + 'private/inventory/equipments/detailed_view.php?id=';
     const finalUrl = urlBase + encodeURIComponent(encryptedId);
@@ -2752,21 +2889,29 @@ if (btnDownloadQR) {
 
 // Selecionar equipamento para gerar QR Code
 const btnProceedQRPrint = document.getElementById('btnProceedQRPrint');
-if (btnProceedQRPrint) {
-    btnProceedQRPrint.addEventListener('click', () => {
-        const sel = document.getElementById('qrEquipamentoSelect');
-        if (!sel.value) {
-            alert('Selecione um equipamento primeiro.');
-            return;
+const selQR = document.getElementById('qrEquipamentoSelect');
+
+if (btnProceedQRPrint && selQR) {
+    // Ativar/desativar botão consoante a seleção
+    selQR.addEventListener('change', () => {
+        if (selQR.value) {
+            btnProceedQRPrint.removeAttribute('disabled');
+        } else {
+            btnProceedQRPrint.setAttribute('disabled', 'true');
         }
-        const opt = sel.options[sel.selectedIndex];
+    });
+
+    btnProceedQRPrint.addEventListener('click', () => {
+        if (!selQR.value) return; // Proteção adicional
+
+        const opt = selQR.options[selQR.selectedIndex];
 
         const selectModalEl = document.getElementById('qrSelectModal');
         const selectModal = bootstrap.Modal.getOrCreateInstance(selectModalEl);
         selectModal.hide();
 
         setTimeout(() => {
-            openQRPrintModal(sel.value, opt.getAttribute('data-code'), opt.getAttribute('data-desc'));
+            openQRPrintModal(selQR.value, opt.getAttribute('data-code'), opt.getAttribute('data-desc'));
         }, 400);
     });
 }
@@ -2786,18 +2931,59 @@ if (scanModalEl) {
                 html5QrcodeScanner.render(
                     (decodedText, decodedResult) => {
                         if (decodedText.includes('detailed_view.php?id=')) {
-                            if (html5QrcodeScanner) html5QrcodeScanner.pause(true);
+                            try { if (html5QrcodeScanner) html5QrcodeScanner.pause(true); } catch (e) { /* file mode erro */ }
                             window.location.href = decodedText;
                         } else {
                             alert('Código QR não reconhecido ou inválido para este sistema.');
-                            if (html5QrcodeScanner) {
-                                html5QrcodeScanner.pause(true);
-                                setTimeout(() => html5QrcodeScanner.resume(), 3000);
-                            }
+                            try {
+                                if (html5QrcodeScanner) {
+                                    html5QrcodeScanner.pause(true);
+                                    setTimeout(() => { try { html5QrcodeScanner.resume(); } catch (e) { } }, 3000);
+                                }
+                            } catch (e) { /* file mode erro */ }
                         }
                     },
                     (error) => { /* ignora frames vazios */ }
                 );
+
+                // Traduzir textos gerados dinamicamente pela biblioteca html5-qrcode
+                const readerElement = document.getElementById("reader");
+                if (readerElement) {
+                    const observer = new MutationObserver(() => {
+                        const scanTypeBtn = document.getElementById("html5-qrcode-anchor-scan-type-change");
+                        if (scanTypeBtn) {
+                            if (scanTypeBtn.innerText.includes("Scan an Image File")) scanTypeBtn.innerText = "Carregar ficheiro de imagem";
+                            if (scanTypeBtn.innerText.includes("Scan using camera directly")) scanTypeBtn.innerText = "Usar câmara diretamente";
+                        }
+                        const fileBtn = document.getElementById("html5-qrcode-button-file-selection");
+                        if (fileBtn) {
+                            if (fileBtn.innerText.includes("Choose Image")) fileBtn.innerText = "Escolher Imagem";
+                            if (fileBtn.innerText.includes("Choose Another")) {
+                                fileBtn.innerText = fileBtn.innerText.replace("Choose Another", "Escolher Outra");
+                            }
+                        }
+                        const walkTextNodes = (node) => {
+                            if (node.nodeType === 3) {
+                                if (node.nodeValue.includes("Or drop an image to scan")) {
+                                    node.nodeValue = node.nodeValue.replace("Or drop an image to scan", "Ou arraste uma imagem para aqui");
+                                }
+                                if (node.nodeValue.includes("Request Camera Permissions")) {
+                                    node.nodeValue = node.nodeValue.replace("Request Camera Permissions", "Solicitar permissões da câmara");
+                                }
+                                if (node.nodeValue.includes("Stop Scanning")) {
+                                    node.nodeValue = node.nodeValue.replace("Stop Scanning", "Parar câmara");
+                                }
+                                if (node.nodeValue.includes("Start Scanning")) {
+                                    node.nodeValue = node.nodeValue.replace("Start Scanning", "Iniciar câmara");
+                                }
+                            } else if (node.nodeType === 1) {
+                                node.childNodes.forEach(walkTextNodes);
+                            }
+                        };
+                        walkTextNodes(readerElement);
+                    });
+                    observer.observe(readerElement, { childList: true, subtree: true });
+                }
             } else {
                 console.error("Html5QrcodeScanner library not loaded.");
             }
@@ -2813,3 +2999,4 @@ if (scanModalEl) {
         }
     });
 }
+

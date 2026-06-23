@@ -80,6 +80,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             throw new Exception("Por favor preencha todos os campos obrigatórios da primeira página.");
         }
 
+        // Validar lógica de datas
+        if (!empty($dataFabrico) && !empty($dataAquisicao)) {
+            if (strtotime($dataFabrico) > strtotime($dataAquisicao)) {
+                throw new Exception("A data de fabrico não pode ser posterior à data de aquisição.");
+            }
+        }
+
         // Verificar duplicados
         $stmt = execute_query("SELECT idEquipamento FROM Equipamento WHERE codigoInterno = :codigo", ['codigo' => $codigoInterno], $ligacao);
         if ($stmt->fetch()) {

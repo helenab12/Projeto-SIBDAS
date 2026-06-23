@@ -53,9 +53,10 @@ try {
                     <!-- SVG Puzzle -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
                         stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                        class="lucide lucide-puzzle">
-                        <path
-                            d="M19.439 7.85c-.049.322.059.648.289.878l1.568 1.568c.47.47.706 1.087.706 1.704s-.235 1.233-.706 1.704l-1.611 1.611a.954.954 0 0 0-.288.877l.154 1.011c.176 1.157-.22 2.339-1.077 3.196-.857.857-2.039 1.253-3.196 1.077l-1.011-.154a.954.954 0 0 0-.877.288l-1.611 1.611c-.47.47-1.087.706-1.704.706s-1.233-.235-1.704-.706l-1.568-1.568a.954.954 0 0 0-.878-.289l-1.011.154c-1.157.176-2.339-.22-3.196-1.077-.857-.857-1.253-2.039-1.077-3.196l.154-1.011a.954.954 0 0 0-.288-.877l-1.611-1.611c-.47-.47-.706-1.087-.706-1.704s.235-1.233.706-1.704l1.568-1.568c.23-.23.338-.556.289-.878l-.154-1.011c-.176-1.157.22-2.339 1.077-3.196.857-.857 2.039-1.253 3.196-1.077l1.011.154c.322.049.648-.059.878-.289l1.568-1.568c.47-.47 1.087-.706 1.704-.706s1.233.235 1.704.706l1.611 1.611c.23.23.556.338.877.288l1.011-.154c1.157-.176 2.339.22 3.196 1.077.857.857 1.253 2.039 1.077 3.196l-.154 1.011Z" />
+                        class="lucide lucide-bell-off-icon lucide-bell-off">
+                        <path d="M9 10h.01" />
+                        <path d="M15 10h.01" />
+                        <path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z" />
                     </svg>
                 </div>
                 <!-- Conteúdo -->
@@ -68,7 +69,8 @@ try {
             </div>
         <?php else: ?>
             <!-- Tabela Componentes -->
-            <table id="componentsTable" class="heba-table w-100 display border-0">
+            <div class="w-100 overflow-auto">
+                <table id="componentsTable" class="heba-table w-100 display border-0">
                 <!-- Cabeçalho -->
                 <thead>
                     <tr>
@@ -114,6 +116,7 @@ try {
                     <?php endforeach; ?>
                 </tbody>
             </table>
+            </div>
         <?php endif; ?>
     </div>
 </div>

@@ -101,7 +101,7 @@ if (!empty($_SESSION['server_error'])) {
                         <polyline points="3.29 7 12 12 20.71 7" />
                         <path d="m7.5 4.27 9 5.15" />
                     </svg>
-                    <?php if ($dashboardStats['totalEquipamentos']['growth']): ?>
+                    <?php if (!empty($dashboardStats['totalEquipamentos']['growth']) && $dashboardStats['totalEquipamentos']['growth']['value'] != '0%'): ?>
                         <!-- Wrapper Trend -->
                         <div
                             class="d-flex flex-row dashboard-bento-trend <?php echo $dashboardStats['totalEquipamentos']['growth']['isPositive'] ? 'dashboard-bento-trend-up' : 'dashboard-bento-trend-down'; ?> gap-1 align-items-center">
@@ -148,7 +148,7 @@ if (!empty($_SESSION['server_error'])) {
                         <path
                             d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2" />
                     </svg>
-                    <?php if ($dashboardStats['equipamentosAtivos']['growth']): ?>
+                    <?php if (!empty($dashboardStats['equipamentosAtivos']['growth']) && $dashboardStats['equipamentosAtivos']['growth']['value'] > 0): ?>
                         <!-- Wrapper Trend -->
                         <div
                             class="d-flex flex-row dashboard-bento-trend <?php echo $dashboardStats['equipamentosAtivos']['growth']['isPositive'] ? 'dashboard-bento-trend-up' : 'dashboard-bento-trend-down'; ?> gap-1 align-items-center">
@@ -195,7 +195,7 @@ if (!empty($_SESSION['server_error'])) {
                         <path
                             d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.106-3.105c.32-.322.863-.22.983.218a6 6 0 0 1-8.259 7.057l-7.91 7.91a1 1 0 0 1-2.999-3l7.91-7.91a6 6 0 0 1 7.057-8.259c.438.12.54.662.219.984z" />
                     </svg>
-                    <?php if ($dashboardStats['emManutencao']['growth']): ?>
+                    <?php if (!empty($dashboardStats['emManutencao']['growth']) && $dashboardStats['emManutencao']['growth']['value'] != '0%'): ?>
                         <!-- Wrapper Trend -->
                         <div
                             class="d-flex flex-row dashboard-bento-trend <?php echo $dashboardStats['emManutencao']['growth']['isPositive'] ? 'dashboard-bento-trend-up' : 'dashboard-bento-trend-down'; ?> gap-1 align-items-center">
@@ -244,7 +244,7 @@ if (!empty($_SESSION['server_error'])) {
                         <path d="M12 8v4" />
                         <path d="M12 16h.01" />
                     </svg>
-                    <?php if ($dashboardStats['garantiasAExpirar']['growth']): ?>
+                    <?php if (!empty($dashboardStats['garantiasAExpirar']['growth']) && $dashboardStats['garantiasAExpirar']['growth']['value'] > 0): ?>
                         <!-- Wrapper Trend -->
                         <div
                             class="d-flex flex-row dashboard-bento-trend <?php echo $dashboardStats['garantiasAExpirar']['growth']['isPositive'] ? 'dashboard-bento-trend-up' : 'dashboard-bento-trend-down'; ?> gap-1 align-items-center">
@@ -404,12 +404,28 @@ if (!empty($_SESSION['server_error'])) {
                         <p class="text-secondary fw-400">Distribuição por localização/serviço</p>
                     </div>
 
-                    <!-- Wrapper Gráfico -->
-                    <div
-                        class="d-flex flex-row justify-content-center flex-grow-1 w-100 position-relative graph-container">
-                        <!-- Canvas Serviços -->
-                        <canvas id="categoryDistributionChart2"></canvas>
-                    </div>
+                    <?php if (empty($dashboardStats['graficoServico']['data'])): ?>
+                        <!-- Wrapper Vazio -->
+                        <div
+                            class="d-flex flex-column align-items-center justify-content-center text-center padding-4 gap-3 h-100">
+                            <!-- SVG Gráfico Vazio -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-pie-chart text-secondary">
+                                <path d="M21.21 15.89A10 10 0 1 1 8 2.83" />
+                                <path d="M22 12A10 10 0 0 0 12 2v10z" />
+                            </svg>
+                            <!-- Mensagem Vazio -->
+                            <span class="text-secondary fw-400">Sem dados para exibir.</span>
+                        </div>
+                    <?php else: ?>
+                        <!-- Wrapper Gráfico -->
+                        <div
+                            class="d-flex flex-row justify-content-center flex-grow-1 w-100 position-relative graph-container">
+                            <!-- Canvas Serviços -->
+                            <canvas id="categoryDistributionChart2"></canvas>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -507,7 +523,7 @@ if (!empty($_SESSION['server_error'])) {
                                     <div class="mw-0 d-flex flex-column justify-content-center flex-grow-1 padding-3 gap-1">
                                         <!-- Nome Equipamento -->
                                         <span
-                                            class="fw-600 text-primary-900"><?= htmlspecialchars($manutencao['designacao']) ?></span>
+                                            class="fw-600 text-primary"><?= htmlspecialchars($manutencao['designacao']) ?></span>
                                         <!-- Tipo e Serviço -->
                                         <span
                                             class="fw-400 text-secondary fs-sm text-truncate"><?= htmlspecialchars($manutencao['tipoManutencao']) ?>

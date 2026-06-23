@@ -153,7 +153,7 @@ $profileBadges = [
 <!-- SVG -->
 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shield-alert-icon lucide-shield-alert"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /><path d="M12 8v4" /><path d="M12 16h.01" /></svg>'
     ],
-    'Aprovisionamento' => [
+    'Logistica' => [
         'class' => 'inv-manager',
         'icon' => '<!-- SVG -->
 <!-- SVG -->
@@ -171,7 +171,7 @@ $profileBadges = [
 <!-- SVG -->
 <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-key-icon lucide-key"><path d="m15.5 7.5 2.3 2.3a1 1 0 0 0 1.4 0l2.1-2.1a1 1 0 0 0 0-1.4L19 4" /><path d="m21 2-9.6 9.6" /><circle cx="7.5" cy="15.5" r="5.5" /></svg>'
     ],
-    'Consulta' => [
+    'Convidado' => [
         'class' => 'consultant',
         'icon' => '<!-- SVG -->
 <!-- SVG -->
@@ -270,9 +270,9 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                             Administrador</option>
                         <option value="Engenheiro Biomédico" <?= $perfil_filter === 'Engenheiro Biomédico' ? 'selected' : '' ?>>Engenheiro Biomédico</option>
                         <option value="Técnico de Manutenção" <?= $perfil_filter === 'Técnico de Manutenção' ? 'selected' : '' ?>>Técnico de Manutenção</option>
-                        <option value="Aprovisionamento" <?= $perfil_filter === 'Aprovisionamento' ? 'selected' : '' ?>>
-                            Aprovisionamento</option>
-                        <option value="Consulta" <?= $perfil_filter === 'Consulta' ? 'selected' : '' ?>>Consulta</option>
+                        <option value="Logistica" <?= $perfil_filter === 'Logistica' ? 'selected' : '' ?>>
+                            Logistica</option>
+                        <option value="Convidado" <?= $perfil_filter === 'Convidado' ? 'selected' : '' ?>>Convidado</option>
                     </select>
                 </div>
             </form>
@@ -445,9 +445,10 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                                                     href="#" data-bs-toggle="modal"
                                                                                     data-bs-target="#delete-confirm-modal-<?= htmlspecialchars($encryptedUserId) ?>">
                                                                                     <!-- SVG Lixo -->
-                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                                                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                                                        stroke-linejoin="round" class="lucide lucide-trash-2">
+                                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                                        class="lucide lucide-trash-2">
                                                                                         <path d="M3 6h18" />
                                                                                         <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
                                                                                         <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />

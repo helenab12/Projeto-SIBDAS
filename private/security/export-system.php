@@ -16,7 +16,7 @@ if (!in_array($format, $allowedFormats)) {
 
 try {
     // Ligar à BD
-$ligacao = connect_to_db();
+    $ligacao = connect_to_db();
 
     // 1. Equipamentos
     $sqlEquipamentos = "SELECT e.*, m.nome as marcaNome, c.nome as categoriaNome,
@@ -94,7 +94,7 @@ $ligacao = connect_to_db();
     // 10. Conteudos
     $conteudos = execute_query("SELECT * FROM ConteudoFrontOffice", [], $ligacao)->fetchAll(PDO::FETCH_ASSOC);
 
-    // Junta tudo num array mestre
+    // Junta tudo num array
     $systemData = [
         'equipamentos' => $equipamentos,
         'perfis' => $perfis,
@@ -193,7 +193,7 @@ $ligacao = connect_to_db();
         // Calcular Métricas usando o helper real da dashboard
         // Carregar dependências
         require_once BASE_PATH . 'private/includes/dashboard_stats.php';
-        
+
         $totalEq = $dashboardStats['totalEquipamentos']['count'] ?? 0;
         $eqAtivos = $dashboardStats['equipamentosAtivos']['count'] ?? 0;
         $eqManutencao = $dashboardStats['emManutencao']['count'] ?? 0;
@@ -253,9 +253,11 @@ $ligacao = connect_to_db();
                 $qtd = $servData[$j];
                 $pdfDash->Cell(95, 6, utf8_decode("- $nome: $qtd"), 0, 0);
                 $i++;
-                if ($i % 2 == 0) $pdfDash->Ln();
+                if ($i % 2 == 0)
+                    $pdfDash->Ln();
             }
-            if ($i % 2 != 0) $pdfDash->Ln();
+            if ($i % 2 != 0)
+                $pdfDash->Ln();
         }
         $pdfDash->Ln(5);
 
@@ -267,7 +269,7 @@ $ligacao = connect_to_db();
             $manLabels = $dashboardStats['graficoManutencao']['labels'];
             $manPrev = $dashboardStats['graficoManutencao']['preventiva'];
             $manCorr = $dashboardStats['graficoManutencao']['corretiva'];
-            
+
             $totalPrev = array_sum($manPrev);
             $totalCorr = array_sum($manCorr);
             $pdfDash->Cell(90, 6, utf8_decode("- Preventivas: $totalPrev"), 0, 1);
@@ -340,7 +342,7 @@ $ligacao = connect_to_db();
     readfile($zipFile);
     unlink($zipFile); // Limpar ficheiro temp após envio
 
-    } catch (Exception $e) {
-        // Capturar erro
-die("Erro ao exportar dados do sistema: " . $e->getMessage());
+} catch (Exception $e) {
+    // Capturar erro
+    die("Erro ao exportar dados do sistema: " . $e->getMessage());
 }

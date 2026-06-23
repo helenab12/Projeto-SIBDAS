@@ -19,8 +19,8 @@ if (isset($_SESSION['id_utilizador'])) {
         // Fechar ligação
         $ligacaoHeaders = null;
     }
-// Capturar erro
-catch (Exception $e) {
+    // Capturar erro
+    catch (Exception $e) {
         // Ignorar erro
     }
 }
@@ -73,7 +73,7 @@ catch (Exception $e) {
         </button>
         <!-- Link Notificações -->
         <!-- Link -->
-        <a href="<?php echo BASE_URL; ?>/private/notifications.php"
+        <a href="<?php echo BASE_URL; ?>private/notifications.php"
             class="text-decoration-none d-flex align-items-center position-relative">
             <!-- SVG Sino -->
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -190,7 +190,7 @@ catch (Exception $e) {
                 </svg>
             </button>
             <!-- Link -->
-            <a href="<?php echo BASE_URL; ?>/private/notifications.php"
+            <a href="<?php echo BASE_URL; ?>private/notifications.php"
                 class="text-decoration-none d-flex align-items-center position-relative">
                 <!-- SVG -->
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"

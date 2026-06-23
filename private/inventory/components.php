@@ -245,302 +245,306 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
             </form>
         </div>
 
-<?php if ($totalComponentesAll === 0): ?>
-    <!-- Card Sem Componentes -->
-    <div class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
-        <!-- Wrapper Ícone -->
-        <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
-            <!-- SVG -->
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                class="lucide lucide-bell-off-icon lucide-bell-off">
-                <path d="M9 10h.01" />
-                <path d="M15 10h.01" />
-                <path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z" />
-            </svg>
-        </div>
-        <!-- Wrapper Texto -->
-        <div class="d-flex flex-column gap-2">
-            <!-- Título -->
-            <h3 class="fw-700 m-0">Sem Componentes</h3>
-            <!-- Texto -->
-            <p class="text-secondary m-0">De momento não existe nenhum componente.</p>
-        </div>
-    </div>
-<?php elseif (empty($listaComponentes)): ?>
-    <!-- Card Sem Resultados -->
-    <div class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
-        <!-- Wrapper Ícone -->
-        <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
-            <!-- SVG -->
-            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
-                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                class="lucide lucide-search-x">
-                <path d="m13.5 8.5-5 5" />
-                <path d="m8.5 8.5 5 5" />
-                <circle cx="11" cy="11" r="8" />
-                <path d="m21 21-4.3-4.3" />
-            </svg>
-        </div>
-        <!-- Wrapper Texto -->
-        <div class="d-flex flex-column gap-2">
-            <!-- Título -->
-            <h3 class="fw-700 m-0">Sem resultados</h3>
-            <!-- Texto -->
-            <p class="text-secondary m-0">Nenhum registo encontrado correspondente à sua pesquisa.</p>
-        </div>
-    </div>
-<?php else: ?>
-
-    <!-- Card Tabela -->
-    <div class="bento-card w-100 p-0 border-0">
-        <!-- Wrapper Datatable -->
-        <div class="datatable-wrapper no-footer sortable fixed-columns">
-            <!-- Container Tabela -->
-            <div class="datatable-container w-100 overflow-auto position-relative">
-                <?php
-                // Função auxiliar para criar links de ordenação
-                $buildSortUrl = function ($column) use ($search_query, $sort_param, $dir_param) {
-                    $params = [];
-                    if ($search_query !== '')
-                        $params['search'] = $search_query;
-
-                    $params['sort'] = $column;
-                    // Inverte a direção se estiver a clicar na mesma coluna, senão default para asc
-                    $params['dir'] = ($sort_param === $column && $dir_param === 'asc') ? 'desc' : 'asc';
-
-                    return '?' . http_build_query($params);
-                };
-
-                // Função auxiliar para mostrar o ícone/seta
-                $getSortIcon = function ($column) use ($sort_param, $dir_param) {
-                    if ($sort_param !== $column)
-                        return '';
-                    return $dir_param === 'asc' ? ' ↑' : ' ↓';
-                };
-                ?>
-                <!-- Tabela Componentes -->
-                <table id="componentsTable" class="heba-table w-100 display datatable-table">
-                    <!-- Cabeçalho -->
-                    <thead>
-                        <tr>
-                            <!-- Coluna Descrição -->
-                            <th><a href="<?= $buildSortUrl('descricao') ?>"
-                                    class="datatable-sorter text-decoration-none text-inherit">COMPONENTE<?= $getSortIcon('descricao') ?></a>
-                            </th>
-                            <!-- Coluna SKU -->
-                            <th><a href="<?= $buildSortUrl('sku') ?>"
-                                    class="datatable-sorter text-decoration-none text-inherit">SKU<?= $getSortIcon('sku') ?></a>
-                            </th>
-                            <!-- Coluna Categoria -->
-                            <th><a href="<?= $buildSortUrl('categoria') ?>"
-                                    class="datatable-sorter text-decoration-none text-inherit">CATEGORIA<?= $getSortIcon('categoria') ?></a>
-                            </th>
-                            <!-- Coluna Stock -->
-                            <th><a href="<?= $buildSortUrl('stock') ?>"
-                                    class="datatable-sorter text-decoration-none text-inherit">STOCK/MIN<?= $getSortIcon('stock') ?></a>
-                            </th>
-                            <!-- Coluna Preço -->
-                            <th><a href="<?= $buildSortUrl('preco') ?>"
-                                    class="datatable-sorter text-decoration-none text-inherit">PREÇO
-                                    UNIT.<?= $getSortIcon('preco') ?></a></th>
-                            <?php if (tem_permissao('components.edit') || tem_permissao('components.delete')): ?>
-                                <!-- Coluna Ações -->
-                                <th class="text-end">AÇÕES</th>
-                            <?php endif; ?>
-                        </tr>
-                    </thead>
-                    <!-- Corpo da Tabela -->
-                    <tbody>
-                        <?php foreach ($listaComponentes as $componente): ?>
-                            <?php
-                            // Encriptar ID
-                            $encryptedCompId = aes_encrypt($componente->getIdComponente());
-                            ?>
-
-                            <!-- Linha -->
-                            <tr>
-                                <!-- Coluna Info -->
-                                <td>
-                                    <!-- Wrapper Componente -->
-                                    <div class="d-flex align-items-center gap-3">
-                                        <!-- Wrapper Ícone -->
-                                        <div
-                                            class="table-icon-wrapper padding-2 d-flex align-items-center justify-content-center flex-shrink-0 component-icon-wrapper">
-                                            <!-- SVG -->
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                stroke-linejoin="round" class="lucide lucide-puzzle-icon lucide-puzzle">
-                                                <path
-                                                    d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z" />
-                                            </svg>
-                                        </div>
-                                        <!-- Texto Nome -->
-                                        <p class="equipment-title fw-700 mb-0">
-                                            <?= htmlspecialchars($componente->getDescricao()) ?>
-                                        </p>
-                                        <!-- Texto ID -->
-                                        <span class="visually-hidden"><?= htmlspecialchars($encryptedCompId) ?></span>
-                                    </div>
-                                </td>
-                                <!-- Coluna SKU -->
-                                <td>
-                                    <!-- Badge SKU -->
-                                    <span
-                                        class="equipment-badge d-inline-flex align-items-center justify-content-center fw-500  component-sku-badge text-secondary font-mono">
-                                        <?= htmlspecialchars($componente->getCodigoInterno()) ?>
-                                    </span>
-                                </td>
-                                <!-- Coluna Categoria -->
-                                <td>
-                                    <?php
-                                    // Encontrar categoria
-                                    $catNome = "Sem Categoria";
-                                    $catDescricao = "";
-                                    $idCatComponente = $componente->getIdCategoria();
-
-                                    if ($idCatComponente !== null) {
-                                        foreach ($categoriasDisponiveis as $catDisp) {
-                                            if ($catDisp->getIdCategoria() === $idCatComponente) {
-                                                $catNome = $catDisp->getNome();
-                                                $catDescricao = $catDisp->getDescricao();
-                                                break;
-                                            }
-                                        }
-                                    }
-                                    ?>
-                                    <!-- Texto Categoria -->
-                                    <span class="category-tooltip-trigger" data-bs-toggle="tooltip" data-bs-placement="top"
-                                        title="<?= htmlspecialchars($catDescricao) ?>">
-                                        <?= htmlspecialchars($catNome) ?>
-                                    </span>
-                                </td>
-                                <!-- Coluna Stock -->
-                                <td
-                                    class="fw-700 <?= $componente->getStock() <= $componente->getStockMinimo() ? 'text-error' : ''; ?>">
-                                    <?= htmlspecialchars($componente->getStock()) . '/' . htmlspecialchars($componente->getStockMinimo()) ?>
-                                </td>
-                                <!-- Coluna Preço -->
-                                <td class="fw-700">
-                                    €<?= htmlspecialchars(number_format($componente->getPreco(), 2, '.', '')) ?>
-                                </td>
-                                <!-- Coluna Ações -->
-                                <?php if (tem_permissao('components.edit') || tem_permissao('components.delete')): ?>
-                                    <td class="text-end equipment-actions">
-                                        <!-- Dropdown -->
-                                        <div class="dropdown">
-                                            <!-- Botão Dropdown -->
-                                            <button
-                                                class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
-                                                type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <!-- SVG -->
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24"
-                                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                    stroke-linejoin="round">
-                                                    <circle cx="12" cy="12" r="1" />
-                                                    <circle cx="19" cy="12" r="1" />
-                                                    <circle cx="5" cy="12" r="1" />
-                                                </svg>
-                                            </button>
-                                            <!-- Menu Dropdown -->
-                                            <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu padding-2">
-                                                <?php if (tem_permissao('components.edit')): ?>
-                                                    <!-- Opção Editar -->
-                                                    <li>
-                                                        <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none  text-primary"
-                                                            href="#" data-bs-toggle="modal"
-                                                            data-bs-target="#component-edit-modal-<?= htmlspecialchars($encryptedCompId) ?>">
-                                                            <!-- SVG -->
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                                stroke-linecap="round" stroke-linejoin="round"
-                                                                class="lucide lucide-pencil">
-                                                                <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
-                                                                <path d="m15 5 4 4" />
-                                                            </svg>
-                                                            Editar
-                                                        </a>
-                                                    </li>
-                                                <?php endif; ?>
-                                                <?php if (tem_permissao('components.delete')): ?>
-                                                    <!-- Opção Eliminar -->
-                                                    <li>
-                                                        <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none  text-error"
-                                                            href="#" data-bs-toggle="modal"
-                                                            data-bs-target="#component-delete-modal-<?= htmlspecialchars($encryptedCompId) ?>">
-                                                            <!-- SVG -->
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                                                viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                                                stroke-linecap="round" stroke-linejoin="round"
-                                                                class="lucide lucide-trash-2">
-                                                                <path d="M3 6h18" />
-                                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                                                                <line x1="10" x2="10" y1="11" y2="17" />
-                                                                <line x1="14" x2="14" y1="11" y2="17" />
-                                                            </svg>
-                                                            Eliminar
-                                                        </a>
-                                                    </li>
-                                                <?php endif; ?>
-                                            </ul>
-                                        </div>
-                                    </td>
-                                <?php endif; ?>
-                            </tr>
-
-                        <?php endforeach; ?>
-
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Wrapper Paginação -->
-            <div class="d-flex justify-content-between align-items-center padding-4 datatable-bottom">
-                <!-- Info -->
-                <div class="datatable-info">
-                    A mostrar
-                    <?= $totalComponentesFiltered > 0 ? $offset + 1 : 0 ?>–<?= min($offset + $items_per_page, $totalComponentesFiltered) ?>
-                    de <?= $totalComponentesFiltered ?> registos
+        <?php if ($totalComponentesAll === 0): ?>
+            <!-- Card Sem Componentes -->
+            <div
+                class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
+                <!-- Wrapper Ícone -->
+                <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                    <!-- SVG -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-bell-off-icon lucide-bell-off">
+                        <path d="M9 10h.01" />
+                        <path d="M15 10h.01" />
+                        <path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z" />
+                    </svg>
                 </div>
-                <!-- Navegação -->
-                <nav class="datatable-pagination">
-                    <ul class="datatable-pagination-list">
+                <!-- Wrapper Texto -->
+                <div class="d-flex flex-column gap-2">
+                    <!-- Título -->
+                    <h3 class="fw-700 m-0">Sem Componentes</h3>
+                    <!-- Texto -->
+                    <p class="text-secondary m-0">De momento não existe nenhum componente.</p>
+                </div>
+            </div>
+        <?php elseif (empty($listaComponentes)): ?>
+            <!-- Card Sem Resultados -->
+            <div
+                class="bento-card padding-6 d-flex flex-column align-items-center justify-content-center text-center gap-4">
+                <!-- Wrapper Ícone -->
+                <div class="d-flex align-items-center justify-content-center text-secondary opacity-50 mb-2">
+                    <!-- SVG -->
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        class="lucide lucide-search-x">
+                        <path d="m13.5 8.5-5 5" />
+                        <path d="m8.5 8.5 5 5" />
+                        <circle cx="11" cy="11" r="8" />
+                        <path d="m21 21-4.3-4.3" />
+                    </svg>
+                </div>
+                <!-- Wrapper Texto -->
+                <div class="d-flex flex-column gap-2">
+                    <!-- Título -->
+                    <h3 class="fw-700 m-0">Sem resultados</h3>
+                    <!-- Texto -->
+                    <p class="text-secondary m-0">Nenhum registo encontrado correspondente à sua pesquisa.</p>
+                </div>
+            </div>
+        <?php else: ?>
+
+            <!-- Card Tabela -->
+            <div class="bento-card w-100 p-0 border-0">
+                <!-- Wrapper Datatable -->
+                <div class="datatable-wrapper no-footer sortable fixed-columns">
+                    <!-- Container Tabela -->
+                    <div class="datatable-container w-100 overflow-auto position-relative">
                         <?php
-                        // Função auxiliar para paginação
-                        $buildQueryString = function ($newPage) use ($search_query, $sort_param, $dir_param) {
-                            $params = ['page' => $newPage];
+                        // Função auxiliar para criar links de ordenação
+                        $buildSortUrl = function ($column) use ($search_query, $sort_param, $dir_param) {
+                            $params = [];
                             if ($search_query !== '')
                                 $params['search'] = $search_query;
-                            if ($sort_param !== 'descricao')
-                                $params['sort'] = $sort_param;
-                            if ($dir_param !== 'asc')
-                                $params['dir'] = $dir_param;
+
+                            $params['sort'] = $column;
+                            // Inverte a direção se estiver a clicar na mesma coluna, senão default para asc
+                            $params['dir'] = ($sort_param === $column && $dir_param === 'asc') ? 'desc' : 'asc';
+
                             return '?' . http_build_query($params);
                         };
+
+                        // Função auxiliar para mostrar o ícone/seta
+                        $getSortIcon = function ($column) use ($sort_param, $dir_param) {
+                            if ($sort_param !== $column)
+                                return '';
+                            return $dir_param === 'asc' ? ' ↑' : ' ↓';
+                        };
                         ?>
+                        <!-- Tabela Componentes -->
+                        <table id="componentsTable" class="heba-table w-100 display datatable-table">
+                            <!-- Cabeçalho -->
+                            <thead>
+                                <tr>
+                                    <!-- Coluna Descrição -->
+                                    <th><a href="<?= $buildSortUrl('descricao') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">COMPONENTE<?= $getSortIcon('descricao') ?></a>
+                                    </th>
+                                    <!-- Coluna SKU -->
+                                    <th><a href="<?= $buildSortUrl('sku') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">SKU<?= $getSortIcon('sku') ?></a>
+                                    </th>
+                                    <!-- Coluna Categoria -->
+                                    <th><a href="<?= $buildSortUrl('categoria') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">CATEGORIA<?= $getSortIcon('categoria') ?></a>
+                                    </th>
+                                    <!-- Coluna Stock -->
+                                    <th><a href="<?= $buildSortUrl('stock') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">STOCK/MIN<?= $getSortIcon('stock') ?></a>
+                                    </th>
+                                    <!-- Coluna Preço -->
+                                    <th><a href="<?= $buildSortUrl('preco') ?>"
+                                            class="datatable-sorter text-decoration-none text-inherit">PREÇO
+                                            UNIT.<?= $getSortIcon('preco') ?></a></th>
+                                    <?php if (tem_permissao('components.edit') || tem_permissao('components.delete')): ?>
+                                        <!-- Coluna Ações -->
+                                        <th class="text-end">AÇÕES</th>
+                                    <?php endif; ?>
+                                </tr>
+                            </thead>
+                            <!-- Corpo da Tabela -->
+                            <tbody>
+                                <?php foreach ($listaComponentes as $componente): ?>
+                                    <?php
+                                    // Encriptar ID
+                                    $encryptedCompId = aes_encrypt($componente->getIdComponente());
+                                    ?>
 
-                        <?php if ($current_page > 1): ?>
-                            <li class="datatable-pagination-list-item pager"><a
-                                    href="<?= $buildQueryString($current_page - 1) ?>">‹</a></li>
-                        <?php endif; ?>
+                                    <!-- Linha -->
+                                    <tr>
+                                        <!-- Coluna Info -->
+                                        <td>
+                                            <!-- Wrapper Componente -->
+                                            <div class="d-flex align-items-center gap-3">
+                                                <!-- Wrapper Ícone -->
+                                                <div
+                                                    class="table-icon-wrapper padding-2 d-flex align-items-center justify-content-center flex-shrink-0 component-icon-wrapper">
+                                                    <!-- SVG -->
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                        stroke-linecap="round" stroke-linejoin="round"
+                                                        class="lucide lucide-puzzle-icon lucide-puzzle">
+                                                        <path
+                                                            d="M15.39 4.39a1 1 0 0 0 1.68-.474 2.5 2.5 0 1 1 3.014 3.015 1 1 0 0 0-.474 1.68l1.683 1.682a2.414 2.414 0 0 1 0 3.414L19.61 15.39a1 1 0 0 1-1.68-.474 2.5 2.5 0 1 0-3.014 3.015 1 1 0 0 1 .474 1.68l-1.683 1.682a2.414 2.414 0 0 1-3.414 0L8.61 19.61a1 1 0 0 0-1.68.474 2.5 2.5 0 1 1-3.014-3.015 1 1 0 0 0 .474-1.68l-1.683-1.682a2.414 2.414 0 0 1 0-3.414L4.39 8.61a1 1 0 0 1 1.68.474 2.5 2.5 0 1 0 3.014-3.015 1 1 0 0 1-.474-1.68l1.683-1.682a2.414 2.414 0 0 1 3.414 0z" />
+                                                    </svg>
+                                                </div>
+                                                <!-- Texto Nome -->
+                                                <p class="equipment-title fw-700 mb-0">
+                                                    <?= htmlspecialchars($componente->getDescricao()) ?>
+                                                </p>
+                                                <!-- Texto ID -->
+                                                <span class="visually-hidden"><?= htmlspecialchars($encryptedCompId) ?></span>
+                                            </div>
+                                        </td>
+                                        <!-- Coluna SKU -->
+                                        <td>
+                                            <!-- Badge SKU -->
+                                            <span
+                                                class="equipment-badge d-inline-flex align-items-center justify-content-center fw-500  component-sku-badge text-secondary font-mono">
+                                                <?= htmlspecialchars($componente->getCodigoInterno()) ?>
+                                            </span>
+                                        </td>
+                                        <!-- Coluna Categoria -->
+                                        <td>
+                                            <?php
+                                            // Encontrar categoria
+                                            $catNome = "Sem Categoria";
+                                            $catDescricao = "";
+                                            $idCatComponente = $componente->getIdCategoria();
 
-                        <?php for ($i = max(1, $current_page - 2); $i <= min($totalPages, $current_page + 2); $i++): ?>
-                            <li class="datatable-pagination-list-item <?= $i === $current_page ? 'datatable-active' : '' ?>">
-                                <a href="<?= $buildQueryString($i) ?>"><?= $i ?></a>
-                            </li>
-                        <?php endfor; ?>
+                                            if ($idCatComponente !== null) {
+                                                foreach ($categoriasDisponiveis as $catDisp) {
+                                                    if ($catDisp->getIdCategoria() === $idCatComponente) {
+                                                        $catNome = $catDisp->getNome();
+                                                        $catDescricao = $catDisp->getDescricao();
+                                                        break;
+                                                    }
+                                                }
+                                            }
+                                            ?>
+                                            <!-- Texto Categoria -->
+                                            <span class="category-tooltip-trigger" data-bs-toggle="tooltip"
+                                                data-bs-placement="top" title="<?= htmlspecialchars($catDescricao) ?>">
+                                                <?= htmlspecialchars($catNome) ?>
+                                            </span>
+                                        </td>
+                                        <!-- Coluna Stock -->
+                                        <td
+                                            class="fw-700 <?= $componente->getStock() <= $componente->getStockMinimo() ? 'text-error' : ''; ?>">
+                                            <?= htmlspecialchars($componente->getStock()) . '/' . htmlspecialchars($componente->getStockMinimo()) ?>
+                                        </td>
+                                        <!-- Coluna Preço -->
+                                        <td class="fw-700">
+                                            €<?= htmlspecialchars(number_format($componente->getPreco(), 2, '.', '')) ?>
+                                        </td>
+                                        <!-- Coluna Ações -->
+                                        <?php if (tem_permissao('components.edit') || tem_permissao('components.delete')): ?>
+                                            <td class="text-end equipment-actions">
+                                                <!-- Dropdown -->
+                                                <div class="dropdown">
+                                                    <!-- Botão Dropdown -->
+                                                    <button
+                                                        class="btn btn-icon opacity-50 hover-opacity-100 p-0 m-0 bg-transparent border-0 text-white"
+                                                        type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                        <!-- SVG -->
+                                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                                            stroke-linecap="round" stroke-linejoin="round">
+                                                            <circle cx="12" cy="12" r="1" />
+                                                            <circle cx="19" cy="12" r="1" />
+                                                            <circle cx="5" cy="12" r="1" />
+                                                        </svg>
+                                                    </button>
+                                                    <!-- Menu Dropdown -->
+                                                    <ul class="dropdown-menu dropdown-menu-end action-dropdown-menu padding-2">
+                                                        <?php if (tem_permissao('components.edit')): ?>
+                                                            <!-- Opção Editar -->
+                                                            <li>
+                                                                <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none  text-primary"
+                                                                    href="#" data-bs-toggle="modal"
+                                                                    data-bs-target="#component-edit-modal-<?= htmlspecialchars($encryptedCompId) ?>">
+                                                                    <!-- SVG -->
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                        class="lucide lucide-pencil">
+                                                                        <path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" />
+                                                                        <path d="m15 5 4 4" />
+                                                                    </svg>
+                                                                    Editar
+                                                                </a>
+                                                            </li>
+                                                        <?php endif; ?>
+                                                        <?php if (tem_permissao('components.delete')): ?>
+                                                            <!-- Opção Eliminar -->
+                                                            <li>
+                                                                <a class="dropdown-item action-dropdown-item d-flex align-items-center gap-2 padding-3 fw-500 decoration-none  text-error"
+                                                                    href="#" data-bs-toggle="modal"
+                                                                    data-bs-target="#component-delete-modal-<?= htmlspecialchars($encryptedCompId) ?>">
+                                                                    <!-- SVG -->
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                                        class="lucide lucide-trash-2">
+                                                                        <path d="M3 6h18" />
+                                                                        <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
+                                                                        <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
+                                                                        <line x1="10" x2="10" y1="11" y2="17" />
+                                                                        <line x1="14" x2="14" y1="11" y2="17" />
+                                                                    </svg>
+                                                                    Eliminar
+                                                                </a>
+                                                            </li>
+                                                        <?php endif; ?>
+                                                    </ul>
+                                                </div>
+                                            </td>
+                                        <?php endif; ?>
+                                    </tr>
 
-                        <?php if ($current_page < $totalPages): ?>
-                            <li class="datatable-pagination-list-item pager"><a
-                                    href="<?= $buildQueryString($current_page + 1) ?>">›</a></li>
-                        <?php endif; ?>
-                    </ul>
-                </nav>
-            </div>
-        </div>
+                                <?php endforeach; ?>
 
-    <?php endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Wrapper Paginação -->
+                    <div class="d-flex justify-content-between align-items-center padding-4 datatable-bottom">
+                        <!-- Info -->
+                        <div class="datatable-info">
+                            A mostrar
+                            <?= $totalComponentesFiltered > 0 ? $offset + 1 : 0 ?>–<?= min($offset + $items_per_page, $totalComponentesFiltered) ?>
+                            de <?= $totalComponentesFiltered ?> registos
+                        </div>
+                        <!-- Navegação -->
+                        <nav class="datatable-pagination">
+                            <ul class="datatable-pagination-list">
+                                <?php
+                                // Função auxiliar para paginação
+                                $buildQueryString = function ($newPage) use ($search_query, $sort_param, $dir_param) {
+                                    $params = ['page' => $newPage];
+                                    if ($search_query !== '')
+                                        $params['search'] = $search_query;
+                                    if ($sort_param !== 'descricao')
+                                        $params['sort'] = $sort_param;
+                                    if ($dir_param !== 'asc')
+                                        $params['dir'] = $dir_param;
+                                    return '?' . http_build_query($params);
+                                };
+                                ?>
+
+                                <?php if ($current_page > 1): ?>
+                                    <li class="datatable-pagination-list-item pager"><a
+                                            href="<?= $buildQueryString($current_page - 1) ?>">‹</a></li>
+                                <?php endif; ?>
+
+                                <?php for ($i = max(1, $current_page - 2); $i <= min($totalPages, $current_page + 2); $i++): ?>
+                                    <li
+                                        class="datatable-pagination-list-item <?= $i === $current_page ? 'datatable-active' : '' ?>">
+                                        <a href="<?= $buildQueryString($i) ?>"><?= $i ?></a>
+                                    </li>
+                                <?php endfor; ?>
+
+                                <?php if ($current_page < $totalPages): ?>
+                                    <li class="datatable-pagination-list-item pager"><a
+                                            href="<?= $buildQueryString($current_page + 1) ?>">›</a></li>
+                                <?php endif; ?>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+
+            <?php endif; ?>
 
     </section>
 </div>
@@ -749,11 +753,11 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                         Rápido (Debug)</span>
                                     <!-- Botão Debug -->
                                     <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
-                                        onclick="prefillFields({'component-name': 'Tubo de Silicone 1.5m', 'component-sku': 'TS-9921', 'component-stock-actual': '15', 'component-stock-min': '5', 'component-price': '12.50'}); setTimeout(() => { const c = document.getElementById('component-category'); if(c && c.options.length > 1) c.selectedIndex=1; const l = document.getElementById('component-location'); if(l && l.options.length > 1) l.selectedIndex=1; }, 100);">Tubo
+                                        onclick="const getOpt = (id) => { const s = document.getElementById(id); return s && s.options.length > 1 ? s.options[1].value : ''; }; prefillFields({'component-name': 'Tubo de Silicone 1.5m', 'component-sku': 'TS-9921', 'component-stock-actual': '15', 'component-stock-min': '5', 'component-price': '12.50', 'component-category': getOpt('component-category'), 'component-location': getOpt('component-location')});">Tubo
                                         Silicone</button>
                                     <!-- Botão Debug -->
                                     <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
-                                        onclick="prefillFields({'component-name': 'Sensor SpO2 Reutilizável', 'component-sku': 'SPO2-R2', 'component-stock-actual': '8', 'component-stock-min': '3', 'component-price': '45.00'}); setTimeout(() => { const c = document.getElementById('component-category'); if(c && c.options.length > 1) c.selectedIndex=1; const l = document.getElementById('component-location'); if(l && l.options.length > 1) l.selectedIndex=1; }, 100);">Sensor
+                                        onclick="const getOpt = (id) => { const s = document.getElementById(id); return s && s.options.length > 1 ? s.options[1].value : ''; }; prefillFields({'component-name': 'Sensor SpO2 Reutilizável', 'component-sku': 'SPO2-R2', 'component-stock-actual': '8', 'component-stock-min': '3', 'component-price': '45.00', 'component-category': getOpt('component-category'), 'component-location': getOpt('component-location')});">Sensor
                                         SpO2</button>
                                 </div>
                             <?php endif; ?>

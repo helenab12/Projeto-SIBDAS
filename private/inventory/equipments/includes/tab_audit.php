@@ -132,7 +132,8 @@ try {
             </div>
         <?php else: ?>
             <!-- Tabela de Auditoria -->
-            <table id="auditTable" class="heba-table w-100 display border-0">
+            <div class="w-100 overflow-auto">
+                <table id="auditTable" class="heba-table w-100 display border-0">
                 <!-- Cabeçalho -->
                 <thead>
                     <tr>
@@ -176,6 +177,7 @@ try {
                     <?php endforeach; ?>
                 </tbody>
             </table>
+            </div>
         <?php endif; ?>
     </div>
 </div>

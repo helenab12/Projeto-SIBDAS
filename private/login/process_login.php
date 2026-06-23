@@ -30,8 +30,15 @@ try {
         exit;
     }
 
+    // Validar formato do email com filter_var
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $_SESSION['server_error'] = 'Login inválido'; // Mensagem genérica por segurança
+        header("Location: " . BASE_URL . "private/login/login.php");
+        exit;
+    }
+
     // Ligar à BD
-$ligacao = connect_to_db();
+    $ligacao = connect_to_db();
 
     // Consultar utilizador
     $comando = execute_query(
@@ -84,8 +91,8 @@ $ligacao = connect_to_db();
     header('Location: ' . BASE_URL . 'private/index.php');
     exit;
 } catch (PDOException $err) {
-        // Capturar erro
-$_SESSION['server_error'] = "Erro ao gravar os dados: " . $err->getMessage();
+    // Capturar erro
+    $_SESSION['server_error'] = "Erro ao gravar os dados: " . $err->getMessage();
     // Redirecionar
     header('Location: ' . BASE_URL . 'private/login/login.php');
     exit;
