@@ -193,7 +193,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
             <?php else: ?>
                     <!-- Tabela form -->
                     <!-- Formulário -->
-                    <form method="POST" action="profiles-crud/update-profiles.php" class="flex-grow-1 d-flex flex-column gap-6">
+                    <form method="POST" action="profiles-crud/update-profiles.php" class="flex-grow-1 d-flex flex-column gap-6" novalidate>
                         <div class="bento-card w-100 p-0 border-0">
                             <div class="datatable-wrapper no-footer sortable fixed-columns">
                                 <div class="datatable-container w-100 overflow-auto position-relative">

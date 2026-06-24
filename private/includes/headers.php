@@ -73,7 +73,7 @@ if (isset($_SESSION['id_utilizador'])) {
         </button>
         <!-- Link Notificações -->
         <!-- Link -->
-        <a href="<?php echo BASE_URL; ?>private/notifications.php"
+        <a href="<?= BASE_URL; ?>private/notifications.php"
             class="text-decoration-none d-flex align-items-center position-relative">
             <!-- SVG Sino -->
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
@@ -88,7 +88,6 @@ if (isset($_SESSION['id_utilizador'])) {
                     class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-flex align-items-center justify-content-center"
                     style="min-width: 18px; height: 18px; font-size: 0.65rem; padding: 0 4px; transform: translate(-30%, -30%) !important;">
                     <?php echo $numeroNotificacoesNaoLidas > 99 ? '99+' : $numeroNotificacoesNaoLidas; ?>
-                    <span class="visually-hidden">notificações não lidas</span>
                 </span>
             <?php endif; ?>
         </a>
@@ -130,10 +129,8 @@ if (isset($_SESSION['id_utilizador'])) {
 </header>
 
 <!-- Header Mobile -->
-<header class="d-flex flex-row w-100 padding-4 mobile-header d-flex d-md-none sticky-top">
+<header class="d-flex flex-row w-100 padding-4 mobile-header d-md-none sticky-top">
     <div class="d-flex flex-row align-items-center justify-content-between w-100">
-
-
         <div class="d-flex flex-row align-items-center gap-6 ">
             <!-- Botão -->
             <button
@@ -190,7 +187,7 @@ if (isset($_SESSION['id_utilizador'])) {
                 </svg>
             </button>
             <!-- Link -->
-            <a href="<?php echo BASE_URL; ?>private/notifications.php"
+            <a href="<?= BASE_URL; ?>private/notifications.php"
                 class="text-decoration-none d-flex align-items-center position-relative">
                 <!-- SVG -->
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"

@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__ . "/../config/funcoes.php");
+require_once(__DIR__ . "/../../config/funcoes.php");
 redirect_if_not_logged();
 
 // Verifica se o ID foi passado por GET e decripta o mesmo

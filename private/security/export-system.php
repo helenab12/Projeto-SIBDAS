@@ -14,6 +14,10 @@ if (!in_array($format, $allowedFormats)) {
     die("Formato inválido.");
 }
 
+function convert_to_iso($string) {
+    return mb_convert_encoding($string, 'ISO-8859-1', 'UTF-8');
+}
+
 try {
     // Ligar à BD
     $ligacao = connect_to_db();
@@ -173,14 +177,14 @@ try {
                 }
                 $this->SetFont('Arial', 'B', 15);
                 $this->Cell(80);
-                $this->Cell(120, 10, utf8_decode($this->titleText), 0, 0, 'C');
+                $this->Cell(120, 10, convert_to_iso($this->titleText), 0, 0, 'C');
                 $this->Ln(20);
             }
             function Footer()
             {
                 $this->SetY(-15);
                 $this->SetFont('Arial', 'I', 8);
-                $this->Cell(0, 10, utf8_decode('Página ') . $this->PageNo() . '/{nb}', 0, 0, 'C');
+                $this->Cell(0, 10, convert_to_iso('Página ') . $this->PageNo() . '/{nb}', 0, 0, 'C');
             }
         }
 
@@ -205,29 +209,29 @@ try {
 
         // Seção 1: Métricas Principais
         $pdfDash->SetFont('Arial', 'B', 14);
-        $pdfDash->Cell(0, 10, utf8_decode("Métricas Principais"), 0, 1, 'L');
+        $pdfDash->Cell(0, 10, convert_to_iso("Métricas Principais"), 0, 1, 'L');
         $pdfDash->SetFont('Arial', '', 11);
-        $pdfDash->Cell(100, 8, utf8_decode("- Total de Equipamentos: $totalEq"), 0, 0);
-        $pdfDash->Cell(90, 8, utf8_decode("- Equipamentos Ativos: $eqAtivos"), 0, 1);
-        $pdfDash->Cell(100, 8, utf8_decode("- Em Manutenção: $eqManutencao"), 0, 0);
-        $pdfDash->Cell(90, 8, utf8_decode("- Equipamentos Inativos: $eqInativos"), 0, 1);
-        $pdfDash->Cell(100, 8, utf8_decode("- Criticidade Elevada (Alta/Crítico): $eqCriticidadeAlta"), 0, 0);
-        $pdfDash->Cell(90, 8, utf8_decode("- Equipamentos s/ Documentos: $semDocs"), 0, 1);
+        $pdfDash->Cell(100, 8, convert_to_iso("- Total de Equipamentos: $totalEq"), 0, 0);
+        $pdfDash->Cell(90, 8, convert_to_iso("- Equipamentos Ativos: $eqAtivos"), 0, 1);
+        $pdfDash->Cell(100, 8, convert_to_iso("- Em Manutenção: $eqManutencao"), 0, 0);
+        $pdfDash->Cell(90, 8, convert_to_iso("- Equipamentos Inativos: $eqInativos"), 0, 1);
+        $pdfDash->Cell(100, 8, convert_to_iso("- Criticidade Elevada (Alta/Crítico): $eqCriticidadeAlta"), 0, 0);
+        $pdfDash->Cell(90, 8, convert_to_iso("- Equipamentos s/ Documentos: $semDocs"), 0, 1);
         $pdfDash->Ln(5);
 
         // Seção 2: Alertas (Garantias)
         $pdfDash->SetFont('Arial', 'B', 14);
-        $pdfDash->Cell(0, 10, utf8_decode("Garantias e Contratos"), 0, 1, 'L');
+        $pdfDash->Cell(0, 10, convert_to_iso("Garantias e Contratos"), 0, 1, 'L');
         $pdfDash->SetFont('Arial', '', 11);
         $pdfDash->SetTextColor(200, 0, 0); // Red text
-        $pdfDash->Cell(100, 8, utf8_decode("! Garantias a Expirar (< 30 dias): $garantiasAExpirar"), 0, 0);
-        $pdfDash->Cell(90, 8, utf8_decode("! Garantias Expiradas: $garantiasExpiradas"), 0, 1);
+        $pdfDash->Cell(100, 8, convert_to_iso("! Garantias a Expirar (< 30 dias): $garantiasAExpirar"), 0, 0);
+        $pdfDash->Cell(90, 8, convert_to_iso("! Garantias Expiradas: $garantiasExpiradas"), 0, 1);
         $pdfDash->SetTextColor(0, 0, 0); // Reset text color
         $pdfDash->Ln(5);
 
         // Seção 3: Distribuição por Categoria
         $pdfDash->SetFont('Arial', 'B', 12);
-        $pdfDash->Cell(0, 8, utf8_decode("Distribuição por Categoria"), 0, 1, 'L');
+        $pdfDash->Cell(0, 8, convert_to_iso("Distribuição por Categoria"), 0, 1, 'L');
         $pdfDash->SetFont('Arial', '', 10);
         if (isset($dashboardStats['graficoCategoria'])) {
             $catLabels = $dashboardStats['graficoCategoria']['labels'];
@@ -235,14 +239,14 @@ try {
             for ($j = 0; $j < count($catLabels); $j++) {
                 $nome = $catLabels[$j] ?: 'Sem Categoria';
                 $qtd = $catData[$j];
-                $pdfDash->Cell(90, 6, utf8_decode("- $nome: $qtd"), 0, 1);
+                $pdfDash->Cell(90, 6, convert_to_iso("- $nome: $qtd"), 0, 1);
             }
         }
         $pdfDash->Ln(5);
 
         // Seção 4: Equipamentos por Serviço
         $pdfDash->SetFont('Arial', 'B', 12);
-        $pdfDash->Cell(0, 8, utf8_decode("Equipamentos por Serviço"), 0, 1, 'L');
+        $pdfDash->Cell(0, 8, convert_to_iso("Equipamentos por Serviço"), 0, 1, 'L');
         $pdfDash->SetFont('Arial', '', 10);
         if (isset($dashboardStats['graficoServico'])) {
             $servLabels = $dashboardStats['graficoServico']['labels'];
@@ -251,7 +255,7 @@ try {
             for ($j = 0; $j < count($servLabels); $j++) {
                 $nome = $servLabels[$j] ?: 'Sem Serviço';
                 $qtd = $servData[$j];
-                $pdfDash->Cell(95, 6, utf8_decode("- $nome: $qtd"), 0, 0);
+                $pdfDash->Cell(95, 6, convert_to_iso("- $nome: $qtd"), 0, 0);
                 $i++;
                 if ($i % 2 == 0)
                     $pdfDash->Ln();
@@ -263,7 +267,7 @@ try {
 
         // Seção 5: Tendências de Manutenção (Últimos 12 meses)
         $pdfDash->SetFont('Arial', 'B', 12);
-        $pdfDash->Cell(0, 8, utf8_decode("Tendências de Manutenção (Últimos 12 Meses)"), 0, 1, 'L');
+        $pdfDash->Cell(0, 8, convert_to_iso("Tendências de Manutenção (Últimos 12 Meses)"), 0, 1, 'L');
         $pdfDash->SetFont('Arial', '', 10);
         if (isset($dashboardStats['graficoManutencao'])) {
             $manLabels = $dashboardStats['graficoManutencao']['labels'];
@@ -272,14 +276,14 @@ try {
 
             $totalPrev = array_sum($manPrev);
             $totalCorr = array_sum($manCorr);
-            $pdfDash->Cell(90, 6, utf8_decode("- Preventivas: $totalPrev"), 0, 1);
-            $pdfDash->Cell(90, 6, utf8_decode("- Corretivas: $totalCorr"), 0, 1);
+            $pdfDash->Cell(90, 6, convert_to_iso("- Preventivas: $totalPrev"), 0, 1);
+            $pdfDash->Cell(90, 6, convert_to_iso("- Corretivas: $totalCorr"), 0, 1);
         }
         $pdfDash->Ln(10);
 
         // Rodapé
         $pdfDash->SetFont('Arial', 'I', 9);
-        $pdfDash->Cell(0, 10, utf8_decode("Relatório gerado automaticamente em: " . date('d/m/Y H:i')), 0, 1, 'C');
+        $pdfDash->Cell(0, 10, convert_to_iso("Relatório gerado automaticamente em: " . date('d/m/Y H:i')), 0, 1, 'C');
 
         $tempPdfDash = $tempDir . '/dashboard.pdf';
         $pdfDash->Output('F', $tempPdfDash);
@@ -309,7 +313,7 @@ try {
             $colWidth = count($headers) > 0 ? (277 / count($headers)) : 0;
 
             foreach ($headers as $h) {
-                $pdf->Cell($colWidth, 7, utf8_decode(substr(ucfirst($h), 0, 15)), 1, 0, 'C');
+                $pdf->Cell($colWidth, 7, convert_to_iso(substr(ucfirst($h), 0, 15)), 1, 0, 'C');
             }
             $pdf->Ln();
 
@@ -319,7 +323,7 @@ try {
                     $val = isset($row[$h]) ? $row[$h] : '';
                     if (is_array($val))
                         $val = implode(', ', $val);
-                    $valStr = utf8_decode((string) $val);
+                    $valStr = convert_to_iso((string) $val);
                     // Truncar para caber na celula
                     if (strlen($valStr) > 25)
                         $valStr = substr($valStr, 0, 22) . '...';

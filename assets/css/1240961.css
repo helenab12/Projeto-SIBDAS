@@ -346,7 +346,7 @@ label {
 /* Captions / Badges */
 
 /* TABLETS (apenas mudanças necessárias) */
-@media (max-width: 1024px) {
+@media (max-width: 992px) {
     h1 {
         font-size: 22px;
         line-height: 30px;
@@ -684,7 +684,7 @@ label {
 }
 
 /* DESKTOPS conteúdo centrado com max-width */
-@media (min-width: 1025px) {
+@media (min-width: 993px) {
     .pa-navbar {
         padding: var(--space-3) 0;
     }
@@ -696,7 +696,7 @@ label {
 }
 
 /* TABLETS */
-@media (max-width: 1024px) {
+@media (max-width: 992px) {
     .pa-navbar {
         padding: var(--space-3) 0;
     }
@@ -729,7 +729,7 @@ label {
     gap: var(--space-4);
 }
 
-@media (min-width: 1025px) {
+@media (min-width: 993px) {
     .pa-main-section {
         min-height: 100vh;
     }
@@ -739,7 +739,7 @@ label {
     }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 992px) {
     .pa-main-section {
         min-height: 60vh;
     }
@@ -790,7 +790,7 @@ label {
     box-sizing: content-box;
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 992px) {
     .pa-features .bento-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -866,7 +866,7 @@ label {
     stroke: color-mix(in srgb, var(--primary-500) 80%, transparent 0%);
 }
 
-@media (max-width: 1024px) and (min-width: 769px) {
+@media (max-width: 992px) and (min-width: 769px) {
     .pa-clients .bento-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -1008,7 +1008,6 @@ label {
 .pa-informative-section .badge {
     background-color: rgba(255, 255, 255, 0.1);
     border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: var(--space-3) var(--space-4);
 }
 
 .background-decorations {
@@ -1072,7 +1071,7 @@ label {
     z-index: 100;
 }
 
-@media (min-width: 1025px) {
+@media (min-width: 993px) {
     .pa-informative-section {
         background: linear-gradient(135deg,
                 light-dark(var(--primary-500), transparent) 0%,
@@ -1085,7 +1084,7 @@ label {
 
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 992px) {
     .login-section {
         width: 100%;
     }
@@ -1265,7 +1264,7 @@ label {
 }
 
 .navbar-logo {
-    background: linear-gradient(135deg, #1E3A8A, #1D4ED8);
+    background: linear-gradient(135deg, var(--primary-500), var(--primary-900));
     background-size: 400% 400% !important;
     animation: gradient 5s ease infinite;
     border-radius: var(--radius-xs);
@@ -1309,9 +1308,10 @@ header .user-icon {
 @media (max-width: 768px) {
     .mobile-sidebar {
         z-index: 1000;
+        width: 280px;
         background-color: light-dark(var(--app-bg), #0F172A);
         transform: translateX(-100%);
-        transition: transform 0.3s ease-in;
+        transition: all 0.3s ease-in-out;
     }
 
     .mobile-sidebar.open {
@@ -1321,6 +1321,16 @@ header .user-icon {
 
     .mobile-sidebar.open+.sidebar-background {
         display: block;
+    }
+
+    body:has(.mobile-sidebar.open) .mobile-header {
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .mobile-header {
+        transition: opacity 0.2s ease-in-out;
     }
 
 }
@@ -1433,7 +1443,7 @@ header .user-icon {
     border-right-color: color-mix(in srgb, var(--primary-500) 20%, transparent);
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 992px) {
     .dashboard-bento-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -1471,13 +1481,13 @@ header .user-icon {
 }
 
 /* Tabelas */
-@media (min-width: 1025px) {
+@media (min-width: 993px) {
     .table-responsive {
         overflow: visible !important;
     }
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 992px) {
     .equipment-list-search-bar {
         flex-direction: column !important;
         align-items: stretch;
@@ -1494,7 +1504,7 @@ header .user-icon {
     border-radius: var(--radius-lg) var(--radius-lg) 0 0;
 }
 
-@media (min-width: 1025px) {
+@media (min-width: 993px) {
     .datatable-container {
         overflow: visible !important;
     }
@@ -1802,7 +1812,7 @@ ul.action-dropdown-menu.show {
 }
 
 /* Responsividade do Modal */
-@media (max-width: 1024px) {
+@media (max-width: 992px) {
     .equipment-creation-modal-dialog {
         width: 65%;
         max-width: 90%;
@@ -2094,7 +2104,7 @@ ul.action-dropdown-menu.show {
     background: linear-gradient(315deg, #7F00FF 0%, #E100FF 100%);
 }
 
-@media (max-width: 1024px) {
+@media (max-width: 992px) {
     .people-management.bento-grid {
         grid-template-columns: repeat(2, 1fr);
     }
@@ -2343,7 +2353,7 @@ ul.action-dropdown-menu.show {
     background-color: color-mix(in srgb, var(--error) 10%, transparent);
 }
 
-@media (min-width: 1025px) {
+@media (min-width: 993px) {
     .equipment-creation-modal-content .danger-banner {
         width: 60%;
     }
@@ -2475,7 +2485,7 @@ ul.action-dropdown-menu.show {
 }
 
 /* Visão Geral Bento Layout */
-@media (min-width: 1025px) {
+@media (min-width: 993px) {
     .equipment-detailed-view .details-card {
         flex: 2;
     }
@@ -2505,7 +2515,7 @@ ul.action-dropdown-menu.show {
     grid-row: 2;
 }
 
-@media (min-width: 1025px) {
+@media (min-width: 993px) {
     .equipment-detailed-view .detailed-main-card {
         grid-template-columns: auto 1fr;
         grid-template-rows: auto auto;
@@ -2542,7 +2552,7 @@ ul.action-dropdown-menu.show {
     }
 }
 
-@media (min-width: 1025px) {
+@media (min-width: 993px) {
     .equipment-detailed-view .document-grid {
         grid-template-columns: repeat(3, 1fr);
     }
@@ -2590,7 +2600,7 @@ ul.action-dropdown-menu.show {
 }
 
 /* Fornecedores Tab Styles */
-@media (min-width: 1025px) {
+@media (min-width: 993px) {
     .equipment-detailed-view .supplier-card {
         flex: 1;
     }
@@ -2747,9 +2757,9 @@ section.inbox {
 .page-loading-spinner {
     width: 40px;
     height: 40px;
+    border-radius: 50%;
     border: 3px solid rgba(255, 255, 255, 0.1);
     border-top-color: var(--primary-500);
-    border-radius: 50%;
     animation: spin 0.8s linear infinite;
 }
 

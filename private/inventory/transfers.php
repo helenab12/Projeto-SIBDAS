@@ -105,7 +105,7 @@ try {
     // Processar resultados
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         // Formatar data
-        $data = new DateTime($row['dataCriacao']);
+        $data = $row['dataCriacao'] ? new DateTime($row['dataCriacao']) : new DateTime();
 
         // Encriptar ID
         $encryptedEqId = aes_encrypt((string) $row['idEquipamento']);
@@ -114,10 +114,10 @@ try {
         $searchUrl = BASE_URL . "/private/inventory/equipments/detailed_view.php?id=" . urlencode($encryptedEqId);
 
         // Formatar valores de exibição
-        $equipamentoNome = htmlspecialchars($row['codigoInterno'] . ' — ' . $row['designacao']);
+        $equipamentoNome = htmlspecialchars(($row['codigoInterno'] ?? '') . ' — ' . ($row['designacao'] ?? ''));
 
-        $localizacaoAntiga = $row['salaAntiga'] ? htmlspecialchars($row['servicoAntigo'] . ' — ' . $row['salaAntiga']) : 'Desconhecida';
-        $localizacaoNova = $row['salaNova'] ? htmlspecialchars($row['servicoNovo'] . ' — ' . $row['salaNova']) : 'Desconhecida';
+        $localizacaoAntiga = $row['salaAntiga'] ? htmlspecialchars(($row['servicoAntigo'] ?? '') . ' — ' . ($row['salaAntiga'] ?? '')) : 'Desconhecida';
+        $localizacaoNova = $row['salaNova'] ? htmlspecialchars(($row['servicoNovo'] ?? '') . ' — ' . ($row['salaNova'] ?? '')) : 'Desconhecida';
 
         if ($row['acao'] === 'Criação') {
             $localizacaoAntiga = 'N/A (Registo Inicial)';

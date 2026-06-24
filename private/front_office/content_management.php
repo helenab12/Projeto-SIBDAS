@@ -356,7 +356,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                 <textarea id="textos-<?= htmlspecialchars($chaveEncriptada) ?>"
                                                     name="textos[<?= htmlspecialchars($chaveEncriptada) ?>]" rows="2"
                                                     class="form-control" <?= tem_permissao('content.edit') ? '' : 'readonly' ?>
-                                                    required><?= htmlspecialchars($textoObj->getValor()) ?></textarea>
+                                                    required><?= htmlspecialchars($textoObj->getValor() ?? '') ?></textarea>
                                             </div>
                                         <?php endforeach; ?>
 
@@ -453,11 +453,11 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                                                                     </td>
                                                                     <td>
                                                                         <span
-                                                                            class="fw-700"><?= htmlspecialchars($cartao->titulo) ?></span>
+                                                                            class="fw-700"><?= htmlspecialchars($cartao->titulo ?? '') ?></span>
                                                                     </td>
                                                                     <td>
                                                                         <span
-                                                                            class="text-secondary fw-400"><?= htmlspecialchars($cartao->descricao) ?></span>
+                                                                            class="text-secondary fw-400"><?= htmlspecialchars($cartao->descricao ?? '') ?></span>
                                                                     </td>
                                                                     <?php if (tem_permissao('content.cards.edit') || tem_permissao('content.cards.delete')): ?>
                                                                         <td class="text-end">
@@ -789,7 +789,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                     do Funcionalidade</label>
                                 <!-- Input -->
                                 <input type="text" id="edit-card-title-<?= htmlspecialchars($encryptedCardId) ?>"
-                                    name="card-title" value="<?= htmlspecialchars($cartao->titulo) ?>" required>
+                                    name="card-title" value="<?= htmlspecialchars($cartao->titulo ?? '') ?>" required>
                             </div>
 
                             <!-- Wrapper Linha -->
@@ -800,7 +800,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                 <!-- Textarea -->
                                 <textarea id="edit-card-desc-<?= htmlspecialchars($encryptedCardId) ?>" name="card-desc"
                                     rows="3" class="form-control"
-                                    required><?= htmlspecialchars($cartao->descricao) ?></textarea>
+                                    required><?= htmlspecialchars($cartao->descricao ?? '') ?></textarea>
                             </div>
 
                             <div class="d-flex flex-column flex-md-row gap-4 w-100">
@@ -848,7 +848,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                     <!-- Textarea -->
                                     <textarea id="edit-card-custom-icon-<?= htmlspecialchars($encryptedCardId) ?>"
                                         name="card-custom-icon" rows="2" class="form-control card-custom-icon-textarea"
-                                        placeholder="&lt;path d='...' /&gt;"><?= $is_custom ? htmlspecialchars($cartao->icone) : '' ?></textarea>
+                                        placeholder="&lt;path d='...' /&gt;"><?= $is_custom ? htmlspecialchars($cartao->icone ?? '') : '' ?></textarea>
                                     <div class="form-text text-warning mt-1">⚠️ Aviso:
                                         Certifique-se de introduzir código SVG/HTML válido e
                                         fechado, caso contrário o layout da página poderá
@@ -921,7 +921,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                     <!-- Wrapper Modal -->
                     <div class="modal-body p-0">
                         <!-- Formulário -->
-                        <form method="POST" action="content_management.php">
+                        <form method="POST" action="content_management.php" novalidate>
                             <!-- Input -->
                             <input type="hidden" name="card-id" value="<?= htmlspecialchars($encryptedCardId) ?>">
                             <div
@@ -947,7 +947,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                             </p>
                                             <!-- Título -->
                                             <h2 class="fw-700">
-                                                "<?= htmlspecialchars($cartao->titulo) ?>"
+                                                "<?= htmlspecialchars($cartao->titulo ?? '') ?>"
                                             </h2>
                                             <span class="text-muted">Tipo: Cartão de
                                                 Funcionalidade</span>

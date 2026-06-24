@@ -77,8 +77,8 @@ try {
             $row['codigoPrefix'],
             $row['descricao'],
             (bool) $row['ativo'],
-            new DateTime($row['dataCriacao']),
-            new DateTime($row['dataAtualizacao'])
+            $row['dataCriacao'] ? new DateTime($row['dataCriacao']) : new DateTime(),
+            $row['dataAtualizacao'] ? new DateTime($row['dataAtualizacao']) : new DateTime()
         );
     }
 
@@ -201,15 +201,15 @@ try {
             $row['dataAquisicao'] ? new DateTime($row['dataAquisicao']) : null,
             $row['dataFabrico'] ? new DateTime($row['dataFabrico']) : null,
             (float) $row['custoAquisicao'],
-            TipoEntrada::from($row['tipoEntrada']),
-            EstadoEquipamento::from($row['estadoAtual']),
-            CriticidadeEquipamento::from($row['criticidade']),
+            TipoEntrada::tryFrom((string)$row['tipoEntrada']) ?? TipoEntrada::COMPRA,
+            EstadoEquipamento::tryFrom((string)$row['estadoAtual']) ?? EstadoEquipamento::ATIVO,
+            CriticidadeEquipamento::tryFrom((string)$row['criticidade']) ?? CriticidadeEquipamento::BAIXA,
             $row['observacoes'] ?? '',
             $row['idLocalizacao'] ? (string) $row['idLocalizacao'] : null,
             (bool) $row['arquivado'],
             (bool) $row['ativo'],
-            new DateTime($row['dataCriacao']),
-            new DateTime($row['dataAtualizacao']),
+            $row['dataCriacao'] ? new DateTime($row['dataCriacao']) : new DateTime(),
+            $row['dataAtualizacao'] ? new DateTime($row['dataAtualizacao']) : new DateTime(),
             $row['marcaNome']
         );
     }
@@ -1646,7 +1646,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                     <!-- Body do Modal com scroll automático -->
                     <div class="modal-body p-0">
                         <form action="equipments-crud/edit-equipment.php" method="POST"
-                            class="d-flex flex-column h-100 m-0 w-100 form-edit-equipment">
+                            class="d-flex flex-column h-100 m-0 w-100 form-edit-equipment" novalidate>
                             <input type="hidden" name="equipment-id" value="<?= htmlspecialchars($encryptedEqId) ?>">
 
                             <!-- Conteudo Pagina 1 -->
@@ -1955,7 +1955,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                         <span class="w-100 text-secondary fw-500" style="font-size: 12px;">Preenchimento Rápido
                                             (Debug)</span>
                                         <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
-                                            onclick="prefillFields({'equipment-name-<?= htmlspecialchars($encryptedEqId) ?>': 'Equipamento Modificado', 'equipment-status-<?= htmlspecialchars($encryptedEqId) ?>': 'Em manutenção'}); setTimeout(() => { document.getElementById('equipment-name-<?= htmlspecialchars($encryptedEqId) ?>').dispatchEvent(new Event('input', { bubbles: true })); document.getElementById('equipment-status-<?= htmlspecialchars($encryptedEqId) ?>').dispatchEvent(new Event('change', { bubbles: true })); }, 100);">Alterar
+                                            onclick="prefillFields({'equipment-status-<?= htmlspecialchars($encryptedEqId) ?>': 'Em manutenção'}); setTimeout(() => { document.getElementById('equipment-name-<?= htmlspecialchars($encryptedEqId) ?>').dispatchEvent(new Event('input', { bubbles: true })); document.getElementById('equipment-status-<?= htmlspecialchars($encryptedEqId) ?>').dispatchEvent(new Event('change', { bubbles: true })); }, 100);">Alterar
                                             para Manutenção</button>
                                     </div>
                                 <?php endif; ?>
@@ -2260,7 +2260,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                         </button>
                     </div>
                     <div class="modal-body p-0">
-                        <form method="POST" action="equipments-crud/delete-equipment.php">
+                        <form method="POST" action="equipments-crud/delete-equipment.php" novalidate>
                             <input type="hidden" name="equipment-id" value="<?= htmlspecialchars($encryptedEqId) ?>">
                             <div
                                 class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
@@ -2323,7 +2323,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                         </button>
                     </div>
                     <div class="modal-body p-0">
-                        <form method="POST" action="equipments-crud/archive-equipment.php">
+                        <form method="POST" action="equipments-crud/archive-equipment.php" novalidate>
                             <input type="hidden" name="equipment-id" value="<?= htmlspecialchars($encryptedEqId) ?>">
                             <div
                                 class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">

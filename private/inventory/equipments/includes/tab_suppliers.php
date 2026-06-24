@@ -33,10 +33,10 @@ try {
             $row['email'] ?? '',
             $row['website'] ?? '',
             $row['idPessoaResponsavel'],
-            TipoFornecedor::from($row['tipoFornecedor']),
+            TipoFornecedor::tryFrom((string)$row['tipoFornecedor']) ?? TipoFornecedor::FABRICANTE,
             (bool) $row['ativo'],
-            new DateTime($row['dataCriacao']),
-            new DateTime($row['dataAtualizacao'])
+            $row['dataCriacao'] ? new DateTime($row['dataCriacao']) : new DateTime(),
+            $row['dataAtualizacao'] ? new DateTime($row['dataAtualizacao']) : new DateTime()
         );
 
         $tipo = $fornecedor->getTipoFornecedor()->value;

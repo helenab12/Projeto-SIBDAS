@@ -39,10 +39,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $observacoes = trim($_POST['maintenance-notes'] ?? '');
 
         // Converter datas
-        $dInicio = DateTime::createFromFormat('d/m/Y', $dataInicioRaw);
+        $dInicio = $dataInicioRaw ? DateTime::createFromFormat('d/m/Y', $dataInicioRaw) : null;
         $dataInicio = $dInicio ? $dInicio->format('Y-m-d') : '';
 
-        $dFim = DateTime::createFromFormat('d/m/Y', $dataFimRaw);
+        $dFim = $dataFimRaw ? DateTime::createFromFormat('d/m/Y', $dataFimRaw) : null;
         $dataFim = $dFim ? $dFim->format('Y-m-d') : '';
 
         // Tratar ID de fornecedor

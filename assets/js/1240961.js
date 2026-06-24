@@ -80,6 +80,19 @@ if (collapseBtn) {
     });
 }
 
+// Expandir a sidebar ao clicar no dropdown
+const sidebarDropdownToggles = document.querySelectorAll(".desktop-sidebar .nav-collapse-toggle");
+if (sidebarDropdownToggles) {
+    sidebarDropdownToggles.forEach(toggle => {
+        toggle.addEventListener("click", () => {
+            const sidebar = document.querySelector(".desktop-sidebar");
+            if (sidebar && sidebar.classList.contains("collapsed")) {
+                sidebar.classList.remove("collapsed");
+            }
+        });
+    });
+}
+
 const mobileSidebar = document.querySelector(".mobile-sidebar");
 const sidebarBackground = document.querySelector(".sidebar-background");
 
@@ -87,8 +100,8 @@ const sidebarBackground = document.querySelector(".sidebar-background");
 const mobileMenuBtn = document.getElementById("mobile-menu-toggle");
 if (mobileMenuBtn && mobileSidebar) {
     mobileMenuBtn.addEventListener("click", () => {
-        mobileSidebar.classList.add("open");
-        toggleBodyScroll(true);
+        mobileSidebar.classList.toggle("open");
+        toggleBodyScroll(mobileSidebar.classList.contains("open"));
     });
 }
 
@@ -131,13 +144,11 @@ if (privateAreaHeader) {
 // - Funcionalidade para prender scroll do body (toggleBodyScroll)
 function toggleBodyScroll(isOpen) {
     if (isOpen) {
-        document.body.style.overflowY = "hidden";
+        document.body.style.setProperty("overflow", "hidden", "important");
     } else {
-        document.body.style.overflowY = "";
+        document.body.style.removeProperty("overflow");
     }
 }
-
-// - Esconder page-loading-overlay após o DOM carregar
 
 // ===================
 // 2. Gráficos e Estatísticas
@@ -391,6 +402,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 });
 
+// - Esconder page-loading-overlay após o DOM carregar
 window.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".search-bar-input, .person-search-input").forEach(input => {
         if (input.value.trim() !== "") {
@@ -401,7 +413,7 @@ window.addEventListener("DOMContentLoaded", () => {
     const overlay = document.getElementById('page-loading-overlay');
     if (overlay) {
         overlay.classList.add('hidden');
-        if (overlay) overlay.remove();
+        overlay.remove();
         document.body.classList.remove("overflow-hidden");
     }
 });
@@ -2975,6 +2987,15 @@ if (scanModalEl) {
                                 }
                                 if (node.nodeValue.includes("Start Scanning")) {
                                     node.nodeValue = node.nodeValue.replace("Start Scanning", "Iniciar câmara");
+                                }
+                                if (node.nodeValue.includes("AbortError: Timeout starting video source")) {
+                                    node.nodeValue = node.nodeValue.replace("AbortError: Timeout starting video source", "A câmara demorou demasiado tempo a responder ou não foi encontrada.");
+                                }
+                                if (node.nodeValue.includes("NotAllowedError: Permission denied")) {
+                                    node.nodeValue = node.nodeValue.replace("NotAllowedError: Permission denied", "Acesso à câmara negado pelo navegador.");
+                                }
+                                if (node.nodeValue.includes("NotFoundError: Requested device not found")) {
+                                    node.nodeValue = node.nodeValue.replace("NotFoundError: Requested device not found", "Nenhuma câmara detetada.");
                                 }
                             } else if (node.nodeType === 1) {
                                 node.childNodes.forEach(walkTextNodes);

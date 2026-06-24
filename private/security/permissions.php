@@ -430,7 +430,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                     <div class="modal-body p-0">
                         <!-- Formulário -->
                         <form id="permission-creation-form" method="POST" action="permissions-crud/create-permission.php"
-                            class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
+                            class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column" novalidate>
 
                             <!-- Row 1: Chave da Permissão -->
                             <div class="d-flex flex-column form-item w-100 mw-0">
@@ -629,7 +629,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 
                             <div class="modal-body p-0">
                                 <!-- Formulário -->
-                                <form method="POST" action="permissions-crud/delete-permission.php">
+                                <form method="POST" action="permissions-crud/delete-permission.php" novalidate>
                                     <!-- Input -->
                                     <input type="hidden" name="permission-id" value="<?= htmlspecialchars($encryptedPermId) ?>">
                                     <div

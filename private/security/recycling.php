@@ -200,7 +200,7 @@ try {
             $row['nome'],
             $row['descricao'],
             $tiposReciclagem[$tipoStr],
-            new DateTime($row['removidoA'])
+            $row['removidoA'] ? new DateTime($row['removidoA']) : new DateTime()
         );
     }
 
@@ -395,7 +395,7 @@ try {
                                                 <div class="d-flex flex-column">
                                                     <!-- Texto -->
                                                     <span class="fw-600 item-name">
-                                                        <?php echo htmlspecialchars($object->nome); ?>
+                                                        <?php echo htmlspecialchars($object->nome ?? ''); ?>
                                                     </span>
                                                     <!-- Texto -->
                                                     <span class="visually-hidden item-hidden-id">
@@ -415,7 +415,7 @@ try {
                                         <td>
                                             <!-- Texto -->
                                             <span class="text-secondary">
-                                                <?php echo htmlspecialchars($object->descricao); ?>
+                                                <?php echo htmlspecialchars($object->descricao ?? ''); ?>
                                             </span>
                                         </td>
                                         <!-- Coluna -->
@@ -552,7 +552,7 @@ try {
 
                     <div class="modal-body p-0">
                         <!-- Formulário -->
-                        <form method="POST" action="<?php echo BASE_URL; ?>private/security/restore_item.php">
+                        <form method="POST" action="<?= BASE_URL; ?>private/security/restore_item.php" novalidate>
                             <!-- Input -->
                             <input type="hidden" name="id" value="<?= htmlspecialchars($object->idEncriptado) ?>">
                             <!-- Input -->
@@ -582,7 +582,7 @@ try {
 
                                             <!-- Título -->
                                             <h2 class="fw-700">"
-                                                <?= htmlspecialchars($object->nome) ?>"
+                                                <?= htmlspecialchars($object->nome ?? '') ?>"
                                             </h2>
                                             <!-- Texto -->
                                             <span class="text-muted">Tipo:

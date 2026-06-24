@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['file'])) {
 
 // Recolher dados do POST
 $filename = basename($_POST['file']);
-$filepath = BASE_PATH . 'files/backups/' . $filename;
+$filepath = BASE_PATH . 'files/backup/' . $filename;
 
 // Validar dados
 if (!file_exists($filepath) || pathinfo($filepath, PATHINFO_EXTENSION) !== 'sql') {
@@ -25,7 +25,8 @@ if (!file_exists($filepath) || pathinfo($filepath, PATHINFO_EXTENSION) !== 'sql'
 
 // Construir comando
 $cmd = sprintf(
-    '/Applications/XAMPP/xamppfiles/bin/mysql -h %s -P %s -u %s -p%s %s < %s',
+    '%s -h %s -P %s -u %s -p%s %s < %s 2>&1',
+    get_mysql_executable('mysql'),
     escapeshellarg(MYSQL_HOST),
     escapeshellarg(MYSQL_PORT),
     escapeshellarg(MYSQL_USERNAME),
@@ -78,7 +79,7 @@ $ligacao = connect_to_db();
     header("Location: " . BASE_URL . "private/login/login.php");
     exit;
 } else {
-    $_SESSION['server_error'] = "Erro ao restaurar cópia de segurança (Código: $return_var).";
+    $_SESSION['server_error'] = "Erro ao restaurar cópia de segurança (Código: $return_var). Detalhes: " . implode(" | ", $output);
     // Redirecionar
     header("Location: " . BASE_URL . "private/security/backups.php");
     exit;

@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__ . "/../config/funcoes.php");
+require_once(__DIR__ . "/../../config/funcoes.php");
 redirect_if_not_logged();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {

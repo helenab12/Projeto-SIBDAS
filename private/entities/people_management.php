@@ -36,7 +36,7 @@ try {
             $row['funcao'] ? Funcao::tryFrom((string) $row['funcao']) : null,
             $row['departamento'] ? (string) $row['departamento'] : null,
             (bool) $row['ativo'],
-            new DateTime($row['dataCriacao']),
+            $row['dataCriacao'] ? new DateTime($row['dataCriacao']) : new DateTime(),
             $row['dataAtualizacao'] ? new DateTime($row['dataAtualizacao']) : new DateTime()
         );
     }
@@ -353,7 +353,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                 <div class="modal-body p-0">
                     <!-- Formulário -->
                     <form id="person-creation-form" method="POST" action="people-crud/create-person.php"
-                        class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
+                        class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column" novalidate>
 
                         <!-- Wrapper Linha -->
                         <div class="d-flex gap-4 w-100">
@@ -500,12 +500,12 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                     (Debug)</span>
                                 <!-- Botão -->
                                 <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
-                                    onclick="prefillFields({'person-name': 'Maria Inês Ribeiro', 'person-nif': '123456789', 'person-email': 'maria.ribeiro@hospital.pt', 'person-phone': '912345678', 'person-role': 'Médico', 'person-department': 'Urgência'})">Maria
-                                    (Médica)</button>
+                                    onclick="prefillFields({'person-name': 'Maria Inês Ribeiro', 'person-nif': '232323232', 'person-email': 'admin@heba.pt', 'person-phone': '912345678', 'person-role': 'Médico', 'person-department': 'Urgência'})">Maria
+                                    (Médica / Admin)</button>
                                 <!-- Botão -->
                                 <button type="button" class="btn btn-primary-outline btn-small fw-700 flex-grow-1"
-                                    onclick="prefillFields({'person-name': 'Tiago Faria Silva', 'person-nif': '987654321', 'person-email': 'tiago.silva@hospital.pt', 'person-phone': '913456789', 'person-role': 'Enfermeiro', 'person-department': 'Urgência'})">Tiago
-                                    (Enfermeiro)</button>
+                                    onclick="prefillFields({'person-name': 'Tiago Faria Silva', 'person-nif': '123444123', 'person-email': 'tecnico@heba.pt', 'person-phone': '913456789', 'person-role': 'Técnico', 'person-department': 'Manutenção'})">Tiago
+                                    (Técnico)</button>
                             </div>
                         <?php endif; ?>
                     </form>
@@ -744,7 +744,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                     <!-- Wrapper Modal -->
                     <div class="modal-body p-0">
                         <!-- Formulário -->
-                        <form method="POST" action="people-crud/delete-person.php">
+                        <form method="POST" action="people-crud/delete-person.php" novalidate>
                             <!-- Input -->
                             <input type="hidden" name="person-id" value="<?= htmlspecialchars($encryptedPersonId) ?>">
                             <div

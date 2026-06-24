@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['file'])) {
 
 // Recolher dados do POST
 $filename = basename($_POST['file']);
-$filepath = BASE_PATH . 'files/backups/' . $filename;
+$filepath = BASE_PATH . 'files/backup/' . $filename;
 
 // Validar ficheiro
 if (!file_exists($filepath) || pathinfo($filepath, PATHINFO_EXTENSION) !== 'sql') {

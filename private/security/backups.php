@@ -19,7 +19,7 @@ if (!empty($_SESSION['server_error'])) {
     unset($_SESSION['server_error']);
 }
 
-$backups_dir = BASE_PATH . 'files/backups/';
+$backups_dir = BASE_PATH . 'files/backup/';
 $backups = [];
 
 if (is_dir($backups_dir)) {
@@ -342,7 +342,7 @@ function formatBytes($bytes, $precision = 2)
 
                 <div class="modal-body p-0">
                     <!-- Formulário -->
-                    <form method="POST" action="<?= BASE_URL ?>private/security/backups-crud/restore-backup.php">
+                    <form method="POST" action="<?= BASE_URL ?>private/security/backups-crud/restore-backup.php" novalidate>
                         <!-- Input -->
                         <input type="hidden" name="file" value="<?= htmlspecialchars($backup['filename']) ?>">
                         <div
@@ -431,7 +431,7 @@ function formatBytes($bytes, $precision = 2)
 
                 <div class="modal-body p-0">
                     <!-- Formulário -->
-                    <form method="POST" action="<?= BASE_URL ?>private/security/backups-crud/delete-backup.php">
+                    <form method="POST" action="<?= BASE_URL ?>private/security/backups-crud/delete-backup.php" novalidate>
                         <!-- Input -->
                         <input type="hidden" name="file" value="<?= htmlspecialchars($backup['filename']) ?>">
                         <div
@@ -459,11 +459,11 @@ function formatBytes($bytes, $precision = 2)
                                         <!-- Subtítulo -->
 
                                         <!-- Título -->
-                                        <h2 class="fw-700 m-0">"
-                                            <?= htmlspecialchars($backup['filename']) ?>"
+                                        <h2 class="fw-700 m-0">
+                                            <?= htmlspecialchars($backup['filename']) ?>
                                         </h2>
                                         <!-- Texto -->
-                                        
+
                                     </div>
                                 </div>
                             </div>

@@ -2,7 +2,6 @@
 
 // Carregar dependências
 require_once __DIR__ . '/config.php';
-// Carregar dependências
 require_once __DIR__ . '/classes.php';
 
 // ============================================================
@@ -58,7 +57,7 @@ function redirect_if_not_logged($redirect_to = 'private/login/login.php', ?array
                     $dados->pessoa_funcao ? Funcao::tryFrom((string) $dados->pessoa_funcao) : null,
                     $dados->pessoa_departamento ? (string) $dados->pessoa_departamento : null,
                     (bool) $dados->pessoa_ativo,
-                    new DateTime($dados->pessoa_dataCriacao),
+                    $dados->pessoa_dataCriacao ? new DateTime($dados->pessoa_dataCriacao) : new DateTime(),
                     $dados->pessoa_dataAtualizacao ? new DateTime($dados->pessoa_dataAtualizacao) : new DateTime()
                 );
 
@@ -69,12 +68,12 @@ function redirect_if_not_logged($redirect_to = 'private/login/login.php', ?array
                     (string) $dados->password,
                     (string) $dados->idPerfil,
                     (bool) $dados->utilizador_ativo,
-                    new DateTime($dados->utilizador_dataCriacao),
+                    $dados->utilizador_dataCriacao ? new DateTime($dados->utilizador_dataCriacao) : new DateTime(),
                     $dados->utilizador_dataAtualizacao ? new DateTime($dados->utilizador_dataAtualizacao) : new DateTime(),
                     new Perfil(
                         (string) $dados->perfil_id,
                         (string) $dados->perfil_nome,
-                        new DateTime($dados->perfil_dataCriacao),
+                        $dados->perfil_dataCriacao ? new DateTime($dados->perfil_dataCriacao) : new DateTime(),
                         $dados->perfil_dataAtualizacao ? new DateTime($dados->perfil_dataAtualizacao) : new DateTime()
                     )
                 );
@@ -91,7 +90,7 @@ function redirect_if_not_logged($redirect_to = 'private/login/login.php', ?array
                     $ligacao
                 );
                 $permissoes = [];
-                while ($row = $stmtPerms->fetch(PDO::FETCH_OBJ)) {
+                foreach ($stmtPerms->fetchAll(PDO::FETCH_OBJ) as $row) {
                     $permissoes[$row->chave] = (bool) $row->possui;
                 }
                 $_SESSION['permissoes'] = $permissoes;
@@ -118,10 +117,16 @@ catch (Exception $e) {
                 $ligacao
             );
             $permissoes = [];
-            while ($row = $stmtPerms->fetch(PDO::FETCH_OBJ)) {
-                $permissoes[$row->chave] = (bool) $row->possui;
+            $permissoesDb = $stmtPerms->fetchAll(PDO::FETCH_OBJ);
+
+            if (count($permissoesDb) > 0) {
+                foreach ($permissoesDb as $row) {
+                    $permissoes[$row->chave] = (bool) $row->possui;
+                }
+            } else {
+                $permissoes = null;
             }
-            $_SESSION['permissoes'] = $permissoes;
+            $_SESSION['permissoes'] = $permissoes; 
             $ligacao = null;
         }
 // Capturar erro
@@ -158,19 +163,25 @@ function logout_and_redirect($redirect_to = 'private/login/login.php')
 
 function aes_encrypt($value)
 {
-    return bin2hex(openssl_encrypt(
-        $value,
+    if (!is_string($value) && !is_numeric($value)) {
+        return false;
+    }
+
+    $encrypted = openssl_encrypt(
+        (string)$value,
         OPENSSL_METHOD,
         OPENSSL_KEY,
         OPENSSL_RAW_DATA,
         OPENSSL_IV
-    ));
+    );
+
+    return $encrypted !== false ? bin2hex($encrypted) : false;
 }
 
 function aes_decrypt($value)
 {
-    if (!is_string($value) || strlen($value) % 2 !== 0)
-        return false; // proteção básica 
+    if (!is_string($value) || empty($value) || !ctype_xdigit($value) || strlen($value) % 2 !== 0)
+        return false; 
 
     return openssl_decrypt(
         hex2bin($value),
@@ -335,4 +346,40 @@ function sanitizar_array_dados(array $dados): array {
         $sanitizados[$chave] = $valor;
     }
     return $sanitizados;
+}
+
+// ============================================================
+// Utilitários de Sistema
+// ============================================================
+
+function get_mysql_executable($executable = 'mysqldump')
+{
+    $isWindows = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+    $exeExt = $isWindows ? '.exe' : '';
+    $executable .= $exeExt;
+
+    // Lista de caminhos comuns para procurar
+    $paths = [
+        'C:\laragon\bin\mysql\*\bin\\' . $executable,
+        'C:\xampp\mysql\bin\\' . $executable,
+        '/Applications/XAMPP/xamppfiles/bin/' . $executable,
+        '/usr/bin/' . $executable,
+        '/usr/local/bin/' . $executable,
+        '/opt/homebrew/bin/' . $executable
+    ];
+
+    foreach ($paths as $path) {
+        // Suporte para wildcards (ex: mysql-8.4.3-winx64)
+        if (strpos($path, '*') !== false) {
+            $glob = glob($path);
+            if (!empty($glob) && file_exists($glob[0])) {
+                return escapeshellarg($glob[0]);
+            }
+        } elseif (file_exists($path)) {
+            return escapeshellarg($path);
+        }
+    }
+
+    // Fallback: assume que está no PATH do sistema
+    return $executable;
 }

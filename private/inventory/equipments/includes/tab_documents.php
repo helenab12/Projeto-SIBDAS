@@ -106,7 +106,7 @@
                                 </div>
                                 <div class="modal-body p-0">
                                     <form action="equipments-crud/create-document.php" method="POST" enctype="multipart/form-data"
-                                        class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
+                                        class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column" novalidate>
                                         <!-- Input ID -->
                                         <input type="hidden" name="equipment-id" value="<?= htmlspecialchars($encryptedId) ?>">
 
@@ -397,7 +397,7 @@ if (tem_permissao('documents.create')): ?>
                 </div>
                 <div class="modal-body p-0">
                     <form action="equipments-crud/create-document.php" method="POST" enctype="multipart/form-data"
-                        class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
+                        class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column" novalidate>
                         <!-- Input ID -->
                         <input type="hidden" name="equipment-id" value="<?= htmlspecialchars($encryptedId) ?>">
 
@@ -542,7 +542,7 @@ foreach ($documentos as $doc): ?>
                     </div>
                     <div class="modal-body p-0">
                         <form action="equipments-crud/edit-document.php" method="POST"
-                            class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
+                            class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column" novalidate>
                             <input type="hidden" name="equipment-id" value="<?= htmlspecialchars($encryptedId) ?>">
                             <input type="hidden" name="document-id" value="<?= $encDocId ?>">
 
@@ -650,7 +650,7 @@ foreach ($documentos as $doc): ?>
                     </div>
                     <div class="modal-body p-0">
                         <form action="equipments-crud/delete-document.php" method="POST"
-                            class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">
+                            class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6" novalidate>
                             <input type="hidden" name="equipment-id" value="<?= htmlspecialchars($encryptedId) ?>">
                             <input type="hidden" name="document-id" value="<?= $encDocId ?>">
 

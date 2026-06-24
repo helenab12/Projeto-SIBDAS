@@ -809,6 +809,7 @@ class ConteudoTexto implements Validavel, Sanitizavel
     {
         return $this->valor;
     }
+
     public static function sanitizarDados(array $dados): array
     {
         return sanitizar_array_dados($dados);
@@ -876,9 +877,11 @@ class CartaoFuncionalidade implements Validavel, Sanitizavel
         if ($icon_type === 'other') {
             return $custom_icon;
         }
+
         if (!isset(self::$icon_map[$icon_type])) {
             throw new Exception("Ícone predefinido selecionado é inválido.");
         }
+        
         return self::$icon_map[$icon_type]['svg'];
     }
 

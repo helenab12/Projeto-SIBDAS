@@ -47,8 +47,8 @@ try {
             $row['funcao'] ? Funcao::tryFrom($row['funcao']) : null,
             $row['departamento'],
             (bool) $row['ativo'],
-            new DateTime($row['dataCriacao']),
-            new DateTime($row['dataAtualizacao'])
+            $row['dataCriacao'] ? new DateTime($row['dataCriacao']) : new DateTime(),
+            $row['dataAtualizacao'] ? new DateTime($row['dataAtualizacao']) : new DateTime()
         );
     }
 
@@ -133,8 +133,8 @@ try {
                 $row['pessoa_funcao'] ? Funcao::tryFrom($row['pessoa_funcao']) : null,
                 $row['pessoa_departamento'],
                 (bool) $row['pessoa_ativo'],
-                new DateTime($row['pessoa_dataCriacao']),
-                new DateTime($row['pessoa_dataAtualizacao'])
+                $row['pessoa_dataCriacao'] ? new DateTime($row['pessoa_dataCriacao']) : new DateTime(),
+                $row['pessoa_dataAtualizacao'] ? new DateTime($row['pessoa_dataAtualizacao']) : new DateTime()
             );
         }
 
@@ -146,10 +146,10 @@ try {
             $row['email'],
             $row['website'] ?? '',
             $row['idPessoaResponsavel'] ? (string) $row['idPessoaResponsavel'] : null,
-            TipoFornecedor::from($row['tipoFornecedor']),
+            TipoFornecedor::tryFrom((string) $row['tipoFornecedor']) ?? TipoFornecedor::FABRICANTE,
             (bool) $row['ativo'],
-            new DateTime($row['dataCriacao']),
-            new DateTime($row['dataAtualizacao']),
+            $row['dataCriacao'] ? new DateTime($row['dataCriacao']) : new DateTime(),
+            $row['dataAtualizacao'] ? new DateTime($row['dataAtualizacao']) : new DateTime(),
             $pessoa
         );
     }
@@ -934,7 +934,7 @@ include_once BASE_PATH . 'private/includes/sidebar-desktop.php';
                     <!-- Wrapper Modal -->
                     <div class="modal-body p-0">
                         <!-- Formulário -->
-                        <form method="POST" action="suppliers-crud/delete-supplier.php">
+                        <form method="POST" action="suppliers-crud/delete-supplier.php" novalidate>
                             <!-- Input -->
                             <input type="hidden" name="supplier-id" value="<?= $encryptedId ?>">
                             <div

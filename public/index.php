@@ -59,6 +59,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if (empty($validation_errors)) {
             // Ligar à BD
             $ligacao = connect_to_db();
+            
             // Inserir registo
             execute_query(
                 "INSERT INTO PedidoDemonstracao (nomeContacto, emailContacto, organizacao, mensagem, estado, ativo, dataCriacao) 

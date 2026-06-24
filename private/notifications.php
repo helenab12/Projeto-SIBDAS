@@ -67,7 +67,7 @@ try {
             $tipoObj,
             $row['titulo'],
             $row['mensagem'],
-            new DateTime($row['dataCriacao']),
+            $row['dataCriacao'] ? new DateTime($row['dataCriacao']) : new DateTime(),
             (bool) $row['lida']
         );
     }
@@ -96,7 +96,8 @@ $unreadCount = count(array_filter($notificacoes, function ($n) {
             </div>
             <div class="d-flex gap-2">
                 <?php if ($unreadCount > 0): ?>
-                    <form action="<?php echo BASE_URL; ?>private/read_all_notifications.php" method="POST" class="m-0">
+                    <form action="<?= BASE_URL; ?>private/notifications-crud/read_all_notifications.php" method="POST"
+                        class="m-0">
                         <button type="submit" id="mark-all-read-btn" class="btn btn-primary-outline btn-small gap-2">
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                                 stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
@@ -132,7 +133,7 @@ $unreadCount = count(array_filter($notificacoes, function ($n) {
             <?php else: ?>
                 <?php foreach ($notificacoes as $notificacao): ?>
                     <?php $encryptedNotifId = aes_encrypt((string) $notificacao->idNotificacao); ?>
-                    <a href="<?php echo BASE_URL; ?>private/read_notification.php?id=<?php echo urlencode($encryptedNotifId); ?>"
+                    <a href="<?= BASE_URL; ?>private/notifications-crud/read_notification.php?id=<?php echo urlencode($encryptedNotifId); ?>"
                         class="text-decoration-none text-body">
                         <div id="notification-<?= htmlspecialchars($encryptedNotifId) ?>"
                             class="bento-card <?php echo !$notificacao->lida ? '' : 'unread'; ?> d-flex flex-row align-items-center justify-content-between gap-4 padding-4 recycle-card"

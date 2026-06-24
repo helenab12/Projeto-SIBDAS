@@ -14,11 +14,12 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // Inicializar variáveis
 $filename = 'backup_' . date('Y-m-d_H-i-s') . '.sql';
-$filepath = BASE_PATH . 'files/backups/' . $filename;
+$filepath = BASE_PATH . 'files/backup/' . $filename;
 
 // Exportar BD
 $cmd = sprintf(
-    '/Applications/XAMPP/xamppfiles/bin/mysqldump --no-tablespaces -h %s -P %s -u %s -p%s %s > %s',
+    '%s --no-tablespaces -h %s -P %s -u %s -p%s %s > %s',
+    get_mysql_executable('mysqldump'),
     escapeshellarg(MYSQL_HOST),
     escapeshellarg(MYSQL_PORT),
     escapeshellarg(MYSQL_USERNAME),
@@ -63,7 +64,7 @@ $ligacao = connect_to_db();
     }
 } else {
     // Definir mensagem erro
-    $_SESSION['server_error'] = "Erro ao criar cópia de segurança (Código: $return_var).";
+    $_SESSION['server_error'] = "Erro ao criar cópia de segurança (Código: $return_var). Detalhes: " . implode(" | ", $output);
 }
 
 // Redirecionar

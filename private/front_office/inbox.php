@@ -114,12 +114,12 @@ try {
         $estadoStr = $row->estado;
         $stateObj = $EstadoPedidoDemonstracaos[$estadoStr] ?? new EstadoPedidoDemonstracao($estadoStr, 'new');
 
-        $dateObj = new DateTime($row->dataCriacao);
+        $dateObj = $row->dataCriacao ? new DateTime($row->dataCriacao) : new DateTime();
         $day = $dateObj->format('d');
         $mNum = (int) $dateObj->format('n');
         $year = $dateObj->format('Y');
         $time = $dateObj->format('H:i');
-        $formattedDate = "{$day} {$months[$mNum]} {$year}, {$time}";
+        $formattedDate = "{$day} {$months[$mNum - 1]} {$year}, {$time}";
 
         $PedidoDemonstracaos[] = new PedidoDemonstracao(
             (int) $row->idPedido,
@@ -242,7 +242,8 @@ try {
             <?php else: ?>
 
                 <!-- Formulário -->
-                <form method="POST" action="inbox-crud/update-inbox.php" class="d-flex flex-column flex-grow-1 mw-0">
+                <form method="POST" action="inbox-crud/update-inbox.php" class="d-flex flex-column flex-grow-1 mw-0"
+                    novalidate>
                     <!-- Tabela -->
                     <div class="bento-card w-100 p-0 border-0">
                         <div class="datatable-wrapper no-footer sortable fixed-columns">
@@ -702,7 +703,7 @@ try {
                                     <button type="button" class="btn btn-ghost equipment-creation-modal-cancel-btn"
                                         data-bs-dismiss="modal">Cancelar</button>
                                     <!-- Formulário -->
-                                    <form action="inbox-crud/delete-inbox.php" method="POST" class="m-0 p-0">
+                                    <form action="inbox-crud/delete-inbox.php" method="POST" class="m-0 p-0" novalidate>
                                         <!-- Input -->
                                         <input type="hidden" name="id" value="<?php echo $encryptedId; ?>">
                                         <!-- Botão -->

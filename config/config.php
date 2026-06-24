@@ -7,7 +7,7 @@ define('APP_VERSION', '1.0.0');
 define('APP_COPYRIGHT', '© ' . date('Y') . ' ISEP');
 
 // Definir caminhos base
-define('BASE_URL', '/sibdas/1240961/heba/');
+define('BASE_URL', '/1240961/heba/');
 // define('BASE_URL', '/'); // TODO: Trocar, apenas usar com live server
 define('BASE_PATH', dirname(__DIR__) . '/');
 

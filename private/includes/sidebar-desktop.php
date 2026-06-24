@@ -1,5 +1,6 @@
 <?php
 $currentPage = basename($_SERVER['PHP_SELF']);
+
 if (!function_exists('isCollapseActive')) {
     function isCollapseActive($pages)
     {
@@ -9,7 +10,7 @@ if (!function_exists('isCollapseActive')) {
 }
 ?>
 <!-- Sidebar Desktop + Tablet -->
-<aside class="d-flex flex-column desktop-sidebar d-none d-md-flex vh-100 position-sticky top-0 overflow-auto">
+<aside class="flex-column desktop-sidebar d-none d-md-flex vh-100 position-sticky top-0 overflow-auto">
     <!-- Link -->
     <a href="<?= BASE_URL ?>private/index.php" class="navbar-brand d-flex align-items-center gap-3 nav-brand padding-4">
         <div class="navbar-logo d-flex align-items-center justify-content-center padding-2-5 btn-glowing">
@@ -31,8 +32,9 @@ if (!function_exists('isCollapseActive')) {
     </a>
     <nav class="padding-4">
         <ul class="d-flex flex-column gap-1">
-            <li class="<?php echo ($currentPage == 'index.php') ? 'active' : ''; ?>"><!-- Link -->
-<a
+            <li class="<?php echo ($currentPage == 'index.php') ? 'active' : ''; ?>">
+                <!-- Link -->
+                 <a
                     href="<?= BASE_URL ?>private/index.php" class="text-decoration-none text-secondary d-flex align-items-center gap-3 fw-500">
                     <!-- SVG -->
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -197,7 +199,7 @@ if (!function_exists('isCollapseActive')) {
                 </div>
             </li>
 
-            <?php if (tem_permissao('view.fornecedores') || tem_permissao('view.pessoas')): ?>
+            <?php if (tem_permissao('view.fornecedores') || tem_permissao('view.pessoas') || tem_permissao('view.locations')): ?>
                 <!-- Entidades (dropdown) -->
                 <li class="nav-collapse-item">
                     <!-- Link -->

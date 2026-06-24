@@ -661,7 +661,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                     <div class="modal-body p-0">
                         <!-- Formulário -->
                         <form id="building-creation-form" method="POST" action="locations-crud/create-building.php"
-                            class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
+                            class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column" novalidate>
 
                             <!-- Nome do Edifício -->
                             <div class="d-flex flex-column form-item w-100 mw-0">
@@ -831,7 +831,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                             <!-- Wrapper Modal -->
                             <div class="modal-body p-0">
                                 <!-- Formulário -->
-                                <form method="POST" action="locations-crud/delete-building.php">
+                                <form method="POST" action="locations-crud/delete-building.php" novalidate>
                                     <!-- Input -->
                                     <input type="hidden" name="building-id" value="<?= htmlspecialchars($encryptedEdificioId) ?>">
                                     <div
@@ -925,7 +925,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                             <div class="modal-body p-0">
                                 <!-- Formulário -->
                                 <form method="POST" action="locations-crud/create-floor.php"
-                                    class="floor-create-form equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
+                                    class="floor-create-form equipment-creation-modal-content padding-6 gap-5 d-flex flex-column" novalidate>
 
                                     <!-- Input -->
                                     <input type="hidden" name="building-id" value="<?= htmlspecialchars($encryptedEdificioId) ?>">
@@ -1103,7 +1103,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                     <!-- Wrapper Modal -->
                                     <div class="modal-body p-0">
                                         <!-- Formulário -->
-                                        <form method="POST" action="locations-crud/delete-floor.php">
+                                        <form method="POST" action="locations-crud/delete-floor.php" novalidate>
                                             <!-- Input -->
                                             <input type="hidden" name="floor-id" value="<?= htmlspecialchars($encryptedPisoId) ?>">
                                             <div
@@ -1194,7 +1194,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                     <div class="modal-body p-0">
                                         <!-- Formulário -->
                                         <form method="POST" action="locations-crud/create-service.php"
-                                            class="service-create-form equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
+                                            class="service-create-form equipment-creation-modal-content padding-6 gap-5 d-flex flex-column" novalidate>
                                             <!-- Input -->
                                             <input type="hidden" name="floor-id" value="<?= htmlspecialchars($encryptedPisoId) ?>">
                                             <div class="d-flex flex-column form-item w-100 mw-0">
@@ -1348,7 +1348,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                             </div>
                                             <div class="modal-body p-0">
                                                 <!-- Formulário -->
-                                                <form method="POST" action="locations-crud/delete-service.php">
+                                                <form method="POST" action="locations-crud/delete-service.php" novalidate>
                                                     <!-- Input -->
                                                     <input type="hidden" name="service-id" value="<?= htmlspecialchars($encryptedServicoId) ?>">
                                                     <div
@@ -1423,7 +1423,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                             <div class="modal-body p-0">
                                                 <!-- Formulário -->
                                                 <form method="POST" action="locations-crud/create-room.php"
-                                                    class="room-create-form equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
+                                                    class="room-create-form equipment-creation-modal-content padding-6 gap-5 d-flex flex-column" novalidate>
                                                     <!-- Input -->
                                                     <input type="hidden" name="service-id" value="<?= htmlspecialchars($encryptedServicoId) ?>">
                                                     <div class="d-flex flex-column form-item w-100 mw-0">
@@ -1579,7 +1579,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                                     </div>
                                                     <div class="modal-body p-0">
                                                         <!-- Formulário -->
-                                                        <form method="POST" action="locations-crud/delete-room.php">
+                                                        <form method="POST" action="locations-crud/delete-room.php" novalidate>
                                                             <!-- Input -->
                                                             <input type="hidden" name="room-id" value="<?= htmlspecialchars($encryptedSalaId) ?>">
                                                             <div

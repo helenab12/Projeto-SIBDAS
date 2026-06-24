@@ -80,7 +80,7 @@ if (!empty($_SESSION['server_error'])) {
         </button>
         <div class="row g-0 vh-100">
             <div
-                class="col-6 d-flex flex-column align-items-start justify-content-center pa-informative-section position-relative d-none d-md-flex padding-16 gap-8 overflow-hidden">
+                class="col-6 d-flex flex-column align-items-start justify-content-center pa-informative-section position-relative d-none d-lg-flex padding-16 gap-8 overflow-hidden">
                 <div class="background-decorations position-absolute overflow-hidden z-0">
                     <div class="background-decoration-item position-absolute background-decoration-1"></div>
                     <div class="background-decoration-item position-absolute background-decoration-2"></div>
@@ -94,7 +94,7 @@ if (!empty($_SESSION['server_error'])) {
                         <!-- SVG Logo -->
                         <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
                             stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                            class="lucide lucide-heart-pulse-icon lucide-heart-pulse stroke-white">
+                            class="lucide lucide-heart-pulse-icon lucide-heart-pulse text-white">
                             <path
                                 d="M2 9.5a5.5 5.5 0 0 1 9.591-3.676.56.56 0 0 0 .818 0A5.49 5.49 0 0 1 22 9.5c0 2.29-1.5 4-3 5.5l-5.492 5.313a2 2 0 0 1-3 .019L5 15c-1.5-1.5-3-3.2-3-5.5" />
                             <path d="M3.22 13H9.5l.5-1 2 4.5 2-7 1.5 3.5h5.27" />
@@ -121,7 +121,7 @@ if (!empty($_SESSION['server_error'])) {
                     </h2>
                 </div>
                 <!-- Wrapper Badges -->
-                <div class="d-flex flex-row flex-wrap gap-3">
+                <div class="d-flex flex-wrap gap-3">
                     <!-- Badge 1 -->
                     <p class="badge fw-400">
                         Inventário em Tempo Real
@@ -134,9 +134,7 @@ if (!empty($_SESSION['server_error'])) {
                     <p class="badge fw-400">
                         Rastreabilidade
                     </p>
-
                 </div>
-
             </div>
             <div class="col-12 col-md-6 d-flex flex-column justify-content-center padding-16 login-section">
                 <div class="background-decorations position-absolute overflow-hidden z-0">

@@ -13,7 +13,7 @@ if (!isset($_GET['file'])) {
 
 // Inicializar variáveis
 $filename = basename($_GET['file']);
-$filepath = BASE_PATH . 'files/backups/' . $filename;
+$filepath = BASE_PATH . 'files/backup/' . $filename;
 
 // Validar ficheiro
 if (file_exists($filepath) && pathinfo($filepath, PATHINFO_EXTENSION) === 'sql') {

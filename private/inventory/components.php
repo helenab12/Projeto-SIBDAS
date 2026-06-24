@@ -49,8 +49,8 @@ try {
             $row['codigoPrefix'],
             $row['descricao'],
             (bool) $row['ativo'],
-            new DateTime($row['dataCriacao']),
-            new DateTime($row['dataAtualizacao'])
+            $row['dataCriacao'] ? new DateTime($row['dataCriacao']) : new DateTime(),
+            $row['dataAtualizacao'] ? new DateTime($row['dataAtualizacao']) : new DateTime()
         );
     }
 
@@ -154,8 +154,8 @@ try {
             (float) $row['preco'],
             (string) $row['idLocalizacao'],
             (bool) $row['ativo'],
-            new DateTime($row['dataCriacao']),
-            new DateTime($row['dataAtualizacao']),
+            $row['dataCriacao'] ? new DateTime($row['dataCriacao']) : new DateTime(),
+            $row['dataAtualizacao'] ? new DateTime($row['dataAtualizacao']) : new DateTime(),
             $row['idCategoria']
         );
     }
@@ -589,7 +589,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                 <!-- Corpo do Modal -->
                 <div class="modal-body p-0">
                     <!-- Formulário -->
-                    <form id="form-create-component" action="components-crud/create-component.php" method="POST">
+                    <form id="form-create-component" action="components-crud/create-component.php" method="POST" novalidate>
                         <div class="equipment-creation-modal-content padding-6 gap-6 d-flex flex-column">
                             <!-- Wrapper Inputs Row 1 -->
                             <div class="d-flex gap-4 w-100">
@@ -808,7 +808,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                     <!-- Corpo do Modal -->
                     <div class="modal-body p-0">
                         <!-- Formulário -->
-                        <form action="components-crud/edit-component.php" method="POST" class="form-edit-component">
+                        <form action="components-crud/edit-component.php" method="POST" class="form-edit-component" novalidate>
                             <!-- Input ID -->
                             <input type="hidden" name="component-id" value="<?= htmlspecialchars($encryptedCompId) ?>">
                             <div class="equipment-creation-modal-content padding-6 gap-6 d-flex flex-column">
@@ -1028,7 +1028,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                     <!-- Corpo do Modal -->
                     <div class="modal-body p-0">
                         <!-- Formulário -->
-                        <form method="POST" action="components-crud/delete-component.php">
+                        <form method="POST" action="components-crud/delete-component.php" novalidate>
                             <!-- Input ID -->
                             <input type="hidden" name="component-id" value="<?= htmlspecialchars($encryptedCompId) ?>">
                             <div

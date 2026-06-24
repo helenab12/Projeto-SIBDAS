@@ -1,5 +1,6 @@
 <?php
 $currentPage = basename($_SERVER['PHP_SELF']);
+
 if (!function_exists('isCollapseActive')) {
     function isCollapseActive($pages)
     {

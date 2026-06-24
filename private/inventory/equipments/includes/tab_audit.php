@@ -49,7 +49,7 @@ try {
     // Processar resultados
     $auditoria = [];
     while ($row = $stmtAuditoria->fetch(PDO::FETCH_ASSOC)) {
-        $data = new DateTime($row['dataCriacao']);
+        $data = $row['dataCriacao'] ? new DateTime($row['dataCriacao']) : new DateTime();
 
         $detalhes = '';
         if ($row['acao'] === 'Edição') {

@@ -50,8 +50,8 @@ try {
             $row['codigoPrefix'],
             $row['descricao'],
             (bool) $row['ativo'],
-            new DateTime($row['dataCriacao']),
-            new DateTime($row['dataAtualizacao'])
+            $row['dataCriacao'] ? new DateTime($row['dataCriacao']) : new DateTime(),
+            $row['dataAtualizacao'] ? new DateTime($row['dataAtualizacao']) : new DateTime()
         );
     }
 
@@ -174,15 +174,15 @@ try {
             $row['dataAquisicao'] ? new DateTime($row['dataAquisicao']) : null,
             $row['dataFabrico'] ? new DateTime($row['dataFabrico']) : null,
             (float) $row['custoAquisicao'],
-            TipoEntrada::from($row['tipoEntrada']),
-            EstadoEquipamento::from($row['estadoAtual']),
-            CriticidadeEquipamento::from($row['criticidade']),
+            TipoEntrada::tryFrom((string)$row['tipoEntrada']) ?? TipoEntrada::COMPRA,
+            EstadoEquipamento::tryFrom((string)$row['estadoAtual']) ?? EstadoEquipamento::ATIVO,
+            CriticidadeEquipamento::tryFrom((string)$row['criticidade']) ?? CriticidadeEquipamento::BAIXA,
             $row['observacoes'] ?? '',
             $row['idLocalizacao'] ? (string) $row['idLocalizacao'] : null,
             (bool) $row['arquivado'],
             (bool) $row['ativo'],
-            new DateTime($row['dataCriacao']),
-            new DateTime($row['dataAtualizacao']),
+            $row['dataCriacao'] ? new DateTime($row['dataCriacao']) : new DateTime(),
+            $row['dataAtualizacao'] ? new DateTime($row['dataAtualizacao']) : new DateTime(),
             $row['marcaNome']
         );
     }
@@ -684,7 +684,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                                 </button>
                             </div>
                             <div class="modal-body p-0">
-                                <form method="POST" action="equipments-crud/unarchive-equipment.php">
+                                <form method="POST" action="equipments-crud/unarchive-equipment.php" novalidate>
                                     <input type="hidden" name="equipment-id" value="<?= htmlspecialchars($encryptedEqId) ?>">
                                     <div
                                         class="equipment-creation-modal-content padding-6 d-flex flex-column justify-content-center align-items-center gap-6">

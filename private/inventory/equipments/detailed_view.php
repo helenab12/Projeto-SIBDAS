@@ -71,15 +71,15 @@ try {
         $row['dataAquisicao'] ? new DateTime($row['dataAquisicao']) : null,
         $row['dataFabrico'] ? new DateTime($row['dataFabrico']) : null,
         (float) $row['custoAquisicao'],
-        TipoEntrada::from($row['tipoEntrada']),
-        EstadoEquipamento::from($row['estadoAtual']),
-        CriticidadeEquipamento::from($row['criticidade']),
+        TipoEntrada::tryFrom((string)$row['tipoEntrada']) ?? TipoEntrada::COMPRA,
+        EstadoEquipamento::tryFrom((string)$row['estadoAtual']) ?? EstadoEquipamento::ATIVO,
+        CriticidadeEquipamento::tryFrom((string)$row['criticidade']) ?? CriticidadeEquipamento::BAIXA,
         $row['observacoes'] ?? '',
         $row['idLocalizacao'],
         (bool) $row['arquivado'],
         (bool) $row['ativo'],
-        new DateTime($row['dataCriacao']),
-        new DateTime($row['dataAtualizacao']),
+        $row['dataCriacao'] ? new DateTime($row['dataCriacao']) : new DateTime(),
+        $row['dataAtualizacao'] ? new DateTime($row['dataAtualizacao']) : new DateTime(),
         $row['marcaNome']
     );
 
@@ -150,7 +150,7 @@ try {
     while ($docRow = $stmtDocs->fetch(PDO::FETCH_ASSOC)) {
         $documentos[] = new Documento(
             (string) $docRow['idDocumento'],
-            TipoDocumento::from($docRow['tipo']),
+            TipoDocumento::tryFrom((string)$docRow['tipo']) ?? TipoDocumento::MANUAL_UTILIZADOR,
             $docRow['nome'],
             $docRow['caminhoFicheiro'],
             $docRow['dataDocumento'] ? new DateTime($docRow['dataDocumento']) : null,
@@ -158,8 +158,8 @@ try {
             (string) $docRow['idEquipamento'],
             $docRow['idFornecedor'] ? (string) $docRow['idFornecedor'] : null,
             (bool) $docRow['ativo'],
-            new DateTime($docRow['dataCriacao']),
-            new DateTime($docRow['dataAtualizacao']),
+            $docRow['dataCriacao'] ? new DateTime($docRow['dataCriacao']) : new DateTime(),
+            $docRow['dataAtualizacao'] ? new DateTime($docRow['dataAtualizacao']) : new DateTime(),
             $docRow['fornecedorNome']
         );
     }
@@ -220,7 +220,7 @@ $stmtWarranty = execute_query(
     $ligacao
 );
 if ($warrantyRow = $stmtWarranty->fetch(PDO::FETCH_ASSOC)) {
-    $warrantyExpirationDate = (new DateTime($warrantyRow['dataFim']))->format('d/m/Y');
+    $warrantyExpirationDate = ($warrantyRow['dataFim'] ? new DateTime($warrantyRow['dataFim']) : new DateTime())->format('d/m/Y');
 }
 
 // Obter última manutenção
@@ -231,7 +231,7 @@ $stmtLastMaint = execute_query(
     $ligacao
 );
 if ($lastMaintRow = $stmtLastMaint->fetch(PDO::FETCH_ASSOC)) {
-    $lastMaintenance = (new DateTime($lastMaintRow['dataFim']))->format('d/m/Y');
+    $lastMaintenance = ($lastMaintRow['dataFim'] ? new DateTime($lastMaintRow['dataFim']) : new DateTime())->format('d/m/Y');
 }
 
 // Obter próxima manutenção
@@ -242,7 +242,7 @@ $stmtNextMaint = execute_query(
     $ligacao
 );
 if ($nextMaintRow = $stmtNextMaint->fetch(PDO::FETCH_ASSOC)) {
-    $nextMaintenance = (new DateTime($nextMaintRow['dataInicio']))->format('d/m/Y');
+    $nextMaintenance = ($nextMaintRow['dataInicio'] ? new DateTime($nextMaintRow['dataInicio']) : new DateTime())->format('d/m/Y');
 }
 // Fechar ligação
 $ligacao = null;

@@ -97,7 +97,7 @@ try {
     $stmt = execute_query($dataSql, $params, $ligacao);
 
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $data = new DateTime($row['dataCriacao']);
+        $data = $row['dataCriacao'] ? new DateTime($row['dataCriacao']) : new DateTime();
 
         $badgeClass = 'badge-primary';
         if ($row['acao'] === 'Criação') {

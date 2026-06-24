@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['editar_fornecedor']))
         $idPessoa = empty($idPessoa) ? null : $idPessoa;
 
         // Validar tipo de fornecedor
-        $tipoEnum = TipoFornecedor::tryFrom($tipo);
+        $tipoEnum = TipoFornecedor::tryFrom((string)$tipo);
         if (!$tipoEnum) {
             throw new Exception("Tipo de fornecedor inválido.");
         }

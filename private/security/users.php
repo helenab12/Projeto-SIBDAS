@@ -109,14 +109,14 @@ try {
             $row['pessoa_funcao'] ? Funcao::tryFrom((string) $row['pessoa_funcao']) : null,
             $row['pessoa_departamento'] ? (string) $row['pessoa_departamento'] : null,
             (bool) $row['pessoa_ativo'],
-            new DateTime($row['pessoa_dataCriacao']),
+            $row['pessoa_dataCriacao'] ? new DateTime($row['pessoa_dataCriacao']) : new DateTime(),
             $row['pessoa_dataAtualizacao'] ? new DateTime($row['pessoa_dataAtualizacao']) : new DateTime()
         );
 
         $perfil = new Perfil(
             (string) $row['perfil_id'],
             (string) $row['perfil_nome'],
-            new DateTime($row['perfil_dataCriacao']),
+            $row['perfil_dataCriacao'] ? new DateTime($row['perfil_dataCriacao']) : new DateTime(),
             $row['perfil_dataAtualizacao'] ? new DateTime($row['perfil_dataAtualizacao']) : new DateTime()
         );
 
@@ -127,7 +127,7 @@ try {
             (string) $row['password'],
             (string) $row['idPerfil'],
             (bool) $row['utilizador_ativo'],
-            new DateTime($row['utilizador_dataCriacao']),
+            $row['utilizador_dataCriacao'] ? new DateTime($row['utilizador_dataCriacao']) : new DateTime(),
             $row['utilizador_dataAtualizacao'] ? new DateTime($row['utilizador_dataAtualizacao']) : new DateTime(),
             $perfil
         );
@@ -569,7 +569,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                     <div class="modal-body p-0">
                         <!-- Formulário -->
                         <form id="user-creation-form" method="POST" action="users-crud/create-user.php"
-                            class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
+                            class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column" novalidate>
 
                             <!-- Row 1: Email da Pessoa -->
                             <div class="d-flex flex-column form-item w-100 mw-0">
@@ -850,7 +850,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
 
                             <div class="modal-body p-0">
                                 <!-- Formulário -->
-                                <form method="POST" action="users-crud/delete-user.php">
+                                <form method="POST" action="users-crud/delete-user.php" novalidate>
                                     <!-- Input -->
                                     <input type="hidden" name="user-id" value="<?= htmlspecialchars($encryptedUserId) ?>">
                                     <div

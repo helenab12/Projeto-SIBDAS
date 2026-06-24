@@ -17,16 +17,16 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
     $listaManutencoes[] = new Manutencao(
         (string) $rowM['idManutencao'],
         (string) $rowM['idEquipamento'],
-        TipoManutencao::from($rowM['tipoManutencao']),
-        new DateTime($rowM['dataInicio']),
+        TipoManutencao::tryFrom((string)$rowM['tipoManutencao']) ?? TipoManutencao::Preventiva,
+        $rowM['dataInicio'] ? new DateTime($rowM['dataInicio']) : new DateTime(),
         $rowM['dataFim'] ? new DateTime($rowM['dataFim']) : null,
         (string) $rowM['idPessoaResponsavel'],
         $rowM['idFornecedor'] ? (string) $rowM['idFornecedor'] : null,
         $rowM['custoManutencao'] !== null ? (float) $rowM['custoManutencao'] : null,
         $rowM['observacoes'],
         (bool) $rowM['ativo'],
-        new DateTime($rowM['dataCriacao']),
-        new DateTime($rowM['dataAtualizacao']),
+        $rowM['dataCriacao'] ? new DateTime($rowM['dataCriacao']) : new DateTime(),
+        $rowM['dataAtualizacao'] ? new DateTime($rowM['dataAtualizacao']) : new DateTime(),
         $rowM['pessoaNome'],
         $rowM['fornecedorNome']
     );
@@ -247,7 +247,7 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                 <div class="modal-body p-0">
                     <!-- Formulário -->
                     <form id="add-maintenance-form" action="equipments-crud/create-maintenance.php" method="POST"
-                        class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
+                        class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column" novalidate>
                         <!-- Input ID Equipamento -->
                         <input type="hidden" name="equipment-id" value="<?= htmlspecialchars($encryptedId) ?>">
 
@@ -503,7 +503,7 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                     <div class="modal-body p-0">
                         <!-- Formulário -->
                         <form action="equipments-crud/edit-maintenance.php" method="POST"
-                            class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column edit-maintenance-form">
+                            class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column edit-maintenance-form" novalidate>
                             <!-- Input ID Equipamento -->
                             <input type="hidden" name="equipment-id" value="<?= htmlspecialchars($encryptedId) ?>">
                             <!-- Input ID Manutenção -->
@@ -697,7 +697,7 @@ while ($rowM = $stmtManutencoes->fetch(PDO::FETCH_ASSOC)) {
                     <!-- Body -->
                     <div class="modal-body p-0">
                         <!-- Formulário -->
-                        <form method="POST" action="equipments-crud/delete-maintenance.php">
+                        <form method="POST" action="equipments-crud/delete-maintenance.php" novalidate>
                             <!-- Input ID Equipamento -->
                             <input type="hidden" name="equipment-id" value="<?= htmlspecialchars($encryptedId) ?>">
                             <!-- Input ID Manutenção -->

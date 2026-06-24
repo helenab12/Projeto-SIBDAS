@@ -27,14 +27,14 @@ try {
             $row['idEquipamento'] ? (string) $row['idEquipamento'] : null,
             $row['idFornecedor'] ? (string) $row['idFornecedor'] : null,
             $row['idDocumento'] ? (string) $row['idDocumento'] : null,
-            TipoRegisto::tryFrom($row['tipoRegisto']) ?? TipoRegisto::GARANTIA_FABRICA,
+            TipoRegisto::tryFrom((string)$row['tipoRegisto']) ?? TipoRegisto::GARANTIA_FABRICA,
             $row['dataInicio'] ? new DateTime($row['dataInicio']) : null,
             $row['dataFim'] ? new DateTime($row['dataFim']) : null,
-            Periodicidade::tryFrom($row['periodicidade']) ?? Periodicidade::NA,
+            Periodicidade::tryFrom((string)$row['periodicidade']) ?? Periodicidade::NA,
             $row['observacoes'],
             (bool) $row['ativo'],
-            new DateTime($row['dataCriacao']),
-            new DateTime($row['dataAtualizacao']),
+            $row['dataCriacao'] ? new DateTime($row['dataCriacao']) : new DateTime(),
+            $row['dataAtualizacao'] ? new DateTime($row['dataAtualizacao']) : new DateTime(),
             $row['fornecedorNome'],
             $row['documentoCaminho']
         );
@@ -265,7 +265,7 @@ try {
                     <!-- Formulário -->
                     <form id="add-warranty-form" action="equipments-crud/create-warranty.php" method="POST"
                         enctype="multipart/form-data"
-                        class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column">
+                        class="equipment-creation-modal-content padding-6 gap-5 d-flex flex-column" novalidate>
                         <!-- Input ID Equipamento -->
                         <input type="hidden" name="equipment-id" value="<?= htmlspecialchars($encryptedId) ?>">
 
@@ -728,7 +728,7 @@ try {
                         </button>
                     </div>
                     <div class="modal-body p-0">
-                        <form method="POST" action="equipments-crud/delete-warranty.php">
+                        <form method="POST" action="equipments-crud/delete-warranty.php" novalidate>
                             <input type="hidden" name="equipment-id" value="<?= htmlspecialchars($encryptedId) ?>">
                             <input type="hidden" name="warranty-id" value="<?= htmlspecialchars($encId) ?>">
                             <div

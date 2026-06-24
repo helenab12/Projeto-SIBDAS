@@ -7,12 +7,13 @@ try {
 
     // Consultar componentes
     $stmtComponentes = execute_query(
-        "SELECT c.idComponente, c.descricao AS nome, c.stock, ce.quantidade, cat.nome AS categoriaNome
+        "SELECT c.idComponente, c.descricao AS nome, c.stock, ce.quantidade, GROUP_CONCAT(cat.nome SEPARATOR ', ') AS categoriaNome
          FROM ComponenteEquipamento ce
          INNER JOIN Componente c ON ce.idComponente = c.idComponente
          LEFT JOIN ComponenteCategoria cc ON c.idComponente = cc.idComponente
          LEFT JOIN CategoriaEquipamento cat ON cc.idCategoria = cat.idCategoria
          WHERE ce.idEquipamento = :id AND c.ativo = 1
+         GROUP BY c.idComponente, c.descricao, c.stock, ce.quantidade
          ORDER BY c.descricao ASC",
         ['id' => $id],
         $ligacao

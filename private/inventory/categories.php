@@ -96,8 +96,8 @@ try {
             $row['codigoPrefix'],
             $row['descricao'],
             (bool) $row['ativo'],
-            new DateTime($row['dataCriacao']),
-            new DateTime($row['dataAtualizacao'])
+            $row['dataCriacao'] ? new DateTime($row['dataCriacao']) : new DateTime(),
+            $row['dataAtualizacao'] ? new DateTime($row['dataAtualizacao']) : new DateTime()
         );
     }
     $ligacao = null;
@@ -513,7 +513,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                 <!-- Corpo Modal -->
                 <div class="modal-body p-0">
                     <!-- Formulário de Criação -->
-                    <form action="categories-crud/create-category.php" method="POST">
+                    <form action="categories-crud/create-category.php" method="POST" novalidate>
                         <div class="equipment-creation-modal-content padding-6 gap-6 d-flex flex-column">
                             <!-- Campo Nome da Categoria -->
                             <div class="d-flex flex-column form-item w-100">
@@ -704,7 +704,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                     <!-- Corpo Modal -->
                     <div class="modal-body p-0">
                         <!-- Formulário de Edição -->
-                        <form action="categories-crud/edit-category.php" method="POST" class="edit-category-form">
+                        <form action="categories-crud/edit-category.php" method="POST" class="edit-category-form" novalidate>
                             <!-- Input ID -->
                             <input type="hidden" name="category-id" value="<?= htmlspecialchars($encryptedCatId) ?>">
                             <div class="equipment-creation-modal-content padding-6 gap-6 d-flex flex-column">
@@ -820,7 +820,7 @@ include_once BASE_PATH . 'private/includes/sidebar-mobile.php';
                     <!-- Corpo Modal -->
                     <div class="modal-body p-0">
                         <!-- Formulário de Eliminação -->
-                        <form method="POST" action="categories-crud/delete-category.php">
+                        <form method="POST" action="categories-crud/delete-category.php" novalidate>
                             <!-- Input ID -->
                             <input type="hidden" name="category-id" value="<?= htmlspecialchars($encryptedCatId) ?>">
                             <div
